@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="art.js"></script>
+<script src="tiles.js"></script>
+<script src="gear.js"></script>
+<script src="bestiary.js"></script>
+<script src="map.js"></script>
+<script src="realms.js"></script>
+<style>html,body{margin:0;background:#0b0f22;color:#fbf6e9;font-family:'Pixelify Sans',sans-serif}a{color:#36e0c8}a:hover{color:#ffe27a}*{box-sizing:border-box}</style>
+</helmet>
+<div style="min-height:100vh;padding:20px 24px 32px;display:flex;flex-direction:column;gap:14px;align-items:center">
+  <div style="width:100%;max-width:1280px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div style="font-family:'Jersey 10';font-size:30px;line-height:1;color:#ffc43d">Medival · Cutscenes</div>
+    <sc-for list="{{ scenes }}" as="c" hint-placeholder-count="3"><div onClick="{{ c.go }}" style="font-family:'Jersey 10';font-size:20px;line-height:1;white-space:nowrap;padding:7px 8px 8px;cursor:pointer;border:8px solid transparent;border-image:var({{ c.ui }}) 8 fill / 8px stretch;image-rendering:pixelated;color:{{ c.color }}">{{ c.label }}</div></sc-for>
+    <div style="margin-left:auto;font-size:13px;color:#7884b5">Space play/pause · → next shot · Esc skip</div>
+  </div>
+  <div ref="{{ wrapRef }}" style="width:100%;max-width:1280px;height:{{ wrapH }}px;position:relative">
+    <div style="position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;transform:scale({{ scale }});overflow:hidden;background:{{ sh.bgc }};box-shadow:0 0 0 2px #1a1230,0 0 0 4px #2c3868" data-screen-label="Cutscene">
+      <sc-if value="{{ sh.hasBg }}" hint-placeholder-val="{{ false }}"><px-sprite name="{{ sh.bg }}" scale="{{ sh.bgScale }}" style="position:absolute;left:{{ sh.bx }}px;top:{{ sh.by }}px"></px-sprite></sc-if>
+      <div style="position:absolute;inset:0;background:{{ sh.tint }}"></div>
+      <sc-for list="{{ sh.actors }}" as="a" hint-placeholder-count="3"><div style="position:absolute;left:{{ a.x }}px;top:{{ a.y }}px;transform:translate(-50%,-100%);opacity:{{ a.op }}"><px-sprite name="{{ a.s }}" scale="{{ a.sc }}" anim="{{ a.anim }}" flip="{{ a.flip }}"></px-sprite></div></sc-for>
+      <sc-for list="{{ sh.tears }}" as="t" hint-placeholder-count="0"><div style="position:absolute;left:{{ t.x }}px;top:{{ t.y }}px;width:6px;height:10px;background:#1a1230;box-shadow:0 0 0 2px rgba(163,92,255,.5)"></div></sc-for>
+      <sc-if value="{{ sh.isTitle }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:{{ sh.titleOp }}"><px-sprite name="logo" scale="4"></px-sprite><div style="font-family:'Jersey 10';font-size:40px;line-height:1;letter-spacing:4px;color:#ffe27a;text-shadow:3px 3px 0 #1a1230">{{ sh.titleText }}</div><div style="font-size:15px;font-weight:600;color:#b7c0e3">{{ sh.titleSub }}</div></div></sc-if>
+      <div style="position:absolute;left:0;right:0;top:0;height:{{ bar }}px;background:#05060f"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;height:{{ bar }}px;background:#05060f"></div>
+      <sc-if value="{{ sh.cap }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:160px;right:160px;bottom:22px;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center"><sc-if value="{{ sh.who }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Jersey 10';font-size:24px;line-height:1;color:#ffe27a">{{ sh.who }}</span></sc-if><span style="font-size:19px;line-height:27px;font-weight:500;color:#fbf6e9;text-wrap:pretty">{{ sh.cap }}</span></div></sc-if>
+      <div style="position:absolute;inset:0;background:#05060f;opacity:{{ fade }};pointer-events:none"></div>
+      <div onClick="{{ skip }}" style="position:absolute;right:20px;top:18px;height:36px;padding:0 8px;display:flex;align-items:center;cursor:pointer;font-family:'Jersey 10';font-size:20px;line-height:1;color:#b7c0e3;border:8px solid transparent;border-image:var(--ui-btn_slate) 8 fill / 8px stretch;image-rendering:pixelated">Skip ›</div>
+    </div>
+  </div>
+  <div style="width:100%;max-width:1280px;display:flex;gap:10px;align-items:center">
+    <div onClick="{{ toggle }}" style="width:110px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Jersey 10';font-size:22px;line-height:1;color:#1a1230;border:8px solid transparent;border-image:var(--ui-btn_gold) 8 fill / 8px stretch;image-rendering:pixelated">{{ playLabel }}</div>
+    <div style="flex:1;display:flex;gap:3px">
+      <sc-for list="{{ shots }}" as="s" hint-placeholder-count="6"><div onClick="{{ s.go }}" title="{{ s.t }}" style="flex:{{ s.w }};height:14px;cursor:pointer;background:#212b52;box-shadow:0 0 0 2px #1a1230;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ s.p }}%;background:#ffc43d"></div></div></sc-for>
+    </div>
+    <span style="font-size:12px;color:#7884b5;width:70px;text-align:right">{{ clock }}</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  SC = {
+    opening: { label: 'Act I · Opening', shots: [
+      { d: 7, bg: 'mvrealm', bs: 3, from: [-130, -60], to: [-260, -90], bgc: '#1f5aa8', cap: 'Thirteen realms. Twelve schools of magic and steel, and at their heart Concordia, where every school lives side by side.' },
+      { d: 6, bgc: '#120a24', tint: 'radial-gradient(circle at 50% 55%,rgba(90,42,176,.45),rgba(5,6,15,.9) 70%)', actors: [{ s: 'bx_hollowking', sc: 1, from: [640, 560], to: [640, 540] }], tears: 1, cap: 'Then the Heart of Concordia began to weep. The tears were black, and where they fell, the people went Hollow.' },
+      { d: 7, bg: 'mvvil:brind', bs: 2, from: [0, -120], to: [-260, -150], bgc: '#3eae4c', actors: [{ s: 'HERO', sc: 2, from: [120, 560], to: [560, 560], anim: 'walk' }], cap: 'Brindlecross. The last warm hearth before the Gloamwood.' },
+      { d: 6, bg: 'mvvil:brind', bs: 3, from: [-620, -560], to: [-640, -560], bgc: '#3eae4c', actors: [{ s: 'maren', sc: 5, from: [460, 640], to: [460, 640] }, { s: 'HERO', sc: 5, from: [860, 640], to: [820, 640], flip: 1 }], who: 'Maren Hollis', cap: 'Wolves don\u2019t come this far out of the Gloamwood. Not on their own.' },
+      { d: 5, title: 'Act I · The Wolves at the Gate', sub: 'Chapter One', bgc: '#0b0f22' }] },
+    stag: { label: 'The White Stag', shots: [
+      { d: 6, bg: 'mvvil:lodge', bs: 2, from: [0, -100], to: [-240, -120], bgc: '#1f6a44', tint: 'rgba(20,40,60,.45)', actors: [{ s: 'HERO', sc: 2, from: [200, 600], to: [520, 600], anim: 'walk' }, { s: 'maren', sc: 2, from: [120, 610], to: [440, 610], anim: 'walk' }], cap: 'Stag\u2019s Rest. The trees here grow so close that the light comes through teal.' },
+      { d: 7, bgc: '#0d2a2a', tint: 'radial-gradient(circle at 50% 60%,rgba(127,227,255,.35),rgba(5,10,15,.92) 72%)', actors: [{ s: 'bx_stag', sc: 1, from: [640, 640], to: [640, 600] }], tears: 1, cap: 'It was white once, Nan Briar said. White as frost on a window.' },
+      { d: 6, bgc: '#0d1a26', tint: 'rgba(5,6,15,.6)', actors: [{ s: 'maren', sc: 5, from: [520, 660], to: [520, 660] }, { s: 'HERO', sc: 5, from: [840, 660], to: [840, 660], flip: 1 }], who: 'Maren Hollis', cap: 'It isn\u2019t sick. Look at it. It\u2019s grieving.' },
+      { d: 4, title: 'Boss · The White Stag', sub: 'Guardian of the Gloamwood', bgc: '#0b0f22' }] },
+    king: { label: 'The Hollow King', shots: [
+      { d: 6, bgc: '#140c24', tint: 'linear-gradient(180deg,rgba(5,6,15,.2),rgba(5,6,15,.85))', actors: [{ s: 'rl_concord', sc: 3, from: [640, 700], to: [640, 690] }], cap: 'The Concord Citadel. Twelve banners, one for every school. One of them has gone black.' },
+      { d: 7, bgc: '#0b0614', tint: 'radial-gradient(circle at 50% 60%,rgba(163,92,255,.4),rgba(5,6,15,.95) 70%)', actors: [{ s: 'bx_hollowking', sc: 1, from: [640, 600], to: [640, 590] }, { s: 'HERO', sc: 4, from: [200, 680], to: [340, 680], anim: 'walk' }], tears: 1, cap: 'He was a man of Brindlecross, once. He wanted the schools to be one. He got his wish.' },
+      { d: 6, bgc: '#0b0614', tint: 'rgba(5,6,15,.55)', actors: [{ s: 'bx_hollowking', sc: 1, from: [700, 620], to: [700, 620] }], who: 'The Hollow King', cap: 'Every school, every realm, every heart. I only took away the parts that hurt.' },
+      { d: 4, title: 'Final Act · The Black Concord', sub: 'To be continued', bgc: '#05060f' }] }
+  };
+  state = { scene: 'opening', t: 0, playing: true, scale: 1 };
+  wrapRef = React.createRef();
+  componentDidMount() {
+    try { const v = JSON.parse(localStorage.getItem('mv_cut') || 'null'); if (v && this.SC[v.scene]) this.setState({ scene: v.scene, t: v.t || 0 }); } catch (e) {}
+    const ro = new ResizeObserver(() => { const w = this.wrapRef.current; if (w) this.setState({ scale: Math.min(1, w.clientWidth / 1280) }); }); if (this.wrapRef.current) ro.observe(this.wrapRef.current); this._ro = ro;
+    let last = performance.now(); this._iv = setInterval(() => { const n = performance.now(), dt = (n - last) / 1000; last = n; if (!this.state.playing) return; const tot = this.total(); this.setState(s => ({ t: Math.min(tot, s.t + dt) })); localStorage.setItem('mv_cut', JSON.stringify({ scene: this.state.scene, t: this.state.t })); }, 50);
+    this._k = e => { if (e.key === ' ') { this.setState(s => ({ playing: !s.playing })); e.preventDefault(); } if (e.key === 'ArrowRight') this.next(); if (e.key === 'Escape') this.setState({ t: this.total() }); }; window.addEventListener('keydown', this._k);
+    this._mvr = () => this.forceUpdate(); window.addEventListener('mvready', this._mvr);
+  }
+  componentWillUnmount() { clearInterval(this._iv); this._ro && this._ro.disconnect(); window.removeEventListener('keydown', this._k); window.removeEventListener('mvready', this._mvr); }
+  total() { return this.SC[this.state.scene].shots.reduce((a, s) => a + s.d, 0); }
+  next() { let acc = 0; for (const s of this.SC[this.state.scene].shots) { acc += s.d; if (acc > this.state.t + .01) { this.setState({ t: acc }); return; } } }
+  renderVals() {
+    const s = this.state, S = this.SC[s.scene], shots = S.shots, ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+    let acc = 0, i = 0; for (; i < shots.length; i++) { if (s.t < acc + shots[i].d || i === shots.length - 1) break; acc += shots[i].d; }
+    const sh = shots[i], lt = Math.max(0, s.t - acc), p = Math.min(1, lt / sh.d), e = ease(p), L = (a, b) => a + (b - a) * e;
+    const fade = Math.max(lt < .5 ? 1 - lt / .5 : 0, sh.d - lt < .5 ? 1 - (sh.d - lt) / .5 : 0);
+    const cap = sh.cap ? sh.cap.slice(0, Math.floor(Math.max(0, lt - .4) * 42)) : null;
+    const hero = 'arcanist';
+    return {
+      wrapRef: this.wrapRef, scale: s.scale, wrapH: Math.round(720 * s.scale), bar: sh.title ? 0 : 64, fade: Math.min(1, fade),
+      scenes: Object.entries(this.SC).map(([k, v]) => ({ label: v.label, ui: s.scene === k ? '--ui-tab_active' : '--ui-tab', color: s.scene === k ? '#fbf6e9' : '#b7c0e3', go: () => this.setState({ scene: k, t: 0, playing: true }) })),
+      sh: { bgc: sh.bgc || '#0b0f22', hasBg: !!sh.bg, bg: sh.bg || 'logo', bgScale: sh.bs || 1, bx: sh.from ? Math.round(L(sh.from[0], sh.to[0])) : 0, by: sh.from ? Math.round(L(sh.from[1], sh.to[1])) : 0, tint: sh.tint || 'transparent',
+        actors: (sh.actors || []).map(a => ({ s: a.s === 'HERO' ? hero : a.s, sc: a.sc, anim: a.anim || 'idle', flip: a.flip ? 'true' : 'false', x: Math.round(L(a.from[0], a.to[0])), y: Math.round(L(a.from[1], a.to[1])), op: Math.min(1, lt / .8) })),
+        tears: sh.tears ? Array.from({ length: 14 }, (_, k) => ({ x: 120 + ((k * 397) % 1040), y: Math.round(((lt * 140 + k * 61) % 640) + 40) })) : [],
+        isTitle: !!sh.title, titleText: sh.title || '', titleSub: sh.sub || '', titleOp: Math.min(1, lt / 1), cap, who: sh.who || null },
+      shots: shots.map((x, j) => { const st = shots.slice(0, j).reduce((a, y) => a + y.d, 0); return { w: String(x.d), t: x.cap || x.title, p: Math.round(Math.max(0, Math.min(1, (s.t - st) / x.d)) * 100), go: () => this.setState({ t: st }) }; }),
+      clock: Math.floor(s.t) + 's / ' + this.total() + 's', playLabel: s.t >= this.total() - .05 ? 'Replay' : s.playing ? 'Pause' : 'Play',
+      toggle: () => s.t >= this.total() - .05 ? this.setState({ t: 0, playing: true }) : this.setState({ playing: !s.playing }), skip: () => this.setState({ t: this.total() })
+    };
+  }
+}
+</script>
+</body>
+</html>

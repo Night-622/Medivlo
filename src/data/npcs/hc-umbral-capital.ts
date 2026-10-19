@@ -1,0 +1,248 @@
+/**
+ * Hollow Crown, Nocturne: Duskmere NPCs for the Duskweaver campaign (docs/lore/hollow-crown/06-outlines/umbral.md),
+ * plus the Duskweaver's Concordia people (Lanternford, the Keeper-courier). The Umbral diaspora's register is Old
+ * Hobb's (npc:hobb, hooked). Zones: zone:umbral-capital-1 the Lanternless Streets, -2 the Memory Gardens,
+ * -3 Obelisk Plaza, -4 the Archive of Shadows. Owner: Claude 4.
+ */
+import type { NarrativeCondition, NpcDef } from '@/core';
+
+const DUS: NarrativeCondition = { heroClass: 'duskweaver' };
+const at = (q: `quest:${string}`, stage: string): NarrativeCondition => ({ questStage: q, stage });
+const ACT2: NarrativeCondition = { flag: 'story.act', op: '>=', value: 2 };
+const Z1 = 'zone:umbral-capital-1' as const, Z2 = 'zone:umbral-capital-2' as const, Z3 = 'zone:umbral-capital-3' as const, Z4 = 'zone:umbral-capital-4' as const;
+
+const npcs: NpcDef[] = [
+  {
+    id: 'npc:nyx-aubade', name: 'Loremistress Nyx Aubade', title: 'Keeper of the Moon Obelisk', school: 'umbral', origin: 'umbral', trust: 2,
+    services: ['Mentor', 'Trains Duskweavers'], region: Z1, home: 'landmark:keepers-lodge', lore: 'lore:hc-nyx-aubade',
+    presentWhen: DUS,
+    schedule: [
+      { from: 0, to: 24, at: 'landmark:hall-of-lost-names-door', activity: 'idle', when: at('quest:duskweaver-the-hall-of-lost-names', 'nyx') },
+      { from: 0, to: 24, at: 'landmark:obelisk-queue', activity: 'idle', when: at('quest:duskweaver-the-mourners-petition', 'petition') },
+      // after the escort she stays by the last lamp-shadow to see the hero off
+      { from: 0, to: 24, at: 'landmark:duskweaver-road-lamp', activity: 'idle', when: at('quest:duskweaver-the-long-dusk-road', 'lamp') },
+    ],
+    dialogue: [
+      { when: at('quest:duskweaver-the-bell-at-dusk', 'nyx'), dialogue: 'dialogue:duskweaver-nyx-bell' },
+      { when: at('quest:duskweaver-the-bell-at-dusk', 'cocoa'), dialogue: 'dialogue:duskweaver-nyx-cocoa' },
+      { when: at('quest:duskweaver-what-the-mnemosarch-kept', 'nyx'), dialogue: 'dialogue:duskweaver-nyx-told' },
+      { when: at('quest:duskweaver-chalk-the-doors', 'report'), dialogue: 'dialogue:duskweaver-nyx-doors' },
+      { when: at('quest:duskweaver-the-hall-of-lost-names', 'nyx'), dialogue: 'dialogue:duskweaver-nyx-hall' },
+      { when: at('quest:duskweaver-the-long-dusk-road', 'farewell'), dialogue: 'dialogue:duskweaver-nyx-farewell' },
+      { when: at('quest:duskweaver-the-heros-name', 'nyx'), dialogue: 'dialogue:duskweaver-nyx-name' },
+      { when: at('quest:duskweaver-what-nyx-gave-away', 'confess'), dialogue: 'dialogue:duskweaver-nyx-confess' },
+      { when: at('quest:duskweaver-what-nyx-gave-away', 'nyx'), dialogue: 'dialogue:duskweaver-nyx-letter' },
+      { dialogue: 'dialogue:duskweaver-nyx' },
+    ],
+    barks: [{ lines: ['Marguerite! No. Oh, forgive me, dear.', 'I knew your face before I knew anything else.', 'There isn’t a cat. I keep thinking there’s a cat.'] }],
+    roles: ['quest', 'trainer'], essential: true,
+    look: { skin: 0xe8d4c4, hair: 0xe0dcec, cloth: 0x2a2440, accent: 0xa35cff, build: 'slight' },
+    bio: 'Keeper of the Moon Obelisk and the hero’s teacher, who likes everyone and remembers almost nobody. She apologises beautifully, calls you by a different wrong name every time, and is the finest Keeper in Duskmere on the days she can remember how.',
+  },
+  {
+    id: 'npc:oriel-vane', name: 'Oriel Vane', title: 'the Mnemosarch', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z3, home: 'landmark:mnemosarch-desk', lore: 'lore:hc-oriel-vane',
+    // Act I in Duskmere; Act III, beaten on the stair top, waiting for his fate (the scene must be reopenable)
+    presentWhen: { all: [DUS, { any: [{ not: { flag: 'duskweaver.halfstone' } }, at('quest:duskweaver-the-herald-of-memory', 'fate')] }] },
+    schedule: [
+      { from: 0, to: 24, at: 'landmark:twelve-stairs-top', activity: 'idle', when: at('quest:duskweaver-the-herald-of-memory', 'fate') },
+      { from: 0, to: 24, at: 'landmark:mnemosarch-model', activity: 'work', when: at('quest:duskweaver-what-the-mnemosarch-kept', 'model') },
+      { from: 0, to: 24, at: 'landmark:obelisk-queue', activity: 'idle', when: at('quest:duskweaver-the-mourners-petition', 'petition') },
+    ],
+    dialogue: [
+      { when: at('quest:duskweaver-the-herald-of-memory', 'fate'), dialogue: 'dialogue:duskweaver-herald-fate' },
+      { when: at('quest:duskweaver-the-mnemosarchs-queue', 'desk'), dialogue: 'dialogue:duskweaver-vane-queue' },
+      { when: at('quest:duskweaver-the-mnemosarchs-queue', 'tea'), dialogue: 'dialogue:duskweaver-vane-tea' },
+      { when: at('quest:duskweaver-what-jasper-queued-for', 'place'), dialogue: 'dialogue:duskweaver-vane-jasper' },
+      { when: at('quest:duskweaver-what-the-mnemosarch-kept', 'model'), dialogue: 'dialogue:duskweaver-vane-model' },
+      { dialogue: 'dialogue:duskweaver-vane' },
+    ],
+    barks: [{ lines: ['Tea? I always have the pot on.', 'Nothing should be lost that anyone ever loved.', 'Filing is a kind of love, if you do it properly.'] }],
+    roles: ['quest'], essential: true,
+    look: { skin: 0xe0c8b8, hair: 0x2a2030, cloth: 0x3a3050, accent: 0x9a8aff, build: 'slight' },
+    bio: 'The Mnemosarch of the Obelisk, who runs the queue of people waiting to remember. He pours them tea and hands their memories back in little glass phials. He is the only person in Duskmere who gets everyone’s name right first time.',
+  },
+  {
+    id: 'npc:marigold-thrupp', name: 'Marigold Thrupp', title: 'Head Gardener of the Memory Gardens', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z2, home: 'landmark:memory-gardens-gate', presentWhen: DUS,
+    dialogue: [
+      { when: at('quest:duskweaver-the-flower-thieves', 'marigold'), dialogue: 'dialogue:duskweaver-marigold-thieves' },
+      { when: at('quest:duskweaver-the-flower-thieves', 'report'), dialogue: 'dialogue:duskweaver-marigold-return' },
+      { when: at('quest:duskweaver-the-mourners-petition', 'canvass'), dialogue: 'dialogue:duskweaver-marigold-canvass' },
+      { when: at('quest:duskweaver-his-radiance', 'flower'), dialogue: 'dialogue:duskweaver-marigold-prince' },
+      { dialogue: 'dialogue:duskweaver-marigold' },
+    ],
+    barks: [{ lines: ['Mind the beds. Every one of those is somebody.', 'Moonshade, not moonlight.'] }],
+    roles: ['quest'],
+    look: { skin: 0xb8906a, hair: 0x8a8a7a, cloth: 0x3a4a3a, accent: 0xb0a0e0, build: 'broad' },
+    bio: 'Head gardener of the Memory Gardens, where memories grow as pale flowers. She knows every bed by name and has been sitting up all night with a rake across her knees.',
+  },
+  {
+    id: 'npc:rosamund-hesketh', name: 'Rosamund Hesketh', title: 'for the mourners', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z3, home: 'landmark:obelisk-queue', presentWhen: { all: [DUS, { questCompleted: 'quest:duskweaver-the-mnemosarchs-queue' }] },
+    dialogue: [
+      { when: at('quest:duskweaver-the-mourners-petition', 'petition'), dialogue: 'dialogue:duskweaver-mourners-petition' },
+      { when: at('quest:duskweaver-the-mourners-petition', 'canvass'), dialogue: 'dialogue:duskweaver-rosamund-canvass' },
+      { dialogue: 'dialogue:duskweaver-rosamund' },
+    ],
+    barks: [{ lines: ['It doesn’t get easier. It gets heavier, and you get stronger.', 'Two hundred names. Every one of them remembers that night.'] }],
+    roles: ['quest'],
+    look: { skin: 0xd0b8a8, hair: 0x4a4048, cloth: 0x1a1a22, accent: 0x6a6a80, build: 'short' },
+    bio: 'A small, upright woman in black who lost her husband and both her sons on the night of the Hollowing, and speaks for two hundred others who did the same.',
+  },
+  {
+    id: 'npc:ambrose-hewlett', name: 'Old Ambrose Hewlett', title: 'Street-sweeper', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z1, home: 'landmark:lamp-shadows', presentWhen: DUS,
+    dialogue: [{ dialogue: 'dialogue:duskweaver-ambrose' }],
+    barks: [{ lines: ['Mind the post.', 'Of course, Ambrose. Of course, Ambrose.'] }],
+    roles: ['quest'],
+    look: { skin: 0xa88a7a, hair: 0xe8e4dc, cloth: 0x4a4458, accent: 0x8a7a5a, build: 'slight' },
+    bio: 'An old street-sweeper who sweeps the Lanternless Streets in long detours round things that aren’t there. Everyone humours him, very kindly, which he finds unbearable.',
+  },
+  {
+    id: 'npc:ottoline-fairweather', name: 'Ottoline Fairweather', title: 'of Moth Lane', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z1, home: 'landmark:fairweather-house', presentWhen: DUS,
+    dialogue: [
+      { when: at('quest:duskweaver-courtesy-calls', 'ottoline'), dialogue: 'dialogue:duskweaver-ottoline-card' },
+      { dialogue: 'dialogue:duskweaver-ottoline' },
+    ],
+    barks: [{ lines: ['How do you do. Ottoline Fairweather.', 'A yellow coat. I had a yellow coat once.'] }],
+    roles: ['quest'],
+    look: { skin: 0xe8d0c0, hair: 0xd8d0e0, cloth: 0xd8b040, accent: 0x7a6aa0, build: 'slight' },
+    bio: 'An old lady of the Lanternless Streets who introduces herself to her husband every morning, and is always delighted by how charmed he is.',
+  },
+  {
+    id: 'npc:horace-fairweather', name: 'Horace Fairweather', title: 'of Moth Lane', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z1, home: 'landmark:fairweather-house', presentWhen: DUS,
+    dialogue: [{ dialogue: 'dialogue:duskweaver-horace' }],
+    barks: [{ lines: ['Have you met my wife? Charming woman.', 'Every morning I can’t believe my luck.'] }],
+    roles: ['quest'],
+    look: { skin: 0xd8b8a0, hair: 0xc8c8c8, cloth: 0x3a4a8a, accent: 0x8a7a5a, build: 'average' },
+    bio: 'Ottoline’s husband, who meets her afresh every morning and pretends, beautifully, that he has never seen her before. He has begun not to be pretending.',
+  },
+  {
+    id: 'npc:bartholomew-cobble', name: 'Bartholomew Cobble', title: 'Cobbler, and briefly a prince', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z2, home: 'landmark:cobble-shop', presentWhen: DUS,
+    dialogue: [{ dialogue: 'dialogue:duskweaver-cobble' }],
+    barks: [{ lines: ['We are pleased to receive you. Mind the lasts.', 'Princes do not cobble cheaply.'] }],
+    roles: ['quest'],
+    look: { skin: 0xc8a080, hair: 0x6a5a4a, cloth: 0x5a4a3a, accent: 0xffd36a, build: 'short' },
+    bio: 'A cobbler by the Memory Gardens who, thanks to a weed the Cult planted in his memory-bed, remembers being a prince. He wears a paper crown, and has never been happier.',
+  },
+  {
+    id: 'npc:posy', name: 'Posy', title: 'aged eight', school: 'umbral', origin: 'umbral', trust: 3,
+    region: Z2, home: 'landmark:posy-bed', presentWhen: DUS,
+    dialogue: [{ dialogue: 'dialogue:duskweaver-posy' }],
+    barks: [{ lines: ['I’m planting my nan.', 'I’m very good at waiting. I’m better at planting.'] }],
+    roles: ['quest'],
+    look: { skin: 0xe8c8b0, hair: 0x2a1a20, cloth: 0x8a6aa8, accent: 0xf0e8ff, build: 'short' },
+    bio: 'An eight-year-old who plants a memory-flower of her grandmother in the Gardens every day, and every day it wilts, and she plants it again.',
+  },
+  {
+    id: 'npc:jasper-grubb', name: 'Jasper Grubb', title: 'of the Obelisk queue', school: 'umbral', origin: 'umbral', trust: 3,
+    region: Z3, home: 'landmark:obelisk-queue', presentWhen: DUS,
+    dialogue: [{ dialogue: 'dialogue:duskweaver-jasper' }],
+    barks: [{ lines: ['Eleven years! Lovely queue.', 'Mrs Abney owes me a biscuit.'] }],
+    roles: ['quest'],
+    look: { skin: 0xd0a888, hair: 0x8a7a6a, cloth: 0x5a5070, accent: 0xb0a080, build: 'broad' },
+    bio: 'A man who has been in the Obelisk queue so long that he has forgotten what he came to remember, and has made eleven friends, and does not want to reach the front.',
+  },
+  {
+    id: 'npc:linnet-dray', name: 'Linnet Dray', title: 'betrothed', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z3, home: 'landmark:obelisk-register', presentWhen: DUS,
+    dialogue: [{ dialogue: 'dialogue:duskweaver-linnet' }],
+    barks: [{ lines: ['Thursday. We were meant to be married on Thursday.', 'You can’t marry with nothing.'] }],
+    roles: ['quest'],
+    look: { skin: 0xe8c8b0, hair: 0x8a3a2a, cloth: 0x6a5aa0, accent: 0xf0d0ff, build: 'slight' },
+    bio: 'A young woman engaged to Edmund Fosse, who cannot marry him, because a Nocturne wedding is the swapping of kept names, and hers has vanished from the Obelisk register.',
+  },
+  {
+    id: 'npc:peregrine-moll', name: 'Under-Keeper Peregrine Moll', title: 'of the Archive of Shadows', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z4, home: 'landmark:archive-stacks', presentWhen: DUS,
+    dialogue: [
+      { when: at('quest:duskweaver-the-shadow-of-a-cat', 'moll'), dialogue: 'dialogue:duskweaver-moll-cat' },
+      { dialogue: 'dialogue:duskweaver-moll' },
+    ],
+    barks: [{ lines: ['Mind the floor! That’s a shadow.', 'I have a butterfly net and I am losing.'] }],
+    roles: ['quest'],
+    look: { skin: 0xd8c0b0, hair: 0x5a4a3a, cloth: 0x3a3048, accent: 0xa35cff, build: 'tall' },
+    bio: 'The under-keeper of the Archive of Shadows, long, thin and harassed, with a beard, a butterfly net and four runaway shadows loose in the stacks.',
+  },
+  {
+    id: 'npc:cat-shadow', name: 'A Cat’s Shadow', title: 'with no cat', school: 'umbral', origin: 'umbral', trust: 2,
+    region: Z4, home: 'landmark:archive-stacks', presentWhen: { all: [DUS, { not: { flag: 'story.gate_open' } }] },
+    dialogue: [{ dialogue: 'dialogue:duskweaver-cat-shadow' }],
+    barks: [{ lines: ['(It looks at you as if you were late.)', '(It is washing a paw that isn’t there.)'] }],
+    roles: ['quest'],
+    look: { skin: 0x1a1420, cloth: 0x1a1420, build: 'short' },
+    bio: 'The shadow of a cat that died on the third shelf of the west stacks nine years ago, in the sun. The shadow did not leave.',
+  },
+  {
+    id: 'npc:tybalt-murk', name: 'Constable Tybalt Murk', title: 'Night Constable of Duskmere', school: 'umbral', origin: 'umbral', trust: 2,
+    services: ['Bounties'], region: Z1, home: 'landmark:constable-box', presentWhen: DUS,
+    dialogue: [{ dialogue: 'dialogue:duskweaver-murk' }],
+    barks: [{ lines: ['It’s always night-ish. So it’s always me.', 'I keep the money in a sock.'] }],
+    roles: ['quest'],
+    look: { skin: 0xc8a890, hair: 0x3a3030, cloth: 0x2a2a40, accent: 0x8a8ab0, build: 'tall' },
+    bio: 'Duskmere’s night constable, which in a city of endless dusk means its only constable. He keeps the bounty money in a sock, because nobody ever remembers to collect.',
+  },
+
+  // ---------- Act II (Concordia)
+  {
+    id: 'npc:hester-marchbank', name: 'Tabitha Cresset', title: 'Lampwright of Lanternford', school: 'umbral', origin: 'concord', trust: 2,
+    services: ['Lanterns'], region: 'region:marsh', home: 'landmark:ford-lantern-shop',
+    presentWhen: ACT2,
+    // C-4: after the escort she stays at the ford's edge with her lantern while the hero looks into the lights
+    schedule: [{ from: 0, to: 24, at: 'landmark:duskweaver-ford-edge', activity: 'idle', when: { all: [DUS, at('quest:duskweaver-the-mnemosarchs-lights', 'lights')] } }],
+    dialogue: [
+      { when: { all: [DUS, at('quest:duskweaver-the-mnemosarchs-lights', 'shop')] }, dialogue: 'dialogue:duskweaver-hester' },
+      { dialogue: 'dialogue:umbral-hester' },
+    ],
+    barks: [{ lines: ['Lanterns for the marsh road. Don’t follow any you didn’t buy.', 'I keep a candle by the bed now.'] }],
+    roles: ['quest'],
+    look: { skin: 0xc8a888, hair: 0x5a6a5a, cloth: 0x2a4a4a, accent: 0x9adada, build: 'average' },
+    bio: 'The lampwright of Lanternford, Umbral-born on her grandmother’s side, who sells lanterns to travellers so they will not follow the Lantern Queen’s. Lately she has had a very polite customer for the drowned ones.',
+  },
+  {
+    id: 'npc:oriel-vane-lanternford', name: 'Oriel Vane', title: 'the Mnemosarch, at Lanternford', school: 'umbral', origin: 'umbral', trust: 2,
+    region: 'region:marsh', home: 'landmark:ford-bog-market',
+    presentWhen: { all: [DUS, { questActive: 'quest:duskweaver-the-mnemosarchs-lights' }] },
+    dialogue: [{ dialogue: 'dialogue:duskweaver-vane-ford' }],
+    barks: [{ lines: ['Everybody deserves to be kept.', 'Mind the paint; it’s still wet.'] }],
+    roles: ['quest'],
+    look: { skin: 0xe0c8b8, hair: 0x2a2030, cloth: 0x3a3050, accent: 0x9a8aff, build: 'slight' },
+    bio: 'Vane came through the Dusk Gate behind you with his shadow city under his arm, and is filling a new street of it with the Lantern Queen’s drowned lights.',
+  },
+  {
+    id: 'npc:tansy-fogg', name: 'Tansy Fogg', title: 'Keeper-courier', school: 'umbral', origin: 'umbral', trust: 2,
+    region: 'region:alder', home: 'landmark:gate-circle',
+    presentWhen: { all: [DUS, { any: [{ questActive: 'quest:duskweaver-a-letter-from-nyx' }, { questCompleted: 'quest:duskweaver-a-letter-from-nyx' }] }] },
+    dialogue: [{ dialogue: 'dialogue:duskweaver-tansy' }],
+    barks: [{ lines: ['Has anyone here been called Ondine?', 'Anything you say. Even nothing.'] }],
+    roles: ['quest'],
+    look: { skin: 0xe0c8b0, hair: 0x6a4a6a, cloth: 0x3a3050, accent: 0xd0c0ff, build: 'slight' },
+    bio: 'A Keeper-courier sent through the Dusk Gate with a letter from Nyx, addressed to the wrong name, which she has been asking for all down the long dusk road.',
+  },
+  {
+    id: 'npc:cat-shadow-brindlecross', name: 'A Cat’s Shadow', title: 'a long way from the Archive', school: 'umbral', origin: 'umbral', trust: 2,
+    region: 'region:alder', home: 'landmark:brind-green',
+    presentWhen: { all: [DUS, ACT2, { questCompleted: 'quest:duskweaver-the-shadow-of-a-cat' }, { not: { questActive: 'quest:duskweaver-the-cat-comes-too' } }] },
+    dialogue: [{ dialogue: 'dialogue:duskweaver-cat-brindlecross' }],
+    barks: [{ lines: ['(It is sitting on the green, washing a paw that isn’t there.)', '(Parson the cat is glaring at it from Nan Briar’s window.)'] }],
+    roles: ['ambient'],
+    look: { skin: 0x1a1420, cloth: 0x1a1420, build: 'short' },
+    bio: 'The cat’s shadow from the Archive of Shadows, which followed you through the Dusk Gate whether you asked it to or not, as cats do.',
+  },
+  {
+    id: 'npc:cat-shadow-heart', name: 'A Cat’s Shadow', title: 'attached to Parson', school: 'umbral', origin: 'umbral', trust: 2,
+    region: 'region:heart', home: 'landmark:heart-camp',
+    presentWhen: { all: [DUS, { questActive: 'quest:duskweaver-the-cat-comes-too' }] },
+    dialogue: [{ dialogue: 'dialogue:duskweaver-cat-heart' }],
+    barks: [{ lines: ['(Parson glares at you. Both his shadows glare at you.)', '(It is curled up against Parson’s own shadow, purring without a sound.)'] }],
+    roles: ['quest'],
+    look: { skin: 0x1a1420, cloth: 0x1a1420, build: 'short' },
+    bio: 'The cat’s shadow from the Archive followed the hero to the Heart, and on the way it adopted Nan Briar’s cat Parson, who walked all the way from Brindlecross to get away from it.',
+  },
+];
+
+export default npcs;

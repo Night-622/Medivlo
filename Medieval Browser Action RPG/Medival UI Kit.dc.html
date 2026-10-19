@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="art.js"></script>
+<style>html,body{margin:0;background:#0d1226;color:#fbf6e9;font-family:'Pixelify Sans',sans-serif}a{color:#36e0c8}a:hover{color:#ffe27a}*{box-sizing:border-box}</style>
+</helmet>
+<div style="max-width:1240px;margin:0 auto;padding:40px 32px 80px;display:flex;flex-direction:column;gap:56px">
+  <header style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between">
+    <div><div style="font-family:'Jersey 10';font-size:64px;line-height:56px">UI Kit</div><div style="font-size:14px;color:#b7c0e3;margin-top:6px">Medival · v0.1 · all sizes in px on the 1280×720 canvas</div></div>
+    <div style="max-width:560px;font-size:14px;line-height:20px;color:#b7c0e3;text-wrap:pretty">Every frame is a 9-slice PNG in <b style="color:#fbf6e9">assets/ui/</b>: 24×24 with 8px slices, or 12×12 with 4px slices for bars. Fills, bars, cooldowns and glows are flat Phaser Graphics. Values come from <a href="medival-tokens.json">medival-tokens.json</a>, and frame lists from <a href="assets/atlas.json">assets/atlas.json</a>.</div>
+  </header>
+
+  <!-- PANELS -->
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">01</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Panels</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:20px">
+      <sc-for list="{{ panels }}" as="p" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="height:130px;padding:16px;display:flex;flex-direction:column;gap:6px;border:8px solid transparent;border-image:var({{ p.ui }}) 8 fill / 8px stretch;image-rendering:pixelated">
+            <div style="font-family:'Jersey 10';font-size:28px;line-height:24px;color:{{ p.titleColor }}">{{ p.title }}</div>
+            <div style="font-size:13px;line-height:17px;color:#b7c0e3">{{ p.body }}</div>
+          </div>
+          <div style="font-size:12px;line-height:17px;color:#7884b5"><b style="color:#ffe27a">{{ p.file }}</b> · {{ p.spec }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- BUTTONS -->
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">02</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Buttons</span></div>
+    <sc-for list="{{ buttonRows }}" as="row" hint-placeholder-count="2">
+      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+        <sc-for list="{{ row.items }}" as="b" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:8px;width:180px">
+            <div style="height:52px;display:flex;align-items:center;justify-content:center;padding-top:{{ b.pt }}px;font-family:'Jersey 10';font-size:26px;line-height:24px;color:{{ b.color }};border:8px solid transparent;border-image:var({{ b.ui }}) 8 fill / 8px stretch;image-rendering:pixelated">{{ b.label }}</div>
+            <div style="font-size:12px;line-height:16px;color:#7884b5"><b style="color:#fbf6e9">{{ b.state }}</b> · {{ b.file }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div onMouseEnter="{{ live.enter }}" onMouseLeave="{{ live.leave }}" onMouseDown="{{ live.down }}" onMouseUp="{{ live.up }}" style="width:220px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding-top:{{ live.pt }}px;font-family:'Jersey 10';font-size:26px;line-height:24px;color:#1a1230;border:8px solid transparent;border-image:var({{ live.ui }}) 8 fill / 8px stretch;image-rendering:pixelated">Try me</div>
+        <div style="font-size:12px;color:#7884b5">Live: hover and press. The label drops 2px when pressed.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:6px">
+          <sc-for list="{{ iconBtns }}" as="b" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;align-items:center;gap:2px"><div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-family:'Jersey 10';font-size:26px;line-height:1;border:8px solid transparent;border-image:var({{ b.ui }}) 8 fill / 8px stretch;image-rendering:pixelated">{{ b.k }}</div><span style="font-size:11px;font-weight:700;color:#b7c0e3">{{ b.l }}</span></div></sc-for>
+        </div>
+        <div style="font-size:12px;color:#7884b5">Icon button 44×44 · label 11/14 Pixelify 700 · gap 6</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:6px">
+          <div style="width:150px;height:44px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Jersey 10';font-size:24px;line-height:1;border:8px solid transparent;border-image:var(--ui-tab_active) 8 fill / 8px stretch;image-rendering:pixelated">Pack<span style="font-size:15px;color:#7884b5">I</span></div>
+          <div style="width:150px;height:44px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Jersey 10';font-size:24px;line-height:1;color:#b7c0e3;border:8px solid transparent;border-image:var(--ui-tab) 8 fill / 8px stretch;image-rendering:pixelated">Skills<span style="font-size:15px;color:#7884b5">K</span></div>
+        </div>
+        <div style="font-size:12px;color:#7884b5">Tab 150×44 · tab.png / tab_active.png (2px gold top) · Chips use the same art at h32, 13px 700</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BARS -->
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">03</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Resource bars</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:24px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:18px;padding:24px;background:#2a8a47;box-shadow:0 0 0 2px #1a1230">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="position:relative;width:260px;height:20px;background:#3a0d26;box-shadow:0 0 0 2px #1a1230">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:{{ demoGhost }}%;background:#ffd0d6;transition:width .6s ease-out .25s"></div>
+            <div style="position:absolute;left:0;top:0;bottom:0;width:{{ demoHp }}%;background:#ff3d5a;box-shadow:inset 0 3px 0 #ff8a9a,inset 0 -3px 0 #b3123f"></div>
+            <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 25px,rgba(26,18,48,.45) 25px 26px)"></div>
+            <div style="position:absolute;right:6px;top:0;line-height:20px;font-size:12px;font-weight:700;text-shadow:1px 1px 0 #1a1230">{{ demoHpText }}</div>
+          </div>
+          <div style="position:relative;width:260px;height:14px;background:#0d2550;box-shadow:0 0 0 2px #1a1230"><div style="position:absolute;left:0;top:0;bottom:0;width:72%;background:#38b6ff;box-shadow:inset 0 2px 0 #9be8ff,inset 0 -2px 0 #1f6fd6"></div><div style="position:absolute;right:6px;top:0;line-height:14px;font-size:11px;font-weight:700;text-shadow:1px 1px 0 #1a1230">115 / 160</div></div>
+          <div style="position:relative;width:190px;height:8px;background:#1f3a1a;box-shadow:0 0 0 2px #1a1230"><div style="position:absolute;left:0;top:0;bottom:0;width:58%;background:#9be33f;box-shadow:inset 0 2px 0 #d9ff8a"></div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Jersey 10';font-size:18px;line-height:1;color:#ffe27a;text-shadow:1px 1px 0 #1a1230">Lv 7</span><div style="position:relative;width:300px;height:8px;background:#3a2a0d;box-shadow:0 0 0 2px #1a1230"><div style="position:absolute;left:0;top:0;bottom:0;width:71%;background:#ffd23f;box-shadow:inset 0 2px 0 #fff1a8"></div></div></div>
+        <div style="display:flex;gap:24px;align-items:flex-end">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:26px;height:6px;background:#1a1230;padding:1px"><div style="width:14px;height:4px;background:#ff3d5a;box-shadow:inset 0 1px 0 #ff8a9a"></div></div><px-sprite name="wolf" anim="idle"></px-sprite></div>
+          <div style="display:flex;flex-direction:column;gap:4px"><div style="transform:scale(3);transform-origin:0 0;width:26px;height:6px;background:#1a1230;padding:1px;margin-bottom:12px"><div style="width:14px;height:4px;background:#ff3d5a;box-shadow:inset 0 1px 0 #ff8a9a"></div></div><span style="font-size:11px;color:#e8ffe0;font-weight:600">enemy bar, shown at 3×</span></div>
+        </div>
+        <div onClick="{{ hitDemo }}" style="align-self:flex-start;height:44px;padding:0 12px;display:flex;align-items:center;cursor:pointer;font-family:'Jersey 10';font-size:22px;border:8px solid transparent;border-image:var(--ui-btn_slate) 8 fill / 8px stretch;image-rendering:pixelated">Take a hit</div>
+      </div>
+      <div style="display:flex;flex-direction:column;background:#171f3d;box-shadow:0 0 0 2px #1a1230">
+        <sc-for list="{{ barSpecs }}" as="b" hint-placeholder-count="5">
+          <div style="display:grid;grid-template-columns:90px 90px minmax(0,1fr);gap:12px;padding:10px 14px;border-bottom:2px solid #212b52;font-size:12px;line-height:16px">
+            <b style="color:#fbf6e9">{{ b.name }}</b><span style="color:#ffe27a">{{ b.size }}</span><span style="color:#b7c0e3;text-wrap:pretty">{{ b.spec }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLOTS -->
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">04</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Item slots and rarity</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:20px">
+      <sc-for list="{{ slots }}" as="s" hint-placeholder-count="7">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:112px">
+          <div style="position:relative;width:56px;height:56px;border:8px solid transparent;border-image:var({{ s.ui }}) 8 fill / 8px stretch;image-rendering:pixelated"><div style="position:absolute;inset:-4px;display:flex;align-items:center;justify-content:center"><px-sprite name="{{ s.icon }}" anim="{{ s.anim }}"></px-sprite></div></div>
+          <div style="font-family:'Jersey 10';font-size:22px;line-height:20px;color:{{ s.color }};text-align:center">{{ s.label }}</div>
+          <div style="font-size:11px;color:#7884b5;text-align:center">{{ s.hex }}</div>
+        </div>
+      </sc-for>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:120px">
+        <div style="position:relative;width:60px;height:60px;border:8px solid transparent;border-image:var(--ui-slot_empty) 8 fill / 8px stretch;image-rendering:pixelated">
+          <div style="position:absolute;inset:-2px;display:flex;align-items:center;justify-content:center"><px-sprite name="school_ash" scale="2"></px-sprite></div>
+          <div style="position:absolute;left:-2px;right:-2px;bottom:-2px;height:55%;background:rgba(11,15,34,.72)"></div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Jersey 10';font-size:26px;text-shadow:2px 2px 0 #1a1230">3</div>
+          <div style="position:absolute;left:-12px;top:-12px;min-width:20px;height:20px;padding:0 4px;background:#171f3d;box-shadow:0 0 0 2px #1a1230,inset 0 0 0 1px #8b9fe0;font-family:'Jersey 10';font-size:16px;line-height:19px;text-align:center">2</div>
+          <div style="position:absolute;right:-10px;bottom:-10px;font-size:11px;font-weight:700;line-height:14px;padding:0 4px;background:#0b0f22;color:#38b6ff;box-shadow:0 0 0 2px #1a1230">22</div>
+        </div>
+        <div style="font-family:'Jersey 10';font-size:22px;line-height:20px">Hotbar</div>
+        <div style="font-size:11px;color:#7884b5;text-align:center">60×60 · key badge · cost · cooldown</div>
+      </div>
+    </div>
+    <div style="font-size:13px;line-height:19px;color:#b7c0e3;max-width:860px;text-wrap:pretty">Bag and equipment slots are 56×56 with a 32px icon at 1× and an 8px gap. The rarity frame is a 2px border in the rarity colour, a 45% lighter top highlight and a 1px inner glow mixed 28% into the slot fill. Sparkforged adds gold corner pips and a gold top bar. Gear for another class gets a 10×10 red pip in the top-left. Stack counts use 18px Jersey at bottom-right.</div>
+  </section>
+
+  <!-- ICONS -->
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">05</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Icons</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px">
+      <sc-for list="{{ items }}" as="i" hint-placeholder-count="12">
+        <div style="display:flex;gap:10px;align-items:center;padding:10px;background:#171f3d;box-shadow:0 0 0 2px #1a1230">
+          <px-sprite name="{{ i.n }}" scale="2"></px-sprite>
+          <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><px-sprite name="{{ i.n }}"></px-sprite><span style="font-size:11px;line-height:14px;color:#b7c0e3">{{ i.label }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
+      <sc-for list="{{ schools }}" as="s" hint-placeholder-count="6">
+        <div style="display:flex;gap:12px;align-items:center;padding:12px;background:#171f3d;box-shadow:0 0 0 2px #1a1230">
+          <div style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:{{ s.bg }};box-shadow:0 0 0 2px #1a1230,inset 0 0 0 2px {{ s.c }}"><px-sprite name="{{ s.n }}" scale="2"></px-sprite></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'Jersey 10';font-size:26px;line-height:22px;color:{{ s.c }}">{{ s.label }}</span><span style="font-size:12px;color:#b7c0e3">{{ s.el }}</span><px-sprite name="{{ s.n }}"></px-sprite></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="font-size:12px;color:#7884b5">Items are 32×32 (atlas icons_items.png, 8 columns). School glyphs are 24×24 (icons_schools.png) and show at 2× on the hotbar and in the spellbook. The currency coin is 16×16.</div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">06</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Damage numbers, tooltip, toast</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-end;padding:24px;background:#2a8a47;box-shadow:0 0 0 2px #1a1230">
+      <sc-for list="{{ dmg }}" as="d" hint-placeholder-count="6">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="font-family:'Jersey 10';font-size:{{ d.size }}px;line-height:1;color:{{ d.c }};text-shadow:2px 0 0 #1a1230,-2px 0 0 #1a1230,0 2px 0 #1a1230,0 -2px 0 #1a1230,2px 2px 0 #1a1230,-2px -2px 0 #1a1230,2px -2px 0 #1a1230,-2px 2px 0 #1a1230">{{ d.t }}</div>
+          <span style="font-size:11px;font-weight:700;color:#e8ffe0">{{ d.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+      <div style="display:flex;gap:8px;align-items:flex-start">
+        <sc-for list="{{ tipCards }}" as="c" hint-placeholder-count="2">
+          <div style="display:flex;flex-direction:column;gap:4px;width:268px">
+            <div style="align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:1px;line-height:14px;padding:2px 8px;background:{{ c.tagBg }};color:#1a1230;box-shadow:0 0 0 2px #1a1230">{{ c.tag }}</div>
+            <div style="border:8px solid transparent;border-image:var(--ui-tooltip) 8 fill / 8px stretch;image-rendering:pixelated">
+              <div style="margin:-4px -4px 0;padding:8px;display:flex;gap:10px;align-items:center;background:{{ c.headBg }}">
+                <div style="flex:none;width:72px;height:72px;border:8px solid transparent;border-image:var({{ c.slot }}) 8 fill / 8px stretch;image-rendering:pixelated;display:flex;align-items:center;justify-content:center"><px-sprite name="{{ c.icon }}" scale="2" style="margin:-8px"></px-sprite></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:'Jersey 10';font-size:26px;line-height:24px;color:{{ c.color }};text-shadow:2px 2px 0 #1a1230">{{ c.name }}</div><div style="font-size:12px;font-weight:700;color:{{ c.color }}">{{ c.rarity }}</div><div style="font-size:12px;color:#b7c0e3">{{ c.type }}</div></div>
+              </div>
+              <div style="padding:8px 4px 4px;display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:17px">
+                <div style="display:flex;justify-content:space-between;color:#7884b5;font-size:12px"><span>{{ c.ilvl }}</span><span>Main hand</span></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><sc-for list="{{ c.lines }}" as="l" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between"><span>{{ l.t }}</span><span style="font-weight:700;color:#6ee06a">{{ l.d }}</span></div></sc-for></div>
+                <div style="color:{{ c.color }}">{{ c.fx }}</div>
+                <div style="color:#7884b5">{{ c.lore }}</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:2px solid #212b52;font-size:12px"><span style="display:flex;align-items:center;gap:4px;color:#ffe27a"><px-sprite name="icon_coin"></px-sprite>{{ c.val }}</span><span style="color:#36e0c8;font-weight:700">{{ c.hint }}</span></div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;width:280px">
+        <div style="display:flex;gap:10px;align-items:center;padding:2px;border:8px solid transparent;border-image:var(--ui-panel_gold) 8 fill / 8px stretch;image-rendering:pixelated">
+          <div style="flex:none;width:44px;height:44px;margin:-4px 0 -4px -4px;border:8px solid transparent;border-image:var(--ui-slot_spark) 8 fill / 8px stretch;image-rendering:pixelated;display:flex;align-items:center;justify-content:center"><px-sprite name="icon_amulet" style="margin:-8px"></px-sprite></div>
+          <div style="display:flex;flex-direction:column;gap:1px"><div style="font-family:'Jersey 10';font-size:22px;line-height:20px;color:#ff4a4a">Sparkforged loot</div><div style="font-size:12px;line-height:15px;color:#b7c0e3">Stag-Tear Locket</div></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;padding:2px 2px 2px 6px;border:8px solid transparent;border-image:var(--ui-panel_gold) 8 fill / 8px stretch;image-rendering:pixelated">
+          <div style="display:flex;flex-direction:column;gap:1px"><div style="font-family:'Jersey 10';font-size:22px;line-height:20px;color:#ffc43d">Quest started</div><div style="font-size:12px;line-height:15px;color:#b7c0e3">The Wolves at the Gate</div></div>
+        </div>
+        <div style="font-size:12px;line-height:17px;color:#7884b5;text-wrap:pretty">Toast is 280 wide on panel_gold.png. The icon slot is 44 and uses the rarity frame. Title is 22/20 Jersey in the rarity or accent colour, body is 12/15 text.300. Toasts stack top-right with an 8px gap, at most 3, and each lives 3.2s.</div>
+      </div>
+    </div>
+    <div style="font-size:12px;line-height:17px;color:#7884b5;max-width:900px;text-wrap:pretty">Tooltips are 268 wide on tooltip.png and sit 8px apart when comparing. The equipped card goes on the left at 92% opacity with a #8b9fe0 tag. The header is the rarity colour fading from 20% to 0%, with a 72px rarity frame holding the icon at 2×. Stat deltas show only on the selected card: ▲ #6ee06a and ▼ #ff4d5e. The tooltip anchors to the right of the slot and flips left when it would leave the canvas.</div>
+  </section>
+
+  <!-- HANDOFF -->
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">07</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Sprite sheets</span></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ sheets }}" as="s" hint-placeholder-count="6">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px;padding:16px;background:#171f3d;box-shadow:0 0 0 2px #1a1230;align-items:center">
+          <div style="background:#2c3868;padding:12px;overflow:auto;box-shadow:inset 0 0 0 2px #1a1230"><img src="{{ s.file }}" style="display:block;image-rendering:pixelated;height:{{ s.h }}px"></img></div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:17px">
+            <div style="font-family:'Jersey 10';font-size:22px;line-height:20px;color:#ffe27a">{{ s.file }}</div>
+            <div style="color:#fbf6e9">{{ s.frame }}</div>
+            <div style="color:#b7c0e3;text-wrap:pretty">{{ s.frames }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="font-size:12px;line-height:17px;color:#7884b5">Props are separate PNGs in assets/sprites/props/ with origin (0.5, 1); depth-sort on bottom − 4px. 9-slices are in assets/ui/. The full list is in assets/atlas.json.</div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { hover: false, down: false, hp: 72, ghost: 72 };
+  renderVals() {
+    const s = this.state;
+    const panels = [
+      { ui: '--ui-panel', title: 'Panel', titleColor: '#fbf6e9', body: 'Default container for menus and screens.', file: 'panel.png', spec: '24×24, slice 8 · padding 16 · fill #171f3d · border #8b9fe0' },
+      { ui: '--ui-panel_gold', title: 'Reward', titleColor: '#ffc43d', body: 'Toasts, level-ups and reward panels.', file: 'panel_gold.png', spec: 'border #ffc43d, top #fff0b0' },
+      { ui: '--ui-tooltip', title: 'Tooltip', titleColor: '#b766ff', body: 'Item and spell details over the world.', file: 'tooltip.png', spec: 'fill #10162e · border #45538f' },
+      { ui: '--ui-panel_inset', title: 'Inset', titleColor: '#b7c0e3', body: 'Wells inside panels: lists and grids.', file: 'panel_inset.png', spec: 'fill #0f1530 · lit bottom-right edge' }
+    ];
+    const B = (state, ui, label, color, pt) => ({ state, ui: '--ui-' + ui, file: ui + '.png', label, color, pt });
+    const buttonRows = [
+      { items: [B('Normal', 'btn_gold', 'Continue', '#1a1230', 0), B('Hover', 'btn_gold_hover', 'Continue', '#1a1230', 0), B('Pressed', 'btn_gold_down', 'Continue', '#1a1230', 2), B('Disabled', 'btn_off', 'Continue', '#7884b5', 0)] },
+      { items: [B('Normal', 'btn_slate', 'Settings', '#fbf6e9', 0), B('Hover / focus', 'btn_slate_hover', 'Settings', '#fbf6e9', 0), B('Pressed', 'btn_gold_down', 'Settings', '#1a1230', 2), B('Disabled', 'btn_off', 'Settings', '#7884b5', 0)] }
+    ];
+    const live = { ui: s.down ? '--ui-btn_gold_down' : s.hover ? '--ui-btn_gold_hover' : '--ui-btn_gold', pt: s.down ? 2 : 0,
+      enter: () => this.setState({ hover: true }), leave: () => this.setState({ hover: false, down: false }), down: () => this.setState({ down: true }), up: () => this.setState({ down: false }) };
+    const iconBtns = [{ k: 'I', l: 'Pack', ui: '--ui-btn_slate' }, { k: 'K', l: 'Hover', ui: '--ui-btn_slate_hover' }, { k: 'B', l: 'Off', ui: '--ui-btn_off' }];
+    const barSpecs = [
+      { name: 'Health', size: '260×20', spec: 'Fill #ff3d5a, 3px top #ff8a9a, 3px bottom #b3123f, trough #3a0d26, 2px ink outline. Ticks every 10%. A ghost bar in #ffd0d6 trails damage (0.25s delay, 0.6s ease-out). Value text 12/20 Pixelify 700, right inset 6.' },
+      { name: 'Ember', size: '260×14', spec: 'Fill #38b6ff, 2px top #9be8ff, 2px bottom #1f6fd6, trough #0d2550. Value text 11/14.' },
+      { name: 'Stamina', size: '190×8', spec: 'Fill #9be33f, 2px top #d9ff8a, trough #1f3a1a. No text. A dash costs 25.' },
+      { name: 'XP', size: '440×8', spec: 'Fill #ffd23f, 2px top #fff1a8, trough #3a2a0d. Sits under the hotbar with “Lv 7” in 18px Jersey on the left and the value in 11px on the right.' },
+      { name: 'Enemy', size: '24×4', spec: 'In-world, 1px ink outline, 1px top highlight. Appears only after the first hit, 26px above beasts and 42px above humanoids.' }
+    ];
+    const R = [['common', 'Common', '#e6e9f5', 'icon_helm'], ['fine', 'Fine', '#5fe06a', 'icon_boots'], ['ember', 'Ember-touched', '#3fa9ff', 'icon_staff'], ['runed', 'Runed', '#b766ff', 'icon_robe'], ['wrought', 'Wrought', '#ff9a2e', 'icon_ring'], ['spark', 'Sparkforged', '#ff4a4a', 'icon_amulet']];
+    const slots = [{ ui: '--ui-slot_empty', icon: '', anim: '', label: 'Empty', color: '#7884b5', hex: '#2c3868' }, ...R.map(([k, l, c, i]) => ({ ui: '--ui-slot_' + k, icon: i, anim: k === 'spark' || k === 'wrought' ? 'float' : '', label: l, color: c, hex: c }))];
+    const items = [['icon_sword', 'Sword'], ['icon_axe', 'Axe'], ['icon_staff', 'Staff · Ash'], ['icon_staff_rime', 'Staff · Rime'], ['icon_bow', 'Bow'], ['icon_dagger', 'Dagger'], ['icon_shield', 'Shield'], ['icon_helm', 'Helm'], ['icon_robe', 'Robes'], ['icon_boots', 'Boots'], ['icon_ring', 'Ring'], ['icon_amulet', 'Amulet'], ['icon_potion_red', 'Health draught'], ['icon_potion_ember', 'Ember tonic'], ['icon_potion_stamina', 'Stamina tonic'], ['icon_coin', 'Embershard']].map(([n, label]) => ({ n, label }));
+    const schools = [['ash', 'Ash', 'Fire', '#ff6a2a'], ['rime', 'Rime', 'Frost', '#7fe3ff'], ['storm', 'Storm', 'Lightning', '#ffe14a'], ['radiance', 'Radiance', 'Holy', '#ffd96b'], ['umbral', 'Umbral', 'Shadow', '#a35cff'], ['verdant', 'Verdant', 'Nature', '#4fd86a']].map(([k, label, el, c]) => ({ n: 'school_' + k, label, el, c, bg: c + '22' }));
+    const dmg = [{ t: '24', c: '#ffd36a', size: 22, label: 'Ash hit · 22' }, { t: '47!', c: '#ffd23f', size: 32, label: 'Critical · 32' }, { t: '14', c: '#e8fbff', size: 22, label: 'Rime hit' }, { t: '18', c: '#fff6c8', size: 22, label: 'Radiance hit' }, { t: '-12', c: '#ff4d5e', size: 20, label: 'Damage taken · 20' }, { t: '+80', c: '#6ee06a', size: 22, label: 'Heal' }];
+    const tipCards = [
+      { tag: 'EQUIPPED', tagBg: '#8b9fe0', name: 'Cinderwick Staff', color: '#3fa9ff', rarity: 'Ember-touched', type: 'Staff', icon: 'icon_staff', slot: '--ui-slot_ember', headBg: 'linear-gradient(180deg,#3fa9ff33,#3fa9ff00)', ilvl: 'Item level 9', lines: [{ t: '+38 Spell power', d: '' }, { t: '+12 Max Ember', d: '' }], fx: 'Ash Bolt has a 10% chance to set its target ablaze for 3s.', lore: '“Cut from the hearth-beam of a burned Brindlecross mill.”', val: '120 to sell', hint: 'Equipped' },
+      { tag: 'SELECTED', tagBg: '#b766ff', name: 'Rimecall Staff', color: '#b766ff', rarity: 'Runed', type: 'Staff', icon: 'icon_staff_rime', slot: '--ui-slot_runed', headBg: 'linear-gradient(180deg,#b766ff33,#b766ff00)', ilvl: 'Item level 12', lines: [{ t: '+46 Spell power', d: '▲ +8' }, { t: '+20 Max Ember', d: '▲ +8' }, { t: '+1.5 Ember regen /s', d: '▲ +1.5' }], fx: 'Rime Shard splits into three on hit.', lore: '“Frost gathers on it even in summer.”', val: '300 to sell', hint: 'Click to equip' }
+    ];
+    const sheets = [
+      { file: 'assets/sprites/char_arcanist.png', h: 80, frame: '32×40 · 6 frames · pivot (16, 38)', frames: 'idle_0, idle_1 (2.5 fps loop) · walk_contactA, walk_pass, walk_contactB, walk_pass (8 fps loop) · South-facing; N, E and W rows come with the character sheet.' },
+      { file: 'assets/sprites/char_warden.png', h: 80, frame: '32×40 · 6 frames', frames: 'Same layout. Sword (behind) and shield (in front) are separate outlined layers in art.js.' },
+      { file: 'assets/sprites/char_hollowed.png', h: 80, frame: '32×40 · 6 frames', frames: 'Same layout. In game, play walk at 5 fps for the shamble.' },
+      { file: 'assets/sprites/char_wolf.png', h: 48, frame: '36×24 · 6 frames · faces left, flip for right', frames: 'Same layout. Walk at 10 fps.' },
+      { file: 'assets/sprites/icons_items.png', h: 128, frame: '32×32 · 8 columns · 15 frames', frames: 'sword, axe, staff, staff_rime, bow, dagger, shield, helm, robe, boots, ring, amulet, potion_red, potion_ember, potion_stamina' },
+      { file: 'assets/sprites/icons_schools.png', h: 48, frame: '24×24 · 6 frames', frames: 'ash, rime, storm, radiance, umbral, verdant' },
+      { file: 'assets/sprites/tiles.png', h: 128, frame: '32×32 · 6 columns · 11 frames', frames: 'grass_a, grass_b, grass_c, grass_flowers, grass_flowers_b, path_a, path_b, forest_a, forest_b, dungeon_floor, dungeon_wall' }
+    ];
+    return { panels, buttonRows, live, iconBtns, barSpecs, slots, items, schools, dmg, tipCards, sheets,
+      demoHp: s.hp, demoGhost: s.ghost, demoHpText: Math.round(s.hp * 2.4) + ' / 240',
+      hitDemo: () => { const n = s.hp <= 20 ? 100 : s.hp - 18; this.setState({ hp: n }); setTimeout(() => this.setState({ ghost: n }), 30); } };
+  }
+}
+</script>
+</body>
+</html>

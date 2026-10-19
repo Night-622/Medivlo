@@ -1,0 +1,16 @@
+node_modules
+dist
+.env.local
+.firebase
+dist-server
+
+# headless Chrome mutex (tools/e2e/chrome-lock.mjs)
+tools/e2e/.chrome-lock/
+
+# old game Firebase config backup
+archive/medival-v1/env.*
+
+# home-PC move (2026-10-20)
+exec -l/
+tools/e2e/out/
+.vite/

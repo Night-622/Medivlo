@@ -1,0 +1,31 @@
+import { Game, Registry, Services, bus, createNewGameState } from '@/core';
+import { installNarrativeMirror } from '@/narrative/client/mirror';
+import { nar } from '@/narrative/engine/state';
+import { activeQuests, objectiveCount, currentStage } from '@/narrative/engine/quests';
+let fails = 0; const ok = (c: unknown, m: string) => { console.log(c ? 'ok  ' : 'FAIL', m); if (!c) fails++; };
+const R = Registry as any;
+R.add({ id: 'quest:t-side', name: 'Side', type: 'side', act: 'act2', region: 'region:alder', summary: '', firstStage: 'a', portable: true,
+  stages: [{ id: 'a', journal: 'A', objectives: [{ id: 'k', text: 'Kill', kill: 'bx_wolf', count: 3 }], next: 'b' }, { id: 'b', journal: 'B', objectives: [], end: { status: 'completed' } }] });
+R.add({ id: 'quest:t-main', name: 'Main', type: 'main', act: 'act2', region: 'region:alder', summary: '', firstStage: 'x', stages: [{ id: 'x', journal: 'X', objectives: [], end: { status: 'completed' } }] });
+Game.set(createNewGameState());
+Game.state.narrative.quests['quest:t-side'] = { stage: 'a', objectives: {} };   // the guest has it active in its own save
+const syncs: any[] = [];
+const net: any = { isAuthority: () => false, localPlayer: 'g1', addStateSync: (s: any) => { syncs.push(s); return () => {}; }, on: () => () => {}, session: () => ({ members: [] }) };
+Services.register('net', net);
+installNarrativeMirror();
+ok(syncs.length === 1 && syncs[0].name === 'narrative', 'state sync registered');
+syncs[0].apply({ narrative: { quests: { 'quest:t-main': { stage: 'x', objectives: {} } }, codexUnlocked: ['lore:hc-concordia'], trackedQuest: 'quest:t-main' }, flags: { 'trust.maren': 3 } });
+ok(nar().quests['quest:t-main']?.stage === 'x', 'guest reads the host journal after join');
+ok(Game.state.narrative.codexUnlocked.includes('lore:hc-concordia'), 'codex kept in guest save');
+bus.emit('quest:started', { questId: 'quest:t-side' });
+bus.emit('quest:objective', { questId: 'quest:t-side', objectiveId: 'k', count: 2, target: 3 });
+const def = R.get('quest', 'quest:t-side');
+ok(objectiveCount(def, def.stages[0].objectives[0]) === 2, 'replicated objective count shown (2/3)');
+ok(activeQuests().some((q) => q.id === 'quest:t-side'), 'active list from mirror');
+bus.emit('quest:advanced', { questId: 'quest:t-side', stage: 'b' });
+ok(currentStage(def)?.id === 'b', 'stage advance mirrored');
+bus.emit('quest:completed', { questId: 'quest:t-side' });
+ok(Game.state.narrative.quests['quest:t-side']?.completed === true, 'portable quest completed in the guest’s own save');
+bus.emit('quest:completed', { questId: 'quest:t-main' });
+ok(!Game.state.narrative.quests['quest:t-main'], 'main quest NOT written to the guest’s own save');
+console.log(fails ? `${fails} FAILED` : 'ALL PASS');

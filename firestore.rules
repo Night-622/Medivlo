@@ -1,0 +1,84 @@
+rules_version = '2';
+
+// The Hollow Crown: saves, accounts, friends, co-op signalling.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function me(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // Saves: each player reads and writes only their own slots.
+    match /users/{uid}/saves/{slot} {
+      allow read, write: if me(uid);
+    }
+
+    // Crash reports from the client (create-only, bounded fields; read in the console).
+    match /clientErrors/{id} {
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'build', 'message', 'stack', 'scenes', 'role', 'ua', 'at'])
+        && request.resource.data.message.size() <= 500 && request.resource.data.stack.size() <= 1500;
+    }
+
+    // Chat reports: any signed-in player may file one about someone else; nobody can read them from the client.
+    match /reports/{id} {
+      allow create: if signedIn() && request.resource.data.reporter == request.auth.uid
+        && request.resource.data.keys().hasOnly(['reporter', 'target', 'targetName', 'recent', 'at'])
+        && request.resource.data.recent.size() <= 10;
+    }
+
+    // Public profile (display name, friend code, presence/hosted room). Readable by signed-in players.
+    match /profiles/{uid} {
+      allow read: if signedIn();
+      allow write: if me(uid);
+      // friend list: only the owner manages it
+      match /friends/{friendUid} {
+        allow read, write: if me(uid);
+      }
+    }
+
+    // Friend-code → uid lookup (unique codes; created once by the owner).
+    match /friendCodes/{code} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // Username → uid (username+password accounts without email). Unique, created once.
+    match /usernames/{name} {
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // Password-recovery vault for username accounts: ciphertext only (useless without the recovery code).
+    // Only the username's owner may write its vault (else anyone could replace someone else's and take the account).
+    match /recovery/{name} {
+      function ownsName() { return get(/databases/$(database)/documents/usernames/$(name)).data.uid == request.auth.uid; }
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid && ownsName();
+      allow update: if signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == request.auth.uid;
+    }
+
+    // Co-op signalling (SDP/ICE only; game traffic is peer-to-peer).
+    match /rooms/{code} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.host == request.auth.uid;
+      allow update, delete: if signedIn() && resource.data.host == request.auth.uid;
+
+      match /peers/{peerId} {
+        function isHost() { return get(/databases/$(database)/documents/rooms/$(code)).data.host == request.auth.uid; }
+        allow read: if signedIn() && (request.auth.uid == peerId || isHost());
+        allow create: if me(peerId);
+        allow delete: if signedIn() && (request.auth.uid == peerId || isHost());
+
+        match /msgs/{msgId} {
+          allow read, delete: if signedIn() && (request.auth.uid == peerId || isHost());
+          allow create: if signedIn()
+            && ((request.auth.uid == peerId && request.resource.data.from == 'guest')
+             || (isHost() && request.resource.data.from == 'host'));
+        }
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

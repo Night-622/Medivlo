@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="art.js"></script>
+<style>html,body{margin:0;background:#0d1226;color:#fbf6e9;font-family:'Pixelify Sans',sans-serif}a{color:#36e0c8}a:hover{color:#ffe27a}*{box-sizing:border-box}</style>
+</helmet>
+<div style="max-width:1240px;margin:0 auto;padding:40px 32px 80px;display:flex;flex-direction:column;gap:56px">
+
+  <header style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-end;justify-content:space-between">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <px-sprite name="logo" scale="3"></px-sprite>
+      <div style="font-family:'Jersey 10';font-size:32px;line-height:1;color:#b7c0e3;letter-spacing:3px">STYLE GUIDE · v0.1</div>
+    </div>
+    <div style="max-width:520px;font-size:15px;line-height:22px;color:#b7c0e3;text-wrap:pretty">Bright, saturated pixel art at one pixel scale. Dark places stay colourful: night grades toward indigo, light comes from torches and magic, and outlines are a deep plum ink, never black. Every value on this page is in <a href="medival-tokens.json">medival-tokens.json</a>. The components live in the <a href="Medival UI Kit.dc.html">UI Kit</a> and the playable screens in <a href="Medival Screens.dc.html">Screens</a>.</div>
+  </header>
+
+  <!-- PALETTE -->
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">01</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Palette</span></div>
+    <sc-for list="{{ palette }}" as="grp" hint-placeholder-count="6">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:'Jersey 10';font-size:24px;color:#ffc43d">{{ grp.name }}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">
+          <sc-for list="{{ grp.items }}" as="c" hint-placeholder-count="6">
+            <div style="display:flex;flex-direction:column;background:#171f3d;box-shadow:0 0 0 2px #1a1230">
+              <div style="height:52px;background:{{ c.hex }};box-shadow:inset 0 -3px 0 rgba(26,18,48,.35)"></div>
+              <div style="padding:8px 10px 10px;display:flex;flex-direction:column;gap:2px">
+                <div style="font-size:12px;font-weight:700;color:#fbf6e9">{{ c.token }}</div>
+                <div style="font-size:12px;color:#ffe27a;font-weight:600">{{ c.hex }}</div>
+                <div style="font-size:11px;line-height:14px;color:#7884b5;text-wrap:pretty">{{ c.role }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </section>
+
+  <!-- TYPE -->
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">02</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Type</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px">
+      <div style="padding:24px;background:#171f3d;box-shadow:0 0 0 2px #1a1230,inset 0 0 0 2px #2c3868;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:12px;font-weight:700;color:#7884b5;letter-spacing:1px">DISPLAY · GOOGLE FONTS</div>
+        <div style="font-family:'Jersey 10';font-size:72px;line-height:60px">Jersey 10</div>
+        <div style="font-family:'Jersey 10';font-size:32px;line-height:30px;color:#ffc43d">The White Stag weeps black tears 0123456789</div>
+        <div style="font-size:13px;line-height:19px;color:#b7c0e3">Titles, buttons, item names, numbers. One weight. Use sizes on the scale only; it is drawn on a pixel grid and gets soft at in-between sizes.</div>
+      </div>
+      <div style="padding:24px;background:#171f3d;box-shadow:0 0 0 2px #1a1230,inset 0 0 0 2px #2c3868;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:12px;font-weight:700;color:#7884b5;letter-spacing:1px">TEXT · GOOGLE FONTS</div>
+        <div style="font-size:56px;line-height:60px;font-weight:700">Pixelify Sans</div>
+        <div style="font-size:18px;line-height:26px">Nan Briar keeps her door on the latch and a kettle on the fire. She will not say what she burns in it. <b>Regular 400 · Medium 500 · SemiBold 600 · Bold 700</b></div>
+        <div style="font-size:13px;line-height:19px;color:#b7c0e3">Body, stats, labels, dialogue. 12px minimum on the 1280×720 canvas.</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;background:#171f3d;box-shadow:0 0 0 2px #1a1230">
+      <sc-for list="{{ typeScale }}" as="t" hint-placeholder-count="10">
+        <div style="display:grid;grid-template-columns:150px 200px minmax(0,1fr);gap:16px;align-items:center;padding:10px 16px;border-bottom:2px solid #212b52">
+          <div style="font-size:12px;font-weight:700;color:#ffe27a">{{ t.token }}</div>
+          <div style="font-size:12px;color:#7884b5">{{ t.spec }}</div>
+          <div style="font-family:{{ t.family }};font-size:{{ t.size }}px;line-height:{{ t.lh }}px;font-weight:{{ t.weight }};color:{{ t.color }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.sample }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- PIXEL RULES -->
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">03</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Pixel scale and outlines</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:24px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ rules }}" as="r" hint-placeholder-count="7">
+          <div style="display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;font-size:14px;line-height:20px">
+            <div style="font-family:'Jersey 10';font-size:22px;line-height:20px;color:#ffc43d">{{ r.n }}</div>
+            <div><b style="color:#fbf6e9">{{ r.title }}</b> <span style="color:#b7c0e3">{{ r.body }}</span></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap;padding:24px;background:#2c3868;box-shadow:0 0 0 2px #1a1230">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><px-sprite name="arcanist"></px-sprite><span style="font-size:12px;color:#d3ddff">1× world</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><px-sprite name="arcanist" scale="2"></px-sprite><span style="font-size:12px;color:#d3ddff">2× portrait</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;position:relative">
+          <div style="position:relative">
+            <px-sprite name="arcanist" scale="6"></px-sprite>
+            <div style="position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:6px 6px;pointer-events:none"></div>
+          </div>
+          <span style="font-size:12px;color:#d3ddff">6× inspection · 32×40 frame</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARACTERS -->
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">04</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Character proportions</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr));gap:24px">
+      <div style="position:relative;padding:32px 24px 24px 72px;background:#1b2347;box-shadow:0 0 0 2px #1a1230;display:flex;gap:28px;align-items:flex-end;flex-wrap:wrap">
+        <div style="position:absolute;left:16px;right:16px;top:32px;height:84px;border-top:2px dashed #45538f;border-bottom:2px dashed #45538f"></div>
+        <div style="position:absolute;left:16px;top:44px;font-size:11px;font-weight:700;color:#8b9fe0;width:48px;line-height:13px">HEAD<br>21px</div>
+        <div style="position:absolute;left:16px;top:130px;font-size:11px;font-weight:700;color:#8b9fe0;width:48px;line-height:13px">BODY<br>16px</div>
+        <div style="position:absolute;left:16px;right:16px;top:192px;border-top:2px solid #ffc43d"></div>
+        <div style="position:absolute;right:20px;top:198px;font-size:11px;font-weight:700;color:#ffc43d">PIVOT · bottom-centre (16, 38)</div>
+        <px-sprite name="arcanist" scale="4" anim="idle"></px-sprite>
+        <px-sprite name="warden" scale="4" anim="idle"></px-sprite>
+        <px-sprite name="hollowed" scale="4" anim="idle" fps="1.6"></px-sprite>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:20px;color:#b7c0e3">
+        <div><b style="color:#fbf6e9">Frame</b> 32×40 for humanoids. Art stays inside columns 3–30 and rows 1–38 so the auto-outline always fits.</div>
+        <div><b style="color:#fbf6e9">Proportion</b> Head and headgear take about 21px, body and feet about 16px. That puts humanoids at roughly 2.2 heads tall. Hats may add height; the face never shrinks.</div>
+        <div><b style="color:#fbf6e9">Face</b> Two 2×3 eyes with a 1px glint, 2px blush, 2px mouth. Enemies swap the glint for glow colour (Hollowed eyes are #f4a6ff over #b84dff) and carry black tear streaks.</div>
+        <div><b style="color:#fbf6e9">Shading</b> 3 tones per material plus ink. Light from the top-left; the far side and the underside of brims get the dark tone.</div>
+        <div><b style="color:#fbf6e9">Motion</b> Idle: 2 frames, the upper body rises 1px, 2.5 fps. Walk: 4 frames (contact A, pass, contact B, pass), 8 fps. Weapons and shields are separate layers with their own outline, so they swap per class and per direction.</div>
+        <div><b style="color:#fbf6e9">Silhouette</b> Each class owns one shape at 1×: Arcanist the brim hat, Warden the plume and shield. Check new designs as a flat ink silhouette before colouring.</div>
+        <div style="display:flex;gap:20px;align-items:flex-end;padding:16px;background:#2a8a47;box-shadow:0 0 0 2px #1a1230;margin-top:4px;flex-wrap:wrap">
+          <px-sprite name="arcanist" anim="walk"></px-sprite><px-sprite name="warden" anim="walk"></px-sprite><px-sprite name="hollowed" anim="walk" fps="5"></px-sprite><px-sprite name="wolf" anim="walk" fps="10"></px-sprite>
+          <span style="font-size:12px;color:#e8ffe0;font-weight:600">1× on grass, walk cycles</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TILES -->
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">05</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Tiles</span></div>
+    <div style="font-size:14px;line-height:20px;color:#b7c0e3;max-width:760px;text-wrap:pretty">32×32 at 1×. Ground tiles have no outline. Variety comes from mixing 3 plain variants with 1 flower variant in about one tile in six, and from grass tufts that overhang the edge of paths. Props stand on the ground with a soft indigo shadow and a full ink outline. The full Gloamwood and Drowned Abbey sets come with the tile sheet in phase 2; these samples fix the colour of each region.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px">
+      <sc-for list="{{ tileSets }}" as="ts" hint-placeholder-count="3">
+        <div style="display:flex;flex-direction:column;gap:10px;padding:16px;background:#171f3d;box-shadow:0 0 0 2px #1a1230">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Jersey 10';font-size:26px">{{ ts.name }}</span><span style="font-size:12px;color:#7884b5">{{ ts.mood }}</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ ts.tiles }}" as="t" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:4px"><px-sprite name="{{ t.n }}" scale="2"></px-sprite><span style="font-size:10px;color:#7884b5;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.short }}</span></div></sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;padding:24px;background:#3eae4c;box-shadow:0 0 0 2px #1a1230">
+      <sc-for list="{{ props }}" as="p" hint-placeholder-count="12"><px-sprite name="{{ p }}"></px-sprite></sc-for>
+    </div>
+  </section>
+
+  <!-- VFX -->
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px;border-bottom:2px solid #2c3868;padding-bottom:8px"><span style="font-family:'Jersey 10';font-size:22px;color:#7884b5">06</span><span style="font-family:'Jersey 10';font-size:44px;line-height:1">Effects</span></div>
+    <div style="font-size:14px;line-height:20px;color:#b7c0e3;max-width:760px;text-wrap:pretty">Effects use flat pixel shapes and additive radial glows only, with no blur or bloom. Every school has a mid colour for shapes and a pale colour for cores and sparks. Light is drawn after the night grade, so magic and fire always read brighter than the world around them.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:12px">
+      <sc-for list="{{ vfx }}" as="v" hint-placeholder-count="8">
+        <div style="padding:16px;background:#171f3d;box-shadow:0 0 0 2px #1a1230;display:flex;flex-direction:column;gap:10px">
+          <div style="height:72px;display:flex;align-items:center;justify-content:center;background:#10162e;position:relative;overflow:hidden">
+            <div style="position:absolute;width:{{ v.gw }}px;height:{{ v.gw }}px;border-radius:50%;background:radial-gradient(circle,{{ v.c1 }} 0%,transparent 70%);opacity:.7"></div>
+            <div style="position:relative;font-family:'Jersey 10';font-size:{{ v.fs }}px;line-height:1;color:{{ v.c2 }};text-shadow:2px 0 0 #1a1230,-2px 0 0 #1a1230,0 2px 0 #1a1230,0 -2px 0 #1a1230">{{ v.glyph }}</div>
+          </div>
+          <div style="font-family:'Jersey 10';font-size:24px;line-height:22px">{{ v.name }}</div>
+          <div style="font-size:12px;line-height:17px;color:#b7c0e3;text-wrap:pretty">{{ v.spec }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const P = (token, hex, role) => ({ token, hex, role });
+    const palette = [
+      { name: 'UI surfaces', items: [P('ui.ink', '#1a1230', 'Outline for sprites and UI. Never use pure black.'), P('ui.bg.900', '#0d1226', 'Backdrops and modal dim (78%)'), P('ui.panel.800', '#171f3d', 'Panel fill'), P('ui.panel.700', '#212b52', 'Dividers, inset rows'), P('ui.panel.600', '#2c3868', 'Raised fill, slate button'), P('ui.line.500', '#45538f', 'Quiet borders'), P('ui.line.300', '#8b9fe0', 'Panel border'), P('ui.line.100', '#d3ddff', 'Panel top highlight')] },
+      { name: 'Text and accent', items: [P('text.100', '#fbf6e9', 'Primary text, warm white'), P('text.300', '#b7c0e3', 'Secondary text'), P('text.500', '#7884b5', 'Muted text, hints'), P('accent.gold.500', '#ffc43d', 'Primary button, headings'), P('accent.gold.300', '#ffe27a', 'Gold highlight, numbers'), P('accent.gold.700', '#d98a1c', 'Gold shade, button depth'), P('accent.teal.400', '#36e0c8', 'Hover, focus, links'), P('state.danger', '#ff4d5e', 'Errors, damage taken'), P('state.good', '#6ee06a', 'Stat gains')] },
+      { name: 'Resources', items: [P('hp.fill', '#ff3d5a', 'Health'), P('hp.hi', '#ff8a9a', 'Health top highlight'), P('hp.back', '#3a0d26', 'Health trough'), P('ember.fill', '#38b6ff', 'Ember (mana). It burns blue.'), P('ember.hi', '#9be8ff', 'Ember highlight'), P('ember.back', '#0d2550', 'Ember trough'), P('stamina.fill', '#9be33f', 'Stamina'), P('xp.fill', '#ffd23f', 'Experience')] },
+      { name: 'Rarity', items: [P('rarity.common', '#e6e9f5', 'Common'), P('rarity.fine', '#5fe06a', 'Fine'), P('rarity.ember', '#3fa9ff', 'Ember-touched'), P('rarity.runed', '#b766ff', 'Runed'), P('rarity.wrought', '#ff9a2e', 'Wrought'), P('rarity.spark', '#ff4a4a', 'Sparkforged, paired with gold'), P('rarity.sparkGold', '#ffd23f', 'Sparkforged gold pips')] },
+      { name: 'Magic schools', items: [P('school.ash', '#ff6a2a', 'Ash · fire · pale #ffd36a'), P('school.rime', '#7fe3ff', 'Rime · frost · pale #e8fbff'), P('school.storm', '#ffe14a', 'Storm · lightning · pale #fffbd0'), P('school.radiance', '#ffd96b', 'Radiance · holy · pale #fff6c8'), P('school.umbral', '#a35cff', 'Umbral · shadow · dark #5a2ab0'), P('school.verdant', '#4fd86a', 'Verdant · nature · pale #b8f57a')] },
+      { name: 'World · Aldermoor village', items: [P('grass.500', '#3eae4c', 'Grass base'), P('grass.300', '#5ccc55', 'Tufts'), P('grass.100', '#8fe36a', 'Tuft tips'), P('grass.700', '#2a8a47', 'Grass shade'), P('stone.300', '#d4c8a8', 'Cobble face'), P('stone.700', '#8a7c66', 'Mortar'), P('wood.300', '#e8b070', 'Plank walls'), P('roof.red', '#e84a4a', 'Roof, warm'), P('roof.blue', '#4a8cf0', 'Roof, cool'), P('roof.teal', '#35c2a6', 'Roof, accent'), P('window.glow', '#ffd36a', 'Lit windows')] },
+      { name: 'World · Gloamwood and Drowned Abbey', items: [P('gloam.floor', '#25806a', 'Forest floor, teal-green'), P('gloam.canopy', '#1f6f5a', 'Canopy shade'), P('gloam.glow', '#7ff5e0', 'Mushroom and wisp glow'), P('abbey.floor', '#2b4a66', 'Dungeon flagstone'), P('abbey.wall', '#4b3c82', 'Dungeon brick, purple'), P('abbey.moss', '#2de2c4', 'Glowing moss'), P('abbey.crystal', '#c58bff', 'Crystal'), P('light.torch', '#ffb347', 'Torch light pool')] },
+      { name: 'Light and grade', items: [P('grade.dusk', '#8a8ed6', 'Multiply over the world at dusk'), P('grade.night', '#5c5fb4', 'Multiply at night'), P('light.lamp', '#ffb347', 'Additive, r 90, α .42'), P('light.window', '#ffd36a', 'Additive, r 34, α .35'), P('shadow', '#140c30', 'Ground shadow, α .32')] },
+    ];
+    const T = (token, family, size, lh, weight, use, sample, color) => ({ token, family: family === 'J' ? "'Jersey 10'" : "'Pixelify Sans'", size, lh, weight, spec: (family === 'J' ? 'Jersey 10' : 'Pixelify Sans ' + weight) + ' · ' + size + '/' + lh, sample, color: color || '#fbf6e9' });
+    const typeScale = [
+      T('display.xl', 'J', 72, 64, 400, '', 'YOU HAVE FALLEN'), T('display.l', 'J', 56, 48, 400, '', 'BRINDLECROSS'), T('title.h1', 'J', 40, 36, 400, '', 'Pack'), T('title.h2', 'J', 28, 24, 400, '', 'Rimecall Staff', '#b766ff'),
+      T('button', 'J', 26, 24, 400, '', 'Continue'), T('label.h3', 'J', 22, 20, 400, '', 'The Wolves at the Gate', '#ffc43d'),
+      T('body.l', 'P', 16, 22, 500, '', 'Maren Hollis: “Wolves don’t come this far out of the Gloamwood. Not on their own.”'), T('body', 'P', 13, 17, 500, '', 'Rime Shard splits into three on hit.'), T('caption', 'P', 12, 16, 600, '', 'Item level 12 · Main hand', '#b7c0e3'),
+      T('num.damage', 'J', 22, 22, 400, '', '24   31   18', '#ffd36a'), T('num.crit', 'J', 32, 32, 400, '', '47!', '#ffd23f')
+    ];
+    const rules = [
+      { n: '1', title: 'One pixel scale.', body: 'Everything is authored at 1× on the 1280×720 canvas: tiles 32×32, humanoids 32×40. Phaser runs with pixelArt and roundPixels on, and the canvas scales to fit the window. Use integer steps where the window allows.' },
+      { n: '2', title: 'UI may double.', body: 'UI art can show at an integer 2× (spell glyphs on the hotbar, tooltip icons, portraits) or larger for showcase (the 3× hero in Inventory). Never use a fractional scale, and never scale the world.' },
+      { n: '3', title: 'Outline.', body: 'Every sprite and prop gets a 1px outer outline in ui.ink #1a1230, generated from its alpha. Inner detail lines use the darkest tone of the local material. Ground tiles have no outline.' },
+      { n: '4', title: 'Layers outline separately.', body: 'Weapons, shields and staffs are drawn as their own layer with their own outline, so a staff in front of a robe still reads.' },
+      { n: '5', title: 'Three or four tones.', body: 'Light, mid and dark per material, plus ink. Light comes from the top-left. No gradients and no dithering on characters.' },
+      { n: '6', title: 'Colour, not black.', body: 'Shadows shift toward indigo and plum. Night is a multiply grade, never a black overlay. Ground shadows are #140c30 at 32%.' },
+      { n: '7', title: 'Text is the exception.', body: 'Fonts are vector Google Fonts. Use the type scale sizes only. For the final build, bake them to BitmapText at those sizes so they stay crisp when the canvas scales.' }
+    ];
+    const t = (n, short) => ({ n, short });
+    const tileSets = [
+      { name: 'Aldermoor', mood: 'Bright, warm', tiles: [t('tile_grass_a', 'grass_a'), t('tile_grass_b', 'grass_b'), t('tile_grass_c', 'grass_c'), t('tile_grass_flowers', 'flowers'), t('tile_path_a', 'path_a'), t('tile_path_b', 'path_b')] },
+      { name: 'Gloamwood', mood: 'Teal, glowing', tiles: [t('tile_forest_a', 'forest_a'), t('tile_forest_b', 'forest_b'), t('prop_tree_gloam', 'tree_gloam')] },
+      { name: 'Drowned Abbey', mood: 'Moody, never muddy', tiles: [t('tile_dungeon_floor', 'floor'), t('tile_dungeon_wall', 'wall'), t('prop_crystal', 'crystal'), t('prop_torch', 'torch')] }
+    ];
+    const props = ['prop_house_red', 'prop_house_blue', 'prop_house_teal', 'prop_tree', 'prop_tree_b', 'prop_well', 'prop_lamp', 'prop_bush', 'prop_fence', 'prop_barrel', 'prop_crate', 'prop_sign', 'prop_rock', 'prop_campfire'];
+    const V = (name, glyph, c1, c2, fs, gw, spec) => ({ name, glyph, c1, c2, fs, gw, spec });
+    const vfx = [
+      V('Spell bolt', '●', '#ff6a2a', '#ffd36a', 30, 80, 'Core 2×2 white, inner 4×4 pale, disc r5 in the school colour. Additive glow r48 at α .55. Trail sparks 2×2 every 20ms, live 0.3s.'),
+      V('Nova ring', '◯', '#ff6a2a', '#ff6a2a', 52, 110, 'Ellipse ring (ry = 0.6 rx) grows 260px/s for 0.45s. Line 7px thinning to 1px. 28 radial sparks alternating mid and pale.'),
+      V('Hit flash', '✦', '#ffffff', '#ffffff', 40, 60, 'Enemy: white silhouette for 120ms and knockback of 35% of the projectile velocity. 6 sparks in the school colour.'),
+      V('Player hurt', '!', '#ff4d5e', '#ff4d5e', 46, 60, 'Red silhouette for 200ms plus 6px screen-edge bars in #ff3d5a at 60% alpha.'),
+      V('Damage number', '24', '#ffd36a', '#ffd36a', 40, 70, 'Jersey 10, 22px, 2px ink stroke. Pops from 1.7× to 1× in 0.12s, rises 34px/s, fades in its last 0.3s. Colour is the school pale.'),
+      V('Critical', '47!', '#ffd23f', '#ffd23f', 40, 80, '32px gold #ffd23f with a “!”. Same motion as a normal hit. 18% base crit chance in the prototype.'),
+      V('Loot drop', '◆', '#b766ff', '#b766ff', 36, 90, 'Rarity beam 6×60 at α .35 pulsing, inner beam 14×46 at α .18. Three bounces, then a 4px bob. A 1px sparkle glints every few frames.'),
+      V('Light pool', '☼', '#ffb347', '#ffe27a', 38, 120, 'Radial gradient drawn additively after the night grade. Torches flicker their radius by ±7% using two sine waves (9 Hz and 23 Hz).')
+    ];
+    return { palette, typeScale, rules, tileSets, props, vfx };
+  }
+}
+</script>
+</body>
+</html>

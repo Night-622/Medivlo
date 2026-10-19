@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="art.js"></script>
+<script src="tiles.js"></script>
+<script src="gear.js"></script>
+<script src="bestiary.js"></script>
+<script src="map.js"></script>
+<script src="realms.js"></script>
+<script src="legendary.js"></script>
+<style>html,body{margin:0;background:#0d1226;color:#fbf6e9;font-family:'Pixelify Sans',sans-serif}a{color:#36e0c8}a:hover{color:#ffe27a}*{box-sizing:border-box}</style>
+</helmet>
+<div style="max-width:1280px;margin:0 auto;padding:36px 28px 80px;display:flex;flex-direction:column;gap:28px">
+  <header style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between">
+    <div><div style="font-family:'Jersey 10';font-size:64px;line-height:56px">Items &amp; Gear</div><div style="font-size:14px;color:#b7c0e3;margin-top:6px">64 weapons · 96 armour sets (384 pieces) · 64 items · 25 boss drops</div></div>
+    <div style="max-width:560px;font-size:14px;line-height:20px;color:#b7c0e3;text-wrap:pretty">Each weapon and armour piece has an icon and a worn version, and equipping one changes the character. Click any weapon or armour piece to try it on the hero on the right. Icons are 32×32 at 1×, shown at 2× here.</div>
+  </header>
+
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+    <div style="flex:1 1 640px;display:flex;flex-direction:column;gap:20px;min-width:0">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+          <div onClick="{{ t.go }}" style="height:44px;padding:0 14px;display:flex;align-items:center;cursor:pointer;font-family:'Jersey 10';font-size:24px;line-height:1;color:{{ t.color }};border:8px solid transparent;border-image:var({{ t.ui }}) 8 fill / 8px stretch;image-rendering:pixelated">{{ t.label }}</div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ isWeapons }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:10px;overflow-x:auto;padding:4px">
+          <div style="display:grid;grid-template-columns:96px repeat(8,minmax(56px,1fr));gap:6px;font-size:11px;font-weight:700;color:#7884b5;text-transform:uppercase;letter-spacing:.5px">
+            <span></span><sc-for list="{{ matHeads }}" as="m" hint-placeholder-count="8"><span style="text-align:center;color:{{ m.color }}">{{ m.name }}</span></sc-for>
+          </div>
+          <sc-for list="{{ weaponRows }}" as="r" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:96px repeat(8,minmax(56px,1fr));gap:6px;align-items:center">
+              <span style="font-family:'Jersey 10';font-size:24px;line-height:1;color:#ffc43d">{{ r.type }}</span>
+              <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="8">
+                <div onClick="{{ c.pick }}" onMouseEnter="{{ c.hover }}" title="{{ c.name }}" style="justify-self:center;width:100%;max-width:80px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;border:8px solid transparent;border-image:var({{ c.ui }}) 8 fill / 8px stretch;image-rendering:pixelated;outline:{{ c.ring }};outline-offset:2px"><px-sprite name="{{ c.icon }}" scale="2" style="margin:-8px"></px-sprite></div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isArmour }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <sc-for list="{{ schoolTabs }}" as="t" hint-placeholder-count="12"><div onClick="{{ t.go }}" style="height:36px;padding:0 8px;display:flex;align-items:center;gap:6px;cursor:pointer;font-family:'Jersey 10';font-size:20px;line-height:1;color:{{ t.color }};border:8px solid transparent;border-image:var({{ t.ui }}) 8 fill / 8px stretch;image-rendering:pixelated"><px-sprite name="{{ t.icon }}" style="margin:-6px 0"></px-sprite>{{ t.label }}</div></sc-for>
+        </div>
+        <div style="font-size:13px;line-height:19px;color:#b7c0e3;max-width:820px;text-wrap:pretty">Each school has 8 sets, one in each armour style. Two pieces give a stat bonus that comes from the style. All four unlock an ability: the style decides when it triggers and the school decides what it does. If your class belongs to the same school, the set is <b style="color:#36e0c8">Attuned</b> and gives an extra bonus.</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
+          <sc-for list="{{ setCards }}" as="s" hint-placeholder-count="16">
+            <div style="display:flex;flex-direction:column;gap:8px;padding:12px;background:#171f3d;box-shadow:0 0 0 2px #1a1230,inset 0 0 0 2px {{ s.ring }}">
+              <div style="display:flex;gap:10px;align-items:flex-end">
+                <div onClick="{{ s.wear }}" style="flex:none;width:72px;height:88px;display:flex;align-items:flex-end;justify-content:center;cursor:pointer;background:radial-gradient(circle at 50% 70%,{{ s.glow }} 0%,transparent 70%)"><px-sprite name="{{ s.sprite }}" scale="2" anim="idle"></px-sprite></div>
+                <div style="display:flex;flex-direction:column;gap:2px;min-width:0;padding-bottom:4px">
+                  <span style="font-family:'Jersey 10';font-size:26px;line-height:22px;color:{{ s.color }}">{{ s.name }}</span>
+                  <span style="font-size:11px;font-weight:700;color:{{ s.color }}">{{ s.rarity }} · {{ s.style }}</span>
+                  <span style="font-size:11px;line-height:14px;color:#7884b5;text-wrap:pretty">{{ s.lore }}</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:16px;padding:6px 8px;background:#10162e;box-shadow:0 0 0 2px #1a1230">
+                <div style="color:{{ s.c2 }}"><b>(2)</b> {{ s.two }}</div>
+                <div style="color:{{ s.c4 }}"><b>(4) {{ s.abName }}:</b> {{ s.abDesc }}</div>
+                <div style="color:{{ s.cA }}"><b>Attuned · {{ s.school }}:</b> {{ s.aff }}</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <sc-for list="{{ s.pieces }}" as="p" hint-placeholder-count="4">
+                  <div onClick="{{ p.pick }}" onMouseEnter="{{ p.hover }}" title="{{ p.name }}" style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:8px solid transparent;border-image:var({{ p.ui }}) 8 fill / 8px stretch;image-rendering:pixelated"><px-sprite name="{{ p.icon }}" style="margin:-8px"></px-sprite></div>
+                </sc-for>
+                <div onClick="{{ s.wear }}" style="flex:1;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Jersey 10';font-size:18px;line-height:1;color:#fbf6e9;border:8px solid transparent;border-image:var(--ui-btn_slate) 8 fill / 8px stretch;image-rendering:pixelated" style-hover="border-image-source:var(--ui-btn_slate_hover)">Wear set</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isLegend }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
+          <sc-for list="{{ legend }}" as="l" hint-placeholder-count="12">
+            <div style="display:flex;gap:10px;align-items:center;padding:10px;background:#171f3d;box-shadow:0 0 0 2px #1a1230,inset 0 0 0 2px #ff4a4a">
+              <div style="flex:none;width:64px;height:64px;display:flex;align-items:center;justify-content:center;border:8px solid transparent;border-image:var(--ui-slot_spark) 8 fill / 8px stretch;image-rendering:pixelated"><px-sprite name="{{ l.icon }}" style="margin:-8px"></px-sprite></div>
+              <div style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1"><span style="font-family:'Jersey 10';font-size:22px;line-height:20px;color:#ff4a4a">{{ l.name }}</span><span style="font-size:11px;font-weight:700;color:#ffd23f">Sparkforged · from {{ l.bossName }}</span><span style="font-size:12px;line-height:16px;color:#fbf6e9;text-wrap:pretty">{{ l.fx }}</span><span style="font-size:11px;color:#7884b5">{{ l.region }}</span></div>
+              <div style="flex:none;width:44px;height:56px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center"><px-sprite name="{{ l.boss }}" style="transform:scale(.34);transform-origin:50% 100%"></px-sprite></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isItems }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px;overflow-x:auto;padding:4px">
+          <sc-for list="{{ itemRows }}" as="r" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:140px repeat(8,minmax(52px,1fr));gap:6px;align-items:center">
+              <span style="font-family:'Jersey 10';font-size:22px;line-height:20px;color:#ffc43d">{{ r.name }}</span>
+              <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="8">
+                <div onMouseEnter="{{ c.hover }}" title="{{ c.name }}" style="justify-self:center;width:100%;max-width:64px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border:8px solid transparent;border-image:var({{ c.ui }}) 8 fill / 8px stretch;image-rendering:pixelated;outline:{{ c.ring }};outline-offset:2px"><px-sprite name="{{ c.icon }}" style="margin:-8px"></px-sprite></div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- try-on + detail -->
+    <div style="flex:0 0 300px;position:sticky;top:16px;display:flex;flex-direction:column;gap:12px">
+      <div style="padding:14px;border:8px solid transparent;border-image:var(--ui-panel) 8 fill / 8px stretch;image-rendering:pixelated;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Jersey 10';font-size:28px;line-height:1">Try on</span><span onClick="{{ clearAll }}" style="font-size:12px;font-weight:700;color:#36e0c8;cursor:pointer">Take it all off</span></div>
+        <div style="height:220px;display:flex;align-items:flex-end;justify-content:center;background:radial-gradient(circle at 50% 75%,#2c3868 0%,#171f3d 70%);box-shadow:inset 0 -6px 0 #212b52"><px-sprite name="{{ tryName }}" scale="5" anim="{{ tryAnim }}"></px-sprite></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <sc-for list="{{ classBtns }}" as="b" hint-placeholder-count="6"><div onClick="{{ b.go }}" style="height:32px;padding:0 6px;display:flex;align-items:center;cursor:pointer;font-size:12px;font-weight:700;color:{{ b.color }};border:8px solid transparent;border-image:var({{ b.ui }}) 8 fill / 8px stretch;image-rendering:pixelated">{{ b.label }}</div></sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px">
+          <sc-for list="{{ worn }}" as="w" hint-placeholder-count="5">
+            <div onClick="{{ w.off }}" title="{{ w.label }}" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;border:8px solid transparent;border-image:var({{ w.ui }}) 8 fill / 8px stretch;image-rendering:pixelated"><px-sprite name="{{ w.icon }}" style="margin:-8px;opacity:{{ w.op }}"></px-sprite></div>
+          </sc-for>
+        </div>
+        <div style="font-size:11px;color:#7884b5">Head · Chest · Hands · Feet · Weapon. Click a slot to take it off.</div>
+        <sc-for list="{{ bonuses }}" as="b" hint-placeholder-count="0"><div style="font-size:12px;line-height:16px;color:{{ b.c }};padding:6px 8px;background:#10162e;box-shadow:0 0 0 2px #1a1230">{{ b.t }}</div></sc-for>
+      </div>
+      <sc-if value="{{ det }}" hint-placeholder-val="{{ false }}">
+        <div style="border:8px solid transparent;border-image:var(--ui-tooltip) 8 fill / 8px stretch;image-rendering:pixelated">
+          <div style="margin:-4px -4px 0;padding:8px;display:flex;gap:10px;align-items:center;background:{{ det.head }}">
+            <div style="flex:none;width:72px;height:72px;display:flex;align-items:center;justify-content:center;border:8px solid transparent;border-image:var({{ det.ui }}) 8 fill / 8px stretch;image-rendering:pixelated"><px-sprite name="{{ det.icon }}" scale="2" style="margin:-8px"></px-sprite></div>
+            <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-family:'Jersey 10';font-size:24px;line-height:22px;color:{{ det.color }};text-wrap:pretty">{{ det.name }}</span><span style="font-size:12px;font-weight:700;color:{{ det.color }}">{{ det.rarity }}</span><span style="font-size:12px;color:#b7c0e3">{{ det.type }}</span></div>
+          </div>
+          <div style="padding:8px 4px 4px;display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:17px">
+            <sc-for list="{{ det.lines }}" as="l" hint-placeholder-count="2"><span style="color:#fbf6e9">{{ l }}</span></sc-for>
+            <sc-if value="{{ det.desc }}" hint-placeholder-val="{{ false }}"><span style="color:#7884b5;text-wrap:pretty">{{ det.desc }}</span></sc-if>
+            <span style="font-size:12px;color:#ffe27a">{{ det.val }}</span>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'weapons', school: 'ash', cls: 'knight', body: 1, eq: { helm: 0, chest: 0, hands: 0, feet: 0, weapon: 0 }, hover: null };
+  RC = { common: '#e6e9f5', fine: '#5fe06a', ember: '#3fa9ff', runed: '#b766ff', wrought: '#ff9a2e', spark: '#ff4a4a' };
+  RN = { common: 'Common', fine: 'Fine', ember: 'Ember-touched', runed: 'Runed', wrought: 'Wrought', spark: 'Sparkforged' };
+  componentDidMount() {
+    this._mvr = () => { clearTimeout(this._mvt); this._mvt = setTimeout(() => this.forceUpdate(), 30); }; window.addEventListener('mvready', this._mvr); if (!window.MV || !MV.GEAR) this._t = setInterval(() => { if (window.MV && MV.GEAR) { clearInterval(this._t); this.forceUpdate(); } }, 100); }
+  componentWillUnmount() { clearInterval(this._t); }
+  name(eq) { const L = (MV.HERO[this.state.cls] || {}).look || {}; const e = eq || this.state.eq, b = this.state.body;
+    return 'hero:' + this.state.cls + ':' + [L.skin, b === 1 && [1, 4, 5].includes(L.hair) ? 0 : L.hair, L.hc, L.eyes, L.ec, L.mouth, b === 0 && L.mark >= 4 ? 0 : L.mark].join(':') + ':0:' + b + ':' + (b ? 2 : 0) + ':0:0:0:0:0:0:' + [e.helm, e.chest, e.hands, e.feet, e.weapon].join(':'); }
+  setEq(k, v) { this.setState(s => ({ eq: { ...s.eq, [k]: s.eq[k] === v ? 0 : v } })); }
+  renderVals() {
+    const s = this.state, GR = window.MV && MV.GEAR;
+    if (!GR) return { tabs: [], isWeapons: false, isArmour: false, isItems: false, tryName: 'arcanist', tryAnim: 'idle', classBtns: [], worn: [], det: null, matHeads: [], weaponRows: [], setCards: [], itemRows: [], clearAll: () => {} };
+    const ui = r => '--ui-slot_' + r;
+    const tabs = [['weapons', 'Weapons · 64'], ['armour', 'Armour · 96 sets'], ['items', 'Items · 64'], ['legend', 'Boss drops · ' + ((window.MV && MV.LEGENDARY) || []).length]].map(([k, l]) => ({ label: l, ui: s.tab === k ? '--ui-tab_active' : '--ui-tab', color: s.tab === k ? '#fbf6e9' : '#b7c0e3', go: () => this.setState({ tab: k }) }));
+    const det = (() => { const h = s.hover; if (!h) return null; let o;
+      if (h[0] === 'w') { const w = GR.WEAPONS[h[1]]; o = { name: w.name, icon: w.id, rar: w.rar, type: GR.WTN[w.type] + ' · ' + w.mat.name, lines: [(w.type === 'staff' || w.type === 'wand' ? 'Spell damage ' : 'Damage ') + w.dmg[0] + '–' + w.dmg[1], 'Item level ' + w.ilvl], desc: w.mat.glow ? w.mat.name + ' damage on every hit. Glows when drawn.' : null, val: w.val + ' Embershards' }; }
+      if (h[0] === 'a') { const p = GR.PIECES[h[1]], st = GR.SETS[p.set]; o = { name: p.name, icon: p.id, rar: p.rar, type: { head: 'Head', chest: 'Chest', hands: 'Hands', feet: 'Feet' }[p.slot] + ' · ' + st.name + ' set', lines: Object.entries(p.st).map(([k, v]) => '+' + v + ' ' + ({ armor: 'Armour', ember: 'Max Ember', hp: 'Max health' }[k] || k)), desc: p.lore, val: p.val + ' Embershards' }; }
+      if (h[0] === 'i') { const it = GR.ITEMS[h[1]]; o = { name: it.name, icon: it.id, rar: it.rar, type: GR.CATS.find(c => c[0] === it.cat)[1], lines: [], desc: it.desc, val: it.cat === 'relic' ? 'Quest item · cannot be sold' : it.val + ' Embershards' }; }
+      return { ...o, color: this.RC[o.rar], rarity: this.RN[o.rar], ui: ui(o.rar), head: 'linear-gradient(180deg,' + this.RC[o.rar] + '33,' + this.RC[o.rar] + '00)' }; })();
+    const hk = s.hover ? s.hover.join(':') : '';
+    const matHeads = GR.MAT.map(m => ({ name: m.name.replace('Sparkforged', 'Spark'), color: this.RC[m.rar] }));
+    const weaponRows = GR.WT.map((t, ti) => ({ type: GR.WTN[t], cells: GR.MAT.map((m, mi) => { const i = ti * 8 + mi, w = GR.WEAPONS[i]; return { icon: w.id, name: w.name, ui: ui(w.rar), ring: s.eq.weapon === i + 1 ? '2px solid #36e0c8' : hk === 'w:' + i ? '2px solid #ffc43d' : 'none', pick: () => this.setEq('weapon', i + 1), hover: () => this.setState({ hover: ['w', i] }) }; }) }));
+    const CS = { knight: 'iron', arcanist: 'ash', ranger: 'verdant', monk: 'fist', shade: 'umbral', cantor: 'radiance' }, clsSchool = CS[s.cls];
+    const schoolTabs = GR.SCH.map(k => ({ label: GR.SCHN[k], icon: 'school_' + k, ui: s.school === k ? '--ui-tab_active' : '--ui-tab', color: s.school === k ? '#fbf6e9' : '#b7c0e3', go: () => this.setState({ school: k }) }));
+    const cnt = si => ['helm', 'chest', 'hands', 'feet'].filter(k => s.eq[k] === si + 1).length;
+    const setCards = GR.SETS.map((st, si) => [st, si]).filter(([st]) => st.school === s.school).map(([st, si]) => { const full = { helm: si + 1, chest: si + 1, hands: si + 1, feet: si + 1, weapon: 0 }; const worn = ['helm', 'chest', 'hands', 'feet'].every(k => s.eq[k] === si + 1);
+      const n = cnt(si); return { name: st.name, color: this.RC[st.rar], rarity: this.RN[st.rar], style: st.style[0].toUpperCase() + st.style.slice(1), lore: st.lore, two: st.two, abName: st.ability.name, abDesc: st.ability.desc, aff: st.affinity, school: GR.SCHN[st.school], c2: n >= 2 ? '#6ee06a' : '#b7c0e3', c4: n >= 4 ? '#ffc43d' : '#b7c0e3', cA: n >= 4 && clsSchool === st.school ? '#36e0c8' : '#7884b5', glow: this.RC[st.rar] + '44', ring: worn ? '#36e0c8' : '#2c3868', sprite: this.name(full),
+        wear: () => this.setState(x => ({ eq: { ...full, weapon: x.eq.weapon } })),
+        pieces: ['helm', 'chest', 'hands', 'feet'].map((k, pi) => { const idx = si * 4 + pi, p = GR.PIECES[idx]; return { icon: p.id, name: p.name, ui: s.eq[k] === si + 1 ? '--ui-slot_' + st.rar : '--ui-slot_empty', pick: () => this.setEq(k, si + 1), hover: () => this.setState({ hover: ['a', idx] }) }; }) }; });
+    const itemRows = GR.CATS.map(([k, n]) => ({ name: n, cells: GR.ITEMS.map((it, i) => [it, i]).filter(([it]) => it.cat === k).map(([it, i]) => ({ icon: it.id, name: it.name, ui: ui(it.rar), ring: hk === 'i:' + i ? '2px solid #ffc43d' : 'none', hover: () => this.setState({ hover: ['i', i] }) })) }));
+    const CL = [['knight', 'Knight · Iron'], ['arcanist', 'Arcanist · Ash'], ['ranger', 'Ranger · Verdant'], ['monk', 'Monk · Fist'], ['shade', 'Shade · Umbral'], ['cantor', 'Cantor · Radiance']];
+    const classBtns = CL.map(([k, l]) => ({ label: l, ui: s.cls === k ? '--ui-tab_active' : '--ui-tab', color: s.cls === k ? '#fbf6e9' : '#b7c0e3', go: () => this.setState({ cls: k, body: (MV.HERO[k].look.body || 0) }) })).concat([{ label: s.body ? '♂ Male' : '♀ Female', ui: '--ui-tab', color: '#ffe27a', go: () => this.setState({ body: s.body ? 0 : 1 }) }]);
+    const slotIcon = (k, v) => { if (!v) return ''; if (k === 'weapon') return GR.WEAPONS[v - 1].id; return GR.PIECES[(v - 1) * 4 + ['helm', 'chest', 'hands', 'feet'].indexOf(k)].id; };
+    const slotRar = (k, v) => !v ? 'empty' : k === 'weapon' ? GR.WEAPONS[v - 1].rar : GR.SETS[v - 1].rar;
+    const worn = ['helm', 'chest', 'hands', 'feet', 'weapon'].map(k => ({ label: k, icon: slotIcon(k, s.eq[k]), op: s.eq[k] ? 1 : 0, ui: '--ui-slot_' + slotRar(k, s.eq[k]), off: () => this.setState(x => ({ eq: { ...x.eq, [k]: 0 } })) }));
+    return { tabs, isWeapons: s.tab === 'weapons', isArmour: s.tab === 'armour', isItems: s.tab === 'items', isLegend: s.tab === 'legend', legend: (MV.LEGENDARY || []).map(l => ({ ...l })), matHeads, weaponRows, setCards, itemRows, det,
+      schoolTabs, bonuses: (() => { const out = []; GR.SETS.forEach((st, si) => { const n = cnt(si); if (n < 2) return; out.push({ c: '#6ee06a', t: st.name + ' (' + n + '/4): ' + st.two }); if (n >= 4) { out.push({ c: '#ffc43d', t: st.ability.name + ': ' + st.ability.desc }); out.push(clsSchool === st.school ? { c: '#36e0c8', t: 'Attuned: ' + st.affinity } : { c: '#7884b5', t: 'Not attuned. Needs a ' + GR.SCHN[st.school] + ' class.' }); } }); return out; })(),
+      tryName: this.name(), tryAnim: 'walk', classBtns, worn, clearAll: () => this.setState({ eq: { helm: 0, chest: 0, hands: 0, feet: 0, weapon: 0 } }) };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="art.js"></script>
+<script src="gear.js"></script>
+<script src="tiles.js"></script>
+<script src="bestiary.js"></script>
+<script src="map.js"></script>
+<script src="realms.js"></script>
+<style>html,body{margin:0;background:#0d1226;color:#fbf6e9;font-family:'Pixelify Sans',sans-serif}a{color:#36e0c8}a:hover{color:#ffe27a}*{box-sizing:border-box}</style>
+</helmet>
+<div style="max-width:1280px;margin:0 auto;padding:36px 28px 80px;display:flex;flex-direction:column;gap:24px">
+  <header style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between">
+    <div><div style="font-family:'Jersey 10';font-size:64px;line-height:56px">Bestiary</div><div style="font-size:14px;color:#b7c0e3;margin-top:6px">69 enemies · 48 mini-bosses · 25 bosses · Morvane and its 13 realms</div></div>
+    <div style="max-width:560px;font-size:14px;line-height:20px;color:#b7c0e3;text-wrap:pretty">There are 9 body types: beasts, slimes, skeletons, Hollowed, spirits, flyers, plants, constructs and bugs. Enemies are drawn at 1×. They're built like the heroes: chibi heads, 2×3 eyes with a glint, 3-tone shading, and ink lines between head and body. Humanoids use the hero builder itself. Mini-bosses are drawn on the character pixel grid and shown at 2×, bosses at 3×. Every creature has a 2-frame idle.</div>
+  </header>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><div onClick="{{ t.go }}" style="height:44px;padding:0 14px;display:flex;align-items:center;cursor:pointer;font-family:'Jersey 10';font-size:24px;line-height:1;color:{{ t.color }};border:8px solid transparent;border-image:var({{ t.ui }}) 8 fill / 8px stretch;image-rendering:pixelated">{{ t.label }}</div></sc-for>
+    <div style="width:2px;height:28px;background:#2c3868;margin:0 6px"></div>
+    <sc-for list="{{ regions }}" as="r" hint-placeholder-count="6"><div onClick="{{ r.go }}" style="height:32px;padding:0 6px;display:flex;align-items:center;cursor:pointer;font-size:12px;font-weight:700;color:{{ r.color }};border:8px solid transparent;border-image:var({{ r.ui }}) 8 fill / 8px stretch;image-rendering:pixelated">{{ r.label }}</div></sc-for>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+    <div style="flex:1 1 640px;min-width:0;display:grid;grid-template-columns:repeat(auto-fill,minmax({{ cardMin }}px,1fr));gap:10px">
+      <sc-for list="{{ cards }}" as="c" hint-placeholder-count="12">
+        <div onClick="{{ c.pick }}" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px 8px;cursor:pointer;border:8px solid transparent;border-image:var({{ c.ui }}) 8 fill / 8px stretch;image-rendering:pixelated" style-hover="border-image-source:var(--ui-btn_slate_hover)">
+          <div style="height:{{ c.h }}px;display:flex;align-items:flex-end;justify-content:center;width:100%;background:radial-gradient(ellipse at 50% 92%,rgba(20,12,48,.55) 0%,transparent 45%)"><px-sprite name="{{ c.id }}" scale="{{ c.scale }}" anim="idle" fps="2.2"></px-sprite></div>
+          <div style="font-family:'Jersey 10';font-size:{{ c.fs }}px;line-height:1;color:{{ c.color }};text-align:center;text-wrap:balance">{{ c.name }}</div>
+          <div style="font-size:11px;font-weight:700;color:#7884b5;text-align:center">{{ c.region }} · {{ c.el }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="flex:0 0 340px;position:sticky;top:16px;border:8px solid transparent;border-image:var(--ui-panel) 8 fill / 8px stretch;image-rendering:pixelated;padding:12px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:8px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;padding:2px 8px;background:{{ d.tierBg }};color:#1a1230;box-shadow:0 0 0 2px #1a1230">{{ d.tier }}</div><span style="font-size:12px;color:#b7c0e3">{{ d.region }}</span></div>
+      <div style="font-family:'Jersey 10';font-size:34px;line-height:30px;color:{{ d.color }};text-wrap:pretty">{{ d.name }}</div>
+      <div style="height:{{ d.boxH }}px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;background:radial-gradient(circle at 50% 70%,#2c3868 0%,#171f3d 70%);box-shadow:inset 0 -6px 0 #212b52"><px-sprite name="{{ d.id }}" scale="{{ d.scale }}" anim="idle" fps="2.2"></px-sprite></div>
+      <div style="display:grid;grid-template-columns:80px minmax(0,1fr);row-gap:4px;font-size:13px;line-height:17px">
+        <span style="color:#7884b5;font-weight:700">Element</span><span>{{ d.el }}</span>
+        <span style="color:#7884b5;font-weight:700">Health</span><span style="color:#ff8a9a;font-weight:700">{{ d.hp }}</span>
+        <span style="color:#7884b5;font-weight:700">Drops</span><span style="color:#ffe27a">{{ d.drops }}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-family:'Jersey 10';font-size:22px;line-height:20px;color:#ffc43d">{{ d.abLabel }}</div>
+        <sc-for list="{{ d.ab }}" as="a" hint-placeholder-count="2"><div style="font-size:13px;line-height:17px;color:#fbf6e9;padding-left:10px;text-indent:-10px;text-wrap:pretty">• {{ a }}</div></sc-for>
+      </div>
+      <div style="font-size:13px;line-height:19px;color:#b7c0e3;text-wrap:pretty">“{{ d.lore }}”</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'enemy', region: 'All', sel: 'bx_stag' };
+  componentDidMount() {
+    this._mvr = () => { clearTimeout(this._mvt); this._mvt = setTimeout(() => this.forceUpdate(), 30); }; window.addEventListener('mvready', this._mvr); if (!window.MV || !MV.BESTIARY) this._t = setInterval(() => { if (window.MV && MV.BESTIARY) { clearInterval(this._t); this.forceUpdate(); } }, 100); }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    const s = this.state, B = (window.MV && MV.BESTIARY) || [];
+    const n = t => B.filter(e => e.tier === t).length, TC = { enemy: ['Enemies · ' + n('enemy'), '#8b9fe0', 'ENEMY'], mini: ['Mini-bosses · ' + n('mini'), '#ff9a2e', 'MINI-BOSS'], boss: ['Bosses · ' + n('boss'), '#ff4a4a', 'BOSS'] };
+    const list = B.filter(e => e.tier === s.tab), regs = ['All', ...Array.from(new Set(list.map(e => e.region)))];
+    const region = regs.includes(s.region) ? s.region : 'All';
+    const shown = list.filter(e => region === 'All' || e.region === region);
+    const scale = e => e.tier === 'enemy' ? 2 : 1;
+    const sel = B.find(e => e.id === s.sel) || shown[0] || B[0] || { id: '', name: '', tier: 'enemy', region: '', el: '', hp: 0, ab: [], drops: [], lore: '' };
+    return {
+      tabs: Object.entries(TC).map(([k, [l]]) => ({ label: l, ui: s.tab === k ? '--ui-tab_active' : '--ui-tab', color: s.tab === k ? '#fbf6e9' : '#b7c0e3', go: () => { const f = B.find(e => e.tier === k); this.setState({ tab: k, region: 'All', sel: f ? f.id : s.sel }); } })),
+      regions: regs.map(r => ({ label: r, ui: region === r ? '--ui-tab_active' : '--ui-tab', color: region === r ? '#fbf6e9' : '#b7c0e3', go: () => this.setState({ region: r }) })),
+      cardMin: s.tab === 'enemy' ? 150 : s.tab === 'mini' ? 170 : 240,
+      cards: shown.map(e => ({ id: e.id, name: e.name, region: e.region, el: e.el, scale: scale(e), h: s.tab === 'enemy' ? 88 : s.tab === 'mini' ? 84 : 126, fs: s.tab === 'boss' ? 26 : 22, color: e.id === sel.id ? TC[e.tier][1] : '#fbf6e9', ui: e.id === sel.id ? '--ui-panel_gold' : '--ui-btn_slate', pick: () => this.setState({ sel: e.id }) })),
+      d: { id: sel.id, name: sel.name, tier: TC[sel.tier][2], tierBg: TC[sel.tier][1], color: TC[sel.tier][1], region: sel.region, el: sel.el, hp: (sel.hp || 0).toLocaleString(), drops: (sel.drops || []).join(', '), ab: sel.ab || [], abLabel: sel.tier === 'boss' ? 'Phases' : 'Abilities', lore: sel.lore, scale: sel.tier === 'enemy' ? 4 : 2, boxH: (() => { const sc = sel.tier === 'enemy' ? 4 : 2, f = sel.id && window.MV && MV.frames(sel.id); return Math.max(180, (f && f[0] ? f[0].height * sc : 0) + 16); })() }
+    };
+  }
+}
+</script>
+</body>
+</html>

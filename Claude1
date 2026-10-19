@@ -1,0 +1,31 @@
+# Project brief: "Medival", a top-down fantasy RPG (campaign only)
+
+You're working in an existing repo at ~/Desktop/Medival. Before writing any code, read docs/PLAN.md, docs/STATUS.md and the design docs in docs/world, docs/systems and docs/lore. Build on what's there; don't start over or swap the stack.
+
+## The game
+A top-down RPG set in a medieval fantasy world, playable in the browser. Campaign is the only mode for now (no multiplayer, no sandbox). It has four pillars. Every feature should serve at least one of them:
+
+1. **Very deep lore.** Morvane is a continent with factions, religions, history (the "YL" calendar), languages, and an in-game codex. Players mostly discover lore by exploring: books, inscriptions, NPC dialogue and landmarks. Long cutscenes are not the main delivery.
+2. **A massive map.** Many regions you travel between seamlessly. The terrain is generated from a fixed seed and streamed in 32×32-tile chunks, with handcrafted towns, dungeons and landmarks layered on top. Story flags open and close areas.
+3. **Build-crafting.** Classes, character traits, weapons, gear, spells and powers, skill trees, upgrades and crafting. Together they should produce distinct builds and tactics, not just bigger numbers.
+4. **Identity.** Character creation with custom skins (layered body, hair, colours, armour visuals) and cosmetics you unlock.
+
+## Fixed tech stack (don't change it without asking me)
+- TypeScript (strict), Vite, Phaser 3.90.
+- Firebase for anonymous and Google auth, Firestore cloud saves, and hosting. Saves fall back to localStorage behind the same SaveService.
+- All content is typed data files in src/data/** (classes, items, spells, quests, dialogue, lore, regions). Content never lives in code.
+- Placeholder art is generated at runtime until real sprite sheets arrive. Don't load external asset URLs.
+
+## How to work
+- Systems talk only through src/core: the typed EventBus, GameState, Registry and Services. Don't import another system's internals.
+- Keep files under ~400 lines, with one system per file. Avoid `any` in exported APIs.
+- `npm run typecheck` and `npm run build` must both pass before you call a task done.
+- Check changes in the real game: `npm run dev`, then open /?scene=World. The World scene also accepts dev parameters like `&tp=x,y`, `&inst=instance:<id>/<floor>`, `&flags=a,b` and `&zoom=0.5`.
+- Update your section of docs/STATUS.md whenever you finish a task.
+- If a request is ambiguous, ask me one specific question rather than guessing big.
+
+## Current goal: the Phase 1 vertical slice
+A new player creates a character, plays the prologue in the Aldermoor valley (the village of Brindlecross, the Gloamwood forest, the lake Wennamere and the Drowned Abbey dungeon) through to its end, then saves and loads in the cloud. Later phases add the rest of Morvane's 15 regions, the full class roster, crafting, fast travel, day/night lighting, and real art and audio.
+
+## What I want from you right now
+[Write the specific task here, e.g. "Add a world map on the M key with fog of war" or "Balance the prologue enemy levels".]

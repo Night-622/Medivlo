@@ -1,0 +1,260 @@
+/**
+ * Skill tree generator (handoff skTree): 3 branches × 24 nodes per class, built from the class kit and school.
+ * Layout, requirements and exclusions follow the prototype; every node carries mechanical effects. Pure.
+ */
+import { HC_CLASSES, HC_SCHOOL_ELEMENT, HC_SCHOOL_KEYSTONES, HC_SCHOOL_SPELLS } from '@/data/classes/hc/classes.gen';
+import { HC_KIT_SPELLS } from '@/data/spells/hc/kit-spells';
+import { slug } from '@/data/spells/hc/build';
+import { SCHOOL_NAME } from '@/data/classes/hc';
+import type { Modifier, Passive, SchoolId, StatKey, TreeBranch, TreeNode } from './types';
+
+const PREFIX: Record<TreeBranch, string> = { spells: 'sp_', skills: 'sk_', upgrades: 'up_' };
+const X = [200, 410, 620];
+const f = (stat: StatKey, value: number, when?: Modifier['when']): Modifier => ({ stat, op: 'flat', value, when });
+const pct = (stat: StatKey, value: number): Modifier => ({ stat, op: 'pct', value });
+const pc = (v: number) => `${Math.round(v * 100)}%`;
+
+/** A node spec: per-rank text + passive builders. */
+interface Spec { name: string; icon: string; max?: number; text: (r: number) => string; fx: (r: number) => Passive; spell?: string; free?: boolean }
+const one = (name: string, icon: string, text: string, fx: Passive, spell?: string): Spec => ({ name, icon, text: () => text, fx: () => fx, spell });
+const ranks = (name: string, icon: string, max: number, text: (r: number) => string, fx: (r: number) => Passive): Spec => ({ name, icon, max, text, fx });
+
+interface PathSpec { a: Spec; m1: Spec; m2: Spec; b: Spec; c1: Spec; c2: Spec }
+interface BranchSpec { root: Spec; paths: PathSpec[]; bridge: Spec; tops: [Spec, Spec]; ult: Spec; topsExclusive?: boolean; ultAny?: boolean; labels: Record<string, string> }
+
+// ───────────── Spells branch ─────────────
+const VARIANTS: [string, string, (id: string) => Passive, string, string, (id: string) => Passive][] = [
+  ['Echo', 'Each cast has a 25% chance to repeat.', (s) => ({ spellMods: [{ spell: s, echo: 0.25 }] }), 'Split', 'Splits into three weaker copies.', (s) => ({ spellMods: [{ spell: s, split: true }] })],
+  ['Twin', 'Also hits a second foe nearby.', (s) => ({ spellMods: [{ spell: s, twin: true }] }), 'Wide', 'The area is 40% larger.', (s) => ({ spellMods: [{ spell: s, area: 0.4 }] })],
+  ['Lingering', 'Leaves a lingering field for 3s.', (s) => ({ spellMods: [{ spell: s, linger: 3000 }] }), 'Burst', 'Hits all at once for 50% more.', (s) => ({ spellMods: [{ spell: s, burst: true, dmg: 0.5 }] })],
+];
+const UPGRADE: [string, string, number, (s: string, r: number) => Passive][] = [
+  ['Empowered', 'damage', 0.15, (s, r) => ({ spellMods: [{ spell: s, dmg: 0.15 * r }] })],
+  ['Quickened', 'faster cooldown', 0.1, (s, r) => ({ spellMods: [{ spell: s, cd: -0.1 * r }] })],
+  ['Efficient', 'less Ember', 0.12, (s, r) => ({ spellMods: [{ spell: s, cost: -0.12 * r }] })],
+];
+
+function spellsBranch(classId: string, school: SchoolId): BranchSpec {
+  const c = HC_CLASSES.find((x) => x.id === classId)!;
+  const si = `school_${school}`;
+  const kitIds = c.abilities.map((a) => HC_KIT_SPELLS.find((s) => s.name === a.name)!);
+  const SP = HC_SCHOOL_SPELLS[school];
+  const paths = kitIds.map((sp, i): PathSpec => {
+    const [vn1, vd1, vf1, vn2, vd2, vf2] = VARIANTS[i];
+    const [un, ul, uv, uf] = UPGRADE[i];
+    return {
+      a: { ...one(sp.name, sp.icon, sp.desc, {}, sp.id), free: true },
+      m1: one(`+8% ${sp.name} damage`, sp.icon, `+8% ${sp.name} damage`, { spellMods: [{ spell: sp.id, dmg: 0.08 }] }),
+      m2: one(`−8% ${sp.name} Ember cost`, sp.icon, `−8% ${sp.name} Ember cost`, { spellMods: [{ spell: sp.id, cost: -0.08 }] }),
+      b: ranks(`${un} ${sp.name}`, sp.icon, 3, (r) => `+${Math.round(r * uv * 100)}% ${ul}`, (r) => uf(sp.id, r)),
+      c1: one(`${sp.name}: ${vn1}`, sp.icon, vd1, vf1(sp.id)),
+      c2: one(`${sp.name}: ${vn2}`, sp.icon, vd2, vf2(sp.id)),
+    };
+  });
+  const top = (i: 0 | 1): Spec => {
+    const id = `spell:${slug(SP[i][0])}`;
+    return { name: SP[i][0], icon: si, max: 3, spell: id, text: (r) => (r === 1 ? SP[i][1] : `${SP[i][1]} Rank ${r}: +${(r - 1) * 20}% effect, ${r - 1}s less cooldown.`),
+      fx: (r) => ({ spellMods: r > 1 ? [{ spell: id, dmg: 0.2 * (r - 1), cd: -(r - 1) / 10 }] : [] }) };
+  };
+  return {
+    root: { ...one(`${c.name} Spellcraft`, si, 'Your path into magic. Every spell grows from here.', {}), free: true },
+    paths,
+    bridge: one('Spell Weaving', si, '+3% damage with all spells', { spellMods: [{ spell: '*', dmg: 0.03 }] }),
+    tops: [top(0), top(1)],
+    ult: one(SP[2][0], si, SP[2][1], {}, `spell:${slug(SP[2][0])}`),
+    labels: { root: 'Path root', major: 'Spell', minor: 'Minor node', choice: 'Variant · pick one of two', top: 'New school spell', ult: 'Ultimate spell' },
+  };
+}
+
+// ───────────── Skills branch ─────────────
+function elementNode(school: SchoolId): Spec {
+  const [name, desc] = HC_SCHOOL_ELEMENT[school];
+  const fx = (r: number): Passive => {
+    switch (school) {
+      case 'ash': return { hooks: [{ id: 'burnPower', value: 0.3 * r }] };
+      case 'rime': return { mods: [f('slowPower', 0.15 * r)] };
+      case 'storm': return { mods: [f('chains', r)] };
+      case 'radiance': return { mods: [f('healing', 0.1 * r)] };
+      case 'umbral': return { mods: [f('lifesteal', 0.03 * r)] };
+      case 'verdant': return { hooks: [{ id: 'rootDurMs', value: 500 * r }] };
+      case 'blade': return { mods: [f('critd', 0.1 * r)] };
+      case 'iron': return { mods: [f('block', 0.05 * r)] };
+      case 'fist': return { mods: [f('maxMomentum', r)] };
+      case 'hunt': return { mods: [f('dmg', 0.08 * r, { c: 'targetHas', status: 'mark' })] };
+      case 'guile': return { mods: [f('gold', 0.1 * r)] };
+      case 'song': return { mods: [f('buffPower', 0.1 * r)] };
+    }
+  };
+  return ranks(name, `school_${school}`, 3, (r) => `${desc} × ${r}`, fx);
+}
+
+function keystone(school: SchoolId, i: 0 | 1): Spec {
+  const [name, desc] = HC_SCHOOL_KEYSTONES[school][i];
+  const P: Record<SchoolId, [Passive, Passive]> = {
+    ash: [{ mods: [f('dmg', 0.25, { c: 'targetHas', status: 'burn' })], hooks: [{ id: 'selfSinge' }] }, { hooks: [{ id: 'burnSpread' }, { id: 'burnPower', value: -0.3 }] }],
+    rime: [{ hooks: [{ id: 'shatterFrozen' }] }, { mods: [f('moveSpeed', -0.1), f('spellDmg', 0.3)] }],
+    storm: [{ procs: [{ on: 'crit', icd: 300, do: [{ a: 'chain', coef: 0.4, kind: 'storm', jumps: 2, range: 120 }] }] }, { hooks: [{ id: 'stormCharge' }] }],
+    radiance: [{ procs: [{ on: 'heal', icd: 1000, do: [{ a: 'damage', coef: 0.5, kind: 'radiance', area: { shape: 'circle', at: 'self', r: 90 } }] }] }, { hooks: [{ id: 'halo' }] }],
+    umbral: [{ hooks: [{ id: 'spellsCostHp' }] }, { mods: [{ stat: 'dmg', op: 'more', value: 2, when: { c: 'fromStealth' } }] }],
+    verdant: [{ hooks: [{ id: 'hotDur', value: 1 }] }, { hooks: [{ id: 'thornskin' }] }],
+    blade: [{ hooks: [{ id: 'parryRefundsDash' }] }, { hooks: [{ id: 'berserker', value: 0.03 }] }],
+    iron: [{ hooks: [{ id: 'unstoppable' }] }, { hooks: [{ id: 'armorToDamage' }] }],
+    fist: [{ mods: [f('crit', 1, { c: 'momentum', min: 5 })] }, { procs: [{ on: 'hit', every: 5, do: [{ a: 'status', status: { id: 'stun', dur: 800 }, area: { shape: 'single', at: 'target' } }] }] }],
+    hunt: [{ mods: [f('dmg', 0.3, { c: 'alone', px: 300 })] }, { hooks: [{ id: 'petPower', value: 1 }, { id: 'trapPower', value: 1 }] }],
+    guile: [{ procs: [{ on: 'crit', do: [{ a: 'steal', gold: 1, buffs: false, area: { shape: 'single', at: 'target' } }] }] }, { procs: [{ on: 'dash', icd: 4000, do: [{ a: 'zone', kind: 'decoy', area: { shape: 'circle', at: 'self', r: 16 }, dur: 3000, taunts: true }] }] }],
+    song: [{ hooks: [{ id: 'encore' }] }, { hooks: [{ id: 'buffStacks', value: 3 }] }],
+  };
+  return one(name, `school_${school}`, desc, P[school][i]);
+}
+
+function skillsBranch(school: SchoolId): BranchSpec {
+  const S = SCHOOL_NAME[school], si = `school_${school}`;
+  const dk = `dmg.${school}` as StatKey;
+  return {
+    root: { ...one(`${S} Discipline`, si, 'The core of your school. Grow outward into offence, defence and utility.', {}), free: true },
+    paths: [
+      { a: ranks(`${S} Attunement`, si, 5, (r) => `+${r * 3}% ${S} damage`, (r) => ({ mods: [f(dk, 0.03 * r)] })),
+        m1: one('+2% crit chance', 'icon_dagger', '+2% crit chance', { mods: [f('crit', 0.02)] }),
+        m2: one('+4% crit damage', 'icon_dagger', '+4% crit damage', { mods: [f('critd', 0.04)] }),
+        b: elementNode(school),
+        c1: one('Set Mastery', 'icon_robe', 'Attuned armour bonuses are 25% stronger.', { hooks: [{ id: 'setMastery', value: 0.25 }] }),
+        c2: one('Hunter’s Focus', 'icon_bow', '+15% damage to foes above 80% health.', { mods: [f('dmg', 0.15, { c: 'targetHpAbove', pct: 0.8 })] }) },
+      { a: ranks('Toughness', 'icon_shield', 5, (r) => `+${r * 4}% max health`, (r) => ({ mods: [pct('hp', 0.04 * r)] })),
+        m1: one('+5% armour', 'icon_helm', '+5% armour', { mods: [pct('armor', 0.05)] }),
+        m2: one('+3% max health', 'icon_potion_red', '+3% max health', { mods: [pct('hp', 0.03)] }),
+        b: ranks('Iron Will', 'icon_helm', 3, (r) => `+${r * 5}% armour, ${r * 5}% less stun time`, (r) => ({ mods: [pct('armor', 0.05 * r), f('stunTaken', -0.05 * r)] })),
+        c1: one('Last Stand', 'icon_shield', 'Below 25% health you take 20% less damage.', { mods: [f('dmgTaken', -0.2, { c: 'hpBelow', pct: 0.25 })] }),
+        c2: one('Thick Skin', 'icon_robe', 'The first hit every 10s deals half damage.', { hooks: [{ id: 'thickSkin', value: 10000 }] }) },
+      { a: ranks('Focus', 'icon_potion_ember', 5, (r) => `+${r * 10} max Ember`, (r) => ({ mods: [f('ember', 10 * r)] })),
+        m1: one('+0.3 Ember regen', 'icon_potion_ember', '+0.3 Ember regen per second', { mods: [f('emberRegen', 0.3)] }),
+        m2: one('3% shorter cooldowns', 'icon_staff', '3% shorter cooldowns', { mods: [f('cdr', 0.03)] }),
+        b: ranks('Quick Mind', 'icon_staff', 3, (r) => `${r * 4}% shorter cooldowns`, (r) => ({ mods: [f('cdr', 0.04 * r)] })),
+        c1: one('Overflow', 'icon_potion_red', 'Healing beyond full health becomes a shield.', { hooks: [{ id: 'overheal' }] }),
+        c2: one('Ember Well', 'icon_potion_ember', 'Kills restore 5 Ember.', { procs: [{ on: 'kill', do: [{ a: 'resource', ember: 5 }] }] }) },
+    ],
+    bridge: one('Versatility', 'icon_ring', '+2% to all stats', { mods: [pct('hp', 0.02), pct('armor', 0.02), pct('sp', 0.02), f('dmg', 0.02)] }),
+    tops: [keystone(school, 0), keystone(school, 1)],
+    topsExclusive: true, ultAny: true,
+    ult: one(`Avatar of ${S}`, si, `Your keystone also grants +10% ${S} damage and its effect is 50% stronger.`, { mods: [f(dk, 0.1)], hooks: [{ id: 'keystonePower', value: 0.5 }] }),
+    labels: { root: 'Path root', major: 'Notable skill', minor: 'Minor node', choice: 'Choice · pick one of two', top: 'Keystone · pick one', ult: 'Capstone' },
+  };
+}
+
+// ───────────── Upgrades branch ─────────────
+function upgradesBranch(): BranchSpec {
+  return {
+    root: { ...one('Adventurer', 'icon_coin', 'Experience upgrades for any class: body, pack and road.', {}), free: true },
+    paths: [
+      { a: ranks('Vitality', 'icon_potion_red', 5, (r) => `+${r * 5}% max health`, (r) => ({ mods: [pct('hp', 0.05 * r)] })),
+        m1: one('+2% move speed', 'icon_boots', '+2% move speed', { mods: [f('moveSpeed', 0.02)] }),
+        m2: one('+2% max health', 'icon_potion_red', '+2% max health', { mods: [pct('hp', 0.02)] }),
+        b: ranks('Fleet Foot', 'icon_boots', 3, (r) => `+${r * 3}% move speed`, (r) => ({ mods: [f('moveSpeed', 0.03 * r)] })),
+        c1: one('Extra Dash', 'school_storm', '+1 dash charge.', { mods: [f('dashCharges', 1)] }),
+        c2: one('Sure Footed', 'icon_boots', 'You can’t be slowed while dashing.', { hooks: [{ id: 'dashNoSlow' }] }) },
+      { a: ranks('Ember Reserve', 'icon_potion_ember', 5, (r) => `+${r * 15} max Ember`, (r) => ({ mods: [f('ember', 15 * r)] })),
+        m1: one('+3 bag slots', 'icon_robe', '+3 bag slots', { mods: [f('bag', 3)] }),
+        m2: one('+5% potion healing', 'icon_potion_red', '+5% potion healing', { mods: [f('potionHeal', 0.05)] }),
+        b: ranks('Deep Pockets', 'icon_robe', 3, (r) => `+${r * 6} bag slots`, (r) => ({ mods: [f('bag', 6 * r)] })),
+        c1: one('Potion Belt', 'icon_potion_red', 'Potions recharge 40% faster.', { hooks: [{ id: 'potionCdr', value: 0.4 }] }),
+        c2: one('Magnet', 'icon_coin', 'Loot flies to you from twice as far.', { mods: [f('lootRange', 48)] }) },
+      { a: ranks('Endurance', 'icon_potion_stamina', 5, (r) => `+${r * 10} max stamina`, (r) => ({ mods: [f('stamina', 10 * r)] })),
+        m1: one('+5% stamina regen', 'icon_potion_stamina', '+5% stamina regen', { mods: [pct('staminaRegen', 0.05)] }),
+        m2: one('+3% XP gained', 'icon_amulet', '+3% XP gained', { mods: [f('xp', 0.03)] }),
+        b: ranks('Second Breath', 'icon_potion_stamina', 3, (r) => `+${r * 10}% stamina regen`, (r) => ({ mods: [pct('staminaRegen', 0.1 * r)] })),
+        c1: one('Quick Study', 'icon_amulet', '+15% XP gained.', { mods: [f('xp', 0.15)] }),
+        c2: one('Haggler', 'icon_coin', 'Shop prices are 20% lower.', { hooks: [{ id: 'shopDiscount', value: 0.2 }] }) },
+    ],
+    bridge: one('Treasure Sense', 'icon_ring', '+3% chance of rarer loot', { mods: [f('itemFind', 0.03)] }),
+    tops: [
+      one('Seasoned', 'icon_amulet', '+10% XP, and enemies of your level drop more Embershards.', { mods: [f('xp', 0.1), f('gold', 0.1)] }),
+      one('Lucky', 'icon_ring', 'Chests have a 10% chance to hold an extra item.', { hooks: [{ id: 'chestExtra', value: 0.1 }] }),
+    ],
+    ult: one('Hero of Morvane', 'school_radiance', '+5% to every stat.', { mods: [pct('hp', 0.05), pct('armor', 0.05), pct('sp', 0.05), pct('ember', 0.05), f('dmg', 0.05), f('moveSpeed', 0.05)] }),
+    labels: { root: 'Path root', major: 'Upgrade', minor: 'Minor node', choice: 'Choice · pick one of two', top: 'Notable upgrade', ult: 'Capstone' },
+  };
+}
+
+// ───────────── assembly ─────────────
+function nodesFor(spec: BranchSpec, branch: TreeBranch): TreeNode[] {
+  const p = PREFIX[branch], out: TreeNode[] = [];
+  const N = (id: string, x: number, y: number, size: number, kind: TreeNode['kind'], s: Spec, extra: Partial<TreeNode> = {}) => {
+    const max = s.max ?? 1;
+    out.push({
+      id: p + id, branch, kind, name: s.name, icon: s.icon, x, y, size, maxRank: max,
+      text: Array.from({ length: max }, (_, i) => s.text(i + 1)), effects: Array.from({ length: max }, (_, i) => s.fx(i + 1)),
+      grantsSpell: s.spell, req: [], free: s.free, typeLabel: spec.labels[kind], ...extra,
+    });
+  };
+  N('root', 410, 476, 52, 'root', spec.root);
+  spec.paths.forEach((P, i) => {
+    const x = X[i], q = `p${i}`;
+    N(q + 'a', x, 400, 56, 'major', P.a, { req: [p + 'root'], typeLabel: P.a.free ? 'Starting spell' : spec.labels.major });
+    N(q + 'm1', x, 346, 40, 'minor', P.m1, { req: [p + q + 'a'] });
+    N(q + 'm2', x, 298, 40, 'minor', P.m2, { req: [p + q + 'm1'] });
+    N(q + 'b', x, 226, 56, 'major', P.b, { req: [p + q + 'm2'] });
+    N(q + 'c1', x - 50, 160, 46, 'choice', P.c1, { req: [p + q + 'b'], excludes: p + q + 'c2' });
+    N(q + 'c2', x + 50, 160, 46, 'choice', P.c2, { req: [p + q + 'b'], excludes: p + q + 'c1' });
+  });
+  ([[305, 0, 1], [515, 1, 2]] as const).forEach(([x, l, r], j) =>
+    N(`br${j}`, x, 298, 40, 'minor', spec.bridge, { req: [`${p}p${l}m2`, `${p}p${r}m2`], reqAny: true, typeLabel: 'Bridge · links two paths' }));
+  spec.tops.forEach((t, j) => N(`t${j}`, j ? 515 : 305, 92, 56, 'top', t, {
+    req: [`${p}p${j}c1`, `${p}p${j}c2`, `${p}p${j + 1}c1`, `${p}p${j + 1}c2`], reqAny: true,
+    excludes: spec.topsExclusive ? `${p}t${1 - j}` : undefined, diamond: spec.topsExclusive,
+  }));
+  N('u', 410, 30, 60, 'ult', spec.ult, { req: [p + 't0', p + 't1'], reqAny: !!spec.ultAny, diamond: true });
+  return out;
+}
+
+const cache = new Map<string, TreeNode[]>();
+export function buildTree(classId: string, branch: TreeBranch): TreeNode[] {
+  const key = `${classId}/${branch}`;
+  const hit = cache.get(key);
+  if (hit) return hit;
+  const c = HC_CLASSES.find((x) => x.id === classId);
+  if (!c) throw new Error(`[tree] unknown class ${classId}`);
+  const spec = branch === 'spells' ? spellsBranch(classId, c.school) : branch === 'skills' ? skillsBranch(c.school) : upgradesBranch();
+  const nodes = nodesFor(spec, branch);
+  cache.set(key, nodes);
+  return nodes;
+}
+export const allNodes = (classId: string): TreeNode[] => (['spells', 'skills', 'upgrades'] as const).flatMap((b) => buildTree(classId, b));
+
+// ───────────── learning ─────────────
+export type TreeRanks = Record<string, number>;
+export const rankOf = (n: TreeNode, T: TreeRanks): number => (n.free ? 1 : T[n.id] ?? 0);
+export const spentPoints = (T: TreeRanks): number => Object.values(T).reduce((a, b) => a + b, 0);
+
+export type LearnCheck = { ok: true } | { ok: false; why: string };
+export function canLearn(classId: string, nodeId: string, T: TreeRanks, available: number): LearnCheck {
+  const n = allNodes(classId).find((x) => x.id === nodeId);
+  if (!n) return { ok: false, why: 'Unknown node.' };
+  if (n.free) return { ok: false, why: 'Starting spell' };
+  if (rankOf(n, T) >= n.maxRank) return { ok: false, why: 'Maxed' };
+  if (n.excludes && (T[n.excludes] ?? 0) > 0) return { ok: false, why: n.kind === 'top' ? 'You already chose the other keystone.' : 'You already chose the other option.' };
+  const nodes = buildTree(classId, n.branch);
+  const rq = n.req.map((id) => nodes.find((x) => x.id === id)!).filter(Boolean);
+  const met = rq.map((x) => rankOf(x, T) > 0);
+  if (rq.length && !(n.reqAny ? met.some(Boolean) : met.every(Boolean)))
+    return { ok: false, why: `Requires ${rq.map((x) => x.name).join(n.reqAny ? ' or ' : ' and ')}.` };
+  if (available <= 0) return { ok: false, why: 'No skill points left. Level up to earn more.' };
+  return { ok: true };
+}
+
+/** Passives and granted spells for the learned ranks. */
+export function treePassives(classId: string, T: TreeRanks): { passives: Passive[]; spells: string[] } {
+  const passives: Passive[] = [], spells: string[] = [];
+  for (const n of allNodes(classId)) {
+    const r = rankOf(n, T);
+    if (r <= 0) continue;
+    passives.push(n.effects[r - 1]);
+    if (n.grantsSpell) spells.push(n.grantsSpell);
+  }
+  return { passives, spells };
+}
+
+/** Reset one branch: returns the new ranks (points come back automatically since spent = Σ ranks). */
+export function resetBranch(T: TreeRanks, branch: TreeBranch): TreeRanks {
+  const p = PREFIX[branch];
+  return Object.fromEntries(Object.entries(T).filter(([id]) => !id.startsWith(p)));
+}
+export { pc };

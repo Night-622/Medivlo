@@ -1,0 +1,109 @@
+/**
+ * Hotbar (Claude 3, HANDOFF HUD): 7 slots of 60×60, 8px gap, centred at the HUD's bottom anchor —
+ * 1–4 spells │ Q E potions │ Space dash. Cooldowns, Ember cost badges and dash stamina come from the local
+ * player's replicated entity data (c1–c4, cq, ce, em, st, dc).
+ */
+import Phaser from 'phaser';
+import { Art } from '@/art';
+import { Services } from '@/core/services';
+import { Settings, type Action } from '@/core/settings';
+import type { EntityState } from '@/net/types';
+import { C, slot, typeStyle } from '@/ui/kit/hc';
+import { spellDef } from '@/systems/rules/spells';
+import { spellCost } from '@/systems/rules/spellText';
+import { character, onCharacterChanged } from '@/systems/client/character';
+import type { HeroInput } from '@/systems/input/HeroInput';
+
+const S = 60, GAP = 8, DIV = 12;
+interface Cell { key: Action; bg: Phaser.GameObjects.NineSlice; icon?: Phaser.GameObjects.Image; cd: Phaser.GameObjects.Rectangle; cdText: Phaser.GameObjects.Text; badge: Phaser.GameObjects.Text; label: Phaser.GameObjects.Text; x: number }
+
+const KEY_LABEL: Record<string, string> = { ONE: '1', TWO: '2', THREE: '3', FOUR: '4', SPACE: '␣' };
+
+export class Hotbar extends Phaser.GameObjects.Container {
+  private cells: Cell[] = [];
+  private data_: Record<string, string | number | boolean> = {};
+  private offs: (() => void)[] = [];
+
+  constructor(scene: Phaser.Scene, private heroInput?: HeroInput) {
+    super(scene, 0, 0);
+    const keys: Action[] = ['cast1', 'cast2', 'cast3', 'cast4', 'potionQ', 'potionE', 'dash'];
+    const width = 7 * S + 6 * GAP + 2 * DIV;
+    let x = -width / 2;
+    keys.forEach((key, i) => {
+      if (i === 4 || i === 6) {
+        this.add(scene.add.rectangle(x + DIV / 2 - GAP / 2, -S / 2 - 4, 4, 40, 0x2c3868).setStrokeStyle(2, 0x1a1230));
+        x += DIV;
+      }
+      const bg = slot(scene, x, -S, S);
+      const cd = scene.add.rectangle(x + 4, -S + 4, S - 8, 0, 0x0d1226, 0.7).setOrigin(0);
+      const cdText = scene.add.text(x + S / 2, -S / 2, '', typeStyle('h2', C.text)).setOrigin(0.5);
+      const badge = scene.add.text(x + S - 5, -S + 3, '', typeStyle('badge', '#38b6ff')).setOrigin(1, 0);
+      const label = scene.add.text(x + 6, -14, '', typeStyle('badge', C.text300));
+      this.add([bg, cd, cdText, badge, label]);
+      bg.setInteractive().on('pointerup', () => this.press(i));
+      this.cells.push({ key, bg, cd, cdText, badge, label, x });
+      x += S + GAP;
+    });
+    const net = Services.get('net');
+    this.offs.push(net.addConsumer({ kinds: ['player'], apply: (ents) => this.onSnap(ents) }));
+    this.offs.push(onCharacterChanged(() => this.refreshIcons()));
+    this.refreshIcons();
+    scene.events.on('update', this.tick, this);
+    this.once('destroy', () => { this.offs.forEach((f) => f()); scene.events.off('update', this.tick, this); });
+  }
+
+  /** Clicking a slot does what its key does (one input frame). */
+  private press(i: number): void {
+    void this.heroInput; void i; // clicks are cosmetic for now: the keyboard drives combat
+  }
+
+  private onSnap(ents: EntityState[]): void {
+    const me = Services.get('net').localPlayer;
+    const e = ents.find((x) => x.kind === 'player' && x.owner === me);
+    if (e?.data) this.data_ = e.data;
+  }
+
+  private setIcon(c: Cell, frame: string | undefined, scale: number): void {
+    c.icon?.destroy();
+    c.icon = undefined;
+    const f = frame ? Art.tryFrame(frame) : undefined;
+    if (!f) return;
+    c.icon = this.scene.add.image(c.x + S / 2, -S / 2, f.key, f.frame).setScale(scale);
+    this.addAt(c.icon, this.getIndex(c.cd));
+  }
+
+  refreshIcons(): void {
+    const ch = character();
+    this.cells.forEach((c, i) => {
+      if (i < 4) {
+        const sp = ch.hotbar[i] ? spellDef(ch.hotbar[i]!) : undefined;
+        this.setIcon(c, sp?.icon, sp?.icon.startsWith('school_') ? 2 : 1);
+      } else if (i === 4) this.setIcon(c, 'icon_potion_red', 1);
+      else if (i === 5) this.setIcon(c, 'icon_potion_ember', 1);
+      else this.setIcon(c, 'school_storm', 2);
+      c.label.setText(KEY_LABEL[Settings.key(c.key)] ?? Settings.key(c.key));
+    });
+  }
+
+  private tick(): void {
+    const d = this.data_, ch = character();
+    const em = Number(d.em ?? 0), st = Number(d.st ?? 0);
+    this.cells.forEach((c, i) => {
+      let left = 0, total = 1, badge = '', badgeColor = '#38b6ff', dim = false;
+      if (i < 4) {
+        const sp = ch.hotbar[i] ? spellDef(ch.hotbar[i]!) : undefined;
+        left = Number(d[`c${i + 1}`] ?? 0); total = (sp?.cd ?? 1) * 1000;
+        if (sp) { const cost = Math.round(spellCost(sp)); badge = sp.hpCost ? `${Math.round(sp.hpCost * 100)}%` : String(cost); dim = !sp.hpCost && em < cost; if (dim || sp.hpCost) badgeColor = '#ff4d5e'; }
+      } else if (i < 6) {
+        const ids = i === 4 ? ['i_hp_s', 'i_hp_l'] : ['i_em_s', 'i_em_l'];
+        const qty = ch.inventory.filter((x) => ids.includes(x.base)).reduce((a, x) => a + x.qty, 0);
+        left = Number(d[i === 4 ? 'cq' : 'ce'] ?? 0); total = 8000; badge = `×${qty}`; badgeColor = C.text; dim = qty === 0;
+      } else { badge = '25'; badgeColor = '#9be33f'; dim = st < 25; }
+      const k = Math.max(0, Math.min(1, left / Math.max(1, total)));
+      c.cd.height = (S - 8) * k;
+      c.cdText.setText(left > 600 ? String(Math.ceil(left / 1000)) : '');
+      c.badge.setText(badge).setColor(badgeColor);
+      c.icon?.setAlpha(dim ? 0.4 : 1);
+    });
+  }
+}

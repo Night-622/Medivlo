@@ -1,0 +1,111 @@
+/**
+ * Loadout sanitising (Claude 3): the authority never trusts a client's CharacterSave blindly. Until public realms
+ * read a trusted Firestore copy, every loadout passes through here: numbers clamped, unknown items dropped,
+ * equipment checked against slot and class, the skill tree replayed node by node within the points available,
+ * the hotbar limited to spells the character actually has. Pure.
+ */
+import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
+import { kitFor } from '@/data/classes/hc/kits';
+import { LEVEL_CAP, levelPoints, xpToNext } from './curves';
+import { itemInfo, slotsFor, TWO_HANDED } from './gear';
+import { allNodes, canLearn } from './tree';
+import type { CharacterSave, GearSlot, ItemInstance } from './types';
+
+const MAX_GOLD = 10_000_000, MAX_STACK = 999, MAX_PACK = 160, MAX_BONUS_POINTS = 60, ILVL_ABOVE = 5;
+const SLOTS: GearSlot[] = ['main', 'off', 'head', 'chest', 'hands', 'feet', 'ring1', 'ring2', 'amulet'];
+
+const int = (v: unknown, lo: number, hi: number, dflt = lo): number => {
+  const n = typeof v === 'number' && Number.isFinite(v) ? Math.floor(v) : dflt;
+  return Math.max(lo, Math.min(hi, n));
+};
+const str = (v: unknown, max = 64): string | null => (typeof v === 'string' && v.length > 0 && v.length <= max ? v : null);
+
+function item(raw: unknown, level: number): ItemInstance | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw as Record<string, unknown>;
+  const base = str(r.base), uid = str(r.uid, 80);
+  const info = base ? itemInfo(base) : undefined;
+  if (!base || !uid || !info) return null;
+  const out: ItemInstance = {
+    uid, base, ilvl: int(r.ilvl, 1, Math.min(LEVEL_CAP, level + ILVL_ABOVE), 1),
+    qty: info.stackable ? int(r.qty, 1, MAX_STACK, 1) : 1,
+  };
+  const gem = str(r.gem);
+  if (gem && itemInfo(gem)?.kind === 'gem') out.gem = gem;
+  return out;
+}
+
+/** Returns a safe copy, or null when the loadout is unusable (unknown class, not an object). */
+export function sanitizeLoadout(raw: unknown): CharacterSave | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw as Record<string, unknown>;
+  const classId = str(r.classId);
+  if (!classId || !HC_CLASSES.some((c) => c.id === classId)) return null;
+  const kit = kitFor(classId);
+  const level = int(r.level, 1, LEVEL_CAP, 1);
+  const seen = new Set<string>();
+  const uniq = (it: ItemInstance | null): it is ItemInstance => !!it && !seen.has(it.uid) && (seen.add(it.uid), true);
+
+  // equipment: right slot, class may wield it, no off hand with a two-hander
+  const equipment: CharacterSave['equipment'] = {};
+  const eqRaw = (r.equipment && typeof r.equipment === 'object' ? r.equipment : {}) as Record<string, unknown>;
+  for (const slot of SLOTS) {
+    const it = item(eqRaw[slot], level);
+    if (!uniq(it)) continue;
+    const info = itemInfo(it.base)!;
+    if (!slotsFor(info).includes(slot)) continue;
+    if (info.weaponType && !kit.weapons.includes(info.weaponType)) continue;
+    equipment[slot] = it;
+  }
+  const mainType = equipment.main ? itemInfo(equipment.main.base)?.weaponType : undefined;
+  if (mainType && TWO_HANDED.includes(mainType)) delete equipment.off;
+
+  const inventory = (Array.isArray(r.inventory) ? r.inventory : []).slice(0, MAX_PACK).map((x) => item(x, level)).filter(uniq);
+
+  // skill tree: replay every rank through the same rules the client used, within the points available
+  const bonusPoints = int(r.bonusPoints, 0, MAX_BONUS_POINTS, 0);
+  const wanted = (r.tree && typeof r.tree === 'object' ? r.tree : {}) as Record<string, unknown>;
+  const tree: Record<string, number> = {};
+  let budget = levelPoints(level) + bonusPoints;
+  const nodes = allNodes(classId);
+  for (let pass = 0; pass < 6 && budget > 0; pass++) {
+    let progressed = false;
+    for (const n of nodes) {
+      const want = int(wanted[n.id], 0, n.maxRank, 0);
+      while ((tree[n.id] ?? 0) < want && budget > 0 && canLearn(classId, n.id, tree, budget).ok) {
+        tree[n.id] = (tree[n.id] ?? 0) + 1;
+        budget--;
+        progressed = true;
+      }
+    }
+    if (!progressed) break;
+  }
+
+  // hotbar: kit spells + spells granted by learned nodes
+  const known = new Set<string>([...kit.spells, ...nodes.filter((n) => n.grantsSpell && (tree[n.id] ?? 0) > 0).map((n) => n.grantsSpell!)]);
+  const hb = Array.isArray(r.hotbar) ? r.hotbar : [];
+  const hotbar = [0, 1, 2, 3].map((i) => { const s = str(hb[i]); return s && known.has(s) ? s : null; }) as CharacterSave['hotbar'];
+
+  const cos = (r.cosmetics && typeof r.cosmetics === 'object' ? r.cosmetics : {}) as Record<string, unknown>;
+  return {
+    classId, body: r.body === 1 ? 1 : 0, level,
+    xp: int(r.xp, 0, Math.max(0, xpToNext(level) - 1), 0),
+    gold: int(r.gold, 0, MAX_GOLD, 0),
+    inventory, equipment,
+    cosmetics: { back: int(cos.back, 0, 8), neck: int(cos.neck, 0, 8), face: int(cos.face, 0, 8), extra: int(cos.extra, 0, 8), dye: int(cos.dye, 0, 8), headwear: int(cos.headwear, 0, 4) },
+    tree, bonusPoints, hotbar,
+    legendariesSeen: (Array.isArray(r.legendariesSeen) ? r.legendariesSeen : []).filter((x): x is string => typeof x === 'string' && x.startsWith('lg_')).slice(0, 40),
+    waystone: str(r.waystone, 80),
+    ...(r.look && typeof r.look === 'object' ? { look: sanitizeLook(r.look as Record<string, unknown>) } : {}),
+    chests: (Array.isArray(r.chests) ? r.chests : []).filter((x): x is string => typeof x === 'string' && x.startsWith('obj:') && x.length < 120).slice(-3000),
+    prefs: { autoLootGold: (r.prefs as { autoLootGold?: unknown } | undefined)?.autoLootGold !== false },
+  } as CharacterSave;
+}
+
+/** The hero look rides along with the loadout for paperdoll baking; keep it to small integers. */
+function sanitizeLook(l: Record<string, unknown>): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const k of ['skin', 'hair', 'hc', 'eyes', 'ec', 'mouth', 'mark', 'body', 'brows']) out[k] = int(l[k], 0, 12, 0);
+  out.body = out.body ? 1 : 0;
+  return out;
+}

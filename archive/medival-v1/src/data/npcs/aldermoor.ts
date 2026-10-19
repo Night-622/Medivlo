@@ -1,0 +1,235 @@
+/** NPCs of Aldermoor (docs/lore/07-prologue.md). Owner: Claude 4. Landmarks are placed by Claude 2. */
+import type { NpcDef } from '@/core';
+
+const at = (quest: `quest:${string}`, stage: string) => ({ questStage: quest, stage });
+const Q1 = 'quest:the-ashmark', Q2 = 'quest:lost-in-the-gloamwood', Q3 = 'quest:the-witchfinder', Q4 = 'quest:the-millers-key', Q5 = 'quest:the-drowned-abbey';
+const Q10 = 'quest:the-boy-in-the-reeds', Q11 = 'quest:harrows-bargain', Q12 = 'quest:ashes-of-varn';
+const R = 'region:aldermoor' as const;
+
+const npcs: NpcDef[] = [
+  {
+    id: 'npc:maren-hollis', name: 'Maren Hollis', title: 'Huntress', people: 'haldish', region: R, home: 'landmark:hollis-cottage',
+    lore: 'lore:maren-hollis',
+    schedule: [
+      // Q1 opens with Maren knocking at the cottage where the player lodges with the Hollises
+      { from: 0, to: 24, at: 'landmark:hollis-cottage', activity: 'idle', when: at(Q1, 'wake') },
+      { from: 6, to: 18, at: 'landmark:brindlecross-green', activity: 'wander', when: { not: { flag: 'companion.maren-hollis.following' } } },
+    ],
+    dialogue: [
+      { when: { questStage: 'quest:the-last-lanternmass', stage: 'muster' }, dialogue: 'dialogue:ch7-muster' },
+      { when: { questStage: 'quest:the-hunters-oath', stage: 'word' }, dialogue: 'dialogue:oath-word' },
+      { when: { any: [{ questStage: 'quest:the-hunters-oath', stage: 'blood' }, { questStage: 'quest:the-hunters-oath', stage: 'justice' }, { questStage: 'quest:the-hunters-oath', stage: 'hers' }] }, dialogue: 'dialogue:oath-after' },
+      { when: { all: [{ flag: 'companion.maren-hollis.following' }, { flag: 'companion.maren-hollis.loyalty', op: '>=', value: 70 }, { not: { flag: 'companion.maren-hollis.beat_70' } }] }, dialogue: 'dialogue:loyalty-maren-hollis' },
+      { when: { all: [{ flag: 'companion.maren-hollis.following' }, { flag: 'companion.maren-hollis.loyalty', op: '<=', value: 20 }, { not: { flag: 'companion.maren-hollis.left' } }] }, dialogue: 'dialogue:loyalty-maren-hollis-low' },
+      { when: at(Q1, 'wake'), dialogue: 'dialogue:maren-wake' },
+      { when: { all: [{ questStage: 'quest:the-breach', stage: 'word' }, { not: { flag: 'act1.hesta_alive' } }] }, dialogue: 'dialogue:ch6-breach-word' },
+      { dialogue: 'dialogue:maren-general' },
+    ],
+    barks: [{ when: { flag: 'companion.maren-hollis.following' }, lines: ['Tobin’s prints. Fresh.', 'Keep your hand lit. I can’t see a thing.', 'If anything’s hurt him…'] }],
+    roles: ['quest', 'companion'], essential: true,
+    look: { skin: 0xe0b394, hair: 0xa8432a, cloth: 0x4a5a3a, accent: 0x8a6a3a, build: 'slight' },
+    bio: 'Brindlecross huntress, 19, the player’s childhood friend. She raised her brother Tobin alone after the Grey Lung took their mother.',
+  },
+  {
+    id: 'npc:anselm-pryde', name: 'Brother Anselm', title: 'Priest of the Lantern', people: 'haldish', faction: 'faction:lanternate', region: R, home: 'landmark:brindlecross-chapel',
+    lore: 'lore:anselm-pryde',
+    presentWhen: { any: [{ not: { flag: 'prologue.anselm_betrayed' } }, { flag: 'act2.anselm_freed' }] },
+    schedule: [{ from: 0, to: 24, at: 'landmark:cinderhold-hall', activity: 'work', when: { all: [{ flag: 'act1.cinderhold_restored' }, { flag: 'prologue.anselm_secret' }] } }],
+    dialogue: [
+      { when: { questStage: 'quest:the-last-lanternmass', stage: 'muster' }, dialogue: 'dialogue:ch7-muster' },
+      { when: { questStage: 'quest:a-lantern-for-the-road', stage: 'ask' }, dialogue: 'dialogue:lantern-ask' },
+      { when: { questStage: 'quest:a-lantern-for-the-road', stage: 'vigil' }, dialogue: 'dialogue:obj-abbey-altar' },
+      { when: { questStage: 'quest:a-lantern-for-the-road', stage: 'dawn' }, dialogue: 'dialogue:lantern-dawn' },
+      { when: { all: [{ flag: 'companion.anselm-pryde.following' }, { flag: 'companion.anselm-pryde.loyalty', op: '>=', value: 70 }, { not: { flag: 'companion.anselm-pryde.beat_70' } }] }, dialogue: 'dialogue:loyalty-anselm-pryde' },
+      { when: { all: [{ flag: 'companion.anselm-pryde.following' }, { flag: 'companion.anselm-pryde.loyalty', op: '<=', value: 20 }, { not: { flag: 'companion.anselm-pryde.left' } }] }, dialogue: 'dialogue:loyalty-anselm-pryde-low' },
+      { when: { flag: 'act2.anselm_freed' }, dialogue: 'dialogue:ch4-anselm-freed' },
+      { when: { all: [{ flag: 'act1.cinderhold_restored' }, { flag: 'prologue.anselm_secret' }] }, dialogue: 'dialogue:ch1-anselm-cinderhold' },
+      { when: at(Q1, 'chapel'), dialogue: 'dialogue:anselm-pyre' },
+      { when: at(Q3, 'secret'), dialogue: 'dialogue:anselm-secret' },
+      { dialogue: 'dialogue:anselm-general' },
+    ],
+    roles: ['quest'], essential: true,
+    look: { skin: 0xd9a988, hair: 0x6b6b6b, cloth: 0xd8cfb8, accent: 0xd4a646, build: 'broad' },
+    bio: 'Village priest, 50s, a gentle scholar sent to Brindlecross as punishment for curiosity. He secretly keeps a banned Emberwarden primer.',
+  },
+  {
+    id: 'npc:tobin-hollis', name: 'Tobin Hollis', people: 'haldish', region: R, home: 'landmark:hollis-cottage',
+    presentWhen: { any: [{ flag: 'prologue.tobin_fate', op: '==', value: 'saved' }, { all: [{ flag: 'prologue.tobin_fate', op: '==', value: 'hollowed' }, { questActive: Q10 }] }, { flag: 'act1.tobin_saved' }] },
+    schedule: [{ from: 0, to: 24, at: 'landmark:tobins-reeds', activity: 'idle', when: { questActive: Q10 } }],
+    dialogue: [{ when: at(Q10, 'reeds'), dialogue: 'dialogue:tobin-reeds' }, { dialogue: 'dialogue:tobin-general' }],
+    roles: ['ambient'],
+    look: { skin: 0xe0b394, hair: 0xa8432a, cloth: 0x6b5a44, build: 'short' },
+    bio: 'Maren’s brother, 14, a shepherd boy who followed his drowned mother’s voice into the water.',
+  },
+  {
+    id: 'npc:godric-thatch', name: 'Godric Thatch', title: 'Elder', people: 'haldish', faction: 'faction:crown-of-haldmarch', region: R, home: 'landmark:elder-hall',
+    schedule: [{ from: 8, to: 17, at: 'landmark:brindlecross-green', activity: 'work' }],
+    dialogue: [
+      { when: at(Q1, 'aftermath'), dialogue: 'dialogue:godric-aftermath' },
+      { dialogue: 'dialogue:godric-general' },
+    ],
+    roles: ['quest'], essential: true,
+    look: { skin: 0xc99a7a, hair: 0xb8b8b0, cloth: 0x5a4a3a, accent: 0x2f4a7a, build: 'broad' },
+    bio: 'Village reeve, 60s: weather-beaten, decent and overwhelmed. He built the east barricade himself.',
+  },
+  {
+    id: 'npc:nan-briar', name: 'Nan Briar', title: 'Hedge-witch', people: 'haldish', faction: 'faction:thornwise', region: R, home: 'landmark:briar-hut',
+    lore: 'lore:nan-briar',
+    shop: 'shop:briar-hut',
+    dialogue: [
+      { when: { questStage: 'quest:the-quiet-hollowing', stage: 'briar' }, dialogue: 'dialogue:qh-thornwise-keep' },
+      { when: at(Q2, 'briar'), dialogue: 'dialogue:briar-first' },
+      { when: at(Q2, 'return'), dialogue: 'dialogue:briar-return' },
+      { dialogue: 'dialogue:briar-general' },
+    ],
+    roles: ['quest', 'merchant', 'trainer'], essential: true,
+    look: { skin: 0xb08a6a, hair: 0xd8d8d0, cloth: 0x3a4a2a, accent: 0x7a3a5a, build: 'short' },
+    bio: 'Gloamwood hedge-witch of the Thornwise, rumoured half-Aelthi. She calls the Mire "the Old Sleeper" and pities it.',
+  },
+  {
+    id: 'npc:garrick-hale', name: 'Garrick Hale', title: 'Inquisitor', people: 'haldish', faction: 'faction:order-of-the-wick', region: R, home: 'landmark:guttered-candle',
+    lore: 'lore:garrick-hale',
+    presentWhen: {
+      all: [
+        { any: [{ questActive: Q3 }, { questActive: Q4 }, at(Q5, 'hesta'), { flag: 'prologue.complete' }] },
+        { not: { flag: 'prologue.hale_outcome', op: '==', value: 'defied' } },
+      ],
+    },
+    schedule: [
+      { from: 0, to: 24, at: 'landmark:lower-city', activity: 'work', when: { questStage: 'quest:the-last-lanternmass', stage: 'fire' } },
+      { from: 0, to: 24, at: 'landmark:brindlecross-green', activity: 'patrol', when: { questActive: Q3 } },
+      { from: 0, to: 24, at: 'landmark:wennamere-shore', activity: 'idle', when: at(Q5, 'hesta') },
+      { from: 0, to: 24, at: 'landmark:valcastre-cells', activity: 'work', when: { questActive: 'quest:the-prisoner-of-valcastre' } },
+      { from: 0, to: 24, at: 'landmark:throne-room', activity: 'idle', when: at(Q11, 'choice') },
+      { from: 0, to: 24, at: 'landmark:haldren-cathedral', activity: 'pray', when: { flag: 'prologue.complete' } },
+    ],
+    dialogue: [
+      { when: { questStage: 'quest:the-last-lanternmass', stage: 'fire' }, dialogue: 'dialogue:ch7-hale-lower-city' },
+      { when: at(Q3, 'arrival'), dialogue: 'dialogue:hale-arrival' },
+      { when: at(Q3, 'test'), dialogue: 'dialogue:hale-test' },
+      { when: { flag: 'prologue.complete' }, dialogue: 'dialogue:ch1-hale-cathedral' },
+      { dialogue: 'dialogue:hale-general' },
+    ],
+    roles: ['quest'], essential: true,
+    look: { skin: 0xc8a07a, hair: 0x3b2a1a, cloth: 0x2a2320, accent: 0xe8d38a, build: 'tall' },
+    bio: 'Witchfinder of the Order of the Wick, 40s, a devout ex-soldier, tired and certain. He carries the Last Wick, a lantern lit from the Brand before the Quench.',
+  },
+  {
+    id: 'npc:oswin', name: 'Oswin', title: 'Miller', people: 'haldish', faction: 'faction:drowned-choir', region: R, home: 'landmark:oswin-mill',
+    presentWhen: { any: [{ not: { flag: 'prologue.oswin_fate' } }, { flag: 'prologue.oswin_fate', op: '==', value: 'spared' }] },
+    schedule: [
+      { from: 0, to: 24, at: 'landmark:reed-temple', activity: 'pray', when: { flag: 'prologue.oswin_fate', op: '==', value: 'spared' } },
+      { from: 23, to: 2, at: 'landmark:wennamere-shore', activity: 'pray' },
+    ],
+    dialogue: [
+      { when: { flag: 'prologue.oswin_fate', op: '==', value: 'spared' }, dialogue: 'dialogue:oswin-reeds' },
+      { when: at(Q4, 'confront'), dialogue: 'dialogue:oswin-confront' },
+      { when: at(Q4, 'ask'), dialogue: 'dialogue:oswin-ask' },
+      { dialogue: 'dialogue:oswin-general' },
+    ],
+    barks: [{ when: { hour: [23, 2] }, lines: ['Ooluun ae Nhal… maa’reh suun…', '(He is singing to the water.)'] }],
+    roles: ['quest'],
+    look: { skin: 0xd9b8a0, hair: 0x5a4a3a, cloth: 0xe0d8c8, accent: 0x1c2a33, build: 'average' },
+    bio: 'Grieving miller, 40s. His wife Edith drowned in Wennamere on the Night of Falling Ash, and he has joined the Drowned Choir to believe she is only sleeping.',
+  },
+  {
+    id: 'npc:hild-coalbrook', name: 'Hild Coalbrook', title: 'Smith', people: 'haldish', region: R, home: 'landmark:coalbrook-smithy',
+    shop: 'shop:coalbrook-smithy',
+    dialogue: [{ dialogue: 'dialogue:hild-general' }],
+    roles: ['quest', 'merchant'],
+    look: { skin: 0xc28a6a, hair: 0x2a1a10, cloth: 0x4a3a2a, accent: 0xb5481f, build: 'broad' },
+    bio: 'Blacksmith, 30s, broad and laughing, apprenticed three years among the Orrun at Dun Korrath-Gate. She can see ley-glow in coal.',
+  },
+  {
+    id: 'npc:wat-fennick', name: 'Wat Fennick', title: 'Innkeeper', people: 'haldish', region: R, home: 'landmark:guttered-candle',
+    shop: 'shop:guttered-candle',
+    dialogue: [{ dialogue: 'dialogue:wat-general' }],
+    roles: ['merchant'],
+    look: { skin: 0xe0a888, hair: 0x8a6a4a, cloth: 0x6a3a2a, accent: 0xd4a646, build: 'broad' },
+    bio: 'Keeper of The Guttered Candle, 50s, a gossip whose hearth has not gone out in thirty years.',
+  },
+  {
+    id: 'npc:hesta-corrow', name: 'Hesta Corrow', title: 'Emberwarden', people: 'haldish', faction: 'faction:emberwardens', region: R, home: 'landmark:wennamere-shore',
+    presentWhen: {
+      all: [
+        { any: [at(Q5, 'hesta'), { flag: 'prologue.complete' }] },
+        { not: { flag: 'act1.hesta_alive', op: '==', value: false } },
+      ],
+    },
+    schedule: [
+      { from: 0, to: 24, at: 'landmark:pilgrim-camp', activity: 'pray', when: { questStage: 'quest:the-snuffed-candles', stage: 'pilgrim' } },
+      { from: 0, to: 24, at: 'landmark:cinderhold-hall', activity: 'idle', when: { flag: 'act1.cinderhold_restored' } },
+      { from: 0, to: 24, at: 'landmark:brindlecross-green', activity: 'idle', when: { flag: 'prologue.complete' } },
+    ],
+    dialogue: [
+      { when: { questStage: 'quest:the-last-lanternmass', stage: 'muster' }, dialogue: 'dialogue:ch7-muster' },
+      { when: { questStage: 'quest:the-snuffed-candles', stage: 'word' }, dialogue: 'dialogue:candles-word' },
+      { when: { questStage: 'quest:the-snuffed-candles', stage: 'pilgrim' }, dialogue: 'dialogue:candles-pilgrim' },
+      { when: { questStage: 'quest:the-snuffed-candles', stage: 'choice' }, dialogue: 'dialogue:candles-choice' },
+      { when: { questStage: 'quest:the-snuffed-candles', stage: 'hearth' }, dialogue: 'dialogue:candles-after' },
+      { when: { all: [{ flag: 'companion.hesta-corrow.following' }, { flag: 'companion.hesta-corrow.loyalty', op: '>=', value: 70 }, { not: { flag: 'companion.hesta-corrow.beat_70' } }] }, dialogue: 'dialogue:loyalty-hesta-corrow' },
+      { when: { all: [{ flag: 'companion.hesta-corrow.following' }, { flag: 'companion.hesta-corrow.loyalty', op: '<=', value: 20 }, { not: { flag: 'companion.hesta-corrow.left' } }] }, dialogue: 'dialogue:loyalty-hesta-corrow-low' },
+      { when: { questStage: 'quest:the-breach', stage: 'word' }, dialogue: 'dialogue:ch6-breach-word' },
+      { when: at(Q12, 'muster'), dialogue: 'dialogue:hesta-muster' },
+      { when: at(Q12, 'aftermath'), dialogue: 'dialogue:ch3-aftermath-hesta' },
+      { when: at(Q5, 'hesta'), dialogue: 'dialogue:hesta-meeting' },
+      { when: at('quest:the-last-warden', 'lesson'), dialogue: 'dialogue:hesta-embers' },
+      { when: { questActive: 'quest:the-last-warden' }, dialogue: 'dialogue:ch1-hesta-road' },
+      { when: { flag: 'act1.cinderhold_restored' }, dialogue: 'dialogue:ch1-hesta-cinderhold' },
+      { dialogue: 'dialogue:hesta-general' },
+    ],
+    barks: [{ when: { flag: 'companion.hesta-corrow.following' }, lines: ['Mind the drifts. I’m not carrying you.', 'Smell that? Snow on ash. We’re close.', '(She coughs, long and grey, and waves you on.)'] }],
+    roles: ['quest', 'trainer'], essential: true,
+    look: { skin: 0xd0a888, hair: 0xe8e8e8, cloth: 0x6a2a1a, accent: 0xb5481f, build: 'tall' },
+    bio: 'The last Emberwarden, 70s, gaunt and burn-scarred, coughing ash. Ysolde’s former teacher. She carries the sword Lastlight.',
+    lore: 'lore:hesta-corrow',
+  },
+  // ----- special
+  {
+    id: 'npc:pell-tinker', name: 'Pell', title: 'Tinker', people: 'haldish', region: R, home: 'landmark:brindlecross-green',
+    shop: 'shop:pell-tinker',
+    dialogue: [{ dialogue: 'dialogue:pell-general' }],
+    roles: ['merchant'],
+    look: { skin: 0xc8a07a, hair: 0x6a5a3a, cloth: 0x7a5a2a, accent: 0x4a2a6a, build: 'slight' },
+    bio: 'Travelling pedlar, the only person still crossing the closed roads. He sells black candles to the miller.',
+  },
+  {
+    id: 'npc:white-stag', name: 'The White Stag', people: 'drowned', faction: 'faction:thornwise', region: R, home: 'landmark:weeping-stones',
+    lore: 'lore:the-white-stag',
+    presentWhen: { flag: 'prologue.stag_fate', op: '==', value: 'cleansed' },
+    dialogue: [{ dialogue: 'dialogue:white-stag' }],
+    roles: ['ambient'],
+    look: { skin: 0xf0f0ea, cloth: 0xf0f0ea, accent: 0xd9cfa6, build: 'tall' },
+    bio: 'Ancient guardian of the Weeping Stones, cleansed of the Mire by the player.',
+  },
+  {
+    id: 'npc:abbess-morwen', name: 'Abbess Morwen', title: 'the Drowned', people: 'drowned', region: R, home: 'landmark:abbey-reliquary',
+    lore: 'lore:abbess-morwen',
+    presentWhen: { flag: 'never' },
+    dialogue: [{ dialogue: 'dialogue:morwen-death' }],
+    look: { skin: 0xb8c8d0, cloth: 0x1c2a33, accent: 0x9fb4c8 },
+    bio: 'Last abbess of Saint Wenna’s. Speaker entry only; the boss itself is Claude 3’s enemy:abbess-morwen.',
+  },
+  {
+    id: 'npc:ysolde', name: 'Ysolde', title: 'the Pale Saint', people: 'drowned', faction: 'faction:drowned-choir', region: R, home: 'landmark:abbey-reliquary',
+    // Act III: present in the drowned cathedral (Mirelands); absent while she fights as enemy:ysolde-pale-saint
+    presentWhen: { any: [
+      { questStage: 'quest:into-the-dreaming', stage: 'ysolde' },
+      { questStage: 'quest:into-the-dreaming', stage: 'fallen' },
+      { all: [{ questStage: 'quest:into-the-dreaming', stage: 'ember' }, { not: { flag: 'act3.embers_complete' } }] },
+      { all: [{ any: [{ flag: 'act3.ysolde_fate', op: '==', value: 'turned' }, { flag: 'act3.ysolde_fate', op: '==', value: 'spared' }] },
+              { any: [{ questStage: 'quest:into-the-dreaming', stage: 'ember' }, { questCompleted: 'quest:into-the-dreaming' }] }] },
+    ] },
+    schedule: [{ from: 0, to: 24, at: 'landmark:drowned-cathedral', activity: 'pray' }],
+    dialogue: [
+      { when: { any: [{ questStage: 'quest:into-the-dreaming', stage: 'fallen' }, { flag: 'act3.ysolde_fate', op: '==', value: 'slain' }, { flag: 'act3.ysolde_fate', op: '==', value: 'spared' }] }, dialogue: 'dialogue:ch8-ysolde-fallen' },
+      { when: { any: [{ questActive: 'quest:into-the-dreaming' }, { questCompleted: 'quest:into-the-dreaming' }] }, dialogue: 'dialogue:ch8-ysolde' },
+      { dialogue: 'dialogue:obj-fallen-ember' },
+    ],
+    look: { skin: 0xe8eef2, hair: 0xf0f0f0, cloth: 0xf4f4f4, accent: 0x1c2a33, build: 'tall' },
+    bio: 'The main antagonist. Vision-only in the prologue.',
+    lore: 'lore:ysolde-the-pale-saint',
+  },
+];
+
+export default npcs;

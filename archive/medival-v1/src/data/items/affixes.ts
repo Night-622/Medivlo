@@ -1,0 +1,61 @@
+/** Affix pool (SYSTEMS.md §7.4). Tier unlocks at ilvl 1/8/16/24/32. Owner: Claude 3. */
+import type { AffixDef } from '@/core';
+
+const T = (...rows: [number, number][]) => rows.map(([min, max], i) => ({ minItemLevel: [1, 8, 16, 24, 32][i], min, max }));
+
+const affixes: AffixDef[] = [
+  // prefixes (offence)
+  { id: 'affix:keen', name: 'Keen', position: 'prefix', tags: ['weapon'], stat: 'critChance', op: 'flat', weight: 10, group: 'crit',
+    tiers: T([0.02, 0.03], [0.03, 0.045], [0.045, 0.06], [0.06, 0.075], [0.075, 0.09]) },
+  { id: 'affix:vicious', name: 'Vicious', position: 'prefix', tags: ['weapon', 'jewelry'], stat: 'critMultiplier', op: 'flat', weight: 6, group: 'critmult',
+    tiers: T([0.1, 0.15], [0.15, 0.22], [0.22, 0.3], [0.3, 0.38], [0.38, 0.45]) },
+  { id: 'affix:searing', name: 'Searing', position: 'prefix', tags: ['weapon', 'caster', 'jewelry'], stat: 'damage.fire', op: 'increased', weight: 8, group: 'element',
+    tiers: T([0.08, 0.12], [0.12, 0.18], [0.18, 0.25], [0.25, 0.32], [0.32, 0.4]) },
+  { id: 'affix:rimed', name: 'Rimed', position: 'prefix', tags: ['weapon', 'caster', 'jewelry'], stat: 'damage.frost', op: 'increased', weight: 8, group: 'element',
+    tiers: T([0.08, 0.12], [0.12, 0.18], [0.18, 0.25], [0.25, 0.32], [0.32, 0.4]) },
+  { id: 'affix:crackling', name: 'Crackling', position: 'prefix', tags: ['weapon', 'caster', 'jewelry'], stat: 'damage.lightning', op: 'increased', weight: 8, group: 'element',
+    tiers: T([0.08, 0.12], [0.12, 0.18], [0.18, 0.25], [0.25, 0.32], [0.32, 0.4]) },
+  { id: 'affix:brutal', name: 'Brutal', position: 'prefix', tags: ['melee'], stat: 'meleeDamage', op: 'increased', weight: 10, group: 'phys',
+    tiers: T([0.06, 0.1], [0.1, 0.15], [0.15, 0.2], [0.2, 0.26], [0.26, 0.32]) },
+  { id: 'affix:fletched', name: 'Fletched', position: 'prefix', tags: ['ranged'], stat: 'rangedDamage', op: 'increased', weight: 10, group: 'phys',
+    tiers: T([0.06, 0.1], [0.1, 0.15], [0.15, 0.2], [0.2, 0.26], [0.26, 0.32]) },
+  { id: 'affix:ley-drawn', name: 'Ley-drawn', position: 'prefix', tags: ['caster', 'jewelry'], stat: 'spellDamage', op: 'increased', weight: 10, group: 'spell',
+    tiers: T([0.06, 0.1], [0.1, 0.15], [0.15, 0.2], [0.2, 0.26], [0.26, 0.32]) },
+  { id: 'affix:serrated', name: 'Serrated', position: 'prefix', tags: ['melee', 'ranged'], stat: 'buildup.bleed', op: 'increased', weight: 6, group: 'buildup',
+    tiers: T([0.15, 0.25], [0.25, 0.35], [0.35, 0.45], [0.45, 0.55], [0.55, 0.65]) },
+  { id: 'affix:swift', name: 'Swift', position: 'prefix', tags: ['weapon', 'hands'], stat: 'attackSpeed', op: 'increased', weight: 7, group: 'speed',
+    tiers: T([0.03, 0.05], [0.05, 0.07], [0.07, 0.09], [0.09, 0.11], [0.11, 0.13]) },
+  { id: 'affix:sturdy', name: 'Sturdy', position: 'prefix', tags: ['armor', 'shield'], stat: 'armor', op: 'flat', weight: 12, group: 'armor',
+    tiers: T([4, 8], [8, 14], [14, 22], [22, 32], [32, 44]) },
+  { id: 'affix:hale', name: 'Hale', position: 'prefix', tags: ['armor', 'jewelry', 'belt'], stat: 'maxHp', op: 'flat', weight: 12, group: 'life',
+    tiers: T([6, 12], [12, 22], [22, 36], [36, 52], [52, 70]) },
+  // suffixes (defence / utility)
+  { id: 'affix:of-the-ox', name: 'of the Ox', position: 'suffix', tags: ['weapon', 'armor', 'jewelry'], stat: 'might', op: 'flat', weight: 8, group: 'attr-might',
+    tiers: T([1, 2], [2, 3], [3, 4], [4, 5], [5, 6]) },
+  { id: 'affix:of-the-fox', name: 'of the Fox', position: 'suffix', tags: ['weapon', 'armor', 'jewelry'], stat: 'finesse', op: 'flat', weight: 8, group: 'attr-finesse',
+    tiers: T([1, 2], [2, 3], [3, 4], [4, 5], [5, 6]) },
+  { id: 'affix:of-the-bear', name: 'of the Bear', position: 'suffix', tags: ['armor', 'jewelry', 'shield'], stat: 'vigor', op: 'flat', weight: 8, group: 'attr-vigor',
+    tiers: T([1, 2], [2, 3], [3, 4], [4, 5], [5, 6]) },
+  { id: 'affix:of-the-owl', name: 'of the Owl', position: 'suffix', tags: ['caster', 'armor', 'jewelry'], stat: 'intellect', op: 'flat', weight: 8, group: 'attr-intellect',
+    tiers: T([1, 2], [2, 3], [3, 4], [4, 5], [5, 6]) },
+  { id: 'affix:of-the-lantern', name: 'of the Lantern', position: 'suffix', tags: ['caster', 'armor', 'jewelry'], stat: 'will', op: 'flat', weight: 8, group: 'attr-will',
+    tiers: T([1, 2], [2, 3], [3, 4], [4, 5], [5, 6]) },
+  { id: 'affix:of-warding', name: 'of Warding', position: 'suffix', tags: ['armor', 'shield', 'jewelry'], stat: 'resist.fire', op: 'flat', weight: 5, group: 'res-fire',
+    tiers: T([0.05, 0.08], [0.08, 0.12], [0.12, 0.16], [0.16, 0.2], [0.2, 0.25]) },
+  { id: 'affix:of-the-hearth', name: 'of the Hearth', position: 'suffix', tags: ['armor', 'cloak'], stat: 'resist.frost', op: 'flat', weight: 5, group: 'res-frost',
+    tiers: T([0.05, 0.08], [0.08, 0.12], [0.12, 0.16], [0.16, 0.2], [0.2, 0.25]) },
+  { id: 'affix:of-the-wick', name: 'of the Wick', position: 'suffix', tags: ['armor', 'jewelry'], stat: 'statusResist', op: 'flat', weight: 5, group: 'statusres',
+    tiers: T([0.05, 0.08], [0.08, 0.12], [0.12, 0.16], [0.16, 0.2], [0.2, 0.25]) },
+  { id: 'affix:of-haste', name: 'of Haste', position: 'suffix', tags: ['feet'], stat: 'moveSpeed', op: 'increased', weight: 8, group: 'move',
+    tiers: T([0.03, 0.05], [0.05, 0.07], [0.07, 0.09], [0.09, 0.11], [0.11, 0.13]) },
+  { id: 'affix:of-echoes', name: 'of Echoes', position: 'suffix', tags: ['caster', 'jewelry', 'head'], stat: 'cooldownReduction', op: 'flat', weight: 5, group: 'cdr',
+    tiers: T([0.03, 0.05], [0.05, 0.07], [0.07, 0.09], [0.09, 0.11], [0.11, 0.13]) },
+  { id: 'affix:of-the-springs', name: 'of the Springs', position: 'suffix', tags: ['caster', 'jewelry', 'chest'], stat: 'manaRegen', op: 'increased', weight: 6, group: 'manaregen',
+    tiers: T([0.1, 0.15], [0.15, 0.22], [0.22, 0.3], [0.3, 0.38], [0.38, 0.45]) },
+  { id: 'affix:of-endurance', name: 'of Endurance', position: 'suffix', tags: ['armor', 'belt', 'jewelry'], stat: 'maxStamina', op: 'flat', weight: 8, group: 'stamina',
+    tiers: T([5, 10], [10, 15], [15, 22], [22, 30], [30, 40]) },
+  { id: 'affix:thirsting', name: 'Thirsting', position: 'suffix', tags: ['melee'], stat: 'lifeLeech', op: 'flat', weight: 3, group: 'leech',
+    tiers: T([0.01, 0.015], [0.015, 0.02], [0.02, 0.03], [0.03, 0.04], [0.04, 0.05]) },
+];
+
+export default affixes;
