@@ -404,7 +404,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Four hundred guesses, each one crossed out. “The blue wire to the red wire”: crossed out, singed. “The cat”: crossed out, underlined twice. “Each other, emotionally”: crossed out, with a note beside it: Prudence, really.',
         choices: [
           { text: '(Add guess four hundred and one.)', to: 'guess' },
-          { text: '[Storm] (Look at the wires, not the book.)', to: 'wires', school: 'storm' },
+          { text: '(Look at the wires, not the book.)', to: 'wires', school: 'storm' },
           { text: '(Leave it. Some things want the right part.)', to: 'leave' },
         ],
       },

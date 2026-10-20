@@ -533,7 +533,7 @@ const dialogues: DialogueDef[] = [
         speaker: MS, text: 'That’s him. That’s Bendik. (Her voice is quite steady.) He’s younger than my grandson. I remembered him older. I’ve been remembering him getting older all this time, and he didn’t.',
         choices: [
           { text: 'He’s waving at you.', to: 'wave', trust: 1 },
-          { text: '[Rime] (Read the frost on him.)', to: 'frost', school: 'rime' },
+          { text: '(Read the frost on him.)', to: 'frost', school: 'rime' },
         ],
       },
       wave: { speaker: MS, text: 'Is he? (She turns and looks down the road at Wardenhold, small and far below.) I was on the keep wall. I waved back. I’d forgotten that. I’d remembered that I didn’t.', next: 'scarf' },
@@ -658,7 +658,7 @@ const dialogues: DialogueDef[] = [
       ring: { speaker: 'narrator', text: 'The hollowed stand shoulder to shoulder round Anselm’s chair, so close that you would have to push. Nobody is pushing. They have their heads on one side, all of them, the way people listen to music through a wall.', next: 'hum' },
       hum: {
         speaker: 'narrator', text: 'You listen too. Inside the held hour, very faint, Anselm is humming. One note. He must have been humming when the hour was held, the way he always hummed when he read, and the note has been held with him for thirty years.',
-        choices: [{ text: '(Listen longer.)', to: 'bell' }, { text: '[Rime] (Read the hold.)', to: 'bell', school: 'rime' }],
+        choices: [{ text: '(Listen longer.)', to: 'bell' }, { text: '(Read the hold.)', to: 'bell', school: 'rime' }],
       },
       bell: { speaker: 'narrator', mood: 'sad', text: 'It is the note of the Herald’s ice bell: the one note Seraphine rang and would not let end. She was never ringing a bell at all. She was holding him, humming.', effects: [{ setFlag: 'rimecaller.anselm_hum', value: true }], next: 'part' },
       part: { speaker: 'narrator', text: 'One by one, as if you had asked them, the hollowed step back and leave a gap just wide enough for you.', next: null },
@@ -711,7 +711,7 @@ const dialogues: DialogueDef[] = [
       gaze: { speaker: 'narrator', text: 'You look over the shoulder of a hollowed pikeman at the shard. Your face isn’t in it, for him. His is: young, sunburnt, laughing at something, on the last morning before the Bell.', next: 'all' },
       all: {
         speaker: 'narrator', text: 'Every one of them sees their own face in it as it was before the tears. That is why they stand so still. It is the only place left where they can see it.', effects: [{ setFlag: 'rimecaller.gazers_seen', value: true }],
-        choices: [{ text: '(Push through to the shard.)', to: null }, { text: '[Rime] (Read the shard’s hold.)', to: 'read', school: 'rime' }],
+        choices: [{ text: '(Push through to the shard.)', to: null }, { text: '(Read the shard’s hold.)', to: 'read', school: 'rime' }],
       },
       read: { speaker: 'narrator', mood: 'sad', text: 'It isn’t holding them. It is holding their faces, one each, as they were, and letting them look. It is the kindest held thing you have ever seen, and you know already that it has to go.', next: null },
       shattered: { speaker: 'narrator', text: 'The hollowed are still standing where the shard stood, looking down at ten thousand pieces. The pikeman bends, picks one up and looks into it. His face, now: grey, wet, old. He looks at it for a long time.', next: 'pike' },

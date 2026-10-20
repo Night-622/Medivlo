@@ -13,6 +13,17 @@ import type { LandmarkArch } from '../hc/types';
 
 export interface ArtTex { key: string; frame?: string | number; w: number; h: number }
 
+/** dev stats: recoloured / landmark textures baked on first use, and the ms they took (hitch hunt) */
+export const bakeStats = { n: 0, ms: 0, max: 0, slow: [] as string[] };
+const timed = <T>(name: string, f: () => T): T => {
+  const t0 = performance.now();
+  const r = f();
+  const ms = performance.now() - t0;
+  bakeStats.n++; bakeStats.ms += ms; bakeStats.max = Math.max(bakeStats.max, ms);
+  if (ms > 4 && bakeStats.slow.length < 40) bakeStats.slow.push(`${name} ${ms.toFixed(1)}ms`);
+  return r;
+};
+
 /** Light point [dx, dy, r, colour] from the image's top-left. */
 export type Light = [number, number, number, number];
 
@@ -54,13 +65,13 @@ export function artCanvas(scene: Phaser.Scene, name: string): HTMLCanvasElement 
 export function artTexture(scene: Phaser.Scene, name: string): ArtTex {
   if (name.startsWith('lm:')) {
     const [, arch, realm] = name.split(':');
-    const key = mvImage(scene, `hc-${name}`, `rl_${mvRealm(realm)}`);
+    const key = scene.textures.exists(`hc-${name}`) ? `hc-${name}` : timed(name, () => mvImage(scene, `hc-${name}`, `rl_${mvRealm(realm)}`));
     const s = LANDMARK_SIZES[arch as LandmarkArch];
     return { key, w: s.w, h: s.h };
   }
   if (name.startsWith('rc:')) {
     const key = `hc-${name}`;
-    if (!scene.textures.exists(key)) scene.textures.addCanvas(key, artCanvas(scene, name));
+    if (!scene.textures.exists(key)) timed(name, () => scene.textures.addCanvas(key, artCanvas(scene, name)));
     const t = scene.textures.get(key).getSourceImage();
     return { key, w: t.width, h: t.height };
   }

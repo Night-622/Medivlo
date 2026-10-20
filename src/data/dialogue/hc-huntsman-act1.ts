@@ -19,7 +19,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Get up and follow it.)', to: 'follow' },
           { text: '(Stay at your post. The hams are your watch.)', to: 'stay' },
-          { text: '[Hunt] (Stand still and find which way it pulls, the way you’d find a wind.)', to: 'scent', school: 'hunt' },
+          { text: '(Stand still and find which way it pulls, the way you’d find a wind.)', to: 'scent', school: 'hunt' },
         ],
       },
       follow: { speaker: 'narrator', text: 'You are up and walking before the bucket has finished rolling. The humming tugs you out of the Yards and up the lane, gently, like a hand on your sleeve.', next: 'yards' },
@@ -120,7 +120,7 @@ const dialogues: DialogueDef[] = [
         speaker: CO, text: 'I want a tracker. I’m taking a hunting party up the Elkway after the hollow herd, and I want the best. You’re the best. That isn’t flattery, I don’t flatter. I checked.',
         choices: [
           { text: 'I’ll think about it.', to: 'end' },
-          { text: '[Hunt] The Lodge hunts by the old law. Does your party?', to: 'law', school: 'hunt' },
+          { text: 'The Lodge hunts by the old law. Does your party?', to: 'law', school: 'hunt' },
         ],
       },
       law: { speaker: CO, text: 'The old law says take only what the hunt gives. The hunt gives nothing now. It weeps and it charges. I take what I can carry. Think about it.', next: 'end' },
@@ -156,7 +156,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Lady Ashby, what happens to the charter after the cull?', to: 'after_cull' },
           { text: 'Master Bannock, what would you do?', to: 'bn' },
-          { text: '[Hunt] Grandfer Lumm, what has the old law ever cost you?', to: 'lumm', school: 'hunt' },
+          { text: 'Grandfer Lumm, what has the old law ever cost you?', to: 'lumm', school: 'hunt' },
         ],
       },
       after_cull: { speaker: CO, text: 'It hangs in my Hall, in a better case than this one, and I take very good care of it. (A pause.) And the Barons say what may be hunted, and when. I will not pretend otherwise. You would know if I did.', next: 'choose' },
@@ -223,7 +223,7 @@ const dialogues: DialogueDef[] = [
       tags: {
         speaker: 'narrator', text: 'Brass collar-tags off hunting dogs, dozens of them, trodden into the mud where the herd was driven in. Every one is stamped with the same crest: a raven over a stag’s skull. The Ashby arms.',
         choices: [
-          { text: '[Hunt] Sort them by the dates on the backs.', to: 'dates', school: 'hunt', effects: [{ setFlag: 'huntsman.tags_counted', value: true }] },
+          { text: 'Sort them by the dates on the backs.', to: 'dates', school: 'hunt', effects: [{ setFlag: 'huntsman.tags_counted', value: true }] },
           { text: 'Pocket them for Bannock.', to: null },
         ],
       },
@@ -274,7 +274,7 @@ const dialogues: DialogueDef[] = [
         speaker: CO, text: 'Up there, in that stag’s brow, is half a stone. It won’t sing for me. It’ll sing for you. And when it sings, the Great Hunt will come to the song, under my roof, and I’ll shoot it. One bolt. I never miss.',
         choices: [
           { text: 'That isn’t hunting. That’s a trap with a roof.', to: 'end' },
-          { text: '[Hunt] The old law says you may only take what the hunt gives.', to: 'law', school: 'hunt' },
+          { text: 'The old law says you may only take what the hunt gives.', to: 'law', school: 'hunt' },
         ],
       },
       law: { speaker: CO, text: 'The hunt gives nothing. The Lodge has waited thirty years for it to give, and look at the Lodge. Someone has to put it down. The Lodge won’t. I will, and I’ll keep what I take.', next: 'end' },
@@ -291,7 +291,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'All down the Hall the mounted heads turn their glass eyes towards you with a soft creak of old leather, a thousand of them. Black tears are running from every one, down the fur and onto the floor.',
         choices: [
           { text: '(Look the old stag in the eye.)', to: 'stag' },
-          { text: '[Hunt] (Count them, the Lodge way: what was taken.)', to: 'count', school: 'hunt' },
+          { text: '(Count them, the Lodge way: what was taken.)', to: 'count', school: 'hunt' },
         ],
       },
       stag: { speaker: 'narrator', text: 'Behind the cracks in its glass eyes, for a moment, you see a forest in autumn sun, and a beast of light running at the head of a herd that takes three days to cross a road, and the Lodge hounds running beside it, not behind.', next: 'corva' },
@@ -326,7 +326,7 @@ const dialogues: DialogueDef[] = [
         speaker: BN, text: 'My grandfather counted eleven thousand at this stone. I was eight, holding the book, and I thought that was what the world was: too many to count.',
         choices: [
           { text: 'There’ll be more, when the gate opens.', to: 'more' },
-          { text: '[Hunt] Count what you leave as well as what you take. What are you leaving?', to: 'leave', school: 'hunt' },
+          { text: 'Count what you leave as well as what you take. What are you leaving?', to: 'leave', school: 'hunt' },
         ],
       },
       more: { speaker: BN, text: 'Maybe. If there are, I’ll be here to count them. That’s a promise I can keep, which is the only kind I make.', next: 'law' },

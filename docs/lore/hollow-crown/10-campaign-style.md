@@ -95,7 +95,7 @@ Use the hooks below instead.
 - **Places:** Heart scenes use `landmark:heart-camp`, `landmark:legion-camp` and `landmark:twelve-stairs-top`, or your own `obj:` ids there.
 
 ## 5. Dialogue rules
-- **Length:** 1–3 sentences per node, as in the handoff. Characters sound distinct. Every realm is funny before it is sad.
+- **Length:** aim for 1–3 sentences per node, as in the handoff; short stage directions in brackets don’t count. A node never passes **360 characters** (about 60 words; the audit’s over-long check); a longer beat becomes two nodes. Characters sound distinct. Every realm is funny before it is sad.
 - **Spelling and voice:** British spelling, curly apostrophes (’), no modern idiom, and **no placeholder text**. Nothing ships until all 24 campaigns are done, so every line is final.
 - **Choices:** at most **4 visible at once**. Story scenes are `scope: 'party'`; small talk is personal (the default).
 - **Chips:**

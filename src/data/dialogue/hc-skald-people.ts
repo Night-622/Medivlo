@@ -119,7 +119,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'She’s Sigrun’s ewe. She stays.', to: 'stay', effects: [{ setFlag: 'skald.bluebell', value: 'home' }] },
           { text: 'A week at each stead, turn and turn about.', to: 'turns', effects: [{ setFlag: 'skald.bluebell', value: 'relay' }] },
-          { text: '[Song] (Drum the relay-beat and let Bluebell choose which stead she follows.)', to: 'choose2', school: 'song', effects: [{ setFlag: 'skald.bluebell', value: 'relay' }] },
+          { text: '(Drum the relay-beat and let Bluebell choose which stead she follows.)', to: 'choose2', school: 'song', effects: [{ setFlag: 'skald.bluebell', value: 'relay' }] },
         ],
       },
       stay: { speaker: 'narrator', text: 'It comes to blows anyway. Nobody is sure who threw the first halter. Somebody ends up in the trough. Bluebell watches the whole thing and bleats in a minor key.', next: null },
@@ -146,7 +146,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:eskil-ottarsson', text: 'Not dead? Not married? Not a cow? What did she say?',
         choices: [
           { text: 'She said to drum that she’s alive and to mind your own business.', to: 'alive' },
-          { text: '[Song] (Drum her actual message, in full.)', to: 'full', school: 'song' },
+          { text: '(Drum her actual message, in full.)', to: 'full', school: 'song' },
         ],
       },
       alive: { speaker: 'npc:eskil-ottarsson', mood: 'happy', text: 'Alive and to mind our own business. That’s the most Hulda message there’s ever been. I’ll drum it on. Here, for the walk.', next: 'middle' },
@@ -398,9 +398,9 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:old-hallgerd', mood: 'sad', text: 'Three went. One winter, three of us died, and they took a name each with them, and nobody else had learned it. A name nobody says is a name that’s gone.',
         choices: [
           { text: 'Then I’ll find the three. The lake gives things back.', to: 'find', quest: true },
-          { text: 'The Halls cut the great sagas. Are there Saga Hall folk here?', to: 'halls', when: { flag: 'skald.stones', value: 'great' } },
-          { text: 'At home we let the stones go blank. The dead are resting.', to: 'weather', when: { flag: 'skald.stones', value: 'weather' } },
-          { text: 'At home we cut sagas for people nobody sang. Shepherds. Cooks.', to: 'unsung', when: { flag: 'skald.stones', value: 'unsung' } },
+          { text: 'The Halls cut the great sagas. Are there Saga Hall folk here?', to: 'halls', when: { flag: 'skald.stones', op: '==', value: 'great' } },
+          { text: 'At home we let the stones go blank. The dead are resting.', to: 'weather', when: { flag: 'skald.stones', op: '==', value: 'weather' } },
+          { text: 'At home we cut sagas for people nobody sang. Shepherds. Cooks.', to: 'unsung', when: { flag: 'skald.stones', op: '==', value: 'unsung' } },
         ],
       },
       halls: { speaker: 'npc:old-hallgerd', text: 'Half of us were Hall drummers. The great sagas, eh? Then the old Hall drummers will take you down to the nave themselves, from the boats, the old way. Find me my three names first.', effects: [{ setFlag: 'skald.hall_drummers', value: true }], next: 'find' },
@@ -437,8 +437,8 @@ const dialogues: DialogueDef[] = [
       start: {
         speaker: 'npc:tamsin', text: 'Over the nave? One copper and a story. And you lot from the Fells always tell the same story about a man with two hats.',
         choices: [
-          { text: 'An old woman on Scarrow Pike waited forty years for the end of a sentence.', to: 'gunnvor' },
-          { text: '[Song] (Drum her the Saga of Nobody Much.)', to: 'nobody', school: 'song', trust: 1 },
+          { text: 'An old woman under Scarrow Pike waited forty years for the end of a sentence.', to: 'gunnvor' },
+          { text: '(Drum her the Saga of Nobody Much.)', to: 'nobody', school: 'song', trust: 1 },
         ],
       },
       gunnvor: { speaker: 'npc:tamsin', mood: 'sad', text: 'Forty years for a sentence. And was it worth it? Don’t tell me. I can see it was. Get in.', next: 'over' },
@@ -457,8 +457,8 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:skald-into-the-nave', name: 'C-2 into the drowned nave', scope: 'party',
     entries: [
-      { when: { flag: 'skald.stones', value: 'weather' }, node: 'weather' },
-      { when: { flag: 'skald.hall_drummers' }, node: 'halls' },
+      { when: { flag: 'skald.stones', op: '==', value: 'weather' }, node: 'weather' },
+      { when: { flag: 'skald.stones', op: '==', value: 'great' }, node: 'halls' },
       { node: 'nave' },
     ],
     nodes: {
@@ -486,7 +486,8 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:skald-ebba-general', name: 'Ebba Coldrey (general)',
-    entries: [{ node: 'start' }],
+    // only once the drum in the glade has stopped; before that her barks carry the howling
+    entries: [{ when: { questCompleted: 'quest:skald-the-drum-in-the-glade' }, node: 'start' }],
     nodes: { start: { speaker: 'npc:ebba-coldrey', text: 'They’ve gone quiet at dusk now. Nobody drumming. I miss it, a bit, which is silly.', next: null } },
   },
   {
@@ -507,7 +508,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The White Stag lies on the moss, released, its tears dried grey on its face. Nobody has told it its own saga in thirty years.',
         choices: [
           { text: '(Drum it the Saga of the Turning Road: how it led the crown through the Gloamwood, every twelve years, for a thousand years.)', to: 'road' },
-          { text: '[Song] (Drum it the saga of the last procession, the one that never came.)', to: 'last', school: 'song' },
+          { text: '(Drum it the saga of the last procession, the one that never came.)', to: 'last', school: 'song' },
         ],
       },
       road: { speaker: 'narrator', text: 'You drum, and the Stag lifts its head and listens to the whole of it, every Turning, every school, the lanterns on the antlers and the singing behind. At the end it lays its head down on your drum, very gently, as a horse does on a friend’s shoulder.', next: null },
@@ -520,7 +521,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       arch: { speaker: 'narrator', text: 'The Song arch. It answers your footsteps a beat late, like the Fells.', next: null },
       listen: { speaker: 'narrator', text: 'Faint, from the far side of the Song arch, a drum in the long-message beat. Ragna’s hands: you would know them anywhere, the little hitch she puts before every name. It goes on for a long time.', next: 'pip' },
-      pip: { speaker: 'narrator', text: 'At the foot of the arch sits Pip, with a slate on his knees, chalk on his nose, writing as fast as he can. He has been here since dawn. He does not look up.', next: null },
+      pip: { speaker: 'narrator', text: 'Somewhere behind you, down on the village green, Pip will be writing it all on his slate, chalk on his nose: he has sat there every dawn since the drumming started, and he never misses a beat.', next: null },
     },
   },
   {
@@ -567,7 +568,7 @@ const dialogues: DialogueDef[] = [
     entries: [{ when: stage('quest:skald-the-cantors-dirge', 'dirge'), node: 'dirge' }, { node: 'stone' }],
     nodes: {
       stone: { speaker: 'narrator', text: 'A grey stone on the shore below the Shore Chapel, facing the lake, carved with eleven lines of a dirge.', next: null },
-      dirge: { speaker: 'narrator', text: 'The Cantor’s voice takes the first verse, bright as a lamp on the water. At the fifth, the dark one, it stops, and you come in on the drum: the water rising, beat by beat, the doors, the rope. Then the light comes back over the top of it, and you go on together to the end.', next: 'end' },
+      dirge: { speaker: 'narrator', text: 'The Cantor’s voice takes the first verse, bright as a lamp on the water. At the fifth, the first of the dark ones, it stops, and you come in on the drum: the water rising, beat by beat, the doors, the rope. Then the light comes back over the top of it, and you go on together to the end.', next: 'end' },
       end: { speaker: 'narrator', text: 'Out on the lake, under the reeds, the drowned choir has been singing along. For the last verse they are louder than the two of you put together.', next: null },
     },
   },

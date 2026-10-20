@@ -52,7 +52,7 @@ const dialogues: DialogueDef[] = [
           { text: 'Once, at a true Turning, with every stone there. I’ll see to it.', to: 'bard-once' },
           { text: '(Read her the Abbey hymn the Conservatory kept.)', to: 'bard-hymn', when: { flag: 'bard.hymn_scores' } },
           { text: '(Sing the longest rest in the Turning hymn, the one the Discord taught you.)', to: 'bard-rest', when: { flag: 'bard.morwen_rest' } },
-          { text: '[Song] (Hum the choir’s part, gently, the way you would ring a bell.)', to: 'bard-once', school: 'song' },
+          { text: '(Hum the choir’s part, gently, the way you would ring a bell.)', to: 'bard-once', school: 'song' },
         ],
       },
       'bard-hymn': { speaker: 'narrator', text: 'You read it aloud, all eleven verses, and at the fourth the choir joins in, word-perfect, as they have not been able to for thirty years. The Abbess closes her eyes. Gently, she says. Yes. Like that.', next: 'bard-once' },
@@ -64,7 +64,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Drum the three lost names on the end of the stalls.)', to: 'skald-names', when: { flag: 'skald.lost_names' } },
           { text: 'I’ll find them. The drummers are still looking.', to: 'skald-later', when: { not: { flag: 'skald.lost_names' } } },
-          { text: '[Song] (Drum every name, all forty, with the three in their right places.)', to: 'skald-names', school: 'song', when: { flag: 'skald.lost_names' } },
+          { text: '(Drum every name, all forty, with the three in their right places.)', to: 'skald-names', school: 'song', when: { flag: 'skald.lost_names' } },
         ],
       },
       'skald-names': { speaker: 'narrator', text: 'Brother Ninian. Brother Corrie Harrowby. Little Brother Tod, who was nine and sang the high part. At each name a pale shape in the stalls lifts its head, and the Abbess says the name after you, and then she is quiet.', next: 'skald-end' },

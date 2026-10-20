@@ -28,7 +28,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Drum back the old question-beat: who calls?)', to: 'who' },
           { text: '(Stop drumming, and listen.)', to: 'listen' },
-          { text: '[Song] (Shout your name back at the Fells three times, the old way.)', to: 'shout', school: 'song' },
+          { text: '(Shout your name back at the Fells three times, the old way.)', to: 'shout', school: 'song' },
         ],
       },
       who: { speaker: 'narrator', text: 'You drum the question. The Fells answer with the only thing they have, your name, and under it, very faint, a note, like something singing under the ground.', next: 'drums' },
@@ -116,7 +116,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The feast-drum stands by the high seat, as big as a cart-wheel, untouched for a week.',
         choices: [
           { text: '(Beat the feast-beat, loud enough to shake the rafters.)', to: 'feast' },
-          { text: '[Song] (Beat the toast-beat, the one that means somebody owes everyone a drink.)', to: 'toast', school: 'song' },
+          { text: '(Beat the toast-beat, the one that means somebody owes everyone a drink.)', to: 'toast', school: 'song' },
         ],
       },
       feast: { speaker: 'narrator', text: 'At the first beat forty Skalds sit up at once and carry on the argument they were having a week ago, mid-sentence, at the top of their voices. It is about whether a goose counts as livestock. Hoddersgill is itself again.', next: null },
@@ -196,7 +196,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Brynja, who decides what makes a saga great?', to: 'whogreat' },
           { text: 'Ylva, do the dead really want to rest?', to: 'rest' },
-          { text: '[Song] (Drum a question at Ulf: what would you keep?)', to: 'ulfq', school: 'song' },
+          { text: '(Drum a question at Ulf: what would you keep?)', to: 'ulfq', school: 'song' },
         ],
       },
       whogreat: { speaker: BR, text: 'The Halls do. We always have. (A pause.) I have never been asked that before, and I find I do not care for the question.', next: 'choose' },
@@ -293,7 +293,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'In the silence after the third echo you hear, for one moment, a voice: rough, plain, singing, nobody’s you know. Then it is gone.',
         choices: [
           { text: '(Call out to it.)', to: 'call' },
-          { text: '[Song] (Drum the first saga’s opening beat on the first Skald’s stone drum.)', to: 'drum', school: 'song' },
+          { text: '(Drum the first saga’s opening beat on the first Skald’s stone drum.)', to: 'drum', school: 'song' },
         ],
       },
       call: { speaker: 'narrator', text: 'You call out. The barrow gives you back your own voice, three times, and then nothing. Whatever that voice was, it was not yours to call.', next: 'ulf' },

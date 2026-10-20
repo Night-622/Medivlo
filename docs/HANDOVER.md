@@ -40,8 +40,7 @@ npm i -g firebase-tools && firebase login     # log in with the account that own
   `export CHROME="/c/Program Files/Google/Chrome/Application/chrome.exe"` in Git Bash, or `/usr/bin/google-chrome`
   in WSL.
 - `tools/narrative/check.sh` uses `/tmp/medival-narrative-gate.lock`, which works in both shells.
-- There's no git yet. Running `git init` on the PC is fine and recommended: commit before each agent wave.
-  Until then the folder-ownership table is the only collision guard.
+- Git is set up (2026-10-20, branch `main`, baseline 33934d8). Rules are in §4.
 
 ---
 
@@ -94,6 +93,9 @@ other with `ListAgents`. Each agent's first message to Claude 1 says "I'm Claude
   - The live production deploy is the user's call (docs/DEPLOY.md step 6).
   - Test deploys to **medivlo.web.app** happen only when the user asks for one.
   - The old game stays on `medival-game-mk`; never deploy there.
+- **Every deploy is tested first** (user, 2026-10-20): the HUD, enemy and player hitboxes, and every feature
+  (spells, upgrades, gear, shops, story) must pass `node tools/release/predeploy-check.mjs` before any hosting
+  deploy, test or live. The hosting guard enforces it (stamp tied to the exact source). Never bypass it.
 - **The user does all playthrough testing.** Agents don't run bot playthroughs of whole campaigns. Fast gates are
   fine: tsc, validators, fight sims and short e2e. The user's play reports come in through Claude 1, who sends each
   to the owning agent.
@@ -120,6 +122,11 @@ other with `ListAgents`. Each agent's first message to Claude 1 says "I'm Claude
   `keyLabel` / `formatKeys` from core. Never hard-code letters; every action is rebindable.
 - **Done means done:** `npm run typecheck` and `npm run build` pass. Update your STATUS.md section when you finish a
   task. Keep files under ~400 lines and avoid `any` in exported APIs.
+- **Git (since 2026-10-20, repo in this folder, branch `main`):** only Claude 1 commits, as a checkpoint before
+  each agent wave and when a gate passes. Agents may use read-only git (`status`, `diff`, `log`, `show`) to check
+  their own changes. Never `checkout`, `reset`, `restore`, `stash`, `clean` or `commit`: the working tree is shared,
+  so these would wipe or capture other agents' unfinished work. Ask Claude 1 to revert something.
+  `core.autocrlf` is off for this repo; keep files LF.
 - **One question at a time:** if a request is ambiguous, ask the user one specific question rather than guessing big.
 
 ---
@@ -205,6 +212,7 @@ npm run dev                                   # game at http://localhost:5173
 npm run typecheck && npm run build            # required before calling anything done
 
 # test deploy to medivlo.web.app (only when the user asks)
+node tools/release/predeploy-check.mjs      # HUD, hitboxes, every feature: required before ANY deploy
 npx vite build && HOLLOW_CROWN_RELEASE=1 firebase deploy --only hosting --project medivlo
 
 # gates

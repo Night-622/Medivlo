@@ -17,7 +17,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Hide your hands in your sleeves and keep walking.)', to: 'hide' },
           { text: '“It’s nothing. A trick of the light.”', to: 'lie' },
-          { text: '[Ash] (Show him. Let the glow brighten.)', to: 'show', school: 'ash' },
+          { text: '(Show him. Let the glow brighten.)', to: 'show', school: 'ash' },
         ],
       },
       hide: { speaker: 'narrator', text: 'He watches you go. You can feel him watching. The singing pulls you on, down the Ward, past the shuttered shops, towards the great black shape of the Kiln against the stars.', next: null },

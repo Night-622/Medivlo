@@ -340,7 +340,7 @@ const dialogues: DialogueDef[] = [
       pull: {
         speaker: 'narrator', text: 'The thread tugs in your fingers. Something far below is drawing it down, slowly, unpicking it as it goes. It is the last record of that night anywhere in the world.',
         choices: [
-          { text: '[Umbral] (Knot a thread of dusk round it, to hold it where it is.)', to: 'knot', school: 'umbral', effects: [{ setFlag: 'duskweaver.last_record', value: 'held' }] },
+          { text: '(Knot a thread of dusk round it, to hold it where it is.)', to: 'knot', school: 'umbral', effects: [{ setFlag: 'duskweaver.last_record', value: 'held' }] },
           { text: '(Let it go down. Follow it.)', to: 'go', effects: [{ setFlag: 'duskweaver.last_record', value: 'followed' }] },
         ],
       },

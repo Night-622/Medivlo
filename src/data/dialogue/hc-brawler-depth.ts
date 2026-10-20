@@ -53,7 +53,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Like a crowd, very far off. Chanting my name to get up.', to: 'crowd', trust: 1 },
           { text: 'Like a bell. Over and over. Round after round.', to: 'bell' },
-          { text: '[Fist] (Put your fist on the counter. Let him feel it hum through the wood.)', to: 'fist', school: 'fist' },
+          { text: '(Put your fist on the counter. Let him feel it hum through the wood.)', to: 'fist', school: 'fist' },
         ],
       },
       crowd: { speaker: TK, mood: 'sad', text: '(He goes very still.) That’s it. That’s exactly it. I heard that once, round six, flat on my back in the Grand Pit with Doran Kell standing over me. Four thousand people. And under them, something else. Get up, it said.', next: 'kell' },
@@ -381,7 +381,7 @@ const dialogues: DialogueDef[] = [
         speaker: MT, text: 'And that’s a monk’s form, that is, done by something that has watched a monk and never been told off. They’re learning off whatever’s in the pool.',
         choices: [
           { text: 'So what’s in the pool?', to: 'pool' },
-          { text: '[Fist] (Square up to the nearest slime, just to see.)', to: 'square', school: 'fist' },
+          { text: '(Square up to the nearest slime, just to see.)', to: 'square', school: 'fist' },
           { text: 'Thanks for coming out, Moll.', to: 'thanks', trustNpc: MT, trust: 1 },
         ],
       },
@@ -445,7 +445,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The bearers’ fires at the Heart camp have burned all week on whatever would burn. You will need a shovelful of embers, and something to carry them in that is not your hands.',
         choices: [
           { text: '(Carry them in Pops’s ladle, very carefully.)', to: 'ladle' },
-          { text: '[Fist] (Carry them in your glove, quickly, the way Pops takes a pot off the flame.)', to: 'glove', school: 'fist' },
+          { text: '(Carry them in your glove, quickly, the way Pops takes a pot off the flame.)', to: 'glove', school: 'fist' },
         ],
       },
       ladle: { speaker: 'narrator', text: 'The ladle holds about a mouthful of embers. You make the trip several times. Tilly, following you with a bucket, counts each trip out loud, like rounds.', effects: [{ setFlag: 'brawler.embers', value: true }], next: null },
@@ -464,7 +464,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Call the wrong name to the wrong fighter, and nobody turns round. A name has to land on its owner.',
         choices: [
           { text: '(Try one anyway, quietly.)', to: 'try' },
-          { text: '[Fist] (Watch their stances. Every Lowfold fighter stands like the person who taught them.)', to: 'stance', school: 'fist' },
+          { text: '(Watch their stances. Every Lowfold fighter stands like the person who taught them.)', to: 'stance', school: 'fist' },
         ],
       },
       try: { speaker: 'narrator', text: 'You say “Peg Shaw?” to the nearest fighter. Nothing. A name thrown into a crowd is just a noise. You need to know who is who. A promoter always knows.', effects: [{ setFlag: 'brawler.faces_seen', value: true }], next: null },

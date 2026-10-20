@@ -161,7 +161,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'There is no gala. I’m fetching the Beadle.', to: 'expose', effects: [{ setFlag: 'bard.touts', value: 'exposed' }] },
           { text: 'This printer’s mark is dated a month before Marchetti came to Lyrehaven. Where did you get these?', to: 'printed', insight: 'touts_printed', when: { insight: 'marchetti_arrival' }, effects: [{ setFlag: 'bard.touts', value: 'printed' }] },
-          { text: '[Song] (Sing the ticket back to him, slowly, in the style of a funeral march.)', to: 'sing', school: 'song', effects: [{ setFlag: 'bard.touts', value: 'exposed' }] },
+          { text: '(Sing the ticket back to him, slowly, in the style of a funeral march.)', to: 'sing', school: 'song', effects: [{ setFlag: 'bard.touts', value: 'exposed' }] },
           { text: 'I’ll think about it.', to: null },
         ],
       },
@@ -253,7 +253,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Take the tunes back gently, and leave it the nest.)', to: 'stay', effects: [{ setFlag: 'bard.fledgling', value: 'nested' }] },
           { text: '(Take the tunes, and shoo it home towards the Fells.)', to: 'home', effects: [{ setFlag: 'bard.fledgling', value: 'home' }] },
-          { text: '[Song] (Sing it one of your own, so it has something to keep.)', to: 'stay', school: 'song', effects: [{ setFlag: 'bard.fledgling', value: 'nested' }] },
+          { text: '(Sing it one of your own, so it has something to keep.)', to: 'stay', school: 'song', effects: [{ setFlag: 'bard.fledgling', value: 'nested' }] },
         ],
       },
       stay: { speaker: 'narrator', text: 'It gives up the tunes without a fuss and settles down in the nest, humming. The Opera has a lodger.', next: null },
@@ -269,7 +269,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:perdita-brisk', text: 'Rosalind sent you? Rosalind Vell? Sent you to me? (She puts the tongs down.) I was her understudy for eleven years. I knew every note of the Daughter. She never had so much as a cold.',
         choices: [
           { text: 'She wants to see you. She hasn’t had the nerve to ask.', to: 'nerve' },
-          { text: '[Song] (Hum the Daughter’s first aria. See if she joins in.)', to: 'hum', school: 'song' },
+          { text: '(Hum the Daughter’s first aria. See if she joins in.)', to: 'hum', school: 'song' },
         ],
       },
       hum: { speaker: 'npc:perdita-brisk', mood: 'happy', text: '(She joins in on the second bar, without meaning to, and does not stop until the end. People on the Steps applaud. She goes pink.) Oh, all right.', next: 'nerve' },
@@ -409,9 +409,9 @@ const dialogues: DialogueDef[] = [
       songs: {
         speaker: 'npc:eulalie-marchbank', text: 'Our songs are thirty years out of date, of course. Still in tune, though. A song keeps, if you keep singing it.',
         choices: [
-          { text: 'I’ve brought the Abbey hymns. The Conservatory kept the scores.', to: 'scores', when: { flag: 'bard.songbook', value: 'sealed' }, effects: [{ setFlag: 'bard.hymn_scores', value: true }] },
-          { text: 'Lyrehaven sang every song once and let them go.', to: 'discord', when: { flag: 'bard.songbook', value: 'lastnight' } },
-          { text: 'I’ve brought new songs. Lyrehaven gives them away now.', to: 'new', when: { flag: 'bard.songbook', value: 'taught' }, effects: [{ setFlag: 'bard.new_songs', value: true }] },
+          { text: 'I’ve brought the Abbey hymns. The Conservatory kept the scores.', to: 'scores', when: { flag: 'bard.songbook', op: '==', value: 'sealed' }, effects: [{ setFlag: 'bard.hymn_scores', value: true }] },
+          { text: 'Lyrehaven sang every song once and let them go.', to: 'discord', when: { flag: 'bard.songbook', op: '==', value: 'lastnight' } },
+          { text: 'I’ve brought new songs. Lyrehaven gives them away now.', to: 'new', when: { flag: 'bard.songbook', op: '==', value: 'taught' }, effects: [{ setFlag: 'bard.new_songs', value: true }] },
           { text: 'Where is the Song school’s Sentinel?', to: 'sentinel', quest: true },
         ],
       },
@@ -429,7 +429,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:tamsin', text: 'Over the nave? At night, with the shapes singing? One copper and a story, and the story had better be very good.',
         choices: [
           { text: 'An impresario tried to play one song forever, and I improvised him off the stage.', to: 'gala' },
-          { text: '[Song] (Sing her the Lighthouse Keeper’s Daughter, all four acts, abridged.)', to: 'sung', school: 'song', trust: 1 },
+          { text: '(Sing her the Lighthouse Keeper’s Daughter, all four acts, abridged.)', to: 'sung', school: 'song', trust: 1 },
         ],
       },
       gala: { speaker: 'npc:tamsin', text: 'Improvised him off. Ha. That’s a copper’s worth. Get in. Sit in the middle. Don’t trail your hand.', next: 'over' },
@@ -495,7 +495,7 @@ const dialogues: DialogueDef[] = [
       rosa: { speaker: 'npc:wil', text: 'Rosalind Vell, aged eleven, C. 1000, in very large letters, with a drawing of herself. Aldous says she sang the Bell’s descant so high the gulls stopped. I believe it. Look at the size of that signature.', next: 'shore' },
       shore: { speaker: 'npc:wil', text: 'The ones who were here when the arches shut went down to Abbeyshore, to be near the Abbey. Precentor Marchbank sings them all to the lake every dusk from the Shore Chapel. Go and sing with them. Tell her Wil says the Goose still keeps their room.', next: null },
       start: { speaker: 'npc:wil', mood: 'happy', text: 'To be sung, not read? Oh, I like her. Give it here. Quiet, all of you, there’s a letter from Lyrehaven. (The whole Goose goes quiet. Wil clears her throat, and sings.)', next: 'letter' },
-      letter: { speaker: RV, text: '“Darling. The Opera is open. Not for a gala, for rehearsals, which is better. Perdita is impossible. The meadows hum again, a little, when the wind is right. Do not let them make you sing anything you do not mean.”', next: 'end' },
+      letter: { speaker: RV, text: '“Darling. The Opera is open. Not for a gala, for rehearsals, which is better. The meadows hum again, a little, when the wind is right. Do not let them make you sing anything you do not mean.”', next: 'end' },
       end: {
         speaker: 'npc:wil', text: 'And there’s a bit at the bottom, underlined twice. “I sang it to the pug first. My voice came home.” (She puts the letter down.) Well. I’ll need a minute before I do the stew.',
         choices: [
@@ -571,7 +571,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A circle of moss where nothing casts a shadow, not the trees, not the ferns, not you. You stand at the edge and sing.',
         choices: [
           { text: '(Sing something low, like evening.)', to: 'low' },
-          { text: '[Song] (Sing the shadow its own name, the way a lullaby does.)', to: 'name', school: 'song' },
+          { text: '(Sing the shadow its own name, the way a lullaby does.)', to: 'name', school: 'song' },
         ],
       },
       low: { speaker: 'narrator', text: 'Halfway through the second verse, something dark and shy creeps out from under a fern and lies down along the ground towards you, listening. When you walk away, singing, it follows.', next: null },

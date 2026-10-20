@@ -229,7 +229,7 @@ const npcs: NpcDef[] = [
       { when: at('quest:corsair-dots-iou', 'iou'), dialogue: 'dialogue:corsair-interest-iou' },
       { dialogue: 'dialogue:corsair-interest-letter' },
     ],
-    barks: [{ lines: ['(Interest is sitting on the Guile arch with a letter in his claws, shouting “PAY UP!” at passing wolves.)'] }],
+    barks: [{ lines: ['(Interest says “PAY UP!”, then looks at you as if expecting change.)'] }],
     roles: ['quest'],
     look: { skin: 0x3aa84a, cloth: 0xd83a2a, accent: 0xffd36a, build: 'short' },
     bio: 'Dot’s parrot, who flew back through the Pawned Gate to Gallows Reef on his own and has now flown all the way back with a letter, compounding.',

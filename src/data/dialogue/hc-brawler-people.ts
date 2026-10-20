@@ -284,7 +284,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A stone shelter, one fire, two village champions in opposite corners, glaring, blue with cold. One coat, folded on the floor exactly between them, untouched.',
         choices: [
           { text: '(Pick up the coat and put one sleeve on each of them.)', to: 'sleeves' },
-          { text: '[Fist] Square up to both of you, then. One round. Loser keeps warm.', to: 'round', school: 'fist' },
+          { text: 'Square up to both of you, then. One round. Loser keeps warm.', to: 'round', school: 'fist' },
         ],
       },
       sleeves: { speaker: 'narrator', text: 'You hold them both still, which is not easy, and put a sleeve on each. Now they have to sit side by side. They sit side by side. After an hour, one of them starts telling the other about a turnip.', next: null },
@@ -356,7 +356,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'At the edge of the black pool, the slimes have pressed a ring into the mud, roughly round. Twenty of them sit along its edge like a crowd. A large one in the middle raises what may be a fist.',
         choices: [
           { text: '(Touch gloves with it.)', to: 'touch' },
-          { text: '[Fist] (Step in, bounce on your toes, and give the crowd a wave.)', to: 'wave', school: 'fist' },
+          { text: '(Step in, bounce on your toes, and give the crowd a wave.)', to: 'wave', school: 'fist' },
         ],
       },
       touch: { speaker: 'narrator', text: 'It touches gloves with you, wetly. Then the whole ring wobbles apart, and every slime turns to point, with most of itself, into the black water.', next: null },
@@ -451,7 +451,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A pit of soft ash behind the Ore Market, ringed with Kilnmouth smiths and, at the front with a chalkboard, Honest Abigail, taking bets at evens. The Reaver bearer has taken off their axe and is cracking their knuckles. First one down goes second into Ashmaw.',
         choices: [
           { text: '(Fight like the Lowfold: get hit, get up.)', to: 'up', effects: [{ setFlag: 'brawler.bout', value: 'up' }] },
-          { text: '[Fist] (Let them swing. Wait for the opening.)', to: 'wait', school: 'fist', effects: [{ setFlag: 'brawler.bout', value: 'wait' }] },
+          { text: '(Let them swing. Wait for the opening.)', to: 'wait', school: 'fist', effects: [{ setFlag: 'brawler.bout', value: 'wait' }] },
         ],
       },
       up: { speaker: 'narrator', text: 'They put you down four times. You get up four times. The fifth time, they sit down in the ash beside you, laughing, and say they are too tired to knock you down again. Everybody goes in together. Abigail pays out to the copper.', next: null },

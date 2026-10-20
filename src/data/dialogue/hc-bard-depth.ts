@@ -45,7 +45,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'The note came from under the stage.', to: 'under' },
           { text: 'I only wanted to hear the echo.', to: 'echo' },
-          { text: '[Song] (Sing her the note.)', to: 'sing', school: 'song' },
+          { text: '(Sing her the note.)', to: 'sing', school: 'song' },
         ],
       },
       under: { speaker: RV, text: 'Of course it did. Everything important in this house happens under the stage: the trapdoors, the ghosts, the love affairs. Mostly the love affairs.', next: 'mirror' },
@@ -174,7 +174,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Halfway along the meadow road stands the Hum Stone, a grey menhir with a hollow worn through it at the height of a singer’s mouth. Travellers to the Turning sang one note into it for luck, and the meadows sang it back all the way to the gate.',
         choices: [
           { text: '(Sing your note into the hollow.)', to: 'sing', effects: [{ unlockLore: 'lore:hc-bard-hum-stone' }] },
-          { text: '[Song] (Sing Rosalind’s note, the one she cannot.)', to: 'hers', school: 'song', effects: [{ unlockLore: 'lore:hc-bard-hum-stone' }] },
+          { text: '(Sing Rosalind’s note, the one she cannot.)', to: 'hers', school: 'song', effects: [{ unlockLore: 'lore:hc-bard-hum-stone' }] },
         ],
       },
       sing: { speaker: 'narrator', text: 'Your note goes into the stone and comes out of the other side changed, warmer, and for a moment the whole meadow hums it back to you, faintly, like a choir clearing its throat.', next: null },
@@ -193,7 +193,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'At the foot, the printer’s line: “Printed at Lyrehaven at the request of a singer of the Citadel, who would not give a name.” Under it, in faded ink, somebody has added by hand: “Sing it anyway.”',
         choices: [
           { text: '(Copy it out for Tobble.)', to: 'copy', effects: [{ setFlag: 'bard.lullaby_sheet', value: true }, { unlockLore: 'lore:hc-bard-quiet-child' }] },
-          { text: '[Song] (Hum it once through, to fix it in your head.)', to: 'hum', school: 'song', effects: [{ setFlag: 'bard.lullaby_sheet', value: true }, { unlockLore: 'lore:hc-bard-quiet-child' }] },
+          { text: '(Hum it once through, to fix it in your head.)', to: 'hum', school: 'song', effects: [{ setFlag: 'bard.lullaby_sheet', value: true }, { unlockLore: 'lore:hc-bard-quiet-child' }] },
         ],
       },
       copy: { speaker: 'narrator', text: 'You copy it out in your best hand. Tobble will not be able to read it, but he will be able to hold it, which for a busker is nearly the same thing.', next: null },
@@ -225,7 +225,7 @@ const dialogues: DialogueDef[] = [
         speaker: RK, mood: 'angry', text: 'A duet. With Calloway. (She looks at her fiddle as if it had betrayed her.) My nan fiddled that jig at her own wedding. Who did she think was playing the other half?',
         choices: [
           { text: 'Your grandfather, maybe? Was he a Piper?', to: 'nan' },
-          { text: '[Song] (Play her the low part yourself, on her own fiddle.)', to: 'play', school: 'song' },
+          { text: '(Play her the low part yourself, on her own fiddle.)', to: 'play', school: 'song' },
           { text: 'It needs both of you, or it’s only half a jig.', to: 'half' },
         ],
       },
@@ -265,7 +265,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Somebody has dropped it, twice, by the dents. When you strike it on the beam the half-stone in your chest answers, and far below the great metronome gives one slow tick, and then another, and keeps going, very slowly, like a heart.',
         choices: [
           { text: '(Leave it ticking slow.)', to: 'slow', effects: [{ setFlag: 'bard.metronome_ticking', value: 'grave' }, { unlockLore: 'lore:hc-bard-great-metronome' }] },
-          { text: '[Song] (Strike it again, harder, to wind it up to tempo.)', to: 'fast', school: 'song', effects: [{ setFlag: 'bard.metronome_ticking', value: 'andante' }, { unlockLore: 'lore:hc-bard-great-metronome' }] },
+          { text: '(Strike it again, harder, to wind it up to tempo.)', to: 'fast', school: 'song', effects: [{ setFlag: 'bard.metronome_ticking', value: 'andante' }, { unlockLore: 'lore:hc-bard-great-metronome' }] },
         ],
       },
       slow: { speaker: 'narrator', text: 'Grave, says the dial: the slowest mark of all. It will have to do until there is a Turning to set it by.', next: null },
@@ -289,7 +289,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A long while later he comes back up without the basket, humming something you have never heard before and will never hear again. There is grey ash on his cuffs.',
         choices: [
           { text: '(Keep still, and let him pass.)', to: 'pass', effects: [{ setFlag: 'bard.cellar_watched', value: 'hidden' }] },
-          { text: '[Song] (Hum his tune back at him from the dark, very softly.)', to: 'hum', school: 'song', effects: [{ setFlag: 'bard.cellar_watched', value: 'hummed' }] },
+          { text: '(Hum his tune back at him from the dark, very softly.)', to: 'hum', school: 'song', effects: [{ setFlag: 'bard.cellar_watched', value: 'hummed' }] },
         ],
       },
       pass: { speaker: 'narrator', text: 'He passes within an arm’s length of you, smelling of violets and smoke, and goes up to bed.', next: null },
@@ -306,7 +306,7 @@ const dialogues: DialogueDef[] = [
       wig: {
         speaker: 'narrator', text: 'In the Opera gardens, among the Bellflowers, a Siren Wisp is drifting in slow circles wearing the Drowned Queen’s wig: three feet of green silk ringlets and a coronet of shells. It is admiring itself in the pond.',
         choices: [
-          { text: '[Song] (Sing it the Drowned Queen’s entrance, so it curtseys.)', to: 'bow', school: 'song' },
+          { text: '(Sing it the Drowned Queen’s entrance, so it curtseys.)', to: 'bow', school: 'song' },
           { text: '(Creep through the flower beds and snatch the wig.)', to: 'snatch' },
           { text: '(Tell it the wig is last season.)', to: 'season' },
         ],
@@ -350,14 +350,14 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:obj-bard-chapel-steps', name: 'C-1 dusk on the Shore Chapel steps', scope: 'party',
     entries: [{ when: stage('quest:bard-abbeyshore', 'dusk'), node: 'steps' }, { node: 'plain' }],
     nodes: {
-      steps: { speaker: 'narrator', text: 'At dusk the Song exiles come out onto the Shore Chapel steps: eleven old singers in shawls and mufflers, a hymn-book each, and a tenor called Pellow who is, Eulalie whispers, still terrible. They face the lake, and Eulalie lifts one finger.', next: 'sing' },
+      steps: { speaker: 'narrator', text: 'At dusk the Song exiles come out onto the Shore Chapel steps: eleven old singers in shawls and mufflers, a hymn-book each, among them a tenor called Pellow who is, Eulalie whispers, still terrible. They face the lake, and Eulalie lifts one finger.', next: 'sing' },
       sing: { speaker: 'narrator', text: 'They sing the Turning hymn the Lyrehaven way, thirty years out of date. Out on the water the pale shapes rise in the reeds and sing the harmony back, word-perfect, and Pellow comes in a bar early, as he has every night since C. 1012.', next: 'gap' },
       gap: {
         speaker: 'narrator', text: 'Then, in the fourth verse, everyone stops for four bars. Nobody sings. The reeds wait too. Then the hymn goes on as if nothing had happened.',
         choices: [
           { text: '(Sing into the gap: the descant, the high line over the top.)', to: 'descant', effects: [{ setFlag: 'bard.chapel_descant', value: true }] },
           { text: '(Hold the silence with them.)', to: 'hold' },
-          { text: '[Song] (Hum Pellow back into time, very quietly, from beside him.)', to: 'pellow', school: 'song' },
+          { text: '(Hum Pellow back into time, very quietly, from beside him.)', to: 'pellow', school: 'song' },
         ],
       },
       descant: { speaker: EU, mood: 'afraid', text: '(Her hand closes on your sleeve, hard, and the whole choir in the reeds falls silent at once.) Not that. Not from up here. (She lets go.) I am sorry, singer. That part is spoken for.', next: 'after' },
@@ -401,7 +401,7 @@ const dialogues: DialogueDef[] = [
         effects: [{ unlockLore: 'lore:hc-bard-marchbank-descant' }],
         choices: [
           { text: 'I’ll sing it at the door, if I need to.', to: 'tamsin', quest: true, effects: [{ setFlag: 'bard.descant_key', value: true }] },
-          { text: '[Song] (Learn it from her now, every note, so it is not only hers.)', to: 'learn', school: 'song', effects: [{ setFlag: 'bard.descant_key', value: true }] },
+          { text: '(Learn it from her now, every note, so it is not only hers.)', to: 'learn', school: 'song', effects: [{ setFlag: 'bard.descant_key', value: true }] },
         ],
       },
       learn: { speaker: 'narrator', text: 'She sings it to you three times, slowly, and you sing it back until she stops wincing. Now two of us have it, she says. That is how songs survive. It is also how they get sung wrong.', next: 'tamsin' },
@@ -414,7 +414,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:bard-eulalie-morwen', name: 'C-3 Eulalie hears the choir is at rest', scope: 'party',
     entries: [{ node: 'start' }],
     nodes: {
-      start: { speaker: EU, text: '(She is on the Chapel steps with her hymn-book shut on one finger, and eleven old singers behind her in a row.) They did not answer tonight. Thirty years, and tonight the reeds were empty. Tell me plainly, singer.', next: 'tell' },
+      start: { speaker: EU, text: '(She is on the Chapel steps with her hymn-book shut on one finger, and the other ten behind her in a row.) They did not answer tonight. Thirty years, and tonight the reeds were empty. Tell me plainly, singer.', next: 'tell' },
       tell: {
         speaker: EU, mood: 'sad', text: '(You tell her: the Abbess, the rope, the choir closing their hymn-books one by one.) So it is over. They have stopped waiting.',
         choices: [
@@ -425,7 +425,7 @@ const dialogues: DialogueDef[] = [
       },
       rest: { speaker: EU, text: 'Company. Yes. That is all we were for, and it was enough.', next: 'after' },
       door: { speaker: EU, mood: 'happy', text: 'Did they. (She sits down on the step, rather suddenly.) Then I did sing it at the Abbey after all, thirty years late and by proxy. Lyrehaven will say that counts. Lyrehaven says anything counts.', next: 'after' },
-      bell: { speaker: EU, text: 'Gently, once. Of course she did. She always said Lyrehaven rang it like a fire alarm.', next: 'after' },
+      bell: { speaker: EU, text: 'Gently, once. Of course she did. She always said Lyrehaven rang it like a fire-bell.', next: 'after' },
       after: {
         speaker: EU, text: 'But what do we do at dusk now? (Behind her, Pellow clears his throat.) No, Pellow. Not a solo.',
         choices: [
@@ -451,7 +451,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Take the last page.)', to: 'take', effects: [{ setFlag: 'bard.last_page', value: true }] },
           { text: '(Uncross one of the rests.)', to: 'rest', effects: [{ setFlag: 'bard.rest_restored', value: true }] },
-          { text: '[Song] (Hum the last bar as he wrote it.)', to: 'hum', school: 'song' },
+          { text: '(Hum the last bar as he wrote it.)', to: 'hum', school: 'song' },
         ],
       },
       take: { speaker: 'narrator', text: 'You fold it into your coat. Somewhere off in the trees, a long way past the Willow, a man laughs as if he has just been told something delightful.', next: null },
@@ -497,7 +497,7 @@ const dialogues: DialogueDef[] = [
           { text: '“The Willow is free and the choir is resting. Nobody has made me sing anything I don’t mean.”', to: 'sent', effects: [{ setFlag: 'bard.reply', value: 'meant' }] },
           { text: '“Tell Perdita she’s flat in the second act. She’ll know why I’m telling her.”', to: 'sent', when: { questCompleted: 'quest:bard-the-understudy' }, effects: [{ setFlag: 'bard.reply', value: 'perdita' }] },
           { text: '(Sing her the first bar of the duet from the Stone Court, and nothing else.)', to: 'sent', effects: [{ setFlag: 'bard.reply', value: 'duet' }] },
-          { text: '[Song] (Sing her the overture’s five bars, all of them, in order.)', to: 'sent', school: 'song', effects: [{ setFlag: 'bard.reply', value: 'overture' }] },
+          { text: '(Sing her the overture’s five bars, all of them, in order.)', to: 'sent', school: 'song', effects: [{ setFlag: 'bard.reply', value: 'overture' }] },
         ],
       },
       sent: { speaker: 'narrator', text: 'It goes back through the Song arch the way the letter came. Somewhere on the far side, very faintly, the meadows hum it back.', next: null },
@@ -537,7 +537,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Tear out every receipt.)', to: 'tear', effects: [{ setFlag: 'bard.receipts', value: 'torn' }] },
           { text: '(Write “RETURNED, WITH THANKS” across each one, and sign it.)', to: 'returned', effects: [{ setFlag: 'bard.receipts', value: 'returned' }] },
-          { text: '[Song] (Sing the small print aloud to the tune of Crumley’s drinking song.)', to: 'silly', school: 'song', effects: [{ setFlag: 'bard.receipts', value: 'sung' }] },
+          { text: '(Sing the small print aloud to the tune of Crumley’s drinking song.)', to: 'silly', school: 'song', effects: [{ setFlag: 'bard.receipts', value: 'sung' }] },
         ],
       },
       tear: { speaker: 'narrator', text: 'They come out cleanly, forty-one of them. You stuff them in your coat to burn at the fire, where for once they will do somebody some good.', next: 'end' },
@@ -556,14 +556,14 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Give them a note, and step back.)', to: 'play' },
           { text: '(Start Crumley’s drinking song, all forty verses.)', to: 'crumley' },
-          { text: '[Song] (Start the skipping song, and turn one end of the rope yourself.)', to: 'skip', school: 'song' },
+          { text: '(Start the skipping song, and turn one end of the rope yourself.)', to: 'skip', school: 'song' },
         ],
       },
       play: { speaker: 'narrator', text: 'You hum an A and step back. They all start at once, three songs in three keys, and it is dreadful, and then they find each other.', next: 'corrigan' },
       crumley: { speaker: 'narrator', mood: 'happy', text: 'By the ninth verse the whole camp is singing the chorus. By the fourteenth somebody’s grandmother has been asked to leave. By the twenty-second Crumley is crying with laughter, and his tears are clear.', next: 'corrigan' },
       skip: { speaker: 'narrator', mood: 'happy', text: 'You turn one end and a Legion sentry, to everyone’s astonishment, turns the other. The Ambry twins jump in together and do not miss once, and argue afterwards about who would have.', next: 'corrigan' },
       corrigan: { speaker: 'narrator', mood: 'sad', text: 'Last of all, when the fire is low, Old Corrigan sings his wedding song once through, quietly. Nobody joins in. It is the only song in the Heart tonight that does not need anyone else.', next: 'end' },
-      end: { speaker: 'narrator', text: 'In the morning the buskers are gone, up the road towards home. On the hearthstones they have left a song written out in full, words and tune, and under it, in three hands: LEARN THIS.', effects: [{ setFlag: 'bard.buskers_played', value: true }], next: null },
+      end: { speaker: 'narrator', text: 'In the morning the buskers are gone, up the road towards home. On the hearthstones they have left a song written out in full, words and tune, and under it, in four hands: LEARN THIS.', effects: [{ setFlag: 'bard.buskers_played', value: true }], next: null },
       plain: { speaker: 'narrator', text: 'The Heart camp fire, burned down to coals. Somebody has scratched a stave on a hearthstone.', next: null },
     },
   },
@@ -581,7 +581,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Let them sit, and walk on.)', to: 'on' },
         ],
       },
-      again: { speaker: 'narrator', mood: 'sad', text: 'You play it again, down the next rank and the next. Not all of them sit. Enough do. Nobody ever sang to any of them, you think, and they came to him because he seemed to understand.', next: 'end' },
+      again: { speaker: 'narrator', mood: 'sad', text: 'You play it again, down the next rank and the next. Not all of them sit. Enough do. Nobody ever sang to any of them, you think, and they came to the King because he seemed to understand.', next: 'end' },
       on: { speaker: 'narrator', text: 'You walk on. Behind you nobody stands up again. One of them is humming the question, the four notes rising, over and over, as if he were asking it of someone.', next: 'end' },
       end: { speaker: 'narrator', text: 'Far behind you, at the camp, a crumhorn plays one note: Tobble, telling you he heard. Now the stairs.', effects: [{ setFlag: 'bard.lullaby_legion', value: true }], next: null },
       plain: { speaker: 'narrator', text: 'The Legion’s ranks. Here and there along the front, a soldier is sitting on the ground.', next: null },

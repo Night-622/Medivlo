@@ -77,7 +77,7 @@ const entries: LoreEntry[] = [
   },
   // ---------- the Brindlecross fourteen (unlocked on first talk via NpcDef.lore)
   npc('maren', 'Maren Hollis', 'The best tracker in Aldermoor. She wears the pelt of the first Gloamwood wolf that came back wrong, and she has been hunting the reason ever since. Her mother carried a stone into the Heart in C. 1012.'),
-  npc('godric', 'Elder Godric', 'Elder of Brindlecross for forty winters. He remembers the Abbey bells, distrusts magic and relies on it anyway. He was a Citadel guard once, which he mentions to nobody.'),
+  npc('godric', 'Elder Godric', 'Elder of Brindlecross for twenty winters. He remembers the Abbey bells, distrusts magic and relies on it anyway. He was a Citadel guard once, which he mentions to nobody.'),
   npc('nan-briar', 'Nan Briar', 'Nobody remembers Nan Briar being young. Her cat is called Parson. She knows more about the White Stag than she will say, and she charges for what she does say.'),
   npc('odo', 'Odo Vance', 'Odo forged half the militia’s blades and mended the rest. Iron from Hollowed armour rings wrong on his anvil, and he can’t stop thinking about it.'),
   npc('wil', 'Wil Crane', 'Keeper of the Gilded Goose. Wil hears everything that happens in Brindlecross, usually before it happens. A night at the Goose restores you fully.'),

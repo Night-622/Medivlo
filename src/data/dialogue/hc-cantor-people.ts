@@ -501,7 +501,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:tamsin', text: 'Out over the Abbey? On purpose? One copper and a story, and the story had better keep me awake, because they sing out there, and I nod.',
         choices: [
           { text: 'A Cantor fell asleep on the Close steps and woke up saying “dark”.', to: 'story' },
-          { text: '[Radiance] I’ll sing you awake the whole way.', to: 'sing', school: 'radiance', trust: 1 },
+          { text: 'I’ll sing you awake the whole way.', to: 'sing', school: 'radiance', trust: 1 },
         ],
       },
       story: { speaker: 'npc:tamsin', mood: 'happy', text: 'And the whole city heard? Ha! That’ll do. That’ll keep me up. In you get.', next: null },
@@ -595,7 +595,7 @@ const dialogues: DialogueDef[] = [
       asleep: { speaker: 'narrator', text: 'Novice Tobit Lark is asleep sitting against the Radiance arch, with a letter held to his chest in both hands. When you take it, he wakes all at once and tries to sing.', next: 'tobit' },
       tobit: { speaker: 'npc:tobit-lark-gate', mood: 'happy', text: 'I’m awake! Mother Celestine said give it to you and nobody else. I walked the whole Dawn Road. I slept in a hedge. A real hedge! It was wonderful.', next: 'letter' },
       letter: {
-        speaker: CH, text: '“A lullaby, with words, which I have finally written down, so that you will have one. Sing it to whatever needs it. The Close is very quiet without you, and the Brightwatch is very confused without the bell. At the bottom, in a smaller hand: I slept. Twice. C. H.”',
+        speaker: CH, text: '“A lullaby, with words, which I have finally written down, so that you will have one. Sing it to whatever needs it. The Close is very quiet without you, and the Brightwatch is very confused without the bell.” (At the bottom, in a smaller hand:) “I slept. Twice. C. H.”',
         choices: [
           { text: '(Fold the letter away.)', to: 'end', quest: true, effects: [{ setFlag: 'cantor.celestine_letter', value: true }] },
           { text: 'She slept, Tobit.', to: 'slept', quest: true, effects: [{ setFlag: 'cantor.celestine_letter', value: true }] },
@@ -612,7 +612,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       start: { speaker: 'npc:dovina-lull-shore', text: 'Darling. Don’t look so surprised. Your face is on every Brightwatch door in Dawnspire, and letters with your name on them get read. So Mother Celestine sent it to me, at the bottom of a crate of draughts, through the arch. I always turn up where I’m needed.', next: 'letter' },
       letter: {
-        speaker: CH, text: '“A lullaby, with words, which I have finally written down, so that you will have one. Sing it to whatever needs it. They have taken your face off the Choir door; I have put it back. At the bottom, in a smaller hand: I slept. Twice. C. H.”',
+        speaker: CH, text: '“A lullaby, with words, which I have finally written down, so that you will have one. Sing it to whatever needs it. They have taken your face off the Choir door; I have put it back.” (At the bottom, in a smaller hand:) “I slept. Twice. C. H.”',
         choices: [{ text: '(Fold the letter away.)', to: 'end', quest: true, effects: [{ setFlag: 'cantor.celestine_letter', value: true }] }],
       },
       end: { speaker: 'npc:dovina-lull-shore', mood: 'happy', text: 'Twice! I’d like to think a draught was involved. It wasn’t, she’s far too proud. Off you go, darling. The drowned are waiting for their lullabies.', next: null },
@@ -758,7 +758,7 @@ const dialogues: DialogueDef[] = [
         effects: [{ setFlag: 'cantor.compline_sung', value: true }],
         choices: [
           { text: '(Sing Compline, the hymn Celestine remembered one line of.)', to: 'compline', when: { insight: 'compline' } },
-          { text: '(Sing Celestine’s lullaby. It is the only evening hymn you have.)', to: 'lullaby' },
+          { text: '(Sing Celestine’s lullaby, the one she wrote down for you.)', to: 'lullaby' },
         ],
       },
       compline: { speaker: 'narrator', text: 'You sing it all the way through, the hymn the Hierarch banned: the one that sings the light down gently, and lets the dark in, and calls it rest. Down on the stairs, one by one, the bearers stop talking to listen.', next: null },
@@ -768,7 +768,7 @@ const dialogues: DialogueDef[] = [
         effects: [{ setFlag: 'cantor.compline_sung', value: true }, { trust: CH, set: 5 }],
         choices: [
           { text: '(Sing Compline, the hymn Celestine remembered one line of.)', to: 'compline-d', when: { insight: 'compline' } },
-          { text: '(Sing Celestine’s lullaby. It is the only evening hymn you have.)', to: 'lullaby-d' },
+          { text: '(Sing Celestine’s lullaby, the one she wrote down for you.)', to: 'lullaby-d' },
         ],
       },
       'compline-d': { speaker: 'narrator', text: 'You sing it all the way through, the hymn the Hierarch banned: the one that sings the light down gently, and lets the dark in, and calls it rest. Down on the stairs, one by one, the bearers stop talking to listen.', next: 'asleep' },

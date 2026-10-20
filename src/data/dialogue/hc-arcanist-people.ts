@@ -112,7 +112,7 @@ const dialogues: DialogueDef[] = [
       settle: {
         speaker: 'npc:dora-flue', text: 'Well? Safe, or not?',
         choices: [
-          { text: '[Ash] Let me burn the flue clean first, top to bottom.', to: 'burn', school: 'ash', effects: [{ setFlag: 'arcanist.sweeps_settled', value: 'burned' }] },
+          { text: 'Let me burn the flue clean first, top to bottom.', to: 'burn', school: 'ash', effects: [{ setFlag: 'arcanist.sweeps_settled', value: 'burned' }] },
           { text: 'The tears come down with the smoke from the Kiln. Close the dampers when the Kiln roars and they can’t get in.', to: 'proof', insight: 'arcanist_smoke', effects: [{ setFlag: 'arcanist.sweeps_settled', value: 'dampers' }] },
           { text: 'I’m still looking.', to: null },
         ],
@@ -154,7 +154,7 @@ const dialogues: DialogueDef[] = [
       heap: { speaker: 'npc:orsolya-glaze', text: 'A vase for the Velvet King of Tidecourt, ordered in C. 1011, never collected, and I am too proud to stop. It shatters at the note the Bell rang. I need singing sand. The Kiln Golems carry it in their bellies.', next: null },
       vase: {
         speaker: 'npc:orsolya-glaze', text: 'Singing sand! Now hold the note while I blow. Steady…',
-        choices: [{ text: '[Ash] Hold the fire to the note.', to: 'done', school: 'ash', trust: 1 }, { text: 'Steady.', to: 'done' }],
+        choices: [{ text: 'Hold the fire to the note.', to: 'done', school: 'ash', trust: 1 }, { text: 'Steady.', to: 'done' }],
       },
       done: { speaker: 'npc:orsolya-glaze', mood: 'happy', text: 'It held. Thirty years, and it held. If the Velvet King ever comes for it he can pay double for the wait. Here. Your share.', next: null },
     },

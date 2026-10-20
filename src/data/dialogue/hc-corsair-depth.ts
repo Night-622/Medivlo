@@ -54,7 +54,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Whose are they?', to: 'whose' },
           { text: 'Why are they humming my note?', to: 'note' },
-          { text: '[Guile] (Weigh one in your hand the way a fence would.)', to: 'weigh', school: 'guile' },
+          { text: '(Weigh one in your hand the way a fence would.)', to: 'weigh', school: 'guile' },
         ],
       },
       whose: { speaker: DB, mood: 'sad', text: 'Somebody’s tears, sweetheart. Black tears that came through the Pawned Gate and went hard in the sea. The divers bring them up and the market sells them, and whoever wept them never gets them back.', next: 'hush' },
@@ -138,7 +138,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The newest mark is thirty years old, a little anchor with an A through it. Dot, at the wheel, is not looking at it very hard.',
         choices: [
           { text: '(Ring it once, and scratch your mark beside hers.)', to: 'ring', effects: [{ unlockLore: 'lore:hc-corsair-last-bell' }] },
-          { text: '[Guile] (Ring it twice: once for you, once for Dot, who never leaves.)', to: 'twice', school: 'guile', effects: [{ unlockLore: 'lore:hc-corsair-last-bell' }] },
+          { text: '(Ring it twice: once for you, once for Dot, who never leaves.)', to: 'twice', school: 'guile', effects: [{ unlockLore: 'lore:hc-corsair-last-bell' }] },
         ],
       },
       ring: { speaker: 'narrator', text: 'One clear note goes back over the water to the reef. Behind you, very faintly, the Brine Market answers: a hundred ships’ bells, ringing once, the way they did on Bell night.', next: null },
@@ -157,7 +157,7 @@ const dialogues: DialogueDef[] = [
         speaker: DB, text: '(She runs her thumb along the new board, and stops.) That’s off the Underpaid. My mother’s ship. Sal’s mother bought her for salvage when she came home a wreck, and I never asked what became of her.',
         choices: [
           { text: 'Sal wanted it to keep sailing.', to: 'sail' },
-          { text: '[Guile] Sal’s throwing it in for nothing. Don’t tell anyone.', to: 'free', school: 'guile' },
+          { text: 'Sal’s throwing it in for nothing. Don’t tell anyone.', to: 'free', school: 'guile' },
         ],
       },
       sail: { speaker: DB, mood: 'sad', text: 'Well, it will. (She pats it, twice.) Tell Sal she can have free passage on the Overdraft whenever she likes. Tell her I’ll even pay her, one day. Probably.', next: null },
@@ -176,7 +176,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A marsh-farmer tips in a sack of them, raked from the lee of the Guile arch. She weighs them, gives him two shards and a fish for luck, and nobody asks whose they were. It is that sort of market.',
         choices: [
           { text: 'Whose tears are these?', to: 'whose' },
-          { text: '[Guile] (Put your thumb on the pan, the way every fishwife on Gallows Reef does, and see if she notices.)', to: 'thumb', school: 'guile' },
+          { text: '(Put your thumb on the pan, the way every fishwife on Gallows Reef does, and see if she notices.)', to: 'thumb', school: 'guile' },
         ],
       },
       whose: { speaker: 'narrator', text: '“Whose?” She laughs. “Pearls don’t have names, love. That’s what makes them money.” But she wipes her hands on her apron afterwards, twice.', next: 'hum' },
@@ -196,11 +196,11 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:peregrine-tolley', text: '(You tell him: the drowned lights, the honest centuries, the last lantern.) She asked whether anyone would need a light across the marsh again? (He looks at the lantern in his left hand, the one labelled NEARLY HOME.)',
         choices: [
           { text: 'Someone will. Hang honest ones on her posts.', to: 'honest', effects: [{ setFlag: 'corsair.honest_lights', value: 'honest' }] },
-          { text: '[Guile] Her route’s going spare. A man could charge a fair toll on it.', to: 'toll', school: 'guile', effects: [{ setFlag: 'corsair.honest_lights', value: 'toll' }] },
+          { text: 'Her route’s going spare. A man could charge a fair toll on it.', to: 'toll', school: 'guile', effects: [{ setFlag: 'corsair.honest_lights', value: 'toll' }] },
           { text: 'She went out well. I thought you’d want to know.', to: 'well', trust: 1 },
         ],
       },
-      honest: { speaker: 'npc:peregrine-tolley', text: 'Honest ones. On a marsh. (He puts down NEARLY HOME and picks up a plain tin lantern with no label at all.) I’ve never made one of these to sell. I suppose I’ll have to start labelling them HOME.', next: 'end' },
+      honest: { speaker: 'npc:peregrine-tolley', text: 'Honest ones. On a marsh. (He puts down NEARLY HOME and picks up a plain tin lantern with no label at all.) I’ve only ever sold HOME to people who paid extra. I suppose I’ll have to start labelling them HONEST.', next: 'end' },
       toll: { speaker: 'npc:peregrine-tolley', text: 'A fair toll. (He thinks.) Not a memory. A story, told at the post, and the light’s yours. She’d have liked that. Hester will call it robbery.', next: 'end' },
       well: { speaker: 'npc:peregrine-tolley', mood: 'sad', text: '(He takes his cap off.) A thousand years of honest prices and thirty bad ones. I’ve known worse traders. I’ve been worse traders.', next: 'end' },
       end: { speaker: 'npc:peregrine-tolley', text: 'Go on, then. The bargemen say the Admiral’s pearls have started going up the gold-silt to Gildport instead of stopping here. Whatever he’s selling, he’s found a bigger customer.', next: null },
@@ -218,7 +218,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'He’s feeding it tears. I’m going down.', to: 'down', quest: true },
           { text: 'You came further than any docker ever has. Thank you.', to: 'thanks', trust: 1 },
-          { text: '[Guile] Who signs for the cargo at the bottom?', to: 'sign', school: 'guile' },
+          { text: 'Who signs for the cargo at the bottom?', to: 'sign', school: 'guile' },
         ],
       },
       thanks: { speaker: 'npc:rosie-mossop', text: 'Further than I meant to, and my knees will tell me so tomorrow. (She sniffs.) Don’t tell the gang I held your sleeve.', next: 'down' },
@@ -245,11 +245,11 @@ const dialogues: DialogueDef[] = [
       parrot: { speaker: 'narrator', text: 'Interest is sitting on the Guile arch with his feathers fluffed out, waiting, the way a creditor waits. When you take out a pencil he says “PAY UP” with enormous satisfaction.', next: 'write' },
       bottle: { speaker: 'narrator', text: 'Dot’s green bottle is still lying in the lee of the Guile arch among the pearls, its cork beside it. Hester says things go home from here the way they came. Nobody knows how. Everybody uses it.', next: 'write' },
       write: {
-        speaker: 'narrator', text: 'You have a stub of pencil and the back of Dot’s IOU. What do you send home?',
+        speaker: 'narrator', text: 'You have a stub of pencil and the last blank inch of Dot’s IOU. What do you send home?',
         choices: [
           { text: '“Paid the Queen’s toll, stopped a gold engine, owe nobody anything. Feeling unwell. Love back.”', to: 'sent', effects: [{ setFlag: 'corsair.reply', value: 'unwell' }] },
-          { text: '“Tell Quill the Admiral was the wharf-boy he gave his bread to. He’ll want to know.”', to: 'sent', when: { flag: 'corsair.nobodys_name' }, effects: [{ setFlag: 'corsair.reply', value: 'quill' }] },
-          { text: '[Guile] (Write nothing. Fold the IOU into a paper boat the shape of the Overdraft, and send that.)', to: 'sent', school: 'guile', effects: [{ setFlag: 'corsair.reply', value: 'boat' }] },
+          { text: '“Tell Quill his half-loaf was the only thing the Admiral never paid for.”', to: 'sent', when: { flag: 'corsair.nobodys_name' }, effects: [{ setFlag: 'corsair.reply', value: 'quill' }] },
+          { text: '(Write nothing. Fold the IOU into a paper boat the shape of the Overdraft, and send that.)', to: 'sent', school: 'guile', effects: [{ setFlag: 'corsair.reply', value: 'boat' }] },
         ],
       },
       sent: { speaker: 'narrator', text: 'Whatever carries it home goes through the stone without a sound. For a moment the pearls in the lee of the arch stop humming, as if listening, and from very far off you could swear a bell on Gallows Reef rings once.', next: null },
@@ -272,7 +272,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'You hold out Dot’s IOU and a pencil. The captain cannot read it and cannot hold a pencil. But the hand comes up on its own, slow as a tide, the way a sailor’s hand goes to a rope.',
         choices: [
           { text: '(Wait. A free captain signs in their own time.)', to: 'wait' },
-          { text: '[Guile] (Steady the hand, the way Dot steadied yours on your first splice.)', to: 'steady', school: 'guile' },
+          { text: '(Steady the hand, the way Dot steadied yours on your first splice.)', to: 'steady', school: 'guile' },
         ],
       },
       wait: { speaker: 'narrator', text: 'It takes a long time. When it is done there is a little anchor beside Dot’s name, shaky and unmistakable, and the captain’s eyes are wet. Hollow people do not weep. This one is trying.', effects: [{ setFlag: 'corsair.iou_witnessed', value: true }], next: null },
@@ -291,7 +291,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'On the desk, under a glass bell where another man might keep a ship in a bottle, sits half a loaf of bread gone hard as driftwood. The label is in a boy’s careful capitals: “GIVEN, NOT SOLD. B. Q.”',
         choices: [
           { text: '(Take the bills of sale. All of them.)', to: 'take' },
-          { text: '[Guile] (Take the bills, and the bread. Quill will want to know it was kept.)', to: 'bread', school: 'guile', effects: [{ setFlag: 'corsair.flagship_bread', value: true }] },
+          { text: '(Take the bills, and the bread. Quill will want to know it was kept.)', to: 'bread', school: 'guile', effects: [{ setFlag: 'corsair.flagship_bread', value: true }] },
         ],
       },
       take: { speaker: 'narrator', text: 'Forty-one bills of sale, a stack as thick as a ship’s log. Every man on that deck had a price, and the Admiral paid each one on the day he bought him.', effects: [{ setFlag: 'corsair.flagship_papers', value: true }], next: null },
@@ -308,12 +308,12 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Hand each man his own bill, and read his name off it.)', to: 'names' },
           { text: '(Tear the whole stack in half in front of them.)', to: 'tear' },
-          { text: '[Guile] (Read them Article One: no free captain may be bought, nor sold, nor sell another.)', to: 'article', school: 'guile' },
+          { text: '(Read them Article One: no free captain may be bought, nor sold, nor sell another.)', to: 'article', school: 'guile' },
         ],
       },
       names: { speaker: 'narrator', text: 'It takes the best part of an hour, forty-one names one at a time. By the twentieth the men are turning to look at each other. By the last, a boy at the end of the row is laughing and crying at once, holding his paper as if it might blow away.', next: 'end' },
       tear: { speaker: 'narrator', text: 'The paper tears with a sound like a sail splitting. The white row flinches all together, and then, one by one, they step out of the ranks and sit down in the mud, the way men sit at the end of a very long contract.', next: 'end' },
-      article: { speaker: 'narrator', text: 'You read it loud, the way it was read at the moot. Some of them know it: their mouths move with yours on “nor sell another”, and when you finish they let their hands fall, as if a bosun had called the end of the watch.', next: 'end' },
+      article: { speaker: 'narrator', text: 'You read it loud, the way Dot reads it, hat in hand. Some of them know it: their mouths move with yours on “nor sell another”, and when you finish they let their hands fall, as if a bosun had called the end of the watch.', next: 'end' },
       end: { speaker: 'narrator', text: 'Behind them the Legion closes ranks, forty-one men shorter. Nobody has ever been bought back out of the Heart before. It sets a precedent.', effects: [{ setFlag: 'corsair.crew_freed', value: true }], next: null },
       plain: { speaker: 'narrator', text: 'A gap at the back of the Legion’s ranks where a white row used to stand.', next: null },
     },
@@ -326,10 +326,10 @@ const dialogues: DialogueDef[] = [
     nodes: {
       widow: { speaker: 'narrator', text: 'The Merry Widow rides the black water under the Weeping Wall with nobody at her wheel, her rigging still dripping. In the forecastle the crew list is nailed up where it always was: forty names, crossed out and written in again, over and over.', next: 'list' },
       list: {
-        speaker: 'narrator', text: 'But the crossing-out has stopped. Every name stands now, written once, plainly. And above them, in the same careful hand, is a name that was never crossed out at all: “Master: Wen. Wenlock. Ours.”',
+        speaker: 'narrator', text: 'But the crossing-out has stopped. Every name stands now, written once, plainly. And below them, at the foot of the list, in the same careful hand, is a name that was never crossed out at all: “Master: Wen. Wenlock. Ours.”',
         choices: [
           { text: '(Unship the bell and carry it ashore.)', to: 'bell' },
-          { text: '[Guile] (Sign the crew list under his name, in your Fleet hand: “Read and witnessed.”)', to: 'sign', school: 'guile' },
+          { text: '(Sign the crew list under his name, in your Fleet hand: “Read and witnessed.”)', to: 'sign', school: 'guile' },
         ],
       },
       sign: { speaker: 'narrator', text: 'You sign it with a flourish, the way a free captain signs a ship’s papers. It seems the proper thing to do to a document that has been argued over for forty years. Then you unship the bell.', next: 'bell' },
@@ -345,10 +345,10 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'You hang the Merry Widow’s bell from the tallest tent-pole at the Heart camp, over the cook-fire, where the bearers sit eating out of their hands. Somebody asks what it’s for.',
         choices: [
           { text: '(Ring it twice, for supper.)', to: 'twice', effects: [{ setFlag: 'corsair.wenlock_rung', value: 'twice' }] },
-          { text: '[Guile] (Ring it twice for Wenlock, and once more for the boy who bought his name.)', to: 'thrice', school: 'guile', effects: [{ setFlag: 'corsair.wenlock_rung', value: 'thrice' }] },
+          { text: '(Ring it twice for Wenlock, and once more for the boy who bought his name.)', to: 'thrice', school: 'guile', effects: [{ setFlag: 'corsair.wenlock_rung', value: 'thrice' }] },
         ],
       },
-      twice: { speaker: 'narrator', text: 'Two clear notes over the camp. Every head comes up, and the whole camp gets up and comes to the fire, the way a crew does. Somebody puts a bowl in your hands and asks whose bell it is.', next: 'end' },
+      twice: { speaker: 'narrator', text: 'Two clear notes over the camp. Every head turns, and the whole camp gets up and comes to the fire, the way a crew does. Somebody puts a bowl in your hands and asks whose bell it is.', next: 'end' },
       thrice: { speaker: 'narrator', text: 'Two notes for supper and one more after, for nobody in particular. The camp comes to the fire. Someone at the back takes off his hat at the third note, and does not say why.', next: 'end' },
       end: { speaker: 'narrator', mood: 'happy', text: '“Wenlock’s,” you say. Somebody repeats it, and somebody else, round the fire, the way a crew passes a name until it sticks. For forty years nobody said it aloud. Tonight a hundred people do, with their mouths full.', next: null },
       plain: { speaker: 'narrator', text: 'The Merry Widow’s bell, hanging over the Heart camp’s cook-fire.', next: null },

@@ -78,7 +78,12 @@ if (IDLE_TEARDOWN_MS > 0) setInterval(() => {
 
 const JWKS = createRemoteJWKSet(new URL('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com'));
 async function verify(token: string): Promise<{ uid: string; name?: string }> {
-  if (DEV_AUTH && token.startsWith('dev:')) { const [, uid, name] = token.split(':'); return { uid, name }; }
+  if (DEV_AUTH && token.startsWith('dev:')) {
+    // dev:<uid>:<name>[:<delayMs>]: the delay stands in for a cold JWKS fetch (tools/e2e/realm-server.mjs)
+    const [, uid, name, delay] = token.split(':');
+    if (Number(delay) > 0) await new Promise((r) => setTimeout(r, Math.min(5000, Number(delay))));
+    return { uid, name };
+  }
   const { payload } = await jwtVerify(token, JWKS, { issuer: `https://securetoken.google.com/${PROJECT}`, audience: PROJECT });
   return { uid: String(payload.sub), name: typeof payload.name === 'string' ? payload.name : undefined };
 }
@@ -104,12 +109,30 @@ http.on('upgrade', (req, socket, head) => {
 });
 
 async function onJoin(ws: WebSocket, def: RealmDef, token: string): Promise<void> {
-  const kick = (reason: string) => { ws.send(JSON.stringify({ type: 'kick', reason })); ws.close(); };
+  const kick = (reason: string) => { if (ws.readyState === ws.OPEN) ws.send(JSON.stringify({ type: 'kick', reason })); ws.close(); };
+  // Listen before any await: the client sends its hello on open, and a cold JWKS fetch in verify() can take longer
+  // than that (the hello used to be emitted with no listener and the join hung). The first message is the hello;
+  // anything after it is queued until the player is attached, so nothing is lost.
+  let deliver: ((d: string) => void) | undefined;
+  const queued: string[] = [];
+  let onHello: (d: string | null) => void = () => undefined;
+  const first = new Promise<string | null>((r) => { onHello = r; });
+  let helloSeen = false;
+  ws.on('message', (d) => {
+    const s = String(d);
+    if (!helloSeen) { helloSeen = true; onHello(s); }
+    else if (deliver) deliver(s);
+    else if (queued.length < 240) queued.push(s);
+  });
+  const helloTimer = setTimeout(() => onHello(null), 10_000);
+  ws.once('close', () => onHello(null));
   let who: { uid: string; name?: string };
-  try { who = await verify(token); } catch { kick('Sign in again to play online'); return; }
-  const first = await new Promise<string>((resolve) => ws.once('message', (d) => resolve(String(d))));
+  try { who = await verify(token); } catch { clearTimeout(helloTimer); kick('Sign in again to play online'); return; }
+  const helloMsg = await first;
+  clearTimeout(helloTimer);
+  if (helloMsg === null) { kick('The realm did not hear from you in time'); return; }
   let hello: { name?: string; classId?: string; level?: number };
-  try { hello = JSON.parse(first); } catch { kick('Bad hello'); return; }
+  try { hello = JSON.parse(helloMsg); } catch { kick('Bad hello'); return; }
   let api: RealmApi;
   try { api = live.get(def.id)?.api ?? spawnRealm(def); }
   catch (e) { console.error(`[realm] ${def.id}: failed to start`, e); kick('That realm is unavailable right now'); return; }
@@ -118,10 +141,11 @@ async function onJoin(ws: WebSocket, def: RealmDef, token: string): Promise<void
   console.log(`[realm] ${def.id}: + ${who.uid} (${api.count()} in)`);
   let budget = 120; // messages per second, per player
   const refill = setInterval(() => { budget = 120; }, 1000);
-  ws.on('message', (d) => {
+  deliver = (s) => {
     if (--budget < 0) return;
-    try { api.receive(who.uid, String(d)); } catch (e) { console.warn(`[realm] ${def.id}: bad message from ${who.uid}`, e); }
-  });
+    try { api.receive(who.uid, s); } catch (e) { console.warn(`[realm] ${def.id}: bad message from ${who.uid}`, e); }
+  };
+  for (const s of queued.splice(0)) deliver(s);
   ws.on('close', (code) => { clearInterval(refill); api.detach(who.uid); console.log(`[realm] ${def.id}: - ${who.uid} (close ${code}, ${api.count()} in)`); });
 }
 

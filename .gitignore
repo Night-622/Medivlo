@@ -14,3 +14,4 @@ archive/medival-v1/env.*
 exec -l/
 tools/e2e/out/
 .vite/
+tools/release/.predeploy-stamp.json

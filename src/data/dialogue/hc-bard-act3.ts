@@ -84,7 +84,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Sing it through once, to the end, and let it go.)', to: 'gone' },
           { text: '(Sing it with Clemency’s last line: “and bring her home”.)', to: 'gone', when: CLEMENCY },
-          { text: '[Song] (Sing it the way she would: gloriously flat on the top note, and then not.)', to: 'gone', school: 'song' },
+          { text: '(Sing it the way she would: gloriously flat on the top note, and then not.)', to: 'gone', school: 'song' },
         ],
       },
       gone: { speaker: 'narrator', mood: 'sad', text: 'It goes out over the Heart and does not come back. You will never sing it again. You find you do not need to: you heard it, all of it, once.', effects: [{ setFlag: 'bard.aria_sung', value: true }], next: null },
@@ -93,7 +93,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Sing it through once, to the end, and let it go.)', to: 'gone-devoted' },
           { text: '(Sing it with Clemency’s last line: “and bring her home”.)', to: 'gone-devoted', when: CLEMENCY },
-          { text: '[Song] (Sing it the way she would: gloriously flat on the top note, and then not.)', to: 'gone-devoted', school: 'song' },
+          { text: '(Sing it the way she would: gloriously flat on the top note, and then not.)', to: 'gone-devoted', school: 'song' },
         ],
       },
       'gone-devoted': {
@@ -144,7 +144,7 @@ const dialogues: DialogueDef[] = [
       parent: { speaker: TB, mood: 'sad', text: 'His mother or his father, singing to a cot that couldn’t hear them. And they wrote it all down, every note, in case one day he could. (Parp.) Well. One day is today, or it isn’t.', next: 'stairs' },
       anyway: { speaker: TB, mood: 'sad', text: 'I did, didn’t I. That’s the bit I always liked. You sing to them anyway, and you don’t ask whether it went in. (Parp.)', next: 'stairs' },
       stairs: { speaker: TB, text: 'Try it on the Legion first, mind. Hollow things want filling, and nobody ever sang to that lot either. (Parp.)', next: 'stairs2' },
-      stairs2: { speaker: TB, text: 'Then take it up the stairs and play it at his door. I can’t do twelve stairs, let alone twelve of them. I’ll play the last note from down here; it always knows where to come back to.', next: null },
+      stairs2: { speaker: TB, text: 'Then take it up the stairs and play it at his door. I can’t do one stair, let alone twelve of them. I’ll play the last note from down here; it always knows where to come back to.', next: null },
       wait: { speaker: TB, text: '(Parp.) Go on up. I’m saving the last note. It’s the only one I’ve never once forgotten.', next: null },
     },
   },

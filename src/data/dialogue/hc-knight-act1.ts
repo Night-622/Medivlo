@@ -110,7 +110,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Ser Roswitha Dunne lies on the floor of the crypt with her sword crossed on her chest. The black has gone out of her visor. On the inside of her gauntlet, scratched with a knife-point, a tally of days: thirty years of them, in rows.',
         choices: [
           { text: '(Lay her sword on the Queen’s tomb.) Your watch is over, ser.', to: 'over' },
-          { text: '[Iron] (Kneel and keep one hour of vigil for her.)', to: 'hour', school: 'iron' },
+          { text: '(Kneel and keep one hour of vigil for her.)', to: 'hour', school: 'iron' },
         ],
       },
       hour: { speaker: 'narrator', text: 'You kneel. The ringing in the floor fades, stroke by stroke, until the crypt is only a crypt. When you stand up, your knees hurt, which seems right.', next: 'over' },

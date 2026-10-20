@@ -4,7 +4,7 @@
  * creatures and level band. The director keeps zones near players stocked through Services.combat.spawn,
  * scaled by party size, and restocks after enemy:killed with a cooldown. Lairs and bosses live in instances.
  */
-import { CHUNK_TILES, Services, TILE_SIZE, bus, evalCondition, type WorldObject } from '@/core';
+import { CHUNK_TILES, Services, TILE_SIZE, bus, evalCondition, heroClassId, type WorldObject } from '@/core';
 import { MORVANE_REGIONS, MORVANE_ROADS, MORVANE_SCALE } from '@/data/regions/hc/morvane';
 import { morvaneRegionAt } from './overview';
 import { allCreatures, bestiaryFor } from '@/systems/rules/creatures';
@@ -18,7 +18,7 @@ import type { InstanceGen } from './instanceGen';
 import { regionLevels, type ConcordiaGen } from './concordiaGen';
 import { objectsAround, tileDist } from './interact';
 import { REALMS, spaceRuntime } from './spaces';
-import { banded, eliteAt, levelAt, zoneFloor, type LevelTier } from './bands';
+import { banded, eliteAt, levelAt, stepDone, zoneFloor, type LevelTier } from './bands';
 
 export { levelAt as zoneLevelAt, eliteAt as zoneEliteAt };
 
@@ -42,8 +42,10 @@ export interface SpawnZoneDef {
   /** lair rooms (Claude 3's lairWaves / elitePack): waves that start when a player steps into `rect`, the next
    * when the last is dead or after WAVE_MS; counts are for one player (scaled by party size here) */
   waves?: EncounterSpawn[][];
-  /** realm bands by campaign order (bands.ts): later level bands, each once its quest is completed */
+  /** realm bands by campaign order (bands.ts): later level bands, each once its Act I main step is done */
   tiers?: LevelTier[];
+  /** the class whose campaign this side belongs to (tiers also step with the host's own Act I progress) */
+  cls?: string;
 }
 
 const ACTIVE_TILES = 48;     // a zone stocks while a player is this close to its centre
@@ -375,7 +377,7 @@ export class SpawnDirector {
         const spot = this.spot(z, here);
         if (!spot) continue;
         const pick = z.pool[Math.floor(Math.random() * z.pool.length)];
-        const done = (q: string) => evalCondition({ questCompleted: q });
+        const done = stepDone(heroClassId(), (q) => evalCondition({ questCompleted: q }));
         const [lo, hi] = z.tiers ? levelAt(z, done) : z.level;
         const level = lo + Math.floor(Math.random() * (hi - lo + 1));
         // elite packs: one elite leads (the first of each fill)

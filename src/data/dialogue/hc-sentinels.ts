@@ -15,7 +15,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'It speaks, in a voice like a kiln door opening: I lit them. Every torch on the Turning Road, a thousand years. Will there be torches again?',
         choices: [
           { text: 'Yes. I promise.', to: 'mark' },
-          { text: '[Ash] Light one now. (Hold out your hand.)', to: 'torch', school: 'ash', insight: 'ashmaw_torch' },
+          { text: 'Light one now. (Hold out your hand.)', to: 'torch', school: 'ash', insight: 'ashmaw_torch' },
           { text: 'I don’t know.', to: 'mark' },
         ],
       },
@@ -32,7 +32,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'From deep inside, a sound like a bell struck under a blanket: I made the settings. To hold the song. To hold the grief as well, so no one Concordant had to. Nobody asked me what they held after.',
         choices: [
           { text: 'They held too much.', to: 'mark', insight: 'settings_held_grief' },
-          { text: '[Iron] (Lay a hand on its cold anvil.) You can rest.', to: 'rest', school: 'iron' },
+          { text: '(Lay a hand on its cold anvil.) You can rest.', to: 'rest', school: 'iron' },
           { text: 'It’s over.', to: 'mark' },
         ],
       },
@@ -49,7 +49,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'His voice is dry as old leaves: I ended a war with one duel. One. Then they made me escort a crown, and the crown stopped coming. So I kept fighting. Nobody told me it was over.',
         choices: [
           { text: 'It’s over, Varric. You can yield.', to: 'yield' },
-          { text: '[Blade] (Salute him, and sheathe your weapon.)', to: 'salute', school: 'blade', insight: 'varric_yielded' },
+          { text: '(Salute him, and sheathe your weapon.)', to: 'salute', school: 'blade', insight: 'varric_yielded' },
           { text: 'Rest.', to: 'mark' },
         ],
       },
@@ -67,7 +67,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'Its voice is snow sliding off a roof: I held the pass for the crown. Every twelve years it came up the road, and I held the pass open. Then it stopped coming, so I held it shut. I did not know what else to hold.',
         choices: [
           { text: 'You can let go now.', to: 'mark' },
-          { text: '[Rime] (Lay your hand on the ice.) Keep it. I’ll hold it for you a while.', to: 'keep', school: 'rime', insight: 'colossus_kept' },
+          { text: '(Lay your hand on the ice.) Keep it. I’ll hold it for you a while.', to: 'keep', school: 'rime', insight: 'colossus_kept' },
           { text: 'The road will be open again.', to: 'mark' },
         ],
       },
@@ -84,7 +84,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'Its voice is a long roll of far-off thunder: I carried the news. Every Turning, to every realm, before the Bell had stopped ringing. Then there was no news, and I screamed it anyway, so they would not forget there should be.',
         choices: [
           { text: 'They didn’t forget.', to: 'mark' },
-          { text: '[Storm] Then carry one more: the Turning is coming.', to: 'news', school: 'storm', insight: 'stormcrow_news' },
+          { text: 'Then carry one more: the Turning is coming.', to: 'news', school: 'storm', insight: 'stormcrow_news' },
           { text: 'Rest your wings.', to: 'mark' },
         ],
       },
@@ -101,8 +101,8 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'Her voice comes through the water like a bell under a cloth: It rang by itself. It would not stop. A Turning with no crown is a lie, and I would not let it tell the lie, not once, not for thirty years. Was I wrong?',
         choices: [
           { text: 'No. You kept faith.', to: 'mark' },
-          { text: '[Radiance] (Kneel, and say the hour-prayer with her.)', to: 'pray', school: 'radiance', insight: 'morwen_prayed' },
-          { text: '[Song] (Hum the choir’s part, the one they stopped singing.)', to: 'sing', school: 'song', insight: 'morwen_sung' },
+          { text: '(Kneel, and say the hour-prayer with her.)', to: 'pray', school: 'radiance', insight: 'morwen_prayed' },
+          { text: '(Hum the choir’s part, the one they stopped singing.)', to: 'sing', school: 'song', insight: 'morwen_sung' },
         ],
       },
       pray: { speaker: 'narrator', text: 'She says it with you, word for word, and at the amen her hands open at last.', next: 'mark' },
@@ -119,7 +119,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'Its voice is a whisper from every direction: I wove the Concord’s records into the dark, every Turning, every name. When the tears came I unwove it, thread by thread, because it was too sad to keep.',
         choices: [
           { text: 'Some of it should be kept.', to: 'mark' },
-          { text: '[Umbral] (Catch one loose thread and hold it.)', to: 'thread', school: 'umbral', insight: 'spinner_thread' },
+          { text: '(Catch one loose thread and hold it.)', to: 'thread', school: 'umbral', insight: 'spinner_thread' },
           { text: 'Rest.', to: 'mark' },
         ],
       },
@@ -136,7 +136,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'The wind in its leaves makes words: They planted me the day the Concord was sworn, a cutting from the Elder Tree, to shade the Turning Road. I wept for it so long the weeping grew into me.',
         choices: [
           { text: 'You can stop weeping now.', to: 'mark' },
-          { text: '[Verdant] (Press a seed into the soil at its roots.)', to: 'seed', school: 'verdant', insight: 'willow_seed' },
+          { text: '(Press a seed into the soil at its roots.)', to: 'seed', school: 'verdant', insight: 'willow_seed' },
           { text: 'The road will be shaded again.', to: 'mark' },
         ],
       },
@@ -153,7 +153,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'The Abbot opens one eye: I was the Fist Sentinel. I walked ahead of the crown and kept the road still. The tears came, and the bog came, and I sat. I am very good at sitting. It was the wrong time to be good at it.',
         choices: [
           { text: 'Get up, Abbot. The road needs walking.', to: 'mark' },
-          { text: '[Fist] (Sit down beside him for one breath, then stand.)', to: 'breath', school: 'fist', insight: 'abbot_stood' },
+          { text: '(Sit down beside him for one breath, then stand.)', to: 'breath', school: 'fist', insight: 'abbot_stood' },
           { text: 'Rest.', to: 'mark' },
         ],
       },
@@ -170,7 +170,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'It does not speak. It looks along the old procession road, the way it walked ahead of the crown every Turning for a thousand years, and then it looks at you, and you understand: it has been waiting for someone to follow.',
         choices: [
           { text: 'I’ll follow. Lead the way, when it’s time.', to: 'mark' },
-          { text: '[Hunt] (Take only what it gives: one shed tine, from the moss.)', to: 'tine', school: 'hunt', insight: 'stag_tine' },
+          { text: '(Take only what it gives: one shed tine, from the moss.)', to: 'tine', school: 'hunt', insight: 'stag_tine' },
           { text: '(Stand aside and let it rest.)', to: 'mark' },
         ],
       },
@@ -187,7 +187,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'Her voice is a match struck in the dark: I sold safe passage over the marsh to the crown, every Turning. Honest lights, honest prices. Then no one came, and an empty marsh pays nothing, so I sold the lights that lead into the water instead.',
         choices: [
           { text: 'Then sell an honest one again.', to: 'mark' },
-          { text: '[Guile] What’s your last lantern worth?', to: 'bargain', school: 'guile', insight: 'queen_bargain' },
+          { text: 'What’s your last lantern worth?', to: 'bargain', school: 'guile', insight: 'queen_bargain' },
           { text: 'Rest.', to: 'mark' },
         ],
       },

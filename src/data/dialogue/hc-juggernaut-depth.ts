@@ -53,7 +53,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Take your tally off the hook and hold it.)', to: 'take' },
           { text: 'Foreman, it’s my tally. It’s me.', to: 'me' },
-          { text: '[Iron] (Put your palm flat on the board and feel where the song comes from.)', to: 'palm', school: 'iron' },
+          { text: '(Put your palm flat on the board and feel where the song comes from.)', to: 'palm', school: 'iron' },
         ],
       },
       take: { speaker: 'narrator', text: 'It is warm in your palm, and the hum goes up your arm and into your chest and meets the singing there like two hands meeting. Gussie watches with her mouth open. She has never in her life seen a tally do anything but hang.', next: 'below' },
@@ -303,7 +303,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Lean left.)', to: 'left', effects: [{ setFlag: 'juggernaut.cart_test', value: 'left' }] },
           { text: '(Lean right.)', to: 'right', effects: [{ setFlag: 'juggernaut.cart_test', value: 'right' }] },
-          { text: '[Iron] (Plant both feet and stop it with your body.)', to: 'stop', school: 'iron', effects: [{ setFlag: 'juggernaut.cart_test', value: 'stop' }] },
+          { text: '(Plant both feet and stop it with your body.)', to: 'stop', school: 'iron', effects: [{ setFlag: 'juggernaut.cart_test', value: 'stop' }] },
         ],
       },
       left: { speaker: 'narrator', text: 'You lean left. The cart goes right, down the whole scrap hill, over a boiler, through a bedstead and into a pond. Nib, from the top: “That was forward!” Nub: “That was MY forward!” They hug, very hard, for the first time in years.', next: null },
@@ -346,7 +346,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Up the bore-hole, faint and steady: a hammer. Three strokes and a rest. Three strokes and a rest. And behind it, so faint you could be imagining it, the grind of a shift that has not stopped.',
         choices: [
           { text: 'That’s a forge.', to: 'forge' },
-          { text: '[Iron] (Count the strokes the way the shift counts: by the breath.)', to: 'breath', school: 'iron' },
+          { text: '(Count the strokes the way the shift counts: by the breath.)', to: 'breath', school: 'iron' },
           { text: 'Why have you never come out here before?', to: 'why' },
         ],
       },
@@ -418,7 +418,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Somewhere past four hundred, you understand. They are not soldiers. They never were. They are a shift that nobody ever called off.',
         choices: [
           { text: '(Keep counting, out loud, to the end.)', to: 'end' },
-          { text: '[Iron] (Count the way the shift counts: every tenth head, a tap on the cap with your knuckle.)', to: 'tap', school: 'iron' },
+          { text: '(Count the way the shift counts: every tenth head, a tap on the cap with your knuckle.)', to: 'tap', school: 'iron' },
         ],
       },
       tap: { speaker: 'narrator', text: 'Tap. Tap. By the third hundred, the hollow miners are bowing their heads for it before you reach them, as if they remember.', next: 'end' },
@@ -453,7 +453,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'An upturned crate, a borrowed lamp, and the lid of a cashbox propped up for a shutter. It is the worst pay-window in the history of the Deepworks.',
         choices: [
           { text: '(Light the lamp, and chalk PAY on the crate.)', to: 'lit' },
-          { text: '[Iron] (Light it, and chalk the company store’s old motto on it, crossed out: “Credit Is Kindness”.)', to: 'motto', school: 'iron' },
+          { text: '(Light it, and chalk the company store’s old motto on it, crossed out: “Credit Is Kindness”.)', to: 'motto', school: 'iron' },
         ],
       },
       lit: { speaker: 'narrator', text: 'The lamp catches. Across the camp, at the Legion’s edge, a whole rank of hollow miners turns its head towards the light, the way a shift does at six o’clock.', effects: [{ setFlag: 'juggernaut.pay_lamp', value: true }], next: null },

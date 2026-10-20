@@ -247,7 +247,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:cobb-tinsley', text: 'Well? Is it a curse? Is it the tears? Is it Gerald?',
         choices: [
           { text: 'The path likes you, Cobb. It doesn’t want you to leave.', to: 'likes' },
-          { text: '[Verdant] (Ask the path, kindly, to let him go.)', to: 'ask', school: 'verdant' },
+          { text: '(Ask the path, kindly, to let him go.)', to: 'ask', school: 'verdant' },
         ],
       },
       likes: { speaker: 'npc:cobb-tinsley', mood: 'happy', text: 'It LIKES me? (He goes pink.) Well. Nobody’s liked me since my mother. I’ll come back this way, then. Every spring. Tell it I’ll come back.', next: 'go' },
@@ -464,7 +464,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'You tell her: the weeping, the fight in the roots, and the leaves at the end, all falling at once and going brown and soft in the grass before they had finished landing.',
         choices: [
           { text: 'They rotted. Honestly. Beetles and all.', to: 'rotted' },
-          { text: '[Verdant] I made the rot honest, with the half. Like at home.', to: 'mended', school: 'verdant', when: { flag: 'ranger.line', value: 'honest' }, trust: 1, trustNpc: 'npc:nanbriar' },
+          { text: 'I made the rot honest, with the half. Like at home.', to: 'mended', school: 'verdant', when: { flag: 'ranger.line', value: 'honest' }, trust: 1, trustNpc: 'npc:nanbriar' },
           { text: 'It looked relieved.', to: 'relieved' },
         ],
       },

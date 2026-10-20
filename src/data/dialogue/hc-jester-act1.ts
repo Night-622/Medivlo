@@ -19,7 +19,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Hold the tray very, very still.)', to: 'tray' },
           { text: '(Look up at the palace.)', to: 'look' },
-          { text: '[Guile] (Pretend the silence was your cue, and bow.)', to: 'bow', school: 'guile' },
+          { text: '(Pretend the silence was your cue, and bow.)', to: 'bow', school: 'guile' },
         ],
       },
       tray: { speaker: 'narrator', text: 'Not one fig moves. The singing goes on, patient and bright, as if it has waited a very long time for you and can wait a little longer while you finish your shift.', next: 'notice' },
@@ -74,7 +74,7 @@ const dialogues: DialogueDef[] = [
       start: {
         speaker: 'npc:tuttle', text: '(He counts the pearls through his glass, one by one, and his hand is not quite steady.) Cold, these. Always cold. Here. Bells. Tell Pantaloon he still owes me for the bag.',
         choices: [
-          { text: '[Guile] (Read his ledger upside down while he wraps them.)', to: 'ledger', school: 'guile', effects: [{ setFlag: 'jester.tuttle_ledger', value: true }] },
+          { text: '(Read his ledger upside down while he wraps them.)', to: 'ledger', school: 'guile', effects: [{ setFlag: 'jester.tuttle_ledger', value: true }] },
           { text: 'Thank you, Mister Tuttle.', to: null },
         ],
       },
@@ -116,7 +116,7 @@ const dialogues: DialogueDef[] = [
       masks: {
         speaker: 'narrator', text: 'Backstage, a rack of stolen masks, hundreds of them, gold and feather and porcelain, every one weeping black pearls from its eyeholes. They roll across the boards like marbles. When you lift them down, they are only masks.',
         choices: [
-          { text: '[Guile] Hang them back on the Quarter’s doors before dawn, so nobody wakes up bare.', to: 'doors', school: 'guile' },
+          { text: 'Hang them back on the Quarter’s doors before dawn, so nobody wakes up bare.', to: 'doors', school: 'guile' },
           { text: 'Carry them out into the square.', to: 'square' },
         ],
       },
@@ -178,7 +178,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Look for Fennick in the crowd.)', to: 'fennick' },
           { text: '(Look at the King.)', to: 'king2' },
-          { text: '[Guile] (Weigh the two papers in your hands.)', to: 'weigh', school: 'guile' },
+          { text: '(Weigh the two papers in your hands.)', to: 'weigh', school: 'guile' },
         ],
       },
       fennick: { speaker: 'narrator', text: 'You find him at the back, by the fountain, a little apart. He does not wave. He taps his own chest twice, where a fool keeps his licence, and then pretends he was scratching.', next: 'choose' },
@@ -225,7 +225,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'On the lowest shelf, at the very back, one jar is older than all the rest, its label brown with age. The pearl inside is no bigger than a lentil. The label says: “H. Sorrow, aged seven.”',
         choices: [
           { text: '(Take it. Keep it safe.)', to: 'keep' },
-          { text: '[Guile] (Pocket it, and leave an empty jar in its place so nobody notices.)', to: 'swap', school: 'guile' },
+          { text: '(Pocket it, and leave an empty jar in its place so nobody notices.)', to: 'swap', school: 'guile' },
         ],
       },
       keep: { speaker: 'narrator', text: 'You wrap it in your handkerchief. It is very light, and very cold, and it seems to be the only thing in the whole strongroom that anybody ever forgot to sell.', next: null },
@@ -250,7 +250,7 @@ const dialogues: DialogueDef[] = [
         speaker: SO, text: 'I buy it, and they weep it into a pearl, and I pay them in laughter, and nobody has to carry it any more. The Court half of the stone is under the King’s cushion. Set it in my bauble and I’ll have a joke that never fails. Nobody in Tidecourt will ever have to cry again.',
         choices: [
           { text: 'You’ve never once laughed at your own jokes.', to: 'never', insight: 'sorrow_never_laughs', when: { any: [{ questCompleted: 'quest:jester-the-lamplighters-wife' }, { questCompleted: 'quest:jester-the-worst-joke-in-tidecourt' }, { insight: 'licence_used' }, { flag: 'jester.sorrow_watched' }, { flag: 'jester.queue_heard' }] } },
-          { text: '[Guile] Your sleeves clink when you move.', to: 'sleeves', school: 'guile', insight: 'sorrow_sleeves' },
+          { text: 'Your sleeves clink when you move.', to: 'sleeves', school: 'guile', insight: 'sorrow_sleeves' },
           { text: 'And where does all the grief go?', to: 'where' },
         ],
       },
@@ -284,7 +284,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Up in the gallery the paid claque is still laughing, on cue, at nothing, because nobody has told them to stop. The empty throne room rings with it.',
         choices: [
           { text: '(Laugh with them, once, for real.)', to: 'real' },
-          { text: '[Guile] (Give them the cue: raise one hand, and stop them dead.)', to: 'cue', school: 'guile' },
+          { text: '(Give them the cue: raise one hand, and stop them dead.)', to: 'cue', school: 'guile' },
         ],
       },
       real: { speaker: 'narrator', text: 'You laugh, alone, at the sheer nonsense of it: a hundred people paid to be merry in an empty room. One by one the claque stop and look at you, and then they are laughing too, properly, off cue, and it sounds completely different.', next: 'sorrow' },
@@ -319,7 +319,7 @@ const dialogues: DialogueDef[] = [
         speaker: FE, text: 'Do you know why I taught you to fall before I taught you to juggle? Because a crowd is always waiting for you to fall. Once you have, they relax. Then you can tell them anything.',
         choices: [
           { text: 'Even the truth?', to: 'truth' },
-          { text: '[Guile] So the fall is the set-up.', to: 'setup', school: 'guile' },
+          { text: 'So the fall is the set-up.', to: 'setup', school: 'guile' },
         ],
       },
       truth: { speaker: FE, text: 'Especially the truth. The truth is the punchline nobody sees coming, because they’re still laughing at the fall.', next: 'warn' },

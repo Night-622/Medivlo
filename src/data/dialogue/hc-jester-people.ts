@@ -72,7 +72,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:augustin-drabb', text: '(He does not look up from his ledger.) Pantaloon sent you. Column A, column B. I am a clerk now. Clerks do not do double acts.',
         choices: [
           { text: 'He says nobody ever stood still like you.', to: 'still' },
-          { text: '[Guile] (Fall over his desk, very slowly, taking his inkwell with you.)', to: 'fall', school: 'guile' },
+          { text: '(Fall over his desk, very slowly, taking his inkwell with you.)', to: 'fall', school: 'guile' },
           { text: 'He’s old, Master Drabb. He wants one more night.', to: 'old' },
         ],
       },
@@ -194,7 +194,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'I’ll take it to the Exchange and haggle it down.', to: 'haggle', effects: [{ setFlag: 'jester.tab_settled', value: 'haggled' }] },
           { text: 'Mother, this slate was settled twice. C. 1019 and C. 1031. It’s in Tuttle’s ledger.', to: 'twice', insight: 'gudgeon_paid_twice', when: { flag: 'jester.tuttle_ledger' }, effects: [{ setFlag: 'jester.tab_settled', value: 'proved' }] },
-          { text: '[Guile] (Tell the clerk a joke so long he forgets what he came for.)', to: 'joke', school: 'guile', effects: [{ setFlag: 'jester.tab_settled', value: 'joked' }] },
+          { text: '(Tell the clerk a joke so long he forgets what he came for.)', to: 'joke', school: 'guile', effects: [{ setFlag: 'jester.tab_settled', value: 'joked' }] },
         ],
       },
       haggle: { speaker: 'npc:mother-gudgeon', text: 'Down to what? (You tell her.) Half of a herring a week. For thirty years. (She does the sum on her fingers, and then on yours.) I can do that. Here, have some cod. Fresh-ish.', next: null },
@@ -289,7 +289,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '“Why did the pawnbroker cross the road? He didn’t. He sold the road.”', to: 'road', effects: [{ setFlag: 'jester.worst_joke', value: 'road' }] },
           { text: '“What’s the difference between a fool and a King? About forty years of compound interest.”', to: 'king', effects: [{ setFlag: 'jester.worst_joke', value: 'king' }] },
-          { text: '[Guile] (Begin a joke about a goose, and keep going for twenty minutes without ever reaching the end.)', to: 'goose', school: 'guile', effects: [{ setFlag: 'jester.worst_joke', value: 'goose' }] },
+          { text: '(Begin a joke about a goose, and keep going for twenty minutes without ever reaching the end.)', to: 'goose', school: 'guile', effects: [{ setFlag: 'jester.worst_joke', value: 'goose' }] },
         ],
       },
       road: { speaker: 'npc:hortense-quibble', mood: 'happy', text: '(Total silence across the square. Somebody coughs. A gull leaves.) …Dreadful. Truly dreadful. That is the worst thing I have heard in forty years. The cap is yours.', next: 'fennick' },
@@ -318,7 +318,7 @@ const dialogues: DialogueDef[] = [
       stall: {
         speaker: 'narrator', text: 'A broker’s stall of second-hand promises: a box of oaths, “barely sworn”; an apology, “never accepted, as new”; and under glass, a small folded paper labelled ROSAMUND’S VOW, LIGHTLY WORN. The broker eyes you over his spectacles.',
         choices: [
-          { text: '[Guile] Point out that a vow isn’t worn until it’s said, so it’s new, and he’s mislabelled it, and that’s fraud.', to: 'fraud', school: 'guile' },
+          { text: 'Point out that a vow isn’t worn until it’s said, so it’s new, and he’s mislabelled it, and that’s fraud.', to: 'fraud', school: 'guile' },
           { text: 'Buy it. Whatever he asks.', to: 'buy' },
           { text: 'Tell him it’s cursed. Every vow is, a bit.', to: 'curse' },
         ],
@@ -419,7 +419,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:collector-smallbone', text: '(A damp man in a damp coat, with a dry ledger, emerges from the slime and straightens his collar.) Thank you. One week. One week in a slime, and I collected from eleven passers-by, which is a personal best. You, I notice, owe nothing. Most irregular.',
         choices: [
           { text: 'You could take the rest of the week off.', to: 'off' },
-          { text: '[Guile] Actually, the slime owes me for the rescue. Collect from it.', to: 'slime', school: 'guile' },
+          { text: 'Actually, the slime owes me for the rescue. Collect from it.', to: 'slime', school: 'guile' },
         ],
       },
       off: { speaker: 'npc:collector-smallbone', text: 'Off? The Counting House does not believe in off. (He thinks about it.) …A half-day. Perhaps. Here, your finder’s fee. It is entered in the ledger.', next: 'refund' },
@@ -496,7 +496,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Fall over, flat, in the middle of the nave.)', to: 'fall' },
           { text: '“How many monks does it take to ring a bell? None. It does it by itself. That’s the whole problem.”', to: 'bell' },
-          { text: '[Guile] (Do the Abbess’s voice, very badly.)', to: 'voice', school: 'guile' },
+          { text: '(Do the Abbess’s voice, very badly.)', to: 'voice', school: 'guile' },
         ],
       },
       fall: { speaker: 'narrator', text: 'You go down like a sack of flour, the way Fennick taught you. For a long moment, nothing. Then, from the third stall, one small bubble rises. Then another. Then the whole choir is laughing, in bubbles, silver, streaming up to the light.', next: 'rise' },
@@ -555,7 +555,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'On the Shore Chapel steps the drowned choir’s singing comes up through the stone, very solemn, very heavy. Ser Aldric stands at the top, rigid, the corners of his mouth held down by an oath and thirty drowned voices.',
         choices: [
           { text: 'Help him keep it. Stand beside him, perfectly still, like Augustin Drabb.', to: 'keep' },
-          { text: '[Guile] (Fall down the steps, all of them, one at a time.)', to: 'break', school: 'guile' },
+          { text: '(Fall down the steps, all of them, one at a time.)', to: 'break', school: 'guile' },
           { text: 'An oath to make yourself unhappy isn’t an oath to the Concord. Smile, Ser Aldric.', to: 'smile' },
         ],
       },

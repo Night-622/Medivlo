@@ -20,7 +20,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Grab a belaying pin.)', to: 'pin' },
           { text: '(Look down into the hold.)', to: 'hold' },
-          { text: '[Guile] (Cut the nearest line while everyone is staring at the sky.)', to: 'cut', school: 'guile' },
+          { text: '(Cut the nearest line while everyone is staring at the sky.)', to: 'cut', school: 'guile' },
         ],
       },
       pin: { speaker: 'narrator', text: 'You have a belaying pin in your hand before you know why. Along the planks the lanterns are swinging towards the Overdraft, and they are not friendly lanterns.', next: 'creditor' },
@@ -92,7 +92,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A tow-line as thick as your leg runs from the fort’s ring-bolt to the Overdraft’s bow. Vex’s ledger lies open on the rampart beside it, pages fluttering: every debt on Gallows Reef, in a tiny hand, and the cannon-shot beside each one is a black pearl.',
         choices: [
           { text: '(Cut the line.)', to: 'cut' },
-          { text: '[Guile] (Cut the line, and take the ledger, and throw it in the sea.)', to: 'ledger', school: 'guile' },
+          { text: '(Cut the line, and take the ledger, and throw it in the sea.)', to: 'ledger', school: 'guile' },
         ],
       },
       cut: { speaker: 'narrator', text: 'Three strokes and the line parts with a crack. The Overdraft swings free on the tide and drifts away from the fort, slowly, magnificently, with you running along her deck to catch the wheel.', next: null },
@@ -130,7 +130,7 @@ const dialogues: DialogueDef[] = [
         speaker: SA, text: '(He takes a bundle of papers from his desk, and tears them in half, and drops them out of the window.) Nothing. They’re forgiven. Tell her she’s free. And tell her I have honest work for the Fleet, if the Fleet wants it, at an honest price.',
         choices: [
           { text: 'Nobody’s that generous.', to: 'generous' },
-          { text: '[Guile] (Watch the pearl in his ear while he talks.)', to: 'pearl', school: 'guile' },
+          { text: '(Watch the pearl in his ear while he talks.)', to: 'pearl', school: 'guile' },
         ],
       },
       generous: { speaker: SA, text: 'I was a wharf-boy on this reef once, with nothing, not even a name worth having. Now I can afford anything. Even kindness. Especially kindness. It’s cheap, if you buy it in bulk.', next: 'end' },
@@ -168,7 +168,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Admiral, what happens to a captain who stops carrying for you?', to: 'stop' },
           { text: 'Captain Dot, what would your mother have done?', to: 'mother' },
-          { text: '[Guile] (Count how many captains are watching the Admiral’s purse instead of his face.)', to: 'count', school: 'guile' },
+          { text: '(Count how many captains are watching the Admiral’s purse instead of his face.)', to: 'count', school: 'guile' },
         ],
       },
       stop: { speaker: SA, text: 'Nothing at all. They are free to go. (He smiles.) Nobody ever has, mind. Once you are paid on the day, every day, you forget how to want anything else.', next: 'choose' },
@@ -268,7 +268,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Below you the tide is still rising, tier by tier, swallowing the lower cages one at a time. Every one of them has a hat in it now. The Fleet hung more than hats here, once.',
         choices: [
           { text: '(Ring the topmost cage like a bell.)', to: 'ring' },
-          { text: '[Guile] (Take the stone, and leave a black pearl in its place.)', to: 'swap', school: 'guile' },
+          { text: '(Take the stone, and leave a black pearl in its place.)', to: 'swap', school: 'guile' },
         ],
       },
       ring: { speaker: 'narrator', text: 'The cage rings like a ship’s bell, one clear note, and far below, all along the reef, the Fleet’s ships ring back one after another, the way they did on Bell night.', next: 'saltmarsh' },
@@ -303,7 +303,7 @@ const dialogues: DialogueDef[] = [
         speaker: DB, text: 'Do you know what I owe most, sweetheart? Not the sailmaker. Not the King. (She glances at the compass on her wrist.) Quill. A leg. You can’t pay back a leg.',
         choices: [
           { text: 'Have you asked him what he’d take?', to: 'asked' },
-          { text: '[Guile] Then owe it him. Some debts are how you stay friends.', to: 'friends', school: 'guile' },
+          { text: 'Then owe it him. Some debts are how you stay friends.', to: 'friends', school: 'guile' },
         ],
       },
       asked: { speaker: DB, mood: 'sad', text: 'Every year. He says nothing. He says it with his whole face. (She sniffs.) Never mind Quill.', next: 'gifts' },

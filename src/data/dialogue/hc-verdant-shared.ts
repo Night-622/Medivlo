@@ -46,7 +46,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:bearer-ranger', text: 'Out in the wilds we let things rot where they fall. None of this turning it on a Tuesday.',
         choices: [
           { text: 'Turned compost is faster.', to: 'sing' },
-          { text: '[Verdant] Our compost hasn’t rotted in thirty years. Neither has yours.', to: 'true', school: 'verdant' },
+          { text: 'Our compost hasn’t rotted in thirty years. Neither has yours.', to: 'true', school: 'verdant' },
         ],
       },
       true: { speaker: 'npc:bearer-ranger', mood: 'sad', text: '(A long pause.) No. It hasn’t. Not since the crown broke. All right. Let’s not argue about compost. Let’s argue about compost when there’s some.', next: 'sing' },
@@ -65,7 +65,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:bearer-hedgewitch', text: 'Rootholme compost is turned every Tuesday, and it’s a science.',
         choices: [
           { text: 'It’s a heap of cabbage that’s been told off.', to: 'rgsing' },
-          { text: '[Verdant] Neither of our heaps has rotted in thirty years.', to: 'rgtrue', school: 'verdant' },
+          { text: 'Neither of our heaps has rotted in thirty years.', to: 'rgtrue', school: 'verdant' },
         ],
       },
       rgtrue: { speaker: 'npc:bearer-hedgewitch', mood: 'sad', text: '(Quietly.) No. They haven’t. Mother Yarrow says the tree is too tired to rot. All right. Truce. We’ll argue about it when there’s compost again.', next: 'rgsing' },

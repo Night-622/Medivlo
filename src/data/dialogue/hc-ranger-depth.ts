@@ -52,7 +52,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Because of the bell?', to: 'bell' },
           { text: 'Because of what’s singing in me?', to: 'me' },
-          { text: '[Verdant] (Put your palm on the stone and listen to the forest through it.)', to: 'listen', school: 'verdant' },
+          { text: '(Put your palm on the stone and listen to the forest through it.)', to: 'listen', school: 'verdant' },
         ],
       },
       bell: { speaker: HB, text: 'Grandad said the paths stood still for the Turning. Every twelve years, one night, so the procession could find its way. Then the bells rang and the forest let go. (He sniffs.) Tonight it let go of everything.', next: 'stoneq' },
@@ -245,7 +245,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Behind Cobb, where the Thornwilds come up to the camp, there is a path that was not there this morning: narrow, new, trodden flat, running all the way back into the bramble towards a tree called Gerald.',
         choices: [
           { text: 'Cobb. Look behind you.', to: 'behind' },
-          { text: '[Verdant] (Crouch and lay a hand on the new path.)', to: 'hand', school: 'verdant' },
+          { text: '(Crouch and lay a hand on the new path.)', to: 'hand', school: 'verdant' },
         ],
       },
       behind: { speaker: CT, text: '(He turns. He stares. He goes very pink.) It followed me home. (Holt, passing, looks at it for a long moment and says, “Hm. Mark it on the stone.”) It’s on the MAP. My path is on the map.', next: 'end' },
@@ -389,7 +389,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Look at the beam above Tobin Barrow’s bunk.)', to: 'beam' },
           { text: '(Cut your own name into the post.)', to: 'cut' },
-          { text: '[Verdant] (Lie down on the old bunk and listen to the wood.)', to: 'listen', school: 'verdant' },
+          { text: '(Lie down on the old bunk and listen to the wood.)', to: 'listen', school: 'verdant' },
         ],
       },
       cut: { speaker: 'narrator', text: 'You cut your name below Tobin’s, the first new name in thirty years. A bat comes down to inspect it, approves, and goes back up.', next: 'beam' },
@@ -415,7 +415,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Nobody has been eating. No beetles, no grubs, no white threads of mould, not even a woodlouse. The wood is soft and grey and perfectly, horribly clean. It has been falling apart for thirty years and feeding no one.',
         choices: [
           { text: '(Taste a crumb of it, Wayfarer fashion.)', to: 'taste' },
-          { text: '[Verdant] (Hold the Rot half to it.)', to: 'half', school: 'verdant' },
+          { text: '(Hold the Rot half to it.)', to: 'half', school: 'verdant' },
           { text: '(Kick it again, to be sure.)', to: 'kick' },
         ],
       },
@@ -460,7 +460,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The Stag does not move. But it stops weeping for the length of one breath, and its ears come forward.',
         choices: [
           { text: 'What do you see, Teasel?', to: 'see' },
-          { text: '[Verdant] (Look at the grey round its hooves.)', to: 'rows', school: 'verdant' },
+          { text: '(Look at the grey round its hooves.)', to: 'rows', school: 'verdant' },
         ],
       },
       see: { speaker: TG, text: 'Grief. Honest grief. That’s how my mother looked at the door when Dad didn’t come home off the boats. It isn’t sick. It’s waiting, and it’s worn out with waiting.', next: 'aldo' },
@@ -503,7 +503,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'At the foot of the Twelve Stairs, where a Wayfarer marks the start of a road, you set your knife to the black stone. It skates off with a squeal like a gull. Not a scratch.',
         choices: [
           { text: '(Try again, harder.)', to: 'harder' },
-          { text: '[Verdant] (Feel the stone the way you would feel bark.)', to: 'feel', school: 'verdant' },
+          { text: '(Feel the stone the way you would feel bark.)', to: 'feel', school: 'verdant' },
         ],
       },
       harder: { speaker: 'narrator', text: 'The tip of the knife snaps off and goes ringing away down the steps. The stone is unmarked. Somewhere a very long way off, Holt Barrow is saying “Hm.”', next: 'think' },
@@ -520,7 +520,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'By your bedroll the black ground has gone soft and brown, a hand’s width all round the place where the Rot half sleeps. Honest rot. It smells of rain and bread, and there is a woodlouse in it, looking pleased with itself.',
         choices: [
           { text: '(Wipe the blade through it until it smells of leaf-mould.)', to: 'rag' },
-          { text: '[Verdant] (Ask the half to sing to it first.)', to: 'sing', school: 'verdant' },
+          { text: '(Ask the half to sing to it first.)', to: 'sing', school: 'verdant' },
         ],
       },
       sing: { speaker: 'narrator', text: 'The Rot half sings low and brown, and while you watch the patch spreads a finger’s width further into the black. The woodlouse is delighted.', next: 'rag' },

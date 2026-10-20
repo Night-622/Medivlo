@@ -97,7 +97,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A heap as tall as you: picks, lamps, kettles, a child’s tin horse, a cage-lift door and two hundred dinner-pails. Every pail has a name scratched on the lid. The Warden was going to melt them down for sentries, for a Colossus that has already walked away.',
         choices: [
           { text: '(Load it all into a cart for Rivet Town.)', to: 'cart' },
-          { text: '[Iron] (Lift the cage-lift door onto your back and carry it home first.)', to: 'door', school: 'iron' },
+          { text: '(Lift the cage-lift door onto your back and carry it home first.)', to: 'door', school: 'iron' },
         ],
       },
       door: { speaker: 'narrator', text: 'The cage-lift door is the heaviest thing in the foundry. You carry it out on your back, then go back in for the pails. It seems only right that the door goes home first.', next: 'cart' },
@@ -198,7 +198,7 @@ const dialogues: DialogueDef[] = [
       open: {
         speaker: 'narrator', text: 'You break the lock with your thumb. Inside: Magda’s bright new coin, hundreds of them, every one stamped with a smiling sun. They are wet. You wipe one dry on your sleeve, and it is wet again.',
         choices: [
-          { text: '[Iron] (Weigh a coin in your palm.)', to: 'weigh', school: 'iron', effects: [{ setFlag: 'juggernaut.coin_weighed', value: true }] },
+          { text: '(Weigh a coin in your palm.)', to: 'weigh', school: 'iron', effects: [{ setFlag: 'juggernaut.coin_weighed', value: true }] },
           { text: '(Shut the box.)', to: 'shut' },
         ],
       },

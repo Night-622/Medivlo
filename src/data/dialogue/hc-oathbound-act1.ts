@@ -236,7 +236,7 @@ const dialogues: DialogueDef[] = [
         speaker: IL, text: 'The crown should have its stones back. You know that. And you’re Oathbound: your oath is to the crown too, whether you like who’s under it or not. Bring me the March half. Or I’ll take it from the Shrine, and ask your pardon afterwards.',
         choices: [
           { text: 'I swore to the March, not to him.', to: 'march' },
-          { text: '[Radiance] An oath that only says yes isn’t an oath. It’s a leash.', to: 'leash', school: 'radiance' },
+          { text: 'An oath that only says yes isn’t an oath. It’s a leash.', to: 'leash', school: 'radiance' },
         ],
       },
       march: { speaker: IL, text: 'Then we’ve sworn different things, and we’ll meet in the Shrine, and the better knight will have the stone. By the rules. I’ll be glad of it, honestly. Nobody has fought me fairly in thirty years.', next: null },

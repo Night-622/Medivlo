@@ -46,7 +46,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Why me?', to: 'why' },
           { text: 'You’re frightened.', to: 'afraid' },
-          { text: '[Ash] (Hold out your hand. Let it glow.)', to: 'glow', school: 'ash' },
+          { text: '(Hold out your hand. Let it glow.)', to: 'glow', school: 'ash' },
         ],
       },
       why: { speaker: TH, text: 'Nobody knows why a stone chooses. Not the Conclave, not the old books. It chose you. I suspect the stone has better judgement than the Conclave, which is not a high bar.', next: 'conclave' },

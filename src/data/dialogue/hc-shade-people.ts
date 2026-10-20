@@ -117,7 +117,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:nettle-crook', text: 'Toll! One copper for the bridge, two for the bridge if you’ve got no shadow, because that’s bad luck and bad luck costs extra. (She checks the planks behind you, twice.) Two coppers.',
         choices: [
           offer('quest:shade-rope-toll', 'The next bridge says they’re cheaper.', 'war', done('quest:shade-the-bell-on-the-bridges')),
-          { text: '[Umbral] (Borrow the shadow of her toll-box, and walk across in it.)', to: 'borrow', school: 'umbral', when: { flag: 'shade.shadowless' } },
+          { text: '(Borrow the shadow of her toll-box, and walk across in it.)', to: 'borrow', school: 'umbral', when: { flag: 'shade.shadowless' } },
           bye,
         ],
       },
@@ -172,7 +172,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Behind Ludo’s screen, with the lamp behind you and forty people in front, you raise your arms and present the Concord to the twelve schools. On the screen, nothing happens at all. Twelve puppet champions bow to an empty space. The audience goes very quiet.',
         choices: [
           { text: '(Narrate it, loudly, very heroically.)', to: 'narrate' },
-          { text: '[Umbral] (Borrow Ludo’s shadow and play the hero with it.)', to: 'borrow', school: 'umbral' },
+          { text: '(Borrow Ludo’s shadow and play the hero with it.)', to: 'borrow', school: 'umbral' },
           { text: '(Stand perfectly still and let them imagine.)', to: 'still' },
         ],
       },
@@ -431,7 +431,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:hobb', text: 'A Veil thief at my lych-gate, and no shadow on her. (He leans on his spade.) I keep the names of the dead, not the living, and I don’t show my books to thieves. Give me a reason.',
         choices: [
           { text: 'My shadow’s one of the missing.', to: 'mine', quest: true },
-          { text: '[Umbral] (Stand in the lamplight and let him look at the wall behind you.)', to: 'wall', school: 'umbral', quest: true },
+          { text: '(Stand in the lamplight and let him look at the wall behind you.)', to: 'wall', school: 'umbral', quest: true },
         ],
       },
       mine: { speaker: 'npc:hobb', mood: 'sad', text: 'Is it, now. (He opens the book.) Twenty-two names. Brindlecross folk who woke without a shadow, and every one of them saw theirs walk off towards the Gloamwood. You’ll be twenty-three.', next: 'end' },
@@ -456,7 +456,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A single grey thread, no thicker than a hair, comes down out of the dark and winds itself round your finger. It is warm. It pulls, very gently, south and east, towards the Gloamwood and Stag’s Rest, and then, beyond them, towards the Heart.',
         choices: [
           { text: '(Close your hand on it.)', to: 'hold', effects: [{ setFlag: 'shade.shadow_thread', value: true }] },
-          { text: '[Umbral] (Tug it, once, the way the Veil signals “come home”.)', to: 'tug', school: 'umbral', effects: [{ setFlag: 'shade.shadow_thread', value: true }] },
+          { text: '(Tug it, once, the way the Veil signals “come home”.)', to: 'tug', school: 'umbral', effects: [{ setFlag: 'shade.shadow_thread', value: true }] },
         ],
       },
       hold: { speaker: 'narrator', text: 'It goes taut, and stays taut. Somewhere at the far end of it, something knows you are holding on.', next: null },
@@ -498,7 +498,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:nettle-crook-gate', text: 'Toll. (She is sitting on a parcel at the foot of the Umbral arch with her hand out.) One copper for the parcel, one for the gate, one for the walk, which was very long, and one for Mab, because she said to charge you and keep it.',
         choices: [
           { text: '(Pay her four coppers.)', to: 'parcel' },
-          { text: '[Umbral] (Lift the parcel out from under her while she counts.)', to: 'lift', school: 'umbral' },
+          { text: '(Lift the parcel out from under her while she counts.)', to: 'lift', school: 'umbral' },
         ],
       },
       lift: { speaker: 'npc:nettle-crook-gate', mood: 'happy', text: 'OI. (She looks at the empty space under her, and then at you, with enormous respect.) Mab said you’d do that. She said if you did, I wasn’t to charge you. She said if you didn’t, double.', next: 'parcel' },
@@ -650,7 +650,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'One of them, a big man’s shape with a pipe, lifts its hat to you. You cut it out of the Spinner’s web once, and it ran for Brindlecross. The Bell called it here instead.',
         choices: [
           { text: '(Tug the Spinner’s thread: short, short, long. Come home.)', to: 'come', quest: true },
-          { text: '[Umbral] (Turn your back on them and walk away from the light, the way a person does.)', to: 'walk', school: 'umbral', quest: true },
+          { text: '(Turn your back on them and walk away from the light, the way a person does.)', to: 'walk', school: 'umbral', quest: true },
         ],
       },
       come: { speaker: 'narrator', text: 'Short, short, long. All down the rank, heads lift. When you walk out of the Legion camp they come after you, a step behind and a little to one side, and the tears run off them as they go.', next: null },

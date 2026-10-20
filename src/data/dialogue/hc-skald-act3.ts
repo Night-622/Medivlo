@@ -34,7 +34,7 @@ const dialogues: DialogueDef[] = [
       'kneel-great': { speaker: UL, mood: 'hollow', text: '(The war-drum in the Chimera’s chest beats once, and the Heart throws it back three times. Drum: You cut the chiefs. The heroes. Not the cooks. Not my mother. Not me. I watched you choose.)', next: 'king' },
       'kneel-unsung': { speaker: UL, mood: 'hollow', text: '(The war-drum in the Chimera’s chest beats once, and the Heart throws it back three times. Drum: You cut my mother’s name. I ran. I could not bear it. Nobody had ever cut a name for the likes of us.)', next: 'king' },
       'kneel-weather': { speaker: UL, mood: 'hollow', text: '(The war-drum in the Chimera’s chest beats once, and the Heart throws it back three times. Drum: You let them all go blank. Then nobody has a saga. That is fair, at least. The first fair thing.)', next: 'king' },
-      king: { speaker: UL, mood: 'sad', text: '(The great stitched head turns towards the Citadel doors. Drum: He is in there. Unsung, like me. Every school sang at him, and he heard nothing. The harpy never took my letter. I came anyway. He knew what I was without asking.)', next: 'choose' },
+      king: { speaker: UL, mood: 'sad', text: '(The great stitched head turns towards the Citadel doors. Drum: He is in there. Unsung, like me. Every school sang at him, and he heard nothing. The harpy never brought him my letter. I came anyway. He knew what I was without asking.)', next: 'choose' },
       choose: {
         speaker: UL, text: '(Drum, slow: Cut in tears, the sagas never wear. Nobody has to sing them, so nobody is left out. He wants that. I wanted that. So, little one. Do the unsung get a stone, or a voice?)',
         choices: [
@@ -86,7 +86,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Drum it plainly, verse by verse, the way she taught you.)', to: 'home' },
           { text: '(Give Pip a verse: a squire with a wooden sword and a very good memory.)', to: 'home', when: { flag: 'skald.pip_saga' } },
           { text: '(Drum it slowly, slow enough for a girl of ten to learn.)', to: 'home-asta', when: { flag: 'skald.asta_relay' } },
-          { text: '[Song] (Leave a rest at the end, where the next verse comes in.)', to: 'home', school: 'song' },
+          { text: '(Leave a rest at the end, where the next verse comes in.)', to: 'home', school: 'song' },
         ],
       },
       home: { speaker: 'narrator', text: 'The Heart throws it back three times, like the Fells, and then far away the relay picks it up and carries it home, valley to valley. The Nine-Hundred-and-First Saga. It is not finished. Sagas never are.', effects: [{ setFlag: 'skald.saga_drummed', value: true }], next: null },
@@ -97,7 +97,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Drum it plainly, verse by verse, the way she taught you.)', to: 'home-devoted' },
           { text: '(Give Pip a verse: a squire with a wooden sword and a very good memory.)', to: 'home-devoted', when: { flag: 'skald.pip_saga' } },
           { text: '(Drum it slowly, slow enough for a girl of ten to learn.)', to: 'home-devoted', when: { flag: 'skald.asta_relay' } },
-          { text: '[Song] (Leave a rest at the end, where the next verse comes in.)', to: 'home-devoted', school: 'song' },
+          { text: '(Leave a rest at the end, where the next verse comes in.)', to: 'home-devoted', school: 'song' },
         ],
       },
       'home-devoted': {
@@ -125,10 +125,10 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The others are listening too, Gisla and Orm, their hands still on their drums.',
         choices: [
           { text: '(Drum: The Maestro fell. Your voices flew home. They are waiting for you on the Fells.)', to: 'home' },
-          { text: '[Song] (Drum it the way the relay would, from valley to valley: Gone home. Gone home. Gone home.)', to: 'home', school: 'song' },
+          { text: '(Drum it the way the relay would, from valley to valley: Gone home. Gone home. Gone home.)', to: 'home', school: 'song' },
         ],
       },
-      home: { speaker: 'narrator', mood: 'happy', text: 'Bersi drums it to the others, and the three of them pick up their drums and turn north, towards home. Then Gisla stops, and points her drumstick at the Legion’s muster-board, where their three marks are still chalked. Bersi drums one more thing at you: Somebody owes everyone a drink.', effects: [{ setFlag: 'skald.skalds_named', value: true }], next: null },
+      home: { speaker: 'narrator', mood: 'happy', text: 'Bersi drums it to the others, and the three of them pick up their drums and turn north, towards home. Then Gisla stops, and points her drumstick at the Legion’s muster-board, where their three marks are still chalked.', effects: [{ setFlag: 'skald.skalds_named', value: true }], next: null },
       plain: { speaker: 'narrator', text: 'Where the Fells Skalds stood, three pairs of bootprints going north.', next: null },
     },
   },
@@ -149,7 +149,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Begin it on Scarrow Pike: a boy of nine, drumming every saga he knew at the sky.)', to: 'end', when: { flag: 'skald.ninehundredth' } },
           { text: '(Begin it under Ragna’s table: a boy learning nine hundred sagas by ear.)', to: 'end' },
           { text: '(Begin it the way he did, on the birch-bark from his camp: ULF, and then everything he could not choose.)', to: 'end', when: { flag: 'skald.ulf_camp', op: '==', value: 'bark' } },
-          { text: '[Song] (Cut it as a drum-saga, every line a beat, so it can be drummed as well as read.)', to: 'end', school: 'song' },
+          { text: '(Cut it as a drum-saga, every line a beat, so it can be drummed as well as read.)', to: 'end', school: 'song' },
         ],
       },
       end: { speaker: 'narrator', mood: 'sad', text: 'Ulf the Unsung, who knew every saga, and drummed them because they would not ring in his mouth. Plain stone. It will wear, one day, and somebody will have to cut it again, and say his name while they do. That is the point.', effects: [{ setFlag: 'skald.ulf_stone', value: true }], next: null },

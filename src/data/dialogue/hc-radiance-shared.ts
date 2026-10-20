@@ -28,7 +28,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Your lord kneels in the Dawn Gate. The black is running out of him. He takes off his golden mask with both hands, and his voice is an old man’s: I swore to keep the light, knight. Forever. I am so tired. Release me from it.',
         choices: [
           { text: 'I release you, Your Radiance. Your oath is kept.', to: 'release', effects: [{ setFlag: 'oathbound.hierarch', value: 'released' }] },
-          { text: '[Radiance] (Kneel, and take the oath from his hands.) Then I’ll keep it a while. You can put it down.', to: 'take', school: 'radiance', effects: [{ setFlag: 'oathbound.hierarch', value: 'taken' }] },
+          { text: '(Kneel, and take the oath from his hands.) Then I’ll keep it a while. You can put it down.', to: 'take', school: 'radiance', effects: [{ setFlag: 'oathbound.hierarch', value: 'taken' }] },
         ],
       },
       release: { speaker: 'narrator', text: 'He breathes out, a long breath, as if he had been holding it since C. 1012. Then he lies down across the foot of the gate with his mask beside him, and sleeps.', next: 'oat_open' },

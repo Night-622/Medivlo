@@ -17,7 +17,7 @@ const dialogues: DialogueDef[] = [
       dus: {
         speaker: 'narrator', text: 'The Eclipse Queen lies across the gate-step with the moon slid back up out of her into the sky. The black disc of her eclipse has drained away, and under it she is only an old woman in a crown of night, frowning, as if trying to remember a word.',
         choices: [
-          { text: '[Umbral] (Weave her the memory of her own name.)', to: 'name', school: 'umbral', effects: [{ setFlag: 'duskweaver.queen', value: 'named' }] },
+          { text: '(Weave her the memory of her own name.)', to: 'name', school: 'umbral', effects: [{ setFlag: 'duskweaver.queen', value: 'named' }] },
           { text: 'Sleep, Majesty. It’ll keep.', to: 'sleep', effects: [{ setFlag: 'duskweaver.queen', value: 'slept' }] },
         ],
       },

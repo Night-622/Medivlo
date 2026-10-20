@@ -48,7 +48,7 @@ const dialogues: DialogueDef[] = [
       },
       hear: { speaker: 'npc:godric', mood: 'sad', text: 'Nothing. That is the point. I stand there so that one person in Brindlecross notices, every evening, that they are gone. Somebody ought to keep the silence properly.', next: 'end' },
       miss: { speaker: 'npc:godric', text: 'I am an old soldier. I miss the things I was told to guard. The bells were the only ones that never asked me to.', next: 'end' },
-      end: { speaker: 'npc:godric', text: 'There. That is more than I have told the council in forty winters. Go on with you. And do not stop in the road at dusk. Folk will think you are thinking.', next: null },
+      end: { speaker: 'npc:godric', text: 'There. That is more than I have told the council in twenty winters. Go on with you. And do not stop in the road at dusk. Folk will think you are thinking.', next: null },
     },
   },
   {

@@ -86,7 +86,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'At the front stands old Ewan Haskins, who carried a month of her wages and went quiet. He is still very polite. He holds his coin out to you, as if you are the one who is owed.',
         choices: [
           { text: '(Take his coin, and pay him properly, in Embershards, out of your own purse.)', to: 'pay' },
-          { text: '[Iron] (Take the coins one by one, and count them out loud, the way Gussie counts heads.)', to: 'tally', school: 'iron' },
+          { text: '(Take the coins one by one, and count them out loud, the way Gussie counts heads.)', to: 'tally', school: 'iron' },
         ],
       },
       dark: { speaker: 'narrator', text: 'A rank of miners in Deepworks leathers, the lamps on their caps gone out, each with a fist closed round a wet, bright coin. When you reach for the first coin, the whole rank closes its fists at once and steps back half a pace.', next: 'dark2' },

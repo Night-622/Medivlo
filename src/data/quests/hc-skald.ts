@@ -563,11 +563,11 @@ const quests: QuestDef[] = [
         id: 'names', journal: 'Three names lost. Hallgerd thinks the shore still has them, if anyone looks: on the wood the lake gives back.',
         objectives: [{ id: 'names', text: 'Find the three lost names on the shore', interact: 'obj:lost-name-*', count: 3, marker: { landmark: 'landmark:shore-fish-mill' } }],
         onComplete: [{ setFlag: 'skald.lost_names', value: true }],
-        next: [{ when: { flag: 'skald.stones', value: 'great' }, to: 'down' }, { to: 'tamsin' }],
+        next: [{ when: { flag: 'skald.stones', op: '==', value: 'great' }, to: 'down' }, { to: 'tamsin' }],
       },
       {
         id: 'tamsin', journal: 'Tamsin the ferrywoman can take you out over the nave, for a copper and a story.',
-        objectives: [{ id: 'tamsin', text: 'Ask Tamsin to row you over the nave', talk: 'npc:tamsin', marker: { landmark: 'landmark:shore-ferry-house' } }],
+        objectives: [{ id: 'tamsin', text: 'Ask Tamsin to ferry you over the nave', talk: 'npc:tamsin', marker: { landmark: 'landmark:shore-ferry-house' } }],
         next: 'drum',
       },
       {
@@ -652,7 +652,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A2, id: 'quest:skald-the-white-stag', name: 'The White Stag', type: 'class', region: 'region:gloam', giver: 'npc:ebba-coldrey',
-    summary: 'Ulf has been drumming for the White Stag that once led the Turning procession, asking it to lead him to the King. The Stag has been following him into the deep glade. The Hunt bearers cannot win its mark while it grieves.',
+    summary: 'Ulf has been drumming for the White Stag that once led the Turning procession, asking it to lead him to the King. The Stag has been following him into the Deep Glade. The Hunt bearers cannot win its mark while it grieves.',
     requires: req(done('quest:skald-the-drum-in-the-glade')), firstStage: 'deep',
     stages: [
       {
@@ -690,7 +690,7 @@ const quests: QuestDef[] = [
         next: 'pip',
       },
       {
-        id: 'pip', journal: 'Ragna, in the long-message beat. Pip has been sitting under the arch since dawn with a slate, writing it all down.',
+        id: 'pip', journal: 'Ragna, in the long-message beat. Pip has been sitting on the green since dawn with a slate, writing it all down.',
         objectives: [{ id: 'pip', text: 'Ask Pip what the drum said', talk: 'npc:pip', marker: { landmark: 'landmark:brind-green' } }],
         next: 'duet',
       },

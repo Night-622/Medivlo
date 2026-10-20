@@ -42,7 +42,7 @@ const npcs: NpcDef[] = [
     barks: [{ lines: ['The Abbey bells rang. The Abbey has been under water thirty years.', 'I do not like magic. I like wolves less.'] }],
     roles: ['quest'], essential: true,
     look: { skin: 0xe0b898, hair: 0xe8e4dc, cloth: 0x8a7a5a, accent: 0xffd96b, build: 'average' },
-    bio: 'Elder of Brindlecross for forty winters. He remembers the Abbey bells, distrusts magic and relies on it anyway. As a young Citadel guard he stood at the throne-room door on the night of the Hollowing, and he has never said what he saw.',
+    bio: 'Elder of Brindlecross for twenty winters. He remembers the Abbey bells, distrusts magic and relies on it anyway. As a young Citadel guard he stood at the throne-room door on the night of the Hollowing, and he has never said what he saw.',
   },
   {
     id: 'npc:nanbriar', name: 'Nan Briar', title: 'Hedge-witch of the Briar Path', school: 'verdant', origin: 'concord', trust: 1,

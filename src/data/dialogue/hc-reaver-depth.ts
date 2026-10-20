@@ -43,7 +43,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Maybe there could be.', to: 'home', trust: 1 },
           { text: 'The hounds didn’t stand down.', to: 'hounds' },
-          { text: '[Ash] The stone in me is still singing. It wants something.', to: 'stone', school: 'ash' },
+          { text: 'The stone in me is still singing. It wants something.', to: 'stone', school: 'ash' },
         ],
       },
       home: { speaker: BR, mood: 'sad', text: 'Maybe. I’m too old to start wanting things, pup. You’re not. Don’t let me talk you out of it.', next: 'hask' },

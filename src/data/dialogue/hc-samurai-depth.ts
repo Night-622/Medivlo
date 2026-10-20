@@ -55,7 +55,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Your half-stone is singing, loud as a struck bell on the silent mountain. Every time it swells, the flames he has just lit lean towards you.',
         choices: [
           { text: '(Take the taper and light lanterns with him, in silence.)', to: 'light', trust: 1, trustNpc: HK },
-          { text: '[Blade] (Draw your blade a finger’s width, and let the stone’s song run down it.)', to: 'draw', school: 'blade' },
+          { text: '(Draw your blade a finger’s width, and let the stone’s song run down it.)', to: 'draw', school: 'blade' },
           { text: 'Sensei, what is it?', to: 'ask' },
         ],
       },
@@ -413,7 +413,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Tie a blank strip of your own beside theirs.)', to: 'tie', trust: 1, trustNpc: 'npc:hisako' },
           { text: 'Wait for what, Pilgrim-Mother?', to: 'ask' },
-          { text: '[Blade] (Sign the Temple Road sign for “I am here”.)', to: 'sign', school: 'blade' },
+          { text: '(Sign the Temple Road sign for “I am here”.)', to: 'sign', school: 'blade' },
         ],
       },
       tie: { speaker: 'narrator', text: 'You tie a blank strip on the end of the rail. Hisako watches you do it, and her mouth goes tight, the way an old woman’s mouth goes when she has decided not to cry in church.', next: 'end' },
@@ -463,7 +463,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Say nothing. Look at the chains on his wrists.)', to: 'chains' },
           { text: 'Whom does your sword serve now, Lord Ikeda?', to: 'serve' },
-          { text: '[Blade] (Lay your hand on your sheathed sword, and wait.)', to: 'wait', school: 'blade' },
+          { text: '(Lay your hand on your sheathed sword, and wait.)', to: 'wait', school: 'blade' },
         ],
       },
       chains: { speaker: IS, text: '(He glances down at them.) These? They tighten every time I cut. Something wants me very badly. Let it want. Wanting is not having. (Another thread parts.)', next: 'go' },

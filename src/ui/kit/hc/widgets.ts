@@ -113,6 +113,9 @@ export class HCBar extends Phaser.GameObjects.Container {
     return this;
   }
 
+  /** Current fill, 0..1 (read by the DEV HUD probe). */
+  get fraction(): number { return this.value; }
+
   /** Drain the ghost (call from scene update). */
   tick(dtMs: number): void {
     if (this.ghost <= this.value) return;

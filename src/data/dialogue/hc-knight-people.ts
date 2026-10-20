@@ -226,7 +226,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Lance low. Eyes open. Breathe out as you hit.', to: 'clean', effects: [{ setFlag: 'knight.wat_tilt', value: 'clean' }] },
           { text: 'Don’t look at your father. Look at the quintain.', to: 'clean', trust: 1, effects: [{ setFlag: 'knight.wat_tilt', value: 'clean' }] },
-          { text: '[Iron] (Lend him your shield.) Hold the line, Wat.', to: 'shield', school: 'iron', effects: [{ setFlag: 'knight.wat_tilt', value: 'shield' }] },
+          { text: '(Lend him your shield.) Hold the line, Wat.', to: 'shield', school: 'iron', effects: [{ setFlag: 'knight.wat_tilt', value: 'shield' }] },
         ],
       },
       clean: { speaker: 'npc:wat-mudge', mood: 'happy', text: '(Thunder of hooves; a crack; the quintain spins three times.) I HIT IT! I hit it with the right end! Father’s standing up! Father is clapping! He never claps! Oh, I’ve dropped the lance. Doesn’t matter!', next: 'after' },
@@ -413,7 +413,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:konrad-berenikson', text: '“For the head and the shield-arm, as agreed. She would have wanted it to be useful. Tell my squire, if they come, that I asked to be bound and nobody made me. I am finally going to be magnificent. K.”',
         choices: [
           { text: 'He gave them his grandmother’s armour.', to: 'down' },
-          { text: '[Iron] (Lay your shield on the anvil beside it, for a moment.)', to: 'shield', school: 'iron' },
+          { text: '(Lay your shield on the anvil beside it, for a moment.)', to: 'shield', school: 'iron' },
         ],
       },
       shield: { speaker: 'narrator', text: 'Your painted shield, or your blank one, beside the Queen’s plate. The black frame trembles very slightly, as if it has noticed. Then it is still.', next: 'down' },

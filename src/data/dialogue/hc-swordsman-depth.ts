@@ -53,7 +53,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The blade is humming. Very faint, the same note every sword in Edgewater sang when the Bell rang, and under it, from your chest, your own song, answering.',
         choices: [
           { text: 'It’s singing the same note as me.', to: 'note' },
-          { text: '[Blade] (Hold the blade up to the lamp and sight down the edge.)', to: 'edge', school: 'blade' },
+          { text: '(Hold the blade up to the lamp and sight down the edge.)', to: 'edge', school: 'blade' },
           { text: 'Why did every sword stop, Maestra?', to: 'stop' },
         ],
       },
@@ -424,7 +424,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Chalk your name where Rook told you.)', to: 'name' },
           { text: '(Chalk Ferro’s name above the Ladder, small, where nobody will rub it out.)', to: 'ferro' },
-          { text: '[Blade] (Chalk the closing salute beside your name, the Edgewater way.)', to: 'salute', school: 'blade' },
+          { text: '(Chalk the closing salute beside your name, the Edgewater way.)', to: 'salute', school: 'blade' },
         ],
       },
       name: { speaker: 'narrator', text: 'You chalk it in. A farmer leaning on the doorpost reads it, nods, and goes inside to tell the others that the new one can spell.', next: 'rook' },
@@ -451,7 +451,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Pay his bill.)', to: 'pay', effects: [{ setFlag: 'swordsman.jar_paid', value: true }] },
           { text: '(Read the card again.)', to: 'card' },
-          { text: '[Blade] (Look at the break in the blade.)', to: 'break', school: 'blade' },
+          { text: '(Look at the break in the blade.)', to: 'break', school: 'blade' },
         ],
       },
       pay: { speaker: 'narrator', mood: 'happy', text: 'You put your coin on the bar. The landlady looks at it, and at you, and rubs out “HE NEVER PAID” with her thumb. “You’re not him,” she says. “Good. He went up the Spire stair singing.”', next: null },
@@ -544,7 +544,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Chalk your name at rung two.)', to: 'two', effects: [{ setFlag: 'swordsman.heart_ladder', value: 'two' }] },
           { text: '(Chalk “2. A Hollow Legionnaire. Very sporting.”)', to: 'sport', effects: [{ setFlag: 'swordsman.heart_ladder', value: 'legionnaire' }] },
-          { text: '[Blade] (Chalk the closing salute under his name instead.)', to: 'salute', school: 'blade', effects: [{ setFlag: 'swordsman.heart_ladder', value: 'salute' }] },
+          { text: '(Chalk the closing salute under his name instead.)', to: 'salute', school: 'blade', effects: [{ setFlag: 'swordsman.heart_ladder', value: 'salute' }] },
         ],
       },
       two: { speaker: PC, text: 'Second! Under me! Ferro will never believe it. Nobody in Edgewater will believe it. I’m going to have it drawn.', next: null },

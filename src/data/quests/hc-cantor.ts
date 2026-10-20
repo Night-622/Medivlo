@@ -765,7 +765,7 @@ const quests: QuestDef[] = [
     stages: [
       { id: 'salute', journal: 'A rank of Brightwatch recruits, none of them older than twenty, holding a salute they were never told to drop.', objectives: [{ id: 'recruits', text: 'Bring back the Brightwatch recruits', interact: 'obj:cantor-brightwatch-recruits', marker: { landmark: 'landmark:legion-camp' } }], next: 'roll' },
       {
-        id: 'roll', journal: 'The recruits have drifted to the Heart camp and formed up in a line, because nobody has told them what else to do. Their sergeant carried the roll-book. Somebody should call it.',
+        id: 'roll', journal: 'The recruits have drifted to the Heart camp and formed up in a line, because nobody has told them what else to do. The youngest carried the roll-book out of the Legion in his tabard. Somebody should call it.',
         objectives: [{ id: 'roll', text: 'Call the recruits’ roll at the Heart camp', interact: 'obj:cantor-recruits-roll', marker: { landmark: 'landmark:heart-camp' } }],
         next: 'loaves',
       },

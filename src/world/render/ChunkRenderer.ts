@@ -60,6 +60,8 @@ export class ChunkRenderer {
   feed: ChunkFeed | null = null;
   /** dev stats: chunks built on the main thread (first frame, no worker, or the worker too slow) */
   syncBuilds = 0;
+  /** dev stats: main-thread ms per chunk shown, split (hitch hunt: RELEASE.md §3) */
+  perf = { shows: 0, max: 0, tiles: 0, sprites: 0, lights: 0, slow: [] as string[] };
   onShow?: (c: HcChunk) => void;
   onHide?: (c: HcChunk) => void;
   /** chests this character has opened (object tile = the tile below the chest art): drawn dimmed and lidless */
@@ -104,12 +106,15 @@ export class ChunkRenderer {
   }
 
   private show(cx: number, cy: number): void {
+    const t0 = performance.now();
     const c = this.rt.chunk(cx, cy)!;
     const map = this.scene.make.tilemap({ tileWidth: TILE_SIZE, tileHeight: TILE_SIZE, width: N, height: N });
     const ts = map.addTilesetImage(this.tileset, this.tileset, TILE_SIZE, TILE_SIZE, 0, 0)!;
     const layer = map.createBlankLayer('ground', ts, cx * CHUNK_PX + TILE_SIZE / 2, cy * CHUNK_PX + TILE_SIZE / 2, N, N)!;
     for (let i = 0; i < c.ground.length; i++) if (c.ground[i]) layer.putTileAt(c.ground[i], i % N, (i / N) | 0, false);
     layer.setDepth(Depth.Ground).setCullPadding(1, 1);
+    const t1 = performance.now();
+    let tl = 0;
     const sprites: Phaser.GameObjects.Image[] = [];
     const glows: View['glows'] = [];
     for (const p of c.placements) {
@@ -121,13 +126,19 @@ export class ChunkRenderer {
         if (base.startsWith('d_chest') && this.openedAt?.(Math.floor(p.x / TILE_SIZE), Math.floor((p.y - 1) / TILE_SIZE) + 1)) img.setTint(0x6a6a6a).setAlpha(0.8);
         sprites.push(img);
         const lights = artLights(p.art);
+        const l0 = performance.now();
         if (lights.length) glows.push(...this.light.addFor(p.art, p.x, p.y, t.w, t.h, lights));
+        tl += performance.now() - l0;
       } catch (e) {
         console.warn(`[world] placement ${p.art} failed`, e);
       }
     }
     this.live.set(`${cx},${cy}`, { chunk: c, map, sprites, glows });
+    const t2 = performance.now();
     this.onShow?.(c);
+    const ms = performance.now() - t0, P = this.perf;
+    P.shows++; P.tiles += t1 - t0; P.sprites += t2 - t1 - tl; P.lights += tl; P.max = Math.max(P.max, ms);
+    if (ms > 12 && P.slow.length < 40) P.slow.push(`${cx},${cy} ${ms.toFixed(1)}ms (tiles ${(t1 - t0).toFixed(1)}, sprites ${(t2 - t1 - tl).toFixed(1)} ×${sprites.length}, lights ${tl.toFixed(1)}, onShow ${(performance.now() - t2).toFixed(1)})`);
     bus.emit('chunk:loaded', { cx, cy });
   }
 

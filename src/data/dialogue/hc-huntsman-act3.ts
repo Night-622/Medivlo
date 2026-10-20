@@ -122,7 +122,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'happy', text: 'Lady Corva Ashby laughs, out loud, for the first time anyone at the camp has ever heard, and cannot stop, and has to put her face in her hands.',
         choices: [
           { text: '(Leave them to it.)', to: null },
-          { text: '[Hunt] (Fetch them both a bowl from the stewpot.)', to: 'bowls', school: 'hunt' },
+          { text: '(Fetch them both a bowl from the stewpot.)', to: 'bowls', school: 'hunt' },
         ],
       },
       bowls: { speaker: 'narrator', text: 'You bring two bowls. Neither of them has eaten in days, and neither of them says so. They eat side by side by the fire, exact and careful, and nobody counts anything.', next: null },
@@ -149,7 +149,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A few steps below the top of the Hunt stair stands the calf from the Elkway, taller now and all knees, without a speck of black on it. It followed the Great Hunt’s old road all this way, and the road ran out at a staircase.',
         choices: [
           { text: '(Turn your back on it and walk slowly down, the way the old law says.)', to: 'law' },
-          { text: '[Hunt] (Scuff the dust as you go, so it has a track to follow.)', to: 'track', school: 'hunt' },
+          { text: '(Scuff the dust as you go, so it has a track to follow.)', to: 'track', school: 'hunt' },
           { text: '(Hold out your hand.)', to: 'hand' },
         ],
       },

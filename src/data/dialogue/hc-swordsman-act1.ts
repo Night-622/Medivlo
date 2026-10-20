@@ -54,7 +54,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       now: {
         speaker: 'narrator', text: 'Rung 1,880 challenges rung 1,879, “for the matter of the goose”. Both duellists are here, both seventy, neither can remember the goose.',
-        choices: [{ text: 'Ask them if anyone still minds about the goose.', to: 'goose' }, { text: '[Blade] Referee it: one touch, and done.', to: 'touch', school: 'blade' }],
+        choices: [{ text: 'Ask them if anyone still minds about the goose.', to: 'goose' }, { text: 'Referee it: one touch, and done.', to: 'touch', school: 'blade' }],
       },
       goose: { speaker: 'narrator', text: 'They think about it. Nobody minds about the goose. They shake hands, a little confused, and go for a drink. You rub out the chalk.', next: null },
       touch: { speaker: 'narrator', text: 'One touch, to rung 1,879. Rung 1,880 bows and says the goose was his anyway. You rub out the chalk.', next: null },
@@ -84,7 +84,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Step into the grandfather’s place, and take the touch.)', to: 'take' },
           { text: '(Step in, and lower your sword.)', to: 'lower' },
-          { text: '[Blade] (Salute the end of the duel.)', to: 'salute', school: 'blade' },
+          { text: '(Salute the end of the duel.)', to: 'salute', school: 'blade' },
         ],
       },
       take: { speaker: 'narrator', text: 'Pozzo’s blade touches your shoulder, light as a fingertip. He freezes. Then he salutes, and puts his sword down, and lies down on the cobbles, and is still. Matteo finishes his sandwich, and cries a little.', next: null },

@@ -114,7 +114,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', mood: 'sad', text: 'Every shield in the rank is blank. One by one, in the Heart, they have scraped off their own arms. You have the roll of arms. It has all of them in it.',
         choices: [
           { text: '(Open the roll of arms, and read each of them home by name.)', to: 'names' },
-          { text: '[Iron] (Strike your shield three times, the Order’s muster. Then read the roll.)', to: 'muster', school: 'iron' },
+          { text: '(Strike your shield three times, the Order’s muster. Then read the roll.)', to: 'muster', school: 'iron' },
         ],
       },
       nameless: { speaker: 'narrator', text: 'Ironhold knights, a whole rank of them, standing hollow in the Legion camp in their colours. Every shield is scraped blank to the bare metal. You walk the line and look for one face you know, one crest, one name. There is nothing to read.', next: 'nameless2' },
@@ -153,7 +153,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'At the top of the Iron stair the Blank Shield takes its place by the last step, sets its feet, grounds the plain sword you found for it, and stands.',
         choices: [
           { text: 'Stand your watch, ser.', to: 'ser' },
-          { text: '[Iron] (Kneel beside it, and keep the first hour of its watch.)', to: 'hour', school: 'iron' },
+          { text: '(Kneel beside it, and keep the first hour of its watch.)', to: 'hour', school: 'iron' },
         ],
       },
       ser: { speaker: 'narrator', text: 'Ser. Nobody has ever called it anything before. It stands a little straighter, which you would not have thought possible.', next: null },

@@ -233,7 +233,7 @@ const npcs: NpcDef[] = [
     barks: [{ lines: ['Ink to the elbows. It doesn’t come off. His ink never comes off.', 'The dogs here are very kind. Kinder than composers.'] }],
     roles: ['quest'],
     look: { skin: 0xd8b8a0, hair: 0x4a3a2a, cloth: 0x3a3048, accent: 0x1a1a1a, build: 'slight' },
-    bio: 'A Lyrehaven copyist who came through the Lyre Gate behind the Impresario to copy his score, and ran away a week later with black ink to the elbows.',
+    bio: 'A Lyrehaven copyist who came through the Lyre Gate behind the Impresario to copy his score, and ran away three weeks later with black ink to the elbows.',
   },
 ];
 

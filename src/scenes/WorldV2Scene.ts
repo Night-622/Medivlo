@@ -21,6 +21,7 @@ import type { SpaceQuery } from '@/world/hc/runtime';
 import { installWorldAuthority, type WorldAuthority } from '@/world/hc/authority';
 import { InstanceGen } from '@/world/hc/instanceGen';
 import { ChunkRenderer } from '@/world/render/ChunkRenderer';
+import { bakeStats } from '@/world/render/artCache';
 import { chunkFeed } from '@/world/render/ChunkFeed';
 import { ListeningShadow } from '@/world/render/ListeningShadow';
 import { isAction } from '@/ui/kit/hc/keys';
@@ -349,7 +350,7 @@ export class WorldV2Scene extends Phaser.Scene {
       hour: (h: number) => { Game.state.world.time = h * 60; },
       step: (ms = 100, n = 10) => { for (let i = 0; i < n; i++) this.update(0, ms); return api.where(); },
       chunks: () => this.chunks.views().map((c) => `${c.cx},${c.cy}`),
-      chunkStats: () => ({ worker: !!this.chunks.feed?.live, delivered: this.chunks.feed?.delivered ?? 0, syncBuilds: this.chunks.syncBuilds, shown: this.chunks.views().length }),
+      chunkStats: () => ({ worker: !!this.chunks.feed?.live, delivered: this.chunks.feed?.delivered ?? 0, syncBuilds: this.chunks.syncBuilds, shown: this.chunks.views().length, show: this.chunks.perf, bakes: bakeStats }),
       focus: () => this.focus?.focusId() ?? null,
       press: () => this.focus?.use(),
     };

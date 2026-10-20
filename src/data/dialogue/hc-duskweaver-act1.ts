@@ -44,7 +44,7 @@ const dialogues: DialogueDef[] = [
         speaker: NX, text: 'That song is half of the Umbral stone. The Obelisk half. It has lain in the Obelisk’s shadow for thirty years, and the Obelisk has been leaking ever since, like a bucket with no bottom, and now it has woken up for you. Of all people. Well! Not of all people. I’m sure you’re lovely.',
         choices: [
           { text: 'What do I do?', to: 'do' },
-          { text: '[Umbral] The shadows are all facing the Obelisk. Is it calling them?', to: 'calling', school: 'umbral', trust: 1 },
+          { text: 'The shadows are all facing the Obelisk. Is it calling them?', to: 'calling', school: 'umbral', trust: 1 },
         ],
       },
       calling: { speaker: NX, text: 'Calling them home, I think. Shadows are memories the light left behind, and the Obelisk is where memories go. If it calls loudly enough they’ll all go, and then we shan’t know who anyone is. Even less than now.', next: 'do' },
@@ -268,7 +268,7 @@ const dialogues: DialogueDef[] = [
         speaker: OV, text: 'And the Obelisk half has woken. Set it in my head, and I can hold the whole of Nocturne for ever. Nothing anyone has ever known will be lost again. Isn’t that the kindest thing in the world?',
         choices: [
           { text: 'They’re not yours to keep.', to: 'theirs' },
-          { text: '[Umbral] A memory you can’t lose isn’t a memory. It’s a cage.', to: 'cage', school: 'umbral' },
+          { text: 'A memory you can’t lose isn’t a memory. It’s a cage.', to: 'cage', school: 'umbral' },
           { text: 'You gave Linnet Dray’s name a shelf.', to: 'linnet', when: { flag: 'duskweaver.linnet_found' } },
         ],
       },
@@ -359,7 +359,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Her voice comes from the whole sky: Every night it shines, Duskweaver, the moon shows them something else they’ve lost. If I swallow it, there will be nothing left to forget. Isn’t that the kindest thing in the world?',
         choices: [
           { text: 'I’ve heard that before. From Vane.', to: 'vane' },
-          { text: '[Umbral] (Weave her a memory of the moon.)', to: 'weave', school: 'umbral' },
+          { text: '(Weave her a memory of the moon.)', to: 'weave', school: 'umbral' },
         ],
       },
       vane: { speaker: 'narrator', text: 'Then he was right, she says, and the moon goes further into the dark.', next: null },

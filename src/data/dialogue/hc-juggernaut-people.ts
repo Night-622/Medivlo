@@ -438,7 +438,7 @@ const dialogues: DialogueDef[] = [
       see: { speaker: 'narrator', text: 'In the high pass, holding the road shut with its whole body, stands a giant of blue ice, tears frozen in black ropes down its face. Magda’s miners have been breaking at its feet with picks. It has not moved.', next: 'line' },
       line: {
         speaker: 'narrator', text: 'You look up at it for a long moment.',
-        choices: [{ text: 'Another colossus.', to: null }, { text: '[Iron] (Crack your knuckles.) Right. I’ve done one of these.', to: null, school: 'iron' }],
+        choices: [{ text: 'Another colossus.', to: null }, { text: '(Crack your knuckles.) Right. I’ve done one of these.', to: null, school: 'iron' }],
       },
     },
   },
@@ -489,7 +489,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The last cracked buttress of Wardenhold’s gate wall. You set your shoulder to it while the Warden bearer’s spearmen wedge the stones. Walls are for keeping people out, the Warden says, through gritted teeth.',
         choices: [
           { text: 'Walls are for the people leaning on them.', to: 'lean' },
-          { text: '[Iron] (Push. The wall goes straight.)', to: 'push', school: 'iron' },
+          { text: '(Push. The wall goes straight.)', to: 'push', school: 'iron' },
         ],
       },
       lean: { speaker: 'narrator', text: 'Twenty spearmen look at the wall they are all leaning on, and then at each other. The Warden bearer opens their mouth to argue, and finds they are leaning on it too.', next: null },

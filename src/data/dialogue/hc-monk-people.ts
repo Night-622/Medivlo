@@ -448,7 +448,7 @@ const dialogues: DialogueDef[] = [
       form: {
         speaker: 'narrator', text: 'A bog-slime in a clearing in the bramble, doing Mountain Rising Slowly. It does the first half correctly and then falls over, wobbles, gets up and starts again. It is, unmistakably, the Stone Abbot’s form. Every slime you have passed was facing the same way.',
         choices: [
-          { text: '[Fist] (Do the form beside it, slowly, correctly.)', to: 'show', school: 'fist' },
+          { text: '(Do the form beside it, slowly, correctly.)', to: 'show', school: 'fist' },
           { text: '(Follow the way it is facing.)', to: null },
         ],
       },
@@ -556,7 +556,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The Stormlancer bearer is on the wind ledge above the Wind Yard, lance up, weight on the front foot, about to jump into a sky full of lightning. Far above, the Stormcrow is screaming.',
         choices: [
           { text: 'One breath first. Just one. Breathe with me.', to: 'breath' },
-          { text: '[Fist] (Stand beside them, perfectly still, until they notice.)', to: 'still', school: 'fist' },
+          { text: '(Stand beside them, perfectly still, until they notice.)', to: 'still', school: 'fist' },
         ],
       },
       breath: { speaker: 'narrator', text: 'They roll their eyes. They breathe, once, with you. In that one breath, lightning strikes the exact place on the cliff where they would have landed. Neither of you says anything for a while. Then they breathe again, without being asked.', next: null },

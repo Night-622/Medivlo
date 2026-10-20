@@ -340,7 +340,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       still: { speaker: YS, mood: 'happy', text: 'Then we keep singing. (She turns round at last, to the congregation.) Well? Don’t stand there dripping. It’s nearly the hour.', next: 'light' },
-      compline: { speaker: YS, text: 'Compline. Dawnspire lost it before I was born. (She makes you sing her the verse you know, twice, and writes it on her cuff.) We’ll have it by the next hour. They’ll sleep the better for it.', effects: [{ setFlag: 'cantor.shore_compline', value: true }], next: 'light' },
+      compline: { speaker: YS, text: 'Compline. They’d stopped singing it in the Close before I ever left Dawnspire. (She makes you sing her the verse you know, twice, and writes it on her cuff.) We’ll have it by the next hour. They’ll sleep the better for it.', effects: [{ setFlag: 'cantor.shore_compline', value: true }], next: 'light' },
       living: { speaker: YS, text: 'The living. Yes. We may be rusty. We may be appalling. (She very nearly smiles.) The fish won’t mind.', next: 'light' },
       light: { speaker: YS, mood: 'afraid', text: 'There’s something else. Come up to the chapel when you’ve dried off. From the roof I’ve been watching a light in the Gloamwood, and it is entirely the wrong colour.', next: null },
     },

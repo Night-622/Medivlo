@@ -44,7 +44,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', effects: [{ setFlag: 'story.sentinel.iron', value: true }], text: 'The Engine’s last plate cools under your hand. Somewhere inside, a sound like a bell struck under a blanket: I made the settings to hold the grief as well as the song. I did my work. Did they know?',
         choices: [
           { text: 'They know now.', to: 'known' },
-          { text: '[Iron] (Hold the line of its anvil with your shield, as you would a wall.)', to: 'known', school: 'iron' },
+          { text: '(Hold the line of its anvil with your shield, as you would a wall.)', to: 'known', school: 'iron' },
         ],
       },
       known: { speaker: 'narrator', text: 'The warmth goes out of the anvil, slowly, the way it goes out of a forge at the end of a long day’s work that went well.', next: null },
@@ -53,7 +53,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Your work was good.', to: 'good', insight: 'engine_work_good' },
           { text: 'It held. That’s what good work does.', to: 'good' },
-          { text: '[Iron] (Lay down your maul beside the anvil, the way a miner lays down tools at end of shift.)', to: 'tools', school: 'iron' },
+          { text: '(Lay down your maul beside the anvil, the way a miner lays down tools at end of shift.)', to: 'tools', school: 'iron' },
         ],
       },
       good: { speaker: 'narrator', mood: 'happy', text: 'Something deep in the iron lets go, all at once, like a held breath. The anvil cools. Somewhere very far away, an end-of-shift whistle seems to blow, though there is no whistle within a hundred miles.', next: null },

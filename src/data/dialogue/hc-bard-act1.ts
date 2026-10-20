@@ -28,7 +28,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Sing it back to the chandelier.)', to: 'back' },
           { text: '(Stop, and listen.)', to: 'listen' },
-          { text: '[Song] (Find the harmony underneath it.)', to: 'harmony', school: 'song' },
+          { text: '(Find the harmony underneath it.)', to: 'harmony', school: 'song' },
         ],
       },
       back: { speaker: 'narrator', text: 'You hold the note and the chandelier holds it with you, crystal by crystal, until the whole Opera is ringing like a glass with a wet finger round its rim.', next: 'stone' },
@@ -114,7 +114,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The loft is very quiet.',
         choices: [
           { text: '(Close the book gently.)', to: 'gentle' },
-          { text: '[Song] (Hum the Turning hymn once, in tune, then close it.)', to: 'hum', school: 'song', insight: 'bard_turning_hymn' },
+          { text: '(Hum the Turning hymn once, in tune, then close it.)', to: 'hum', school: 'song', insight: 'bard_turning_hymn' },
         ],
       },
       gentle: { speaker: 'narrator', text: 'You close it. Somewhere below, three buskers on the Opera steps all remember their tunes at once and start playing them at each other.', next: null },
@@ -207,7 +207,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Rector, who holds the key to the vaults?', to: 'key' },
           { text: 'Verity, where do songs go, when they rest?', to: 'rest' },
-          { text: '[Song] (Hum a bar of the overture, and see who in the Hall knows it.)', to: 'hum', school: 'song' },
+          { text: '(Hum a bar of the overture, and see who in the Hall knows it.)', to: 'hum', school: 'song' },
         ],
       },
       key: { speaker: IQ, text: 'The Conservatory. Which is to say, me. (A beat.) And the vaults back onto the organ loft, where it is very dry. Excellent for paper.', next: 'choose' },
@@ -328,7 +328,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Out in the dark auditorium four thousand people are sitting very still, the way an audience sits when it is not sure whether the show is over. Somebody up in the gods begins to clap, alone.',
         choices: [
           { text: '(Take a bow.)', to: 'bowd' },
-          { text: '[Song] (Sing the last bar, the one he left out of his score.)', to: 'lastbar', school: 'song' },
+          { text: '(Sing the last bar, the one he left out of his score.)', to: 'lastbar', school: 'song' },
         ],
       },
       bowd: { speaker: 'narrator', text: 'You bow, deeply, to four thousand people, and they roar. Somewhere up in the flies, a rope creaks.', next: 'bow' },
@@ -363,7 +363,7 @@ const dialogues: DialogueDef[] = [
         speaker: RV, text: 'Before you go. Sing me something, darling. Not for the road. For me.',
         choices: [
           { text: '(Sing the first bar of the overture.)', to: 'bar' },
-          { text: '[Song] (Sing the aria Clemency wrote out for her.)', to: 'aria', school: 'song', when: { questCompleted: 'quest:bard-resting-the-voice' } },
+          { text: '(Sing the aria Clemency wrote out for her.)', to: 'aria', school: 'song', when: { questCompleted: 'quest:bard-resting-the-voice' } },
           { text: 'I can’t sing it the way you did.', to: 'cant' },
         ],
       },

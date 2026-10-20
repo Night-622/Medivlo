@@ -58,7 +58,7 @@ const dialogues: DialogueDef[] = [
         speaker: TE, mood: 'afraid', text: 'It’s so bright. It’s so loud. Everything is looking at me. (He grabs your sleeve with both hands.) Don’t go. Please. Don’t go anywhere.',
         choices: [
           { text: '(Sit down beside him, and stay.)', to: 'stay' },
-          { text: '[Hunt] (Talk to him low and steady, the way you would to a bird just unhooded.)', to: 'stay', school: 'hunt' },
+          { text: '(Talk to him low and steady, the way you would to a bird just unhooded.)', to: 'stay', school: 'hunt' },
         ],
       },
       stay: { speaker: 'narrator', text: 'You sit with him on the top stair until his hands stop shaking. It takes a long time. He flinches at every sound in the Heart, and turns to look at every one. He is paying attention.', next: null },
@@ -124,7 +124,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'He blinks, and finishes a sentence he must have started years ago: “…and that’s why you never buy a goat off a man in a hat.” Then he sees where he is, and his knees go.',
         choices: [
           { text: '(Hold him up, and stay until he can stand.)', to: 'stay' },
-          { text: '[Hunt] (Talk to him low and dull and steady, about goats, until he stops shaking.)', to: 'stay', school: 'hunt' },
+          { text: '(Talk to him low and dull and steady, about goats, until he stops shaking.)', to: 'stay', school: 'hunt' },
         ],
       },
       stay: { speaker: 'narrator', text: 'It takes a while. He holds onto your arm the whole time, and tells you about the man in the hat, twice. He is frightened, and he is here.', next: null },
@@ -176,7 +176,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Go home. The Featherfall is clean now. Go on.', to: 'stay' },
           { text: '(Hold up a spare hood, to see what they do.)', to: 'hood' },
-          { text: '[Hunt] (Lift your fist, and let them choose.)', to: 'fist', school: 'hunt' },
+          { text: '(Lift your fist, and let them choose.)', to: 'fist', school: 'hunt' },
         ],
       },
       stay: { speaker: 'narrator', text: 'They look at you, and at the sky, and at each other, and do not go. The smallest one shuffles a little closer along the ridge-pole, which is answer enough.', next: 'end' },

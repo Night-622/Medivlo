@@ -31,7 +31,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '“Majesty, you pawned the gate to pay your debts. Now the gate’s back, and so are the debts. That’s called a round trip.”', to: 'laugh', effects: [{ setFlag: 'jester.king_laughed', value: 'debts' }] },
           { text: '(Fall over. Flat. The way Fennick did, in front of this same throne, in C. 1012.)', to: 'fall', effects: [{ setFlag: 'jester.king_laughed', value: 'fennick' }] },
-          { text: '[Guile] (Hold up the old pawn ticket from the throne cushion.) “Redeemable at Velvet Harbour. No refunds.”', to: 'ticket', school: 'guile', effects: [{ setFlag: 'jester.king_laughed', value: 'ticket' }] },
+          { text: '(Hold up the old pawn ticket from the throne cushion.) “Redeemable at Velvet Harbour. No refunds.”', to: 'ticket', school: 'guile', effects: [{ setFlag: 'jester.king_laughed', value: 'ticket' }] },
         ],
       },
       laugh: { speaker: 'narrator', text: 'For a moment nothing. Then the King laughs, an old man’s honest laugh, and the last of the pearl-crust breaks off his crown, and he weeps, and his tears are clear. “Go on,” he says. “Open it. It was never mine.” You hold up the Court half, and the gate answers.', next: 'through' },
@@ -79,14 +79,14 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Pay. Let it take a memory, whichever it likes.)', to: 'pay', effects: [{ setFlag: 'jester.toll_paid', value: 'memory' }] },
           { text: '(Pay her in a joke she hasn’t heard in thirty years: the one about the Turning that came late.)', to: 'joke', effects: [{ setFlag: 'jester.toll_paid', value: 'joke' }] },
-          { text: '[Guile] Ask for a receipt.', to: 'receipt', school: 'guile', effects: [{ setFlag: 'jester.toll_paid', value: 'receipt' }] },
+          { text: 'Ask for a receipt.', to: 'receipt', school: 'guile', effects: [{ setFlag: 'jester.toll_paid', value: 'receipt' }] },
         ],
       },
       cs: {
         speaker: 'narrator', text: 'The toll-lantern burns on its post over the water. PASSAGE, ONE MEMORY. You can hear Dot as clearly as if she were standing behind you: “Never pay the first price, sweetheart. Nobody means the first price.”',
         choices: [
           { text: '(Pay. Let it take a memory, whichever it likes.)', to: 'pay', effects: [{ setFlag: 'corsair.toll_paid', value: 'memory' }] },
-          { text: '[Guile] Haggle. One memory for two crossings, or no deal.', to: 'haggle', school: 'guile', effects: [{ setFlag: 'corsair.toll_paid', value: 'haggled' }] },
+          { text: 'Haggle. One memory for two crossings, or no deal.', to: 'haggle', school: 'guile', effects: [{ setFlag: 'corsair.toll_paid', value: 'haggled' }] },
           { text: 'Offer her a memory of Dot Brine. She’ll like it. Everybody does, eventually.', to: 'dot', effects: [{ setFlag: 'corsair.toll_paid', value: 'dot' }] },
         ],
       },

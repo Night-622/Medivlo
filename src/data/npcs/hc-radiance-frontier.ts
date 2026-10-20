@@ -229,7 +229,7 @@ const npcs: NpcDef[] = [
     barks: [{ lines: ['WHAT?', 'Until relieved, dear. Until relieved.'] }],
     roles: ['quest'],
     look: { skin: 0xd8c0a8, hair: 0xf0ece4, cloth: 0x8a5a3a, accent: 0xb08a3a, build: 'slight' },
-    bio: 'The quietest of the Shorewatch, made deaf by thirty years of lake-water in her helm. She painted the whole of their oath round the rim of her shield so she could still read it.',
+    bio: 'The quietest of the Shorewatch, made deaf by lake-water in her helm, in C. 1015. She painted the whole of their oath round the rim of her shield so she could still read it.',
   },
   {
     id: 'npc:hamish-at-the-gate', name: 'Squire Hamish Goodbody', title: 'a long way from Oathkeep', school: 'radiance', origin: 'radiance', trust: 3,

@@ -112,4 +112,32 @@ export const WAVE2_CONCORDIA: ConcordiaExtra[] = [
   c('obj:oathbound-sworn-vigil', 'obj:oathbound-radiance-stair', 'The head of the Radiance stair', 0, 1, 'Keep vigil'),
   c('obj:oathbound-gallant-farewell', 'obj:oathbound-radiance-stair', 'A place to say goodbye', 1, 1, 'Stand'),
   c('obj:oathbound-squired-kit', 'landmark:heart-camp', 'A squire’s kit', -6, 3, 'Examine'),
-  /
+  // Bard
+  c('obj:bard-chapel-steps', 'landmark:shore-chapel', 'The chapel steps', 0, 1, 'Listen'),
+  c('landmark:bard-abbey-landing', 'landmark:shore-chapel', 'The old Abbey landing', -26, -30), // reeds on the Abbey water, 32 steps from the chapel, clear of Cantor's causeway (Eulalie's escort)
+  c('obj:bard-marchetti-desk', 'landmark:gloam-stags-rest', 'A writing-desk under a lilac awning', 6, -1, 'Examine'),
+  c('obj:bard-arch-reply', 'obj:arch-song', 'The foot of the Song arch', 0, 2, 'Answer'),
+  c('area:bard-shore-road', 'landmark:brind-gilded-goose', 'The road to Abbeyshore', 160, -70), // 40% along the Goose → Shore Chapel walk (A*), clear of cc-shore-road at the halfway mark
+  c('obj:bard-aria-quiet', 'landmark:heart-camp', 'The surgeons’ tent', -8, -2, 'Look in'),
+  c('obj:bard-buskers-fire', 'landmark:heart-camp', 'A fire ringed with hearthstones', 0, 2, 'Sit'),
+  c('obj:bard-receipt-book', 'landmark:legion-camp', 'A receipt book in the baggage', -4, -6, 'Read'),
+  c('obj:bard-lullaby-legion', 'landmark:legion-camp', 'The front of the ranks', 0, 1, 'Sing'),
+  // Skald
+  c('obj:skald-mill-loft', 'landmark:shore-fish-mill', 'The drum-loft over the wheel', 0, -1, 'Climb'),
+  c('landmark:skald-gloam-treeline', 'landmark:lodge-kennels', 'A birch treeline', 22, -45), // out towards the stag glade, 47 steps, past the Huntsman's trail head (Ebba's escort)
+  c('obj:skald-arch-reply', 'obj:arch-song', 'The foot of the Song arch', -1, 2, 'Answer'),
+  c('area:skald-gloam-path', 'landmark:lodge-kennels+landmark:skald-gloam-treeline', 'The Gloamwood path'),
+  c('obj:skald-relay-post', 'landmark:heart-camp', 'A drum on a post by the old road', 2, 8, 'Strike'),
+  c('obj:skald-camp-cask', 'landmark:heart-camp', 'A cask on a supply cart', 1, -4, 'Examine'),
+  c('obj:skald-legion-muster', 'landmark:legion-camp', 'A cart-length slate', 4, -8, 'Read'),
+  c('obj:skald-legion-drum', 'landmark:legion-camp', 'The great summons drum', -2, -8, 'Strike'),
+  // shared Concordia Act II depth (Claude 5): Brindlecross, the roads out, Abbeyshore. Area centres are points on
+  // the A* walks (Brindlecross → wolf tracks, Thornhollow → Stag's Rest, the Goose → Shore Chapel)
+  c('obj:cc-goose-letters', 'obj:brind-goose-bed', 'A washstand drawer of letters', -1, 0, 'Open the drawer'),
+  c('obj:cc-waystone-listen', 'landmark:brind-waystone', 'Beside the waystone', 1, 0, 'Listen'),
+  c('area:cc-gloam-edge', 'landmark:gloam-wolf-tracks', 'Where the moor meets the Gloamwood', 0, 4), // where the walk from Brindlecross enters region:gloam
+  c('area:cc-shore-road', 'landmark:brind-gilded-goose', 'The milestone on the shore road', 201, -111), // halfway to the Shore Chapel
+  c('area:cc-briar-path', 'landmark:thorn-briar-kettle', 'The Briar path into the Gloamwood', 150, -13), // just inside region:gloam on the walk from Thornhollow
+  c('area:cc-low-water', 'landmark:abbey-north-door', 'The lake edge at low water', 0, 2),
+  c('area:cc-shore-dusk', 'landmark:shore-chapel', 'The last stretch into Abbeyshore', -19, 0),
+];

@@ -89,7 +89,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The woman from the shop with the red door, who wept into a cup and left laughing, takes her pearl and holds it to her cheek. Then, quite quietly, she begins to cry.',
         choices: [
           { text: '(Give her your handkerchief.)', to: 'kerchief' },
-          { text: '[Guile] (Tell the whole line the worst joke in Tidecourt, so they can cry and laugh at once.)', to: 'worst', school: 'guile' },
+          { text: '(Tell the whole line the worst joke in Tidecourt, so they can cry and laugh at once.)', to: 'worst', school: 'guile' },
         ],
       },
       kerchief: { speaker: 'narrator', text: 'She blows her nose on it, enormously, and laughs at herself for doing it, a small real laugh. Down the line, one by one, the others start to weep. It is the best sound you have heard in the Heart.', next: null },
@@ -108,7 +108,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Put the plume in your cap.)', to: 'cap', effects: [{ setFlag: 'jester.gull_plume', value: 'cap' }, { giveItem: 'i_black_tear_plume' }] },
           { text: '(Give the plume back to the gull. It earned it.)', to: 'gull', effects: [{ setFlag: 'jester.gull_plume', value: 'gull' }] },
-          { text: '[Guile] (Eat the chip. Respectfully.)', to: 'eat', school: 'guile', effects: [{ setFlag: 'jester.gull_plume', value: 'chip' }] },
+          { text: '(Eat the chip. Respectfully.)', to: 'eat', school: 'guile', effects: [{ setFlag: 'jester.gull_plume', value: 'chip' }] },
         ],
       },
       cap: { speaker: 'narrator', mood: 'happy', text: 'You will wear it up the stairs. It is enormous, absurd and black as a funeral, and every bearer in the camp laughs at you, which is the point.', next: null },

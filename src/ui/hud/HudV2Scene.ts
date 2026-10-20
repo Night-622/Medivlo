@@ -12,6 +12,7 @@ import { Art } from '@/art';
 import { C, HCBar, T, typeStyle } from '@/ui/kit/hc';
 import { SaveService } from '@/firebase/SaveService';
 import { heroSprite, heroTexture, defaultOutfit } from '@/scenes/create/heroChoice';
+import { installHudProbe, type HudParts } from './hudProbe';
 
 /**
  * The Hollow Crown HUD (handoff › In-game HUD). Owner: Claude 1. Launched by the v2 World scene.
@@ -37,6 +38,7 @@ export class HudV2Scene extends Phaser.Scene {
   chat!: ChatBox;
   private panelOpen = false;
   private feed: Phaser.GameObjects.Container[] = [];
+  private menuButtons: HudParts['buttons'] = [];
 
   constructor() { super(SceneKeys.HudV2); }
 
@@ -117,6 +119,11 @@ export class HudV2Scene extends Phaser.Scene {
     this.events.once('shutdown', offDlg);
     bus.onScene(this, 'player:died', (e) => { if (!e.playerId || e.playerId === net.localPlayer) this.scene.launch(SceneKeys.Death, { killer: e.killer, killerName: e.killerName }); });
     bus.onScene(this, 'party:wiped', ({ waystone }) => { if (!this.scene.isActive(SceneKeys.Death)) this.scene.launch(SceneKeys.Death, { waystone }); });
+    if (import.meta.env.DEV) installHudProbe(this, () => ({
+      bars: { hp: this.hp, em: this.em, st: this.st, xp: this.xp },
+      texts: { name: this.nameT, lvl: this.lvlT, hp: this.hpT, em: this.emT },
+      anchors: this.anchors, buttons: this.menuButtons, panelOpen: this.panelOpen, party: this.partyLayer,
+    }));
   }
 
   update(_t: number, dt: number): void { this.hp.tick(dt); }
@@ -219,6 +226,7 @@ export class HudV2Scene extends Phaser.Scene {
     const layer = this.add.container(0, 0);
     const draw = () => {
       layer.removeAll(true);
+      this.menuButtons = [];
       btns.forEach(([panel, action, label], i) => {
         const x = W - 16 - (btns.length - i) * 50 + 6, y = H - 24 - 16 - 44;
         const bg = this.add.nineslice(x, y, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0);
@@ -227,6 +235,7 @@ export class HudV2Scene extends Phaser.Scene {
         bg.setInteractive({ useHandCursor: true }).on('pointerup', () => bus.emit('ui:open', { panel }))
           .on('pointerover', () => bg.setTexture('ui:btn_slate_hover')).on('pointerout', () => bg.setTexture('ui:btn_slate'));
         layer.add([bg, key, lab]);
+        this.menuButtons.push({ panel, key: key.text, label, bg });
       });
     };
     draw();

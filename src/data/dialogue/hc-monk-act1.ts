@@ -96,7 +96,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Six novices, the youngest perhaps nine, huddled at the far door with their bowls and bedrolls. They will not go past the still Guardian on their own.',
         choices: [
           { text: '(Walk them through, one step at a time, in stillness between each.)', to: 'walk' },
-          { text: '[Fist] (Sit down in front of the Guardian, so they can see it is safe.)', to: 'sit', school: 'fist' },
+          { text: '(Sit down in front of the Guardian, so they can see it is safe.)', to: 'sit', school: 'fist' },
         ],
       },
       walk: { speaker: 'narrator', text: 'Step, and stop. Step, and stop. The novices copy you exactly, giggling by the end. When the last one is through, the Guardian’s cracked head turns, very slowly, and watches them go up the mountain.', next: null },

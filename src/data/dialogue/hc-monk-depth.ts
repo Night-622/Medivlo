@@ -53,7 +53,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The bronze is warm. Under your palm the hum climbs into your arm and meets the singing in your chest, and for a moment they are the same note.',
         choices: [
           { text: 'It’s answering the stone, Mother.', to: 'answer' },
-          { text: '[Fist] (Take the stillness stance, under the bell, and let the hum settle.)', to: 'still', school: 'fist' },
+          { text: '(Take the stillness stance, under the bell, and let the hum settle.)', to: 'still', school: 'fist' },
           { text: 'Are you frightened?', to: 'afraid' },
         ],
       },
@@ -397,7 +397,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Sweep to the waterline with them.)', to: 'line' },
           { text: '(Sweep round Kell’s cushion, very carefully.)', to: 'cushion' },
-          { text: '[Fist] (Match your breath to the brooms.)', to: 'breath', school: 'fist', trustNpc: FS, trust: 1 },
+          { text: '(Match your breath to the brooms.)', to: 'breath', school: 'fist', trustNpc: FS, trust: 1 },
         ],
       },
       line: { speaker: 'narrator', text: 'At the waterline the bog laps at your broom like a cat at a saucer. Under the green, a step goes down, and another. The cloister has been sinking a finger’s width a year. The monks sweep the next step when it goes under.', next: 'end' },
@@ -418,7 +418,7 @@ const dialogues: DialogueDef[] = [
         speaker: FS, text: 'The pool has stopped humming. We felt it in the floor. (He does not look round.) Tell me plainly.',
         choices: [
           { text: 'He’s out. He walked out covered in slime and said he had been very patient.', to: 'patient' },
-          { text: '[Fist] (Bow to the six of them, the full bow, the one for an Abbot.)', to: 'bow', school: 'fist', trustNpc: FS, trust: 1 },
+          { text: '(Bow to the six of them, the full bow, the one for an Abbot.)', to: 'bow', school: 'fist', trustNpc: FS, trust: 1 },
         ],
       },
       patient: { speaker: FS, mood: 'happy', text: '(A sound comes out of Brother Faraj that the others have clearly never heard. It takes them a moment to recognise it as laughing.) Patient. Thirty years in a slime. Yes. That is him exactly.', next: 'cushion' },
@@ -481,7 +481,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The bearers have ringed their fires with whatever pale stones they could find in the black. Most are only grey. A few, washed by rain, are almost white.',
         choices: [
           { text: '(Pick the whitest, and wash them in Auntie Yuen’s tea.)', to: 'tea' },
-          { text: '[Fist] (Choose them by weight, the way the Abbess chooses hers: heavy for an honest move, light for a cheat.)', to: 'weight', school: 'fist' },
+          { text: '(Choose them by weight, the way the Abbess chooses hers: heavy for an honest move, light for a cheat.)', to: 'weight', school: 'fist' },
         ],
       },
       tea: { speaker: 'narrator', mood: 'happy', text: 'Auntie Yuen watches you rinse pebbles in her pot and says nothing at all, which is worse than anything she could say. They come out the colour of old ivory, and smell of smoke and tea.', effects: [{ setFlag: 'monk.white_stones', value: true }], next: null },
@@ -500,7 +500,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'It is four sizes too big for Sop.',
         choices: [
           { text: '(Wrap him in it, goat and all.)', to: 'warm' },
-          { text: '[Fist] (Tie the novice’s knot at his collar properly, the way the dormitory master taught you.)', to: 'knot', school: 'fist' },
+          { text: '(Tie the novice’s knot at his collar properly, the way the dormitory master taught you.)', to: 'knot', school: 'fist' },
         ],
       },
       warm: { speaker: 'narrator', text: 'He stops shivering at once. One small hand comes out of the folds, finds your collar again, and holds on.', effects: [{ setFlag: 'monk.sop_cloak', value: true }], next: null },

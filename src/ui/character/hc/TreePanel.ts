@@ -12,7 +12,7 @@ import { spellMeta } from '@/systems/rules/spellText';
 import { buildTree, canLearn, rankOf } from '@/systems/rules/tree';
 import { resetCost } from '@/systems/rules/curves';
 import type { TreeBranch, TreeNode } from '@/systems/rules/types';
-import { availablePoints, bindSpell, character, learn, onCharacterChanged, resetTree } from '@/systems/client/character';
+import { availablePoints, bindSpell, branchHasRanks, character, learn, onCharacterChanged, resetTree } from '@/systems/client/character';
 
 const OX = 58, OY = 150;
 const FRAME: Record<TreeBranch, string> = { spells: 'ui:slot_ember', skills: 'ui:slot_runed', upgrades: 'ui:slot_fine' };
@@ -89,6 +89,10 @@ export class TreePanel {
     }
     if (n.maxRank > 1 || r > 0) this.c.add(s.add.text(x + n.size - 3, y + n.size - 2, n.maxRank > 1 ? `${r}/${n.maxRank}` : '✓', typeStyle('badge', maxed ? C.gold : C.text)).setOrigin(1, 1));
     if (this.sel === n.id) this.c.add(s.add.rectangle(OX + n.x, OY + n.y, n.size + 6, n.size + 6).setStrokeStyle(2, 0xffffff));
+    // hover: a teal outline (the selected node keeps its white one)
+    const hover = s.add.rectangle(OX + n.x, OY + n.y, n.size + 4, n.size + 4).setStrokeStyle(2, 0x5ad1c8).setVisible(false);
+    this.c.add(hover);
+    bg.on('pointerover', () => hover.setVisible(this.sel !== n.id)).on('pointerout', () => hover.setVisible(false));
     bg.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => {
       if (this.sel === n.id && p.getDuration() < 400 && ok) { this.learnSel(); return; }
       this.sel = n.id; this.msg = ''; this.draw();
@@ -141,7 +145,7 @@ export class TreePanel {
   private resetButton(x: number, w: number): void {
     const ch = character(), cost = resetCost(ch.level);
     const b = new HCButton(this.scene, x + w / 2, 650, `Reset ${this.branch}`, () => { this.msg = resetTree(this.branch) ?? ''; this.sel = null; this.draw(); },
-      { w: w - 48, variant: 'secondary', sub: `${cost} Embershards`, disabled: ch.gold < cost });
+      { w: w - 48, variant: 'secondary', sub: branchHasRanks(this.branch) ? `${cost} Embershards` : 'Nothing learned yet', disabled: ch.gold < cost || !branchHasRanks(this.branch) });
     this.c.add(b);
   }
 }

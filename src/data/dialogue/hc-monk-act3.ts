@@ -119,7 +119,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       asleep: {
         speaker: 'narrator', text: 'Little Brother Sop, eight years old, asleep on the Fist stair three steps from the top, curled round his toy goat. Battles have gone up the stairs past him and down again. He is humming.',
-        choices: [{ text: '(Wake him, gently.)', to: 'wake' }, { text: '[Fist] (Sit beside him until he wakes by himself.)', to: 'sit', school: 'fist' }],
+        choices: [{ text: '(Wake him, gently.)', to: 'wake' }, { text: '(Sit beside him until he wakes by himself.)', to: 'sit', school: 'fist' }],
       },
       sit: { speaker: 'narrator', text: 'You sit and breathe beside him. After a while the humming stops and one eye opens. He does not seem at all surprised to see you.', next: 'wake' },
       wake: { speaker: SOP, mood: 'happy', text: 'I followed it. The song. All the way. It goes down the mountain, then through a gate, then there is a bog. Then it goes up. I got tired on the up. Is this the top?', next: 'top' },

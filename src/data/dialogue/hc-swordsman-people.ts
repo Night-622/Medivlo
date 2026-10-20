@@ -169,7 +169,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Percy’s dummy is wearing a waistcoat finer than anything you own. Percy lunges at it with his eyes shut. He has been doing this for nine hundred and ninety-nine bouts.',
         choices: [
           { text: 'Eyes open, Percy.', to: 'eyes' },
-          { text: '[Blade] Fix his feet. Then fix his feet again.', to: 'feet', school: 'blade' },
+          { text: 'Fix his feet. Then fix his feet again.', to: 'feet', school: 'blade' },
         ],
       },
       eyes: { speaker: 'narrator', text: 'He opens his eyes, and lunges, and hits the dummy, and screams with joy. Then he does it again. Then he apologises to the dummy.', next: null },
@@ -258,7 +258,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Call to Bettina, and ask her to say the word.)', to: 'bettina', effects: [{ setFlag: 'swordsman.bettina_yielded', value: true }] },
           { text: '(Stand in front of her with empty hands.)', to: 'empty' },
-          { text: '[Blade] (Give her the closing salute.)', to: 'salute', school: 'blade' },
+          { text: '(Give her the closing salute.)', to: 'salute', school: 'blade' },
         ],
       },
       bettina: { speaker: 'narrator', text: 'From the far bank, in a voice that has not been raised in thirty years, Bettina calls: “Rosa! I yield! For you! The Sartos yield!” Rosa’s sword wavers. She turns her head, as if she heard her sister calling her in for supper, and lowers her blade, and lies down.', next: null },
@@ -289,7 +289,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'I challenge you. To lunch.', to: 'lunch' },
           { text: 'Fine. En garde.', to: 'fight' },
-          { text: '[Blade] Does the law say what kind of bout?', to: 'law', school: 'blade' },
+          { text: 'Does the law say what kind of bout?', to: 'law', school: 'blade' },
         ],
       },
       lunch: { speaker: 'npc:tommaso-rill', text: 'To… lunch? (He thinks about the law. He thinks about lunch.) The law doesn’t say a bout can’t be lunch. The law doesn’t say much. Pass, challenger, and bring your weapon.', next: null },
@@ -453,7 +453,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Varric asked if anyone had yielded since his war.', to: 'yield' },
           { text: 'Your candle’s finished, Hobb. I’m sorry.', to: 'candle', trust: 1, trustNpc: 'npc:hobb' },
-          { text: '[Blade] (Give him the closing salute, over the turf.)', to: 'salute', school: 'blade' },
+          { text: '(Give him the closing salute, over the turf.)', to: 'salute', school: 'blade' },
         ],
       },
       yield: { speaker: 'npc:hobb', text: 'Yielded. (He chews it over.) My wife yielded every argument we ever had, forty years, and won every one. Maybe that’s what he meant.', next: 'word' },

@@ -95,7 +95,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The young fighters kneel in their rows, waiting for an order. Hal Brunt is in the second row. So is young Halloran. They do not know you.',
         choices: [
           { text: '(Clap your hands, like a round bell.) Time. Go home. All of you.', to: 'home' },
-          { text: '[Fist] (Kneel in front of Hal and hold out your gloves, the way you would to touch them before a bout.)', to: 'gloves', school: 'fist' },
+          { text: '(Kneel in front of Hal and hold out your gloves, the way you would to touch them before a bout.)', to: 'gloves', school: 'fist' },
         ],
       },
       gloves: { speaker: 'narrator', text: 'Hal looks at your gloves for a long time. Then, slowly, he raises his own fists and touches them to yours. Something comes back into his face, not all of it. He gets up. The others get up behind him.', next: 'home' },
@@ -185,7 +185,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The tears under her feet have let go at last, and Big Mother Ox, nineteen years unbeaten, is toppling like a tree. She has not been allowed to fall down in a very long time. She looks frightened of the floor.',
         choices: [
           { text: '(Stop hitting. Catch her, and hold her up.)', to: 'hold' },
-          { text: '[Fist] (Get your shoulder under her and walk her to her corner.)', to: 'walk', school: 'fist' },
+          { text: '(Get your shoulder under her and walk her to her corner.)', to: 'walk', school: 'fist' },
         ],
       },
       hold: { speaker: 'narrator', text: 'You catch her. She is enormous. You hold her up anyway, both arms, knees shaking, until she can stand on her own, and the whole Grand Pit goes completely silent.', next: 'stool' },

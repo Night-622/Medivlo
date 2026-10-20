@@ -117,7 +117,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Hold up a strip of the good beef from Wren’s larder.)', to: 'beef', effects: [{ setFlag: 'falconer.pibb_down', value: 'beef' }] },
           { text: 'Pibb, the new perch is oak. Old oak. From the chapel beams. Your chapel.', to: 'oak', effects: [{ setFlag: 'falconer.pibb_down', value: 'oak' }] },
-          { text: '[Hunt] (Turn your back on him and pretend to be very interested in a beetle.)', to: 'beetle', school: 'hunt', effects: [{ setFlag: 'falconer.pibb_down', value: 'beetle' }] },
+          { text: '(Turn your back on him and pretend to be very interested in a beetle.)', to: 'beetle', school: 'hunt', effects: [{ setFlag: 'falconer.pibb_down', value: 'beetle' }] },
         ],
       },
       beef: { speaker: 'npc:pibb', text: '(He considers the beef for a long and dignified time. Then he drops onto your glove, takes it, and stays there eating, as if he had meant to come down anyway.)', next: null },
@@ -253,7 +253,7 @@ const dialogues: DialogueDef[] = [
       start: {
         speaker: 'npc:amos-coyle', text: 'Well? Am I mad?',
         choices: [
-          { text: '[Hunt] The hawks are hiding. Your dog keeps the tears off them, so they let her pen them. Let them go once the moor is clean.', to: 'safe', school: 'hunt', effects: [{ setFlag: 'falconer.coyle_sorted', value: 'safe' }] },
+          { text: 'The hawks are hiding. Your dog keeps the tears off them, so they let her pen them. Let them go once the moor is clean.', to: 'safe', school: 'hunt', effects: [{ setFlag: 'falconer.coyle_sorted', value: 'safe' }] },
           { text: 'Swap them. Give the hawks to the Mews, and give Wimble her sheep back.', to: 'swap', effects: [{ setFlag: 'falconer.coyle_sorted', value: 'swap' }] },
           { text: 'You’ve got a hawk-dog, Master Coyle. There isn’t another one in the Greywilds. Keep her.', to: 'keep', trust: 1, effects: [{ setFlag: 'falconer.coyle_sorted', value: 'keep' }] },
         ],
@@ -579,7 +579,7 @@ const dialogues: DialogueDef[] = [
       cage: {
         speaker: 'narrator', text: 'A cage the size of a barn, copper-barred, humming with trapped lightning, with a door rigged to slam on a spring. Fizz Copperpot is polishing a bar with their sleeve. “Well? Will it hold the Stormcrow?”',
         choices: [
-          { text: '[Hunt] It will hold it. And it will scream in there until it dies. You can’t keep a thing that carries news in a box.', to: 'hunt', school: 'hunt' },
+          { text: 'It will hold it. And it will scream in there until it dies. You can’t keep a thing that carries news in a box.', to: 'hunt', school: 'hunt' },
           { text: 'Can you hold something without a cage?', to: 'hold' },
           { text: 'It’ll hold. Then what?', to: 'then' },
         ],

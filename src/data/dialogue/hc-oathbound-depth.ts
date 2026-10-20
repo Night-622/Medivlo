@@ -328,7 +328,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:petronella-fane', text: 'WHAT’S THAT, DEAR? Singing? Can’t hear a thing. Haven’t since C. 1015. (Another stroke.) Is it pretty? Cuthbert always says it’s pretty, and then he nods off, and I row us home.',
         choices: [
           { text: 'You’ve done this before.', to: 'before' },
-          { text: '[Radiance] (Sing over the choir, loud enough to keep yourself awake.)', to: 'sing', school: 'radiance' },
+          { text: '(Sing over the choir, loud enough to keep yourself awake.)', to: 'sing', school: 'radiance' },
           { text: '(Nod, and point down.)', to: 'down' },
         ],
       },
@@ -509,7 +509,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Go back to sleep, and let him finish.)', to: 'sleep', effects: [{ setFlag: 'oathbound.gallant_squired', value: true }] },
         ],
       },
-      counts: { speaker: 'npc:ser-gallant', mood: 'sad', text: 'Not yet. Not till my lady is settled. (He looks towards the Legion camp.) Soon, I think. I can feel it, like a rattle in a scabbard.', next: null },
+      counts: { speaker: 'npc:ser-gallant', mood: 'sad', text: 'Not yet. Not till her name’s been said at the stair. (He looks towards the Legion camp.) Soon, I think. I can feel it, like a rattle in a scabbard.', next: null },
       sleep: { speaker: 'narrator', text: 'You let him finish. In the morning your shield-straps are supple as gloves and your boots are blacked, and at the edge of the Legion camp somebody is sitting on a broken cart, waiting.', next: null },
       sword: { speaker: 'narrator', text: 'You lie awake to see who it is. In the small hours something comes rattling across the camp on its own: Ser Gallant’s sword in its rusted scabbard. It lays itself across your kit like a squire’s blade across a doorway, and keeps watch.', next: 'sword2' },
       sword2: { speaker: 'narrator', mood: 'sad', text: 'Before dawn it rattles away again, towards the Legion camp, as if it had somewhere else to be. You released him in the Chapel. He owed you nothing. It kept watch anyway.', effects: [{ setFlag: 'oathbound.gallant_squired', value: true }], next: null },

@@ -52,7 +52,7 @@ const dialogues: DialogueDef[] = [
         speaker: YA, text: 'It won’t tell me, of course. It never does. But it might tell you, dear. You’ve got its song in you. Put your ear to it. Go on. It doesn’t bite. Well. Not often.',
         choices: [
           { text: '(Put your ear to the bark and listen.)', to: 'listen' },
-          { text: '[Verdant] (Hum back the song in your chest, very softly, into the wood.)', to: 'hum', school: 'verdant' },
+          { text: '(Hum back the song in your chest, very softly, into the wood.)', to: 'hum', school: 'verdant' },
           { text: 'What if it doesn’t like what I hear?', to: 'like' },
         ],
       },
@@ -412,7 +412,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The strip of doorframe is scored all the way up with pencil lines and names. AGNES, 5. AGNES, 7. HESTER, 6, in faded brown. Four generations of Mudlarks, measured against the same door. “Mam wouldn’t have left it,” says Agnes. “She just thought she had to.”',
         choices: [
           { text: '(Take the knife and help her cut it free.)', to: 'cut' },
-          { text: '[Verdant] (Ask the roots to let go of the frame.)', to: 'ask', school: 'verdant' },
+          { text: '(Ask the roots to let go of the frame.)', to: 'ask', school: 'verdant' },
         ],
       },
       cut: { speaker: 'narrator', text: 'Between you, you get it out: a long splintered strip as tall as a man, with all the little lines on it. Agnes carries it up the tunnels on her shoulder like a banner, and will not let you take a turn.', effects: [{ setFlag: 'hedgewitch.mudlark_frame', value: true }], next: null },
@@ -468,7 +468,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Fly it true, and let the wind decide.)', to: 'true', effects: [{ setFlag: 'hedgewitch.kite_race', value: 'true' }] },
           { text: '(Give Hyssop the string for the last stretch.)', to: 'hyssop', effects: [{ setFlag: 'hedgewitch.kite_race', value: 'hyssop' }] },
-          { text: '[Verdant] (Ask the high boughs, very politely, for a little lift.)', to: 'lift', school: 'verdant', effects: [{ setFlag: 'hedgewitch.kite_race', value: 'lift' }] },
+          { text: '(Ask the high boughs, very politely, for a little lift.)', to: 'lift', school: 'verdant', effects: [{ setFlag: 'hedgewitch.kite_race', value: 'lift' }] },
         ],
       },
       true: { speaker: 'narrator', text: 'The wind decides on the blue fish, by a tail. Second. Hyssop is outraged, then thrilled, then outraged again. Across on the kite-bough, a very old woman is on her feet shaking her stick at the sky and shouting, “HIGHER, girl! HIGHER!”', next: 'end' },
@@ -532,7 +532,7 @@ const dialogues: DialogueDef[] = [
         speaker: TG, text: 'We all brought cuttings through for the Turning. Then the arches shut, so I kept them. Thirty years. Half of Rootholme is in this room, if you squint and talk to it nicely.',
         choices: [
           { text: '(Look for the pot with your own street on it.)', to: 'street' },
-          { text: '[Verdant] (Sing the bough-song to the pots.)', to: 'sing', school: 'verdant', trustNpc: TG, trust: 1 },
+          { text: '(Sing the bough-song to the pots.)', to: 'sing', school: 'verdant', trustNpc: TG, trust: 1 },
           { text: 'Thirty years, and you never lost one?', to: 'lost' },
         ],
       },
@@ -562,7 +562,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Your half-stone hums. Something very large and very slow notices you, the way the Elder Tree notices a witch on the bower step, and leans.',
         choices: [
           { text: 'Good evening. Mother Yarrow still talks to your mother every day.', to: 'yarrow', effects: [{ setFlag: 'hedgewitch.willow_told', value: true }] },
-          { text: '[Verdant] (Listen the way Yarrow taught you, with your whole hand.)', to: 'listen', school: 'verdant' },
+          { text: '(Listen the way Yarrow taught you, with your whole hand.)', to: 'listen', school: 'verdant' },
           { text: '(Take your hand away. It’s a Sentinel, not your gran.)', to: 'away' },
         ],
       },
@@ -585,7 +585,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'What does she pour in?', to: 'pour' },
           { text: 'She ties a bow on it?', to: 'bow' },
-          { text: '[Verdant] (Kneel and put your hand in the bog.)', to: 'kneel', school: 'verdant' },
+          { text: '(Kneel and put your hand in the bog.)', to: 'kneel', school: 'verdant' },
         ],
       },
       pour: { speaker: JW, text: 'Black. Thick as treacle, and it smells sweet, like a sap-house. The eels won’t go near it. That’s how I knew. Eels will eat anything, and they won’t eat that.', next: 'asked' },
@@ -621,7 +621,7 @@ const dialogues: DialogueDef[] = [
       seed: { speaker: JW, text: 'Then the arches shut, and the witches stopped coming. The seed didn’t stop. (She points her spear at a stand of foxgloves that have no business growing in a bog.) Rootholme’s, those. I keep the eels off them.', next: 'secret' },
       secret: {
         speaker: JW, mood: 'happy', text: 'Half the flowers in the Hollow are Wildheart’s, if you know how to look. Nobody knows but me. And now you. Don’t tell Nan. She’ll want to charge them rent.',
-        choices: [{ text: 'Your secret’s safe.', to: null }, { text: '[Verdant] (Say good evening to the foxgloves.)', to: 'fox', school: 'verdant' }],
+        choices: [{ text: 'Your secret’s safe.', to: null }, { text: '(Say good evening to the foxgloves.)', to: 'fox', school: 'verdant' }],
       },
       fox: { speaker: 'narrator', text: 'The foxgloves nod, all together, though there is no wind. Jennet looks at them, and at you, and decides not to ask.', next: null },
     },
@@ -667,7 +667,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Everything in the Heart is black ground and tears. Nothing has grown here in thirty years.',
         choices: [
           { text: '(Hold it to your ear, the way Yarrow listens to the tree.)', to: 'ear' },
-          { text: '[Verdant] (Breathe on it, to warm it.)', to: 'breathe', school: 'verdant' },
+          { text: '(Breathe on it, to warm it.)', to: 'breathe', school: 'verdant' },
         ],
       },
       ear: { speaker: 'narrator', text: 'Nothing. Then, very faint, the smallest sound of something wanting. Not dying. Wanting. It wants earth: not black stone, but real earth that something has grown in.', next: 'nan' },
@@ -684,7 +684,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'At the foot of the Twelve Stairs, under a crust of black glass, the stone edging of a garden bed. A little lead label is still pushed into the corner, in a sharp, sloping hand: “Sage, for the Concordant’s tea. N. B., C. 988.”',
         choices: [
           { text: '(Break the crust and dig.)', to: 'dig' },
-          { text: '[Verdant] (Ask the bed first.)', to: 'ask', school: 'verdant' },
+          { text: '(Ask the bed first.)', to: 'ask', school: 'verdant' },
         ],
       },
       ask: { speaker: 'narrator', text: 'You lay your palm on the black crust. Under it something very small and very patient says yes.', next: 'dig' },

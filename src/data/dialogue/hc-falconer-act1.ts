@@ -18,7 +18,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Run for the perches.)', to: 'run' },
           { text: '(Shout its name into the dark.)', to: 'shout' },
-          { text: '[Hunt] (Stand still and listen for which way the wings go.)', to: 'listen', school: 'hunt' },
+          { text: '(Stand still and listen for which way the wings go.)', to: 'listen', school: 'hunt' },
         ],
       },
       run: { speaker: 'narrator', text: 'You take the cliff stair three steps at a time in your nightshirt. Falconers are tumbling out of every door, some with lanterns, some with boots, nobody with both.', next: 'song' },
@@ -122,7 +122,7 @@ const dialogues: DialogueDef[] = [
         speaker: TE, text: 'I know. I’ve been walking the moor for weeks, and everywhere I go things are terrified. So I hood them. Just until it passes. A hooded bird can’t see what frightens it. It sits, and it’s calm, and it’s safe.',
         choices: [
           { text: 'And when you take the hood off?', to: 'off' },
-          { text: '[Hunt] A hooded bird can’t see what’s coming either.', to: 'coming', school: 'hunt' },
+          { text: 'A hooded bird can’t see what’s coming either.', to: 'coming', school: 'hunt' },
         ],
       },
       off: { speaker: TE, text: 'Then it’s passed, and it’s fine. That’s the idea. (He doesn’t say whether it has ever happened.)', next: 'offer' },
@@ -171,7 +171,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Stranger, when do the hoods come off?', to: 'te_off' },
           { text: 'Wren, what would you do?', to: 'wren' },
-          { text: '[Hunt] Mews-Mother, what does the Mews’ oldest saying mean?', to: 'saying', school: 'hunt' },
+          { text: 'Mews-Mother, what does the Mews’ oldest saying mean?', to: 'saying', school: 'hunt' },
         ],
       },
       te_off: { speaker: TE, text: 'When it’s safe. When nothing out there can frighten them any more. (He smiles, very kindly.) I’ll know when. I always know.', next: 'choose' },
@@ -221,7 +221,7 @@ const dialogues: DialogueDef[] = [
       nest: {
         speaker: 'narrator', text: 'Grandmother Talon sits on the rim of her nest with clear eyes, preening, as if nothing had happened. The nest is lined, deep and soft, with hoods: dozens of little leather hoods, all the same make, as if she had been collecting them.',
         choices: [
-          { text: '[Hunt] Turn one over and look at the stitching.', to: 'stitch', school: 'hunt', effects: [{ setFlag: 'falconer.hood_stitch_seen', value: true }] },
+          { text: 'Turn one over and look at the stitching.', to: 'stitch', school: 'hunt', effects: [{ setFlag: 'falconer.hood_stitch_seen', value: true }] },
           { text: 'Leave them. Let her keep her nest.', to: null },
         ],
       },
@@ -287,7 +287,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'For a moment you are high above the Hawkmoor, and below you the Great Hunt runs north along a road of light with the herd behind it and every bird of the moor above it, and nobody is hooded, and nobody is afraid. Then you are back in the ring.',
         choices: [
           { text: '(Let your hawk sit with it a moment longer.)', to: 'sit' },
-          { text: '[Hunt] (Hold it up into the wind, the way you would cast a bird.)', to: 'cast', school: 'hunt' },
+          { text: '(Hold it up into the wind, the way you would cast a bird.)', to: 'cast', school: 'hunt' },
         ],
       },
       sit: { speaker: 'narrator', text: 'Your hawk leans its head against the crystal, eyes half shut, the way it leans against your cheek when it is tired. The song goes quiet, as if it were resting too.', next: 'teodor' },
@@ -322,7 +322,7 @@ const dialogues: DialogueDef[] = [
         speaker: WR, text: 'Do you remember your first bird? A little sparrowhawk. You cried when it flew off, and it came back, and you cried again. I thought: that one will do.',
         choices: [
           { text: 'I remember.', to: 'remember' },
-          { text: '[Hunt] You taught me to let go first.', to: 'letgo', school: 'hunt' },
+          { text: 'You taught me to let go first.', to: 'letgo', school: 'hunt' },
         ],
       },
       remember: { speaker: WR, mood: 'happy', text: 'Of course you do. Nobody forgets the first one. Teodor never did. That was rather the trouble.', next: 'warn' },

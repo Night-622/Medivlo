@@ -105,7 +105,7 @@ const dialogues: DialogueDef[] = [
         speaker: BT, text: 'The Moon Stalker’s been taking my sheep. It hunts by shadow: sees the shadow, pounces where it falls. Can’t see me at all. That’s how I’ve still got any sheep. Can smell me, mind. Whiffy business, shepherding.',
         choices: [
           { text: 'Then it can’t see me either.', to: 'either' },
-          { text: '[Umbral] Then give it shadows to chase that aren’t anyone’s.', to: 'decoy', school: 'umbral' },
+          { text: 'Then give it shadows to chase that aren’t anyone’s.', to: 'decoy', school: 'umbral' },
         ],
       },
       either: { speaker: BT, text: 'It can’t. You’ll be standing next to it and it’ll be looking straight through you, sniffing. Very rude. There’s lanterns in its den from when the Veil tried this before. Light them and it’ll go after their shadows.', next: 'go' },
@@ -152,7 +152,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'You’re my shadow.', to: 'yours' },
           { text: 'Give me my hood back.', to: 'hood' },
-          { text: '[Umbral] (Step into it, the way you would step into your own shadow.)', to: 'step', school: 'umbral' },
+          { text: '(Step into it, the way you would step into your own shadow.)', to: 'step', school: 'umbral' },
         ],
       },
       step: { speaker: 'narrator', text: 'You step towards it, the way you have stepped into your own shadow a thousand times. It steps back, exactly as far, a beat before you move, and laughs, delighted. “Not yet,” it says. “Not like that.”', next: 'yours' },
@@ -287,7 +287,7 @@ const dialogues: DialogueDef[] = [
         speaker: SH, text: 'I want the Veil half. A half-stone sings for its bearer. If it sings for me, then I’m the real one, and you’re the thing that follows me about. You spent your whole life hiding in me. My turn in the light.',
         choices: [
           { text: 'It won’t sing for you.', to: 'wont' },
-          { text: '[Umbral] You’re a shadow. You only exist because I stand in the light.', to: 'light', school: 'umbral' },
+          { text: 'You’re a shadow. You only exist because I stand in the light.', to: 'light', school: 'umbral' },
         ],
       },
       wont: { speaker: SH, mood: 'sad', text: 'Then we’ll find out, won’t we, at the bottom of the warrens, in the dark, where I can’t be hurt. Bring a lantern. Bring lots. (It gets up, and the chair sighs.) I’ll see you before you see me.', next: null },

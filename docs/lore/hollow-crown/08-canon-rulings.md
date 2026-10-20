@@ -289,5 +289,21 @@ These rulings answer the questions the 06-outline pass raised. They are binding 
     - Marchetti three times wrote a rest into his last movement’s final bar, and three times crossed it out. His Legion fitting-slip ends “heart, to be fitted last.” His last playbill reads “No interval. No ending. Admission: everything.” He bought 41 songs, each receipt with a clause that the seller forget it.
     - Clemency sang Rosalind’s aria to the dressing-room door the night Rosalind’s voice went, ending “and bring her home”. She never told Rosalind.
     - Ebba’s hound is Grimble. Ulf fed her and sewed her a drum-hide collar on his way through the Gloamwood. At his Deep Glade camp he left the Turning Road knotted on a drum-hide strip, and birch-bark carved ULF a dozen times.
-    - Every Fells child gets a name-beat at their first singing in the Saga Hall. Ulf never sang, so on the relay he was only “the drummer”, until the hero beats his name on the Legion’s great drum. Hallgerd and ten Fish Mill drummers relay from the Song arch to the Heart. Since the thaw, Asta drums Ragna’s letters, copying Ragna’s hitch.
+    - Every Fells child gets a name-beat at their first singing in the Saga Hall. Ulf never sang, so on the relay he was only “the drummer”, until the hero beats his name on the Legion’s great drum. Hallgerd and the other Fish Mill drummers (nine in all) relay from the Song arch to the Heart, Hallgerd the last post. Since the thaw, Asta drums Ragna’s letters, copying Ragna’s hitch.
     - Name change: the Song copyist is **Wystan Nibworth** (was Penhallow). Id unchanged.
+- **R36. Accepted from the shared-acts depth pass (Concordia: Claude 5; Heart: Claude 4; 2026-10-20).** The data is authoritative.
+  - **Godric** was nineteen at the C. 1012 Hollowing (What Godric Saw), so he has been Elder of Brindlecross for **twenty winters**, not forty. The codex and NPC bio are fixed.
+  - **R6 in data:** the Eve (II-6) shows Morwen only when `story.sentinel.radiance` is unset. In campaigns that freed her, the lake is flat and Aldous takes the rope himself.
+  - **The Brindlecross 14’s confidences** (Friendly; Trusted for Wil and Pip):
+    - Maren’s wolf is Burr, found eight winters ago, the first that came back wrong.
+    - Odo’s mother was the Abbey’s bell-founder, due to pour the second Turning Bell.
+    - Rook made cheese before the wolves. She lost her eye to Abner Ditchling of the top farm, with her own lent pitchfork.
+    - Ysolde’s sister went home to Frostmere for the C. 1012 Turning.
+    - Nan has outlived eleven cats; Parson is her twelfth.
+    - Aldous was an Abbeyshore fisher’s boy with the worst voice in the choir, so he stood by the window. (This fits his empty treble part, R35 Radiance.)
+    - Sela, a Storm mage, is afraid of thunder.
+    - Corwin’s family letters from Solaria, one per Turning, burned with the mill.
+    - Wil writes a welcome letter every year “to whoever comes through the arches”, and the Goose keeper sings a door song every Turning eve. Wil is a woman.
+    - Hobb has dug his own grave, with no words on the stone. Pip’s list in his boot ends AWAY.
+  - **Waystones:** a fifth stone answers from the Heart, where none was mapped (`cc.waystone_heart`). Sela recognises it at the Weeping Wall.
+  - **Heart, III-3:** the bearers gather at the twelve school stones at the foot of the Twelve Stairs before climbing. Each school’s stair has one step worn hollow halfway up.

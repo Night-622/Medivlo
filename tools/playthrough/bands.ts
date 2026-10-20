@@ -1,23 +1,30 @@
 /**
  * Zone bands (Claude 2, with Claude 1 and Claude 3, 2026-10-20): realm spawn levels follow each campaign's quest
  * order instead of the zone number. Bundle with build.mjs:
- *   ENTRY=tools/playthrough/bands.ts OUT=<file> node tools/playthrough/build.mjs && node <file> <gen|check> [classes]
- *   gen     writes src/data/regions/hc/zoneBands.gen.ts from the Act I walks, and out/act1-walks.json
+ *   ENTRY=tools/playthrough/bands.ts OUT=<file> node tools/playthrough/build.mjs && node <file> <gen|check|export> [classes]
+ *   gen     writes src/data/regions/hc/zoneBands.gen.ts from the Act I walks (all classes; deterministic) and
+ *           out/act1-walks.json
  *   check   every Act I quest walk: the band top of each spawn zone it passes, at that point in the quest order,
- *           against the expected level (mains must be ≤ expected + 2); worst case per class
- * Groups: a side's zone n with its roads (`<school>-<side>-z<n>`, lair roads share zone 2 / 4), the shared
- * gate road (`<school>-gate`) and each optional area's approach guard (`<school>-<side>-cave|view`). A group's tiers start at the expected level of the first main quest whose walk
- * (or side quest, counted at the main it's played during) passes it, and step up at each later visit (from when
- * the main before that visit is done).
+ *           against the expected level (must be ≤ expected + 2); then the other-class fallback
+ *   export  out/act1-walks.json (or OUT_JSON) with the bands in force at each quest
+ * Groups: a side's zone n with its roads (`<school>-<side>-z<n>`, lair roads share zone 2 / 4), the shared gate
+ * road (`<school>-gate`) and each optional area's approach guard (`<school>-<side>-cave|view`). A group's tiers
+ * start at the expected level of the first quest whose walk passes it (sides count at the main they're played
+ * during) and step up at each later visit, from when the main before that visit is done (`step`), by the side's
+ * class or the host's class (src/world/hc/bands.ts).
  */
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { spawnZones, zoneEliteAt, zoneLevelAt } from '@/world/hc/spawns';
+import { stepDone, type StepDone } from '@/world/hc/bands';
+import { ACT1_MAINS } from '@/data/regions/hc/zoneBands.gen';
 import { act1Walks, expectedLevel, type ClassWalk } from './walks';
 
 const [mode = 'check', only] = process.argv.slice(2);
+if (mode === 'gen' && only) throw new Error('gen writes the whole table: run it for every class');
 const walks = act1Walks(only?.split(','));
+const MAINS = Math.max(...walks.map((w) => w.mains.length));
 
-/** Spawn-zone id → band group (null: not banded by quest order, e.g. optional-area guards). */
+/** Spawn-zone id → band group (null: not banded by quest order). */
 export function bandGroup(id: string): string | null {
   let m = /^zone:([a-z]+)-(capital|frontier)-([2-4])$/.exec(id);
   if (m) return `${m[1]}-${m[2]}-z${m[3]}`;
@@ -30,41 +37,58 @@ export function bandGroup(id: string): string | null {
   return null;
 }
 
+/** progress up to (not including) main `during`: every step before it is done */
+const upTo = (during: number): StepDone => (_cls, step) => step < during;
+
 if (mode === 'gen') {
-  const tiers = new Map<string, { floor: number; after?: string }[]>();
+  const tiers = new Map<string, { floor: number; step?: number }[]>();
   const gate = new Map<string, number>();
   for (const w of walks) {
     const visits = new Map<string, number[]>();
     for (const q of w.quests) {
-      // mains and sides alike: a side counts at the main it's played during
       for (const z of q.zones) {
         const g = bandGroup(z);
         if (!g) continue;
         if (g.endsWith('-gate')) { gate.set(g, Math.min(gate.get(g) ?? 99, Math.floor(expectedLevel(q.during)))); continue; }
-        if (!g.startsWith(`${w.school}-${w.side}-`)) continue; // the other side's zones belong to the other class's order
+        if (!g.startsWith(`${w.school}-${w.side}-`)) continue; // the other side's zones follow the other class's order
         visits.set(g, [...(visits.get(g) ?? []), q.during]);
       }
     }
     for (const [g, v] of visits) {
-      const list: { floor: number; after?: string }[] = [];
+      const list: { floor: number; step?: number }[] = [];
       for (const i of [...new Set(v)].sort((a, b) => a - b)) {
         const floor = Math.max(1, Math.min(12, Math.floor(expectedLevel(i))));
         if (list.length && floor <= list[list.length - 1].floor) continue;
-        list.push(list.length ? { floor, after: w.mains[i - 2] } : { floor });
+        list.push(list.length ? { floor, step: i - 1 } : { floor });
       }
       tiers.set(g, list);
     }
   }
   for (const [g, f] of gate) tiers.set(g, [{ floor: Math.max(1, Math.min(12, f)) }]);
-  const rows = [...tiers].sort(([a], [b]) => a.localeCompare(b)).map(([g, t]) => `  '${g}': [${t.map((x) => x.after ? `{ floor: ${x.floor}, after: '${x.after}' }` : `{ floor: ${x.floor} }`).join(', ')}],`);
+  const rows = [...tiers].sort(([a], [b]) => a.localeCompare(b))
+    .map(([g, t]) => `  '${g}': [${t.map((x) => (x.step ? `{ floor: ${x.floor}, step: ${x.step} }` : `{ floor: ${x.floor} }`)).join(', ')}],`);
+  const sorted = [...walks].sort((a, b) => a.cls.localeCompare(b.cls));
+  const mains = sorted.map((w) => `  ${w.cls}: [${w.mains.map((m) => `'${m}'`).join(', ')}],`);
+  const sides = [...walks].sort((a, b) => `${a.school}-${a.side}`.localeCompare(`${b.school}-${b.side}`)).map((w) => `  '${w.school}-${w.side}': '${w.cls}',`);
   writeFileSync('src/data/regions/hc/zoneBands.gen.ts', `/**
  * GENERATED by tools/playthrough/bands.ts gen (Claude 2): do not edit. Realm spawn bands by campaign order.
- * Group → tiers: \`floor\` is the zone's level floor; a later tier applies once its \`after\` quest is completed.
- * Zones spawn at floor…floor+2, patrols at floor+1…floor+2 (elite from L8), road camps a level lower near the hub.
+ * Group → tiers: \`floor\` is the level floor; a later tier applies once Act I main quest \`step\` is done by the
+ * side's class or the host's class (src/world/hc/bands.ts). Zones spawn at floor…floor+2, patrols at
+ * floor+1…floor+2 (elite from L8), road camps a level lower near the hub.
  */
-export interface ZoneTier { floor: number; after?: string }
+export interface ZoneTier { floor: number; step?: number }
 export const ZONE_BANDS: Record<string, ZoneTier[]> = {
 ${rows.join('\n')}
+};
+
+/** Each class's Act I main quests, in order (step n = the n-th). */
+export const ACT1_MAINS: Record<string, string[]> = {
+${mains.join('\n')}
+};
+
+/** The class whose campaign plays each realm side. */
+export const SIDE_CLASS: Record<string, string> = {
+${sides.join('\n')}
 };
 `);
   console.log(`wrote ${tiers.size} groups to src/data/regions/hc/zoneBands.gen.ts`);
@@ -77,14 +101,12 @@ ${rows.join('\n')}
     const zones = new Map(spawnZones(`realm:${w.school}`).map((z) => [z.id, z]));
     let worst = { m: -99, what: '' }, sideWorst = { m: -99, what: '' }, over = 0, sideOver = 0;
     for (const q of w.quests) {
-      const e = expectedLevel(q.during);
-      const done = new Set(w.mains.slice(0, q.during - 1));
+      const e = expectedLevel(q.during), done = upTo(q.during);
       for (const id of q.zones) {
         const z = zones.get(id);
         if (!z) continue;
-        const [, hi] = zoneLevelAt(z, (after) => done.has(after));
-        const m = hi - e;
-        const what = `${q.quest.replace('quest:', '')} (L${e.toFixed(1)}) passes ${id} L${zoneLevelAt(z, (after) => done.has(after)).join('–')}${zoneEliteAt(z, (after) => done.has(after)) ? ' elite' : ''}`;
+        const lv = zoneLevelAt(z, done), m = lv[1] - e;
+        const what = `${q.quest.replace('quest:', '')} (L${e.toFixed(1)}) passes ${id} L${lv.join('–')}${zoneEliteAt(z, done) ? ' elite' : ''}`;
         if (q.main) { if (m > worst.m) worst = { m, what }; if (m > 2) over++; }
         else { if (m > sideWorst.m) sideWorst = { m, what }; if (m > 2) sideOver++; }
       }
@@ -95,6 +117,22 @@ ${rows.join('\n')}
   }
   console.log(bad ? `${bad} classes with a main-quest walk past a band more than 2 over the expected level` : 'bands: every main-quest walk within expected + 2');
   console.log(sidesBad ? `(${sidesBad} classes with a side-quest walk over +2)` : 'bands: every side-quest walk within expected + 2 too');
+  // fallback: a host of another class (the sibling, or any co-op host) on a side whose own quests never complete
+  // must see that side step up with the host's own Act I progress, exactly as its owner would
+  let stuck = 0, tried = 0;
+  const hosts = Object.keys(ACT1_MAINS);
+  for (const w of walks) for (const z of spawnZones(`realm:${w.school}`)) {
+    if (!z.tiers || z.cls !== w.cls) continue;
+    for (const host of hosts.filter((h) => h !== w.cls)) {
+      tried++;
+      for (let k = 0; k <= MAINS; k++) {
+        const owner = zoneLevelAt(z, stepDone(w.cls, (q) => ACT1_MAINS[w.cls].slice(0, k).includes(q)));
+        const other = zoneLevelAt(z, stepDone(host, (q) => ACT1_MAINS[host].slice(0, k).includes(q))); // the side's own quests never complete
+        if (owner.join() !== other.join()) { stuck++; if (stuck <= 5) console.log(`STUCK ${z.id}, host ${host} at main ${k}: owner L${owner.join('–')}, host L${other.join('–')}`); break; }
+      }
+    }
+  }
+  console.log(stuck ? `${stuck}/${tried} zone × host pairs don't follow an other-class host` : `bands: every other-class host (${tried} zone × host pairs) steps each side up with their own Act I progress`);
 }
 
 function exportWalks(all: ClassWalk[], file: string): void {
@@ -102,16 +140,15 @@ function exportWalks(all: ClassWalk[], file: string): void {
   for (const w of all) {
     const zones = new Map(spawnZones(`realm:${w.school}`).map((z) => [z.id, z]));
     out[w.cls] = w.quests.map((q) => {
-      const done = new Set(w.mains.slice(0, q.during - 1));
+      const done = upTo(q.during);
       return {
         quest: q.quest, type: q.type, main: q.main ?? null, during: q.during, expected: +expectedLevel(q.during).toFixed(1),
-        zones: q.zones.map((id) => { const z = zones.get(id)!; return { id, level: zoneLevelAt(z, (a) => done.has(a)), elite: zoneEliteAt(z, (a) => done.has(a)), cap: z.cap }; }),
+        zones: q.zones.map((id) => { const z = zones.get(id)!; return { id, level: zoneLevelAt(z, done), elite: zoneEliteAt(z, done), cap: z.cap }; }),
         lairs: q.lairs,
       };
     });
   }
   mkdirSync('tools/playthrough/out', { recursive: true });
-  writeFileSync(file, JSON.stringify(out, null, 1));
+  writeFileSync(file, JSON.stringify(out, null, 1) + '\n');
   console.log(`wrote ${file}`);
 }
-

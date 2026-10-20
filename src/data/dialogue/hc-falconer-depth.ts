@@ -42,7 +42,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Your hawk leans towards it on your fist, and so does the thing under your ribs. The note caught in its feathers is still ringing, so faintly that you could mistake it for the wind.',
         choices: [
           { text: '(Cast the hawk, and call it straight back.)', to: 'test' },
-          { text: '[Hunt] (Count them from the turn of the wheel, the way the Mews counts a cast.)', to: 'count', school: 'hunt' },
+          { text: '(Count them from the turn of the wheel, the way the Mews counts a cast.)', to: 'count', school: 'hunt' },
           { text: '(Just watch.)', to: 'watch' },
         ],
       },
@@ -79,7 +79,7 @@ const dialogues: DialogueDef[] = [
         speaker: AC, text: 'Wimble stood in front of the ewes and barked at it, and it went round her. Round a dog the size of a cushion. I’ve never once seen a bear go round anything.',
         choices: [
           { text: 'Which way did it go?', to: 'way' },
-          { text: '[Hunt] It wasn’t afraid of her. It was afraid of whatever she keeps off.', to: 'keeps', school: 'hunt' },
+          { text: 'It wasn’t afraid of her. It was afraid of whatever she keeps off.', to: 'keeps', school: 'hunt' },
         ],
       },
       way: { speaker: AC, text: 'Up to the big tor with the cave under it, where the young hawks used to mob it, summers. It’s gone home. Things go home when they’re sick.', next: 'end' },
@@ -177,7 +177,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The wind. The dark. The birds. Being looked at. Being picked last. Wren being disappointed. The list goes all the way down the page in different inks, added to for years.',
         choices: [
           { text: '(Read to the bottom.)', to: 'bottom' },
-          { text: '[Hunt] (Look at the half-finished hood on the last.)', to: 'last', school: 'hunt' },
+          { text: '(Look at the half-finished hood on the last.)', to: 'last', school: 'hunt' },
         ],
       },
       last: { speaker: 'narrator', text: 'It is the first hood he ever made, by the stitching: clumsy, too big, lined with soft lambswool so that it would not hurt. He did not make it for a bird. It is the size of a boy’s head.', next: 'bottom' },
@@ -202,7 +202,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Cut a jess of your own and tie it on with Odile’s knot.)', to: 'knot', when: { flag: 'falconer.odile_knot' }, effects: [{ unlockLore: 'lore:hc-falconer-leaving-post' }] },
           { text: '(Cut a jess and knot it on.)', to: 'tie', effects: [{ unlockLore: 'lore:hc-falconer-leaving-post' }] },
-          { text: '[Hunt] (Knot Teodor’s jess on properly, beside your own.)', to: 'his', school: 'hunt', effects: [{ unlockLore: 'lore:hc-falconer-leaving-post' }] },
+          { text: '(Knot Teodor’s jess on properly, beside your own.)', to: 'his', school: 'hunt', effects: [{ unlockLore: 'lore:hc-falconer-leaving-post' }] },
         ],
       },
       knot: { speaker: 'narrator', text: 'You tie it with the falconer’s knot, the one that holds until something truly pulls. The post creaks in the wind: a thousand years of leaving, every one of them a coming back that has not happened yet.', next: null },
@@ -221,7 +221,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The new perch-ledge is good oak, as Wren said, and Pibb would not have minded the wood at all. What he minds is the view. From the new ledge you look straight out over the Featherfall, where the black hangs in the air like soot on a window.',
         choices: [
           { text: '(Turn the perch to face the sea cliffs instead.)', to: 'turn', trust: 1, trustNpc: WR },
-          { text: '[Hunt] (Crouch on it yourself, the way a kestrel would, and look.)', to: 'sit', school: 'hunt' },
+          { text: '(Crouch on it yourself, the way a kestrel would, and look.)', to: 'sit', school: 'hunt' },
         ],
       },
       sit: { speaker: 'narrator', text: 'You crouch on the ledge with your eyes half shut and look out the way a kestrel looks. Even you can feel it: a wrongness over the Featherfall, like a draught from a door left open. You would not sit here either.', next: 'turn' },
@@ -257,7 +257,7 @@ const dialogues: DialogueDef[] = [
       tor: {
         speaker: 'narrator', text: 'On the top of the tor behind the steading Wimble is standing four-square in the heather, barking at the ground. Where she is barking, black is seeping up out of the peat like water out of a sponge: a spring of tears, on the open moor.',
         choices: [
-          { text: '[Hunt] (Cut turf and lay it over the seep, the way the Mews covers a spoiled nest.)', to: 'turf', school: 'hunt', effects: [{ setFlag: 'falconer.seep_found', value: 'covered' }] },
+          { text: '(Cut turf and lay it over the seep, the way the Mews covers a spoiled nest.)', to: 'turf', school: 'hunt', effects: [{ setFlag: 'falconer.seep_found', value: 'covered' }] },
           { text: '(Build a cairn round it, so the shepherds know.)', to: 'cairn', effects: [{ setFlag: 'falconer.seep_found', value: 'marked' }] },
           { text: '(Call Wimble off, and go and tell Coyle.)', to: 'tell', effects: [{ setFlag: 'falconer.seep_found', value: 'told' }] },
         ],
@@ -278,7 +278,7 @@ const dialogues: DialogueDef[] = [
       stag: {
         speaker: 'narrator', text: 'The stag’s bones point at the gate like all the rest. But it stopped. It came back for the calf, the only one on the whole plain that turned, and lay down beside it.',
         choices: [
-          { text: '[Hunt] (Read how they fell.)', to: 'read', school: 'hunt' },
+          { text: '(Read how they fell.)', to: 'read', school: 'hunt' },
           { text: '(Lay a stone between them.)', to: 'stone' },
         ],
       },
@@ -316,7 +316,7 @@ const dialogues: DialogueDef[] = [
         speaker: ED, text: 'Eleven thousand birds I’ve named, and every one of them was lying in the heather. I’ve never named a bird that was flying. I don’t know if I’m allowed.',
         choices: [
           { text: 'You’re allowed. Name them.', to: 'elias', trust: 1, effects: [{ setFlag: 'falconer.fledglings_named', value: 'elias' }] },
-          { text: '[Hunt] Let them name themselves. Watch how they fly, and you’ll know.', to: 'watch', school: 'hunt', effects: [{ setFlag: 'falconer.fledglings_named', value: 'flown' }] },
+          { text: 'Let them name themselves. Watch how they fly, and you’ll know.', to: 'watch', school: 'hunt', effects: [{ setFlag: 'falconer.fledglings_named', value: 'flown' }] },
           { text: 'Some birds shouldn’t have names. These ones are free.', to: 'free', effects: [{ setFlag: 'falconer.fledglings_named', value: 'none' }] },
         ],
       },
@@ -482,7 +482,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'You have a spare jess in your pouch, the one Wren knotted for your first hawk when you were small.',
         choices: [
           { text: '(Hang it on the post, with her knot still in it.)', to: 'knot' },
-          { text: '[Hunt] (Cut it the Mews way first, one clean cut, and hang both halves.)', to: 'halves', school: 'hunt' },
+          { text: '(Cut it the Mews way first, one clean cut, and hang both halves.)', to: 'halves', school: 'hunt' },
         ],
       },
       knot: { speaker: 'narrator', text: 'You hang it with her knot still tied, the one she taught the Mews children, the one Odile is teaching them now. Bearers passing it on their way to the stairs touch it without knowing why, the way you touch a doorframe in a house you grew up in.', next: 'end' },

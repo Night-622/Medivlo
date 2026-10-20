@@ -46,7 +46,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'It wants the Trophy Hall. Something in there is singing back.', to: 'hall', effects: [{ setFlag: 'huntsman.told_bannock', value: true }] },
           { text: 'I don’t know what it is.', to: 'dunno' },
-          { text: '[Hunt] It’s like a scent. It pulls the way a trail pulls.', to: 'scent', school: 'hunt' },
+          { text: 'It’s like a scent. It pulls the way a trail pulls.', to: 'scent', school: 'hunt' },
         ],
       },
       hall: { speaker: BN, mood: 'afraid', text: 'The Hall. (He sets his cup down.) The Ashbys have hung heads on those walls for three hundred years. Whatever’s in there was bought, and the Barons don’t sell back. Don’t go knocking at her gates at night again. Not yet.', next: 'count' },
@@ -74,7 +74,7 @@ const dialogues: DialogueDef[] = [
       wait: {
         speaker: 'narrator', text: 'You wait. The ford runs. Nothing comes down out of the trees. Then, among the birches, something very large stands up that was lying down.',
         choices: [
-          { text: '[Hunt] (Read the wind before you move.)', to: 'wind', school: 'hunt' },
+          { text: '(Read the wind before you move.)', to: 'wind', school: 'hunt' },
           { text: 'Master Bannock. In the trees.', to: 'trees' },
         ],
       },
@@ -107,7 +107,7 @@ const dialogues: DialogueDef[] = [
         speaker: CO, text: '(Without looking round.) Quietly. Look at its eyes. The left one is still brown. The right one began to run at dusk. By morning both will be black, and it will go for the first thing that moves.',
         choices: [
           { text: 'How do you know it turned tonight?', to: 'how' },
-          { text: '[Hunt] It’s still rooting. It still thinks it’s a boar.', to: 'still', school: 'hunt' },
+          { text: 'It’s still rooting. It still thinks it’s a boar.', to: 'still', school: 'hunt' },
           { text: 'Let me drive it off the road instead.', to: 'drive' },
         ],
       },
@@ -203,7 +203,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A year of kills in Quentin’s neat hand: date, beast, place, one bolt. Beside each, in Corva’s own hand, the same two words: “first night.” Forty entries. Forty first nights.',
         effects: [{ setFlag: 'huntsman.game_book', value: true }],
         choices: [
-          { text: '[Hunt] (Turn back to the start of the book.)', to: 'back', school: 'hunt' },
+          { text: '(Turn back to the start of the book.)', to: 'back', school: 'hunt' },
           { text: '(Leave the cup where it was.)', to: 'last' },
         ],
       },
@@ -272,7 +272,7 @@ const dialogues: DialogueDef[] = [
       word: {
         speaker: 'narrator', text: 'Under the carving there is one word, cut deep enough to come through a fire: WITH.',
         choices: [
-          { text: '[Hunt] (Lay your hand on the carved hounds.)', to: 'hand', school: 'hunt' },
+          { text: '(Lay your hand on the carved hounds.)', to: 'hand', school: 'hunt' },
           { text: '(Brush the soot off the word.)', to: 'brush' },
         ],
       },
@@ -291,7 +291,7 @@ const dialogues: DialogueDef[] = [
       girl: {
         speaker: 'narrator', text: 'He does not answer when you speak. His granddaughter, in the doorway behind him, says he hasn’t said a word since he bought it, and he won’t let anybody take it off him.',
         choices: [
-          { text: '[Hunt] (Kneel, and talk to him the way you’d talk to a frightened hound.)', to: 'hound', school: 'hunt' },
+          { text: '(Kneel, and talk to him the way you’d talk to a frightened hound.)', to: 'hound', school: 'hunt' },
           { text: '(Take the coat off him, gently, whether he likes it or not.)', to: 'take' },
           { text: 'Mister Harle. Your granddaughter is cold. Lend her your coat.', to: 'lend' },
         ],
@@ -314,7 +314,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'He works one enormous hand into the left glove. It goes on as far as the knuckles and stops. He tries the right. The same.',
         choices: [
           { text: 'They’re too small.', to: 'small' },
-          { text: '[Hunt] She measured true. She made them small on purpose.', to: 'purpose', school: 'hunt' },
+          { text: 'She measured true. She made them small on purpose.', to: 'purpose', school: 'hunt' },
         ],
       },
       small: { speaker: BN, text: 'Too small. (A long pause.) She measured off your whisper, and she has never once been wrong in sixty years. Which means she meant it.', next: 'shop' },
@@ -341,7 +341,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Tucked under the napkin is a note in Quentin’s hand. It says only: “Eat something.”',
         choices: [
           { text: '(Leave it just as it is.)', to: null },
-          { text: '[Hunt] (Brush out your tracks, so it seems to have simply appeared.)', to: 'brush', school: 'hunt' },
+          { text: '(Brush out your tracks, so it seems to have simply appeared.)', to: 'brush', school: 'hunt' },
         ],
       },
       brush: { speaker: 'narrator', text: 'You walk backwards to the road, sweeping leaves over your prints. Let it be a mystery. She has had too few of those.', next: null },
@@ -365,7 +365,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Step out between them, without touching either.)', to: 'stand', effects: [{ setFlag: 'huntsman.calf_watched', value: 'stood' }] },
           { text: '(Keep still. Let the calf decide.)', to: 'still', effects: [{ setFlag: 'huntsman.calf_watched', value: 'chose' }] },
-          { text: '[Hunt] (Lay a false trail away from the thicket, for the cow to follow.)', to: 'trail', school: 'hunt', effects: [{ setFlag: 'huntsman.calf_watched', value: 'trail' }] },
+          { text: '(Lay a false trail away from the thicket, for the cow to follow.)', to: 'trail', school: 'hunt', effects: [{ setFlag: 'huntsman.calf_watched', value: 'trail' }] },
         ],
       },
       stand: { speaker: 'narrator', text: 'You step out between them with your hands at your sides. The cow lowers her head, and for a long moment you think she will charge. Then she turns and goes back into the dark, calling. The calf lies down again.', next: null },
@@ -389,7 +389,7 @@ const dialogues: DialogueDef[] = [
       stick: {
         speaker: 'narrator', text: 'Osric Fallow counted carts, not elk. Thirty-one notches, and burned into the end of the stick with a hot nail, three small crests: a raven over a skull, a boar’s head and a silver horseshoe.',
         choices: [
-          { text: '[Hunt] (Read it the Lodge way: what was taken, and what was left.)', to: 'read', school: 'hunt' },
+          { text: '(Read it the Lodge way: what was taken, and what was left.)', to: 'read', school: 'hunt' },
           { text: '(Wrap the stick in the blanket for the Lodge.)', to: 'take' },
         ],
       },
@@ -559,7 +559,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'How many?',
         choices: [
           { text: '(Cut the number you counted, exactly. Every voice.)', to: 'exact', effects: [{ setFlag: 'huntsman.heart_count', value: 'exact' }] },
-          { text: '[Hunt] (Cut “ENOUGH”, the old word for a herd that will survive.)', to: 'enough', school: 'hunt', effects: [{ setFlag: 'huntsman.heart_count', value: 'enough' }] },
+          { text: '(Cut “ENOUGH”, the old word for a herd that will survive.)', to: 'enough', school: 'hunt', effects: [{ setFlag: 'huntsman.heart_count', value: 'enough' }] },
         ],
       },
       exact: { speaker: 'narrator', text: 'You cut it deep, every notch, and do not round it. A bearer from the Iron stair stops to read it, counts the notches under her breath, and goes off looking thoughtful. Numbers are a kind of hope, if you leave them standing.', next: null },
@@ -611,7 +611,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'One comes closer than the rest: a hollowed doe, by its shape, nosing at the air where the calf’s smell is. It does not attack. It only looks, the way a mother looks along a line of strangers.',
         choices: [
           { text: '(Stand up, slowly, between it and the calf.)', to: 'stand' },
-          { text: '[Hunt] (Name it aloud, the old way, so it is counted.)', to: 'name', school: 'hunt', effects: [{ setFlag: 'huntsman.doe_named', value: true }] },
+          { text: '(Name it aloud, the old way, so it is counted.)', to: 'name', school: 'hunt', effects: [{ setFlag: 'huntsman.doe_named', value: true }] },
         ],
       },
       stand: { speaker: 'narrator', text: 'You stand. It looks at you for a long time, black water running off its muzzle, and then turns and goes back into the dark with the others. You do not sit down again until the sky over the Heart goes grey.', next: 'dawn' },

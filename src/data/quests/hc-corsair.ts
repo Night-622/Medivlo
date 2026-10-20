@@ -560,7 +560,7 @@ const quests: QuestDef[] = [
         next: 'market',
       },
       {
-        id: 'market', journal: 'Hester says to see the Bog Market for yourself before you go asking anybody anything. The Tidecourt exiles weigh black pearls there on the old fish-scales, by the pound, like sprats.',
+        id: 'market', journal: 'Hester says to see the Bog Market for yourself before you go asking anybody anything. The Tidecourt exiles weigh black pearls there on an old fish-scale, by the pound, like sprats.',
         objectives: [{ id: 'scales', text: 'Look at the pearl scales in the Bog Market', interact: 'obj:corsair-bog-scales', marker: { landmark: 'landmark:ford-bog-market' } }],
         next: 'pell',
       },
@@ -692,7 +692,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A2, id: 'quest:corsair-a-bottle-from-dot', name: 'A Bottle from Dot', type: 'class', region: 'vil:brind', giver: DB,
-    summary: 'Something has come through the Guile arch from Gallows Reef with a letter, and it is making a great deal of noise about it.',
+    summary: 'Something has come through the Guile arch from Gallows Reef with a letter: a parrot, if you were lucky, or a bottle, if you weren’t.',
     requires: req(done('quest:corsair-the-gilded-engine')), autoStart: true, firstStage: 'letter',
     stages: [
       {
@@ -786,7 +786,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:corsair-saltmarshs-last-sale')), autoStart: true, firstStage: 'nobody',
     stages: [
       { id: 'nobody', journal: 'A ghost captain with no face is standing at the head of the Guile stair, turning his hat in his hands.', objectives: [{ id: 'nobody', text: 'Speak to Captain Nobody at the top of the stairs', talk: 'npc:captain-nobody', marker: { landmark: 'landmark:twelve-stairs-top' } }], next: 'widow' },
-      { id: 'widow', journal: 'A black ship with rotten sails and no lights has come round the Weeping Wall behind the white flagship, following her captain: the Merry Widow. Her bell is still aboard.', objectives: [{ id: 'widow', text: 'Board the Merry Widow below the Weeping Wall', interact: 'obj:corsair-widow-heart', marker: { landmark: 'landmark:corsair-widow-mooring' } }], next: 'bell' },
+      { id: 'widow', journal: 'A black ship with rotten sails and no lights has come round the Weeping Wall on the black water, following her captain: the Merry Widow. Her bell is still aboard.', objectives: [{ id: 'widow', text: 'Board the Merry Widow below the Weeping Wall', interact: 'obj:corsair-widow-heart', marker: { landmark: 'landmark:corsair-widow-mooring' } }], next: 'bell' },
       { id: 'bell', journal: '“Wen’s bell. Ring it twice for supper.” The Heart camp has a cook-fire, a great many hungry bearers and nothing to call them with.', objectives: [{ id: 'bell', text: 'Hang the Merry Widow’s bell at the Heart camp and ring it', interact: 'obj:corsair-camp-bell', marker: { landmark: 'landmark:heart-camp' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 1 },

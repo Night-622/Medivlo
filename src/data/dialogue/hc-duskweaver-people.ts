@@ -466,7 +466,7 @@ const dialogues: DialogueDef[] = [
       sit: {
         speaker: 'npc:cat-shadow', text: '(It lets you sit. After a while it leans, very slightly, against your shadow, the way a cat leans against a leg. Moll says its cat died nine years ago, on this shelf, in the sun. The shadow has not left.)',
         choices: [
-          { text: '[Umbral] (Open your hands.) You can go now. It’s all right to go.', to: 'freed', school: 'umbral', effects: [{ setFlag: 'duskweaver.cat', value: 'freed' }] },
+          { text: '(Open your hands.) You can go now. It’s all right to go.', to: 'freed', school: 'umbral', effects: [{ setFlag: 'duskweaver.cat', value: 'freed' }] },
           { text: '(Stand up, and see if it follows.)', to: 'follows', effects: [{ setFlag: 'duskweaver.cat', value: 'following' }] },
           { text: 'You can go now, puss. It’s all right.', to: 'freed', effects: [{ setFlag: 'duskweaver.cat', value: 'freed' }] },
         ],
@@ -580,7 +580,7 @@ const dialogues: DialogueDef[] = [
       weave: {
         speaker: 'narrator', text: 'It is somebody. Vane is right about that.',
         choices: [
-          { text: '[Umbral] (Weave a shadow round it, so it can be let go gently.)', to: 'gentle', school: 'umbral' },
+          { text: '(Weave a shadow round it, so it can be let go gently.)', to: 'gentle', school: 'umbral' },
           { text: '(Leave it bobbing in the reeds.)', to: null },
         ],
       },
@@ -598,7 +598,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'They deserve to be let go.', to: 'go' },
           { text: 'You could give them a rest, Vane. Like the mourners.', to: 'rest', when: { flag: 'duskweaver.mourners', value: 'rest' } },
-          { text: '[Umbral] You can’t keep a person in a lamp.', to: 'lamp', school: 'umbral' },
+          { text: 'You can’t keep a person in a lamp.', to: 'lamp', school: 'umbral' },
         ],
       },
       go: { speaker: 'npc:oriel-vane-lanternford', mood: 'sad', text: 'Let go where? Into the water? That’s where they’ve been. (He closes the dolls’ house, carefully, the way you close a book on a pressed flower.) The Queen has the rest. I’ll buy them from her if I have to buy them one by one.', next: 'leave' },
@@ -657,7 +657,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Freeze it. Let it be kept, exactly as it is.', to: 'freeze', effects: [{ setFlag: 'duskweaver.frozen_hour', value: 'frozen' }] },
           { text: 'Let it go out. It’s been waiting to.', to: 'out', effects: [{ setFlag: 'duskweaver.frozen_hour', value: 'out' }] },
-          { text: '[Umbral] Weave it into a shadow. Somewhere it can be visited.', to: 'shadow', school: 'umbral', effects: [{ setFlag: 'duskweaver.frozen_hour', value: 'shadow' }] },
+          { text: 'Weave it into a shadow. Somewhere it can be visited.', to: 'shadow', school: 'umbral', effects: [{ setFlag: 'duskweaver.frozen_hour', value: 'shadow' }] },
         ],
       },
       freeze: { speaker: 'narrator', text: 'The light stops bobbing. The kitchen stops. The singer stops mid-word, the knife halfway through the loaf, for ever. It is perfectly kept. Ilse looks at it for a long time, and does not seem as glad as she thought she would be.', next: null },

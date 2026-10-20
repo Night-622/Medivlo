@@ -105,11 +105,11 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Her crew stand at their stations, hollow, still sailing round and round for an Admiral who is not coming back. Somebody ought to tell them the voyage is over.',
         choices: [
           { text: '(Take the wheel, and bring her in to shore.)', to: 'ashore' },
-          { text: '[Guile] (Ring eight bells: end of the watch. Every sailor alive knows that one.)', to: 'bells', school: 'guile' },
+          { text: '(Ring eight bells: end of the watch. Every sailor alive knows that one.)', to: 'bells', school: 'guile' },
         ],
       },
       ashore: { speaker: 'narrator', text: 'You run her gently aground below the Heart camp. One by one her crew climb down into the shallows and stand there blinking, like sailors woken at the end of a very long watch.', next: null },
-      bells: { speaker: 'narrator', text: 'Eight bells, clear across the black water. One by one her crew put down their ropes and climb over the side into the shallows, blinking, as if somebody had finally come to relieve them.', next: null },
+      bells: { speaker: 'narrator', text: 'Eight bells, clear across the black water. One by one her crew put down their ropes and climb over the side into the shallows, blinking, as if somebody had finally come to relieve them. With no hand on the wheel, she drifts in and grounds gently below the Heart camp.', next: null },
       plain: { speaker: 'narrator', text: 'The white flagship, aground below the Heart camp, her sails hanging slack and her decks empty.', next: null },
     },
   },
@@ -132,7 +132,7 @@ const dialogues: DialogueDef[] = [
         speaker: NB, mood: 'sad', text: 'He’s gone, then. The one who had it. There’s nobody left to give it back. (He holds out his hat.) Will you write it for me? I’ve forgotten the letters.',
         choices: [
           { text: '(Write SALTMARSH on the hatband in careful capitals.)', to: 'hung' },
-          { text: '[Guile] (Write it in your best Fleet hand, with a flourish, the way a free captain signs.)', to: 'hung', school: 'guile' },
+          { text: '(Write it in your best Fleet hand, with a flourish, the way a free captain signs.)', to: 'hung', school: 'guile' },
         ],
       },
       hung: { speaker: 'narrator', mood: 'sad', text: 'You hang the hat on the Guile stair’s banner-post, the way the Fleet hangs a hat for every captain lost. The ghost looks at it a long while. Then, just for a moment, he has a face, and then he is gone, and the hat stays.', next: null },

@@ -140,8 +140,16 @@ export function learn(nodeId: string): string | null {
   return null;
 }
 
+/** Has the local character learned anything (beyond the free starting nodes) in this branch? */
+export function branchHasRanks(branch: TreeBranch): boolean {
+  const t = character().tree;
+  return Object.keys(resetBranch(t, branch)).length < Object.keys(t).length;
+}
+
 export function resetTree(branch: TreeBranch): string | null {
   const c = character(), cost = resetCost(c.level);
+  // nothing learned in this branch: never charge for an empty reset
+  if (!branchHasRanks(branch)) return 'Nothing to reset in this branch.';
   if (c.gold < cost) return `Resetting costs ${cost} Embershards.`;
   c.gold -= cost;
   c.tree = resetBranch(c.tree, branch);

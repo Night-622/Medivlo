@@ -45,7 +45,7 @@ const dialogues: DialogueDef[] = [
         speaker: RG, text: 'There. Nine hundred. When I was a girl I knew every one. Now some nights I walk along here and some of the skins are only pictures.',
         choices: [
           { text: 'Which ones have you lost?', to: 'lost' },
-          { text: '[Song] (Drum the first saga’s opening beat on the nearest skin.)', to: 'drum', school: 'song' },
+          { text: '(Drum the first saga’s opening beat on the nearest skin.)', to: 'drum', school: 'song' },
           { text: 'Why bring me here tonight?', to: 'why' },
         ],
       },
@@ -81,7 +81,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Drum the next beat with him.)', to: 'with' },
           { text: 'Is this why you used to come up here?', to: 'why' },
-          { text: '[Song] (Sing the words while he drums.)', to: 'sing', school: 'song' },
+          { text: '(Sing the words while he drums.)', to: 'sing', school: 'song' },
         ],
       },
       with: { speaker: 'narrator', text: 'You drum together, the way Ragna taught you, his hands and yours. The Fells give it back in two voices, and Ulf shuts his eyes.', next: 'talk' },
@@ -181,7 +181,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'At sundown the whole ring weeps. Every saga Ulf re-cut runs black down its stone at once, slowly, the way a face does when somebody has held it still for too long. The blank stones beside them stay dry.',
         choices: [
           { text: '(Put your hand into the black.)', to: 'hand', effects: [{ setFlag: 'skald.dusk_watched', value: true }] },
-          { text: '[Song] (Sing one of the weeping sagas aloud, so it is heard once more.)', to: 'sing', school: 'song', effects: [{ setFlag: 'skald.dusk_watched', value: true }] },
+          { text: '(Sing one of the weeping sagas aloud, so it is heard once more.)', to: 'sing', school: 'song', effects: [{ setFlag: 'skald.dusk_watched', value: true }] },
         ],
       },
       hand: { speaker: 'narrator', text: 'It is cold and it does not stain. When you take your hand away, the rune under it has stopped weeping, just that one, for as long as your hand was there. Then it starts again.', next: null },
@@ -204,7 +204,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Where the road leaves the Fells stands a split boulder called the Last Echo: the last place the Fells will answer you. Skalds going down to the Turning shouted their names into it, so the Fells would keep them until they came home.',
         choices: [
           { text: '(Shout your name into the Last Echo.)', to: 'shout', effects: [{ unlockLore: 'lore:hc-skald-last-echo' }] },
-          { text: '[Song] (Drum Ulf’s name into it instead.)', to: 'ulf', school: 'song', effects: [{ unlockLore: 'lore:hc-skald-last-echo' }] },
+          { text: '(Drum Ulf’s name into it instead.)', to: 'ulf', school: 'song', effects: [{ unlockLore: 'lore:hc-skald-last-echo' }] },
         ],
       },
       shout: { speaker: 'narrator', text: 'The Fells take your name and pass it back, crag to crag, all the way up to the Drum-Steads, where somebody on drum-watch beats it once, to say they heard.', next: null },
@@ -222,7 +222,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The high relay drum stands under its little roof, and Bluebell stands beside it, sniffing it. You beat the news. She bleats it after you, a perfect A, so clear that two valleys over a drum answers.',
         choices: [
           { text: '(Let her take the whole relay.)', to: 'relay', effects: [{ setFlag: 'skald.bluebell_drum', value: 'relay' }] },
-          { text: '[Song] (Drum a fifth under her A.)', to: 'harm', school: 'song', effects: [{ setFlag: 'skald.bluebell_drum', value: 'harmony' }] },
+          { text: '(Drum a fifth under her A.)', to: 'harm', school: 'song', effects: [{ setFlag: 'skald.bluebell_drum', value: 'harmony' }] },
           { text: '(Thank her, and walk her home.)', to: 'home', effects: [{ setFlag: 'skald.bluebell_drum', value: 'home' }] },
         ],
       },
@@ -242,7 +242,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'On the roof of the middle stead a lad of about ten is beating the relay drum with tremendous enthusiasm, a woollen hat pulled right down over both ears against the cold. He cannot hear a thing. He has been guessing.',
         choices: [
           { text: '(Lift his hat, gently.)', to: 'hat' },
-          { text: '[Song] (Drum him the real message slowly, with your hands where he can see them.)', to: 'hands', school: 'song' },
+          { text: '(Drum him the real message slowly, with your hands where he can see them.)', to: 'hands', school: 'song' },
           { text: '(Tell him to wear the hat on his head, not his ears.)', to: 'ears' },
         ],
       },
@@ -263,7 +263,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Gunnvor’s answer is short. She made you learn it by heart before you set off: “Torsten, you daft article. Kettle’s on. Nobody else either.”',
         choices: [
           { text: '(Say it to the Fell, loudly, the way she said it to you.)', to: 'say', effects: [{ setFlag: 'skald.gunnvor_answer', value: 'said' }] },
-          { text: '[Song] (Drum it, so the Fell carries it further.)', to: 'drum', school: 'song', effects: [{ setFlag: 'skald.gunnvor_answer', value: 'drummed' }] },
+          { text: '(Drum it, so the Fell carries it further.)', to: 'drum', school: 'song', effects: [{ setFlag: 'skald.gunnvor_answer', value: 'drummed' }] },
         ],
       },
       say: { speaker: 'narrator', text: 'The Fell takes it and carries it round the mountain, and somewhere far off a crow answers, sounding exactly like a man laughing.', next: null },
@@ -318,7 +318,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'It is not a hero’s saga. It is a ring of names, hundreds of them, and over them one line: “These drove the herds to the Turning, and came home.”',
         choices: [
           { text: '(Read the names aloud.)', to: 'read', effects: [{ setFlag: 'skald.drove_rubbing', value: true }, { unlockLore: 'lore:hc-skald-drove-stone' }] },
-          { text: '[Song] (Drum them, so the Fells hear them too.)', to: 'drum', school: 'song', effects: [{ setFlag: 'skald.drove_rubbing', value: true }, { unlockLore: 'lore:hc-skald-drove-stone' }] },
+          { text: '(Drum them, so the Fells hear them too.)', to: 'drum', school: 'song', effects: [{ setFlag: 'skald.drove_rubbing', value: true }, { unlockLore: 'lore:hc-skald-drove-stone' }] },
         ],
       },
       read: { speaker: 'narrator', text: 'You read them all, every one, while Asta holds the paper flat against the wind. Halfway down she says, “That’s my granny’s granny,” very quietly, and does not say anything else.', next: null },
@@ -335,7 +335,7 @@ const dialogues: DialogueDef[] = [
       ledge: {
         speaker: 'narrator', text: 'On a high ledge you set down the tenth egg, the cold one that hums nothing. On the next ledge along, the others are humming their mothers’ lullabies. This one is as quiet as a stone.',
         choices: [
-          { text: '[Song] (Sing it a lullaby yourself. Any lullaby.)', to: 'sing', school: 'song', effects: [{ setFlag: 'skald.silent_egg', value: 'sung' }] },
+          { text: '(Sing it a lullaby yourself. Any lullaby.)', to: 'sing', school: 'song', effects: [{ setFlag: 'skald.silent_egg', value: 'sung' }] },
           { text: '(Set it beside the others, and hope.)', to: 'leave', effects: [{ setFlag: 'skald.silent_egg', value: 'left' }] },
           { text: '(Drum it the slow beat Ragna used to drum you to sleep with.)', to: 'drum', effects: [{ setFlag: 'skald.silent_egg', value: 'drummed' }] },
         ],
@@ -405,7 +405,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Keep the silences with them.)', to: 'keep' },
           { text: '(Drum on through the bare pegs, as if the names were there.)', to: 'through' },
-          { text: '[Song] (Settle Ketil and Sweyn’s tempo with a counter-beat.)', to: 'tempo', school: 'song' },
+          { text: '(Settle Ketil and Sweyn’s tempo with a counter-beat.)', to: 'tempo', school: 'song' },
         ],
       },
       keep: { speaker: HG, text: 'Good. You don’t fill a gap you can’t fill. You leave it the right size, so the name fits when it comes home.', next: 'end' },
@@ -460,7 +460,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'That’s Ulf. He always fed strays.', to: 'strays' },
           { text: 'He kept her safe for you.', to: 'safe', trust: 1, trustNpc: EB },
-          { text: '[Song] (Read the rest of the knots: there are more, further round.)', to: 'more', school: 'song' },
+          { text: '(Read the rest of the knots: there are more, further round.)', to: 'more', school: 'song' },
         ],
       },
       strays: { speaker: EB, text: 'A man walking to the King, stopping to feed a hound and sew her a collar. (She rubs Grimble’s ears.) Hollow things don’t do that. Whatever he’s turning into, he hasn’t finished.', next: 'glade' },
@@ -482,7 +482,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Take the road-strip, and leave the bark.)', to: 'strip', effects: [{ setFlag: 'skald.ulf_camp', value: 'road' }] },
           { text: '(Take the bark. Somebody should finish it.)', to: 'keep', effects: [{ setFlag: 'skald.ulf_camp', value: 'bark' }] },
-          { text: '[Song] (Knot an answer onto the end of the road-strip, and leave it hanging.)', to: 'knot', school: 'song', effects: [{ setFlag: 'skald.ulf_camp', value: 'knot' }] },
+          { text: '(Knot an answer onto the end of the road-strip, and leave it hanging.)', to: 'knot', school: 'song', effects: [{ setFlag: 'skald.ulf_camp', value: 'knot' }] },
         ],
       },
       strip: { speaker: 'narrator', text: 'The strip is still warm from the root. He knew the way before the Stag did, you realise. He did not need it to lead him. He wanted something to walk beside.', next: null },
@@ -504,7 +504,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Drum: The forty names are home. The choir is resting. I am well.)', to: 'sent', effects: [{ setFlag: 'skald.reply', value: 'names' }] },
           { text: '(Drum: I found Ulf’s camp. He fed a stray. He has not finished turning.)', to: 'sent', when: { flag: 'skald.ulf_camp' }, effects: [{ setFlag: 'skald.reply', value: 'ulf' }] },
           { text: '(Drum Pip’s name, with the hitch before it, so the Fells will know it.)', to: 'pip', when: { flag: 'skald.pip_saga' }, effects: [{ setFlag: 'skald.reply', value: 'pip' }] },
-          { text: '[Song] (Drum her a verse of a saga nobody has drummed: Ragna, who kept the small ones.)', to: 'sent', school: 'song', effects: [{ setFlag: 'skald.reply', value: 'ragna' }] },
+          { text: '(Drum her a verse of a saga nobody has drummed: Ragna, who kept the small ones.)', to: 'sent', school: 'song', effects: [{ setFlag: 'skald.reply', value: 'ragna' }] },
         ],
       },
       pip: { speaker: 'narrator', mood: 'happy', text: 'Pip watches your hands, and then his own name goes over the arch and away, PIP, with a hitch before it like anybody’s. He does not say anything for a long time, which for Pip is a record.', next: 'sent' },
@@ -523,9 +523,9 @@ const dialogues: DialogueDef[] = [
     ],
     nodes: {
       post: { speaker: 'narrator', text: 'Where the Heart camp meets the old road stands a drum on a post, and behind it, on a three-legged stool, wrapped in four shawls, sits Hallgerd Drum-Wife, who has come all the way from Abbeyshore to be the last link in the relay.', next: 'loud' },
-      loud: { speaker: HG, mood: 'happy', text: 'Don’t look like that. Eleven of us, three miles apart, from the Song arch to here, and I took the end because I’m the loudest. Ketil and Sweyn are posted together. Nobody else would have them.', next: 'hands' },
+      loud: { speaker: HG, mood: 'happy', text: 'Don’t look like that. Nine of us, three miles apart, from the Song arch to here, and I took the end because I’m the loudest. Ketil and Sweyn are posted together. Nobody else would have them.', next: 'hands' },
       hands: {
-        speaker: HG, text: '(She lowers her voice, which for Hallgerd is still loud.) Something you ought to know before you drum. Those letters this winter aren’t Ragna’s hands, not since the thaw. Too steady. The hitch before the names is hers, but somebody’s copying it.',
+        speaker: HG, text: '(She lowers her voice, which for Hallgerd is still loud.) Something you ought to know before you drum. The letters since the thaw aren’t Ragna’s hands. Too steady. The hitch before the names is hers, but somebody’s copying it.',
         choices: [
           { text: 'Who?', to: 'who' },
           { text: 'Ragna’s hands shake now. She’s old.', to: 'old' },
@@ -568,7 +568,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Wipe their three marks off with your sleeve.)', to: 'wipe', effects: [{ setFlag: 'skald.muster', value: 'wiped' }] },
           { text: '(Chalk their names over the marks: GISLA WEATHERDRUM. ORM TARNWATER. BERSI.)', to: 'names', effects: [{ setFlag: 'skald.muster', value: 'named' }] },
-          { text: '[Song] (Chalk a Fells name over every mark you can reach, until the chalk runs out.)', to: 'all', school: 'song', effects: [{ setFlag: 'skald.muster', value: 'all' }] },
+          { text: '(Chalk a Fells name over every mark you can reach, until the chalk runs out.)', to: 'all', school: 'song', effects: [{ setFlag: 'skald.muster', value: 'all' }] },
         ],
       },
       wipe: { speaker: 'narrator', text: 'Three clean patches on the slate. Bersi nods: a Skald owes no muster now. He looks at the board a moment longer, and then wipes one more “nobody” off it himself, for luck.', next: 'end' },
@@ -588,7 +588,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: '(Drink to the Fells.)', to: 'fells' },
           { text: '(Drink to Ulf.)', to: 'ulf' },
-          { text: '[Song] (Drum the toast back to him the way you did at six, mistake and all.)', to: 'six', school: 'song' },
+          { text: '(Drum the toast back to him the way you did at six, mistake and all.)', to: 'six', school: 'song' },
         ],
       },
       fells: { speaker: 'narrator', mood: 'happy', text: 'To the Fells. Three cups go up. Gisla drums afterwards: Rain by noon. It is still not going to rain. Nobody minds.', next: 'go' },
@@ -611,7 +611,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Three slow beats and a hitch: the way he climbed the Saga Hall steps, careful of the drum on his back.)', to: 'beat', effects: [{ setFlag: 'skald.ulf_beat', value: 'steps' }] },
           { text: '(The first bar of the toast-beat, which he drummed at every wedding he was never asked to sing at.)', to: 'beat', effects: [{ setFlag: 'skald.ulf_beat', value: 'toast' }] },
           { text: '(Nine beats, one for each year of a boy drumming alone on Scarrow Pike.)', to: 'beat', when: { flag: 'skald.ninehundredth' }, effects: [{ setFlag: 'skald.ulf_beat', value: 'pike' }] },
-          { text: '[Song] (One beat, and then a rest the length of a breath, where a voice would come in if it could.)', to: 'beat', school: 'song', effects: [{ setFlag: 'skald.ulf_beat', value: 'rest' }] },
+          { text: '(One beat, and then a rest the length of a breath, where a voice would come in if it could.)', to: 'beat', school: 'song', effects: [{ setFlag: 'skald.ulf_beat', value: 'rest' }] },
         ],
       },
       beat: { speaker: 'narrator', text: 'You drum it on the King’s drum three times, the Fells way, and the Heart throws it back three times. Then from the camp’s edge Hallgerd’s drum takes it up, and the next post, and the next: a name going north towards a stone that has waited for it.', next: 'end' },

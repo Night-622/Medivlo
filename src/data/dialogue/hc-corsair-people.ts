@@ -72,7 +72,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:barnaby-quill', text: '(He does not look up from his net.) She sent you. Money? Don’t want her money. Never wanted it. Took a leg off me, the sea did, not her. She didn’t owe me for the sea.',
         choices: [
           { text: 'Then what would you take?', to: 'what' },
-          { text: '[Guile] Everybody has a price. Even you.', to: 'price', school: 'guile' },
+          { text: 'Everybody has a price. Even you.', to: 'price', school: 'guile' },
         ],
       },
       price: { speaker: 'npc:barnaby-quill', text: '(He laughs, short and gruff.) Everybody. Aye. Go on, then. You want mine.', next: 'what' },
@@ -415,7 +415,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The lid lifts by itself. Inside there are teeth, and a long pink tongue, and a Mimic Slime looking up at you with enormous wet eyes. It burps up a gold coin, very politely, and then another. It seems to be apologising. It has been down here a long time, and it has eaten the treasure, and it is very sorry.',
         choices: [
           { text: '(Let it go.)', to: 'go' },
-          { text: '[Guile] Negotiate: it keeps the gold, you keep the map it’s lying on.', to: 'map', school: 'guile' },
+          { text: 'Negotiate: it keeps the gold, you keep the map it’s lying on.', to: 'map', school: 'guile' },
         ],
       },
       go: { speaker: 'narrator', text: 'It slides out of its hole, bows as well as a slime can bow, burps up one last coin for you, and goes off down the beach in the direction of the sea, looking much happier. Under where it lay is another map.', next: null },
@@ -446,14 +446,14 @@ const dialogues: DialogueDef[] = [
         choices: [{ text: 'Who buys his pearls here?', to: 'pell', quest: true }],
       },
       start: {
-        speaker: 'npc:hester-glimmer', mood: 'happy', text: 'A bicorne! A Brine Fleet bicorne, in my bar! Sit down, captain, or whatever you are this week. Drink? It’s marsh gin. It’s mostly marsh.',
+        speaker: 'npc:hester-glimmer', mood: 'happy', text: 'A tricorne! A Brine Fleet tricorne, in my bar! Sit down, captain, or whatever you are this week. Drink? It’s marsh gin. It’s mostly marsh.',
         choices: [
           { text: 'Black pearls are lying in the lee of the Guile arch. Who’s raking them?', to: 'pell', quest: true },
           { text: 'Dot Brine sends her regards.', to: 'dot', trust: 1 },
         ],
       },
       dot: { speaker: 'npc:hester-glimmer', mood: 'happy', text: 'Dot Brine! She owes me eleven shards and a dance from C. 1010! Tell her I want the dance. Now. Pearls.', next: 'pell' },
-      pell: { speaker: 'npc:hester-glimmer', text: 'The Bog Market runs on them. They come through Pell Odd, mostly, the peddler, who swears blind he’s never seen a pearl in his life. And Pell buys his from a man with a white flag. He’s in Brindlecross this week. He’s always somewhere this week.', next: 'market' },
+      pell: { speaker: 'npc:hester-glimmer', text: 'The Bog Market runs on them. Mostly they come through Pell Odd, the peddler, who swears blind he’s never seen a pearl in his life. And Pell buys his from a man with a white flag. He’s in Brindlecross this week. He’s always somewhere this week.', next: 'market' },
       market: { speaker: 'npc:hester-glimmer', text: 'But go and look at the Bog Market first, out on the punts, so you know what you’re asking him about. Pell can smell a guess at forty paces.', next: null },
     },
   },
@@ -465,7 +465,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:rosie-mossop', text: 'Pearls in, nothing out. Barge after barge, up the gold-silt, black pearls by the ton, and we unload them into carts and the carts go down into the Ruins and come back empty. I don’t like a cargo that only goes one way.',
         choices: [
           { text: 'Who sells them?', to: 'who', quest: true },
-          { text: '[Guile] What’s the paperwork say?', to: 'paper', school: 'guile', quest: true },
+          { text: 'What’s the paperwork say?', to: 'paper', school: 'guile', quest: true },
         ],
       },
       paper: { speaker: 'npc:rosie-mossop', text: 'Paperwork! Ha! Bills of lading all signed with a little drawing of a flag. Payment on delivery. In Engine-gold. Hot, it is, when they pay you. Too hot.', next: 'who' },
@@ -490,11 +490,35 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:corsair-interest-letter', name: 'C-6 a letter by parrot', scope: 'party',
     entries: [{ node: 'parrot' }],
     nodes: {
-      parrot: { speaker: 'npc:interest-courier', text: '(Interest is sitting on the Guile arch with a letter in his claws, shouting “PAY UP!” at the wolves. He drops it in your hand and says, very quietly, “paid.” It is the first time he has ever said anything else.)', next: 'letter' },
-      letter: {
-        speaker: DB, text: '(The letter is written on the back of an IOU.) “Sweetheart. The Fleet is poor and free and furious with me, which is how I like it. Quill comes out on the water every Tuesday now. I have paid four debts this month on purpose. I feel unwell. Mind your purse. Love, D.”',
-        choices: [{ text: '(Fold the IOU away.)', to: 'court', quest: true, effects: [{ setFlag: 'corsair.dot_letter', value: true }] }],
+      parrot: { speaker: 'npc:interest-courier', text: '(Interest is sitting on the Guile arch with a letter in his claws, shouting “PAY UP!” at the wolves. He drops it in your hand and says, very quietly, “paid.” It is the first time anyone has heard him say it.)',
+        choices: [
+          { text: '(Read the letter.)', to: 'letter', when: { not: { any: [{ flag: 'corsair.charter', op: '==', value: 'signed' }, { flag: 'corsair.charter', op: '==', value: 'marque' }] } } },
+          { text: '(Read the letter.)', to: 'letter-signed', when: { flag: 'corsair.charter', op: '==', value: 'signed' } },
+          { text: '(Read the letter.)', to: 'letter-marque', when: { flag: 'corsair.charter', op: '==', value: 'marque' } },
+        ],
       },
+      letter: {
+        speaker: DB, text: '(The letter is written on the back of an IOU.) “Sweetheart. The Fleet is poor and free and furious with me, which is how I like it. I have paid four debts this month on purpose. I feel unwell. Mind your purse. Love, D.”',
+        choices: [
+          { text: '(Fold the IOU away.)', to: 'ps', quest: true, when: { flag: 'corsair.dot_devotable' }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+          { text: '(Fold the IOU away.)', to: 'court', quest: true, when: { not: { flag: 'corsair.dot_devotable' } }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+        ],
+      },
+      'letter-signed': {
+        speaker: DB, text: '(The letter is written on the back of an IOU.) “Sweetheart. The Fleet is rich and owned and very polite to me, which I can’t abide. I have paid four debts this month on purpose. I feel unwell. Mind your purse. Love, D.”',
+        choices: [
+          { text: '(Fold the IOU away.)', to: 'ps', quest: true, when: { flag: 'corsair.dot_devotable' }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+          { text: '(Fold the IOU away.)', to: 'court', quest: true, when: { not: { flag: 'corsair.dot_devotable' } }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+        ],
+      },
+      'letter-marque': {
+        speaker: DB, text: '(The letter is written on the back of an IOU.) “Sweetheart. The Fleet is raiding by the King’s leave and paying him his cut, which spoils it. I have paid four debts this month on purpose. I feel unwell. Mind your purse. Love, D.”',
+        choices: [
+          { text: '(Fold the IOU away.)', to: 'ps', quest: true, when: { flag: 'corsair.dot_devotable' }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+          { text: '(Fold the IOU away.)', to: 'court', quest: true, when: { not: { flag: 'corsair.dot_devotable' } }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+        ],
+      },
+      ps: { speaker: 'narrator', text: 'Squeezed in under the signature, smaller: “P.S. Quill comes out on the water every Tuesday now.”', next: 'court' },
       court: { speaker: 'narrator', text: 'At the Stone Court that evening the Jester bearer sits down across from you with a pack of cards, and you play for who buys the drinks, and you both cheat, and you both catch each other, and you both pay. Under the table the Reef half and the Court half hum a sea-shanty in a minor key.', next: null },
     },
   },
@@ -505,11 +529,35 @@ const dialogues: DialogueDef[] = [
       { node: 'plain' },
     ],
     nodes: {
-      bottle: { speaker: 'narrator', text: 'A green bottle has rolled out of the lee of the Guile arch, among the pearls, as if the gate itself had washed it up. It is corked with wax and stamped with the Overdraft’s mark. Inside, rolled up, is an IOU.', next: 'letter' },
-      letter: {
-        speaker: DB, text: '(On the back of the IOU.) “Sweetheart. The Fleet is poor and free and furious with me, which is how I like it. Quill comes out on the water every Tuesday now. Interest sends his regards and his bill. I have paid four debts this month on purpose. I feel unwell. Love, D.”',
-        choices: [{ text: '(Fold the IOU away.)', to: 'court', quest: true, effects: [{ setFlag: 'corsair.dot_letter', value: true }] }],
+      bottle: { speaker: 'narrator', text: 'A green bottle has rolled out of the lee of the Guile arch, among the pearls, as if the gate itself had washed it up. It is corked with wax and stamped with the Overdraft’s mark. Inside, rolled up, is an IOU.',
+        choices: [
+          { text: '(Read the letter.)', to: 'letter', when: { not: { any: [{ flag: 'corsair.charter', op: '==', value: 'signed' }, { flag: 'corsair.charter', op: '==', value: 'marque' }] } } },
+          { text: '(Read the letter.)', to: 'letter-signed', when: { flag: 'corsair.charter', op: '==', value: 'signed' } },
+          { text: '(Read the letter.)', to: 'letter-marque', when: { flag: 'corsair.charter', op: '==', value: 'marque' } },
+        ],
       },
+      letter: {
+        speaker: DB, text: '(On the back of the IOU.) “Sweetheart. The Fleet is poor and free and furious with me, which is how I like it. Interest sends his regards and his bill. I have paid four debts this month on purpose. I feel unwell. Love, D.”',
+        choices: [
+          { text: '(Fold the IOU away.)', to: 'ps', quest: true, when: { flag: 'corsair.dot_devotable' }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+          { text: '(Fold the IOU away.)', to: 'court', quest: true, when: { not: { flag: 'corsair.dot_devotable' } }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+        ],
+      },
+      'letter-signed': {
+        speaker: DB, text: '(On the back of the IOU.) “Sweetheart. The Fleet is rich and owned and very polite to me, which I can’t abide. Interest sends his regards and his bill. I have paid four debts this month on purpose. I feel unwell. Love, D.”',
+        choices: [
+          { text: '(Fold the IOU away.)', to: 'ps', quest: true, when: { flag: 'corsair.dot_devotable' }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+          { text: '(Fold the IOU away.)', to: 'court', quest: true, when: { not: { flag: 'corsair.dot_devotable' } }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+        ],
+      },
+      'letter-marque': {
+        speaker: DB, text: '(On the back of the IOU.) “Sweetheart. The Fleet is raiding by the King’s leave and paying him his cut, which spoils it. Interest sends his regards and his bill. I have paid four debts this month on purpose. I feel unwell. Love, D.”',
+        choices: [
+          { text: '(Fold the IOU away.)', to: 'ps', quest: true, when: { flag: 'corsair.dot_devotable' }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+          { text: '(Fold the IOU away.)', to: 'court', quest: true, when: { not: { flag: 'corsair.dot_devotable' } }, effects: [{ setFlag: 'corsair.dot_letter', value: true }] },
+        ],
+      },
+      ps: { speaker: 'narrator', text: 'Squeezed in under the signature, smaller: “P.S. Quill comes out on the water every Tuesday now.”', next: 'court' },
       court: { speaker: 'narrator', text: 'At the Stone Court that evening the Jester bearer sits down across from you with a pack of cards, and you play for who buys the drinks, and you both cheat, and you both catch each other, and you both pay. Under the table the Reef half and the Court half hum a sea-shanty in a minor key.', next: null },
       plain: { speaker: 'narrator', text: 'An empty green bottle among the pearls in the lee of the Guile arch.', next: null },
     },
@@ -539,7 +587,7 @@ const dialogues: DialogueDef[] = [
       shop: {
         speaker: 'narrator', text: 'On the top shelf of the Lantern Shop, a lantern with a light in it like frost, and in the light a woman laughing, very small, over and over. Peregrine Tolley takes it down. “One of the Queen’s,” he says. “Price is a memory. Hers, or yours, or somebody’s.”',
         choices: [
-          { text: '[Guile] Haggle. A memory of a memory is worth half a memory, by any market.', to: 'haggle', school: 'guile' },
+          { text: 'Haggle. A memory of a memory is worth half a memory, by any market.', to: 'haggle', school: 'guile' },
           { text: 'Tell Ilse the truth: it costs a memory, and it might be one of her mother.', to: 'truth' },
           { text: 'Pay it yourself. You’ve plenty of memories of Dot. You can spare one.', to: 'pay' },
         ],
@@ -553,6 +601,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:corsair-featured-juggernaut', name: 'Featured: Union Rates', scope: 'party',
     entries: [
+      { when: { all: [stage('quest:corsair-union-rates', 'back'), { questCompleted: 'quest:corsair-the-gilded-engine' }] }, node: 'back-done' },
       { when: stage('quest:corsair-union-rates', 'back'), node: 'back' },
       { when: { all: [stage('quest:corsair-union-rates', 'ledger'), { not: { flag: 'corsair.hamm_asked' } }] }, node: 'ask' },
     ],
@@ -565,6 +614,10 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:bearer-juggernaut', mood: 'happy', text: 'They’ve downed tools. All of them. Not one barge unloaded since noon. The Engine’s going hungry. Magda’s iron and that Admiral’s pearls, one book, one lie. When we go to the Heart, I’m bringing the whole gang, and you’re the only one who gets to read the books.',
         effects: [{ setFlag: 'corsair.hamm_thanked', value: true }], next: null,
       },
+      'back-done': {
+        speaker: 'npc:bearer-juggernaut', mood: 'happy', text: 'They’ve downed tools. All of them. Not one barge unloaded since noon. Whatever’s left down there is going hungry. Magda’s iron and that Admiral’s pearls, one book, one lie. When we go to the Heart, I’m bringing the whole gang, and you’re the only one who gets to read the books.',
+        effects: [{ setFlag: 'corsair.hamm_thanked', value: true }], next: null,
+      },
     },
   },
   {
@@ -574,11 +627,11 @@ const dialogues: DialogueDef[] = [
       ledger: {
         speaker: 'narrator', text: 'Two columns, side by side, in one hand. On the left, Deepworks iron, “hollow, smelted, Ruhl”. On the right, black pearls, “Saltmarsh, by the ton”. Both going down into the Gilded Ruins to the same account. Both paid at the same rate. The dockers’ wages are in a third column, much smaller.',
         choices: [
-          { text: '[Guile] Point out that the Engine pays them less per ton than the pearls cost to weep.', to: 'rate', school: 'guile' },
+          { text: 'Point out that the Engine pays them less per ton than the pearls cost to weep.', to: 'rate', school: 'guile' },
           { text: 'Read it all out loud, slowly, to the whole gang.', to: 'aloud' },
         ],
       },
-      rate: { speaker: 'narrator', text: 'Hamm Ironsides does the sum twice on his fingers, and then the whole dock gang does it, and then somebody throws a pearl into the gold-silt, and then everybody does.', next: null },
+      rate: { speaker: 'narrator', text: 'Hamm Ironsides does the sum twice on their fingers, and then the whole dock gang does it, and then somebody throws a pearl into the gold-silt, and then everybody does.', next: null },
       aloud: { speaker: 'narrator', text: 'By the time you reach the third column, the gang has gone very quiet. Rosie Mossop takes off her gloves. One by one, so does everyone else.', next: null },
       plain: { speaker: 'narrator', text: 'The Gildport dock ledger, closed.', next: null },
     },
@@ -593,7 +646,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       marque: { speaker: 'npc:pell', mood: 'angry', text: 'Oh no. Oh no, no. That’s a King’s commission in your hat. A privateer! I don’t trade with privateers, they confiscate things. (He lowers his voice anyway.) White flag. Comes to the Bog Market every week. That’s all you get, and you didn’t get it from me.', next: null },
       pearls: {
-        speaker: 'npc:pell', text: 'Pearls? What pearls? These are marbles. Very dark marbles. (He sees your bicorne, and sighs.) Fine. Fine. I rake the lee of the arch, everybody does, and I buy the rest from a fellow in white with a white flag on his boat. Smells of lavender. Pays too well. I don’t like people who pay too well.',
+        speaker: 'npc:pell', text: 'Pearls? What pearls? These are marbles. Very dark marbles. (He sees your tricorne, and sighs.) Fine. Fine. I rake the lee of the arch, everybody does, and I buy the rest from a fellow in white with a white flag on his boat. Smells of lavender. Pays too well. I don’t like people who pay too well.',
         choices: [{ text: 'Neither do I.', to: null, trustNpc: 'npc:pell', trust: 1 }, { text: 'Thank you, Pell.', to: null }],
       },
     },

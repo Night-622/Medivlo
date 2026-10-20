@@ -49,7 +49,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', effects: [{ setFlag: 'story.sentinel.fist', value: true }], text: 'The Stone Abbot sits cross-legged on the bog-stone, dripping, very calm. I have been very patient, he says. He looks at you for a long time. You sit like Shirin, he says. She sat badly too, at first.',
         choices: [
           { text: 'You know the Abbess?', to: 'shirin' },
-          { text: '[Fist] (Sit with him a moment, then stand.)', to: 'stand', school: 'fist' },
+          { text: '(Sit with him a moment, then stand.)', to: 'stand', school: 'fist' },
         ],
       },
       shirin: { speaker: 'narrator', text: 'I walked ahead of her once, on the road, in C. 1012, he says. Ahead of Doran too. I kept the road still for them. Then they turned round, and I did not know what to keep still any more, so I sat down. Your brother walked past this bog a while ago, going towards the thunder.', next: null },

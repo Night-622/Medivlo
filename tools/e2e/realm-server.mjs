@@ -6,11 +6,11 @@ const srv = spawn('node', ['dist-server/main.mjs'], { env: { ...process.env, POR
 let log = ''; srv.stdout.on('data', (d) => (log += d)); srv.stderr.on('data', (d) => (log += d));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const results = []; const check = (n, ok, d = '') => { results.push(ok); console.log(`${ok ? 'PASS' : 'FAIL'} ${n}${d ? ' :: ' + d : ''}`); };
-function client(uid, name) {
+function client(uid, name, delayMs = 0, extra) {
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(`ws://localhost:${PORT}/realm/brindlecross-peaceful?token=dev:${uid}:${name}`);
+    const ws = new WebSocket(`ws://localhost:${PORT}/realm/brindlecross-peaceful?token=dev:${uid}:${name}${delayMs ? `:${delayMs}` : ''}`);
     const c = { ws, msgs: [], snaps: [], chats: [] };
-    ws.onopen = () => ws.send(JSON.stringify({ type: 'hello', playerId: '', name, classId: 'warden', level: 3, firstVisit: false }));
+    ws.onopen = () => { ws.send(JSON.stringify({ type: 'hello', playerId: '', name, classId: 'warden', level: 3, firstVisit: false })); if (extra) ws.send(JSON.stringify(extra)); };
     ws.onmessage = (e) => { const m = JSON.parse(e.data); c.msgs.push(m.type); if (m.type === 'snapshot') c.snaps.push(m.snap); if (m.type === 'chat') c.chats.push(m.text); if (m.type === 'welcome') { c.welcome = m; resolve(c); } if (m.type === 'kick') reject(new Error(m.reason)); };
     ws.onerror = () => reject(new Error('ws error'));
     setTimeout(() => reject(new Error('timeout')), 10000);
@@ -40,6 +40,14 @@ try {
   a.ws.close(); b.ws.close(); await sleep(500);
   const after = (await (await fetch(`${BASE}/realms`)).json()).find((r) => r.id === 'brindlecross-peaceful').players;
   check('players leave cleanly', after === 0, String(after));
+  // A real Firebase token verifies against a remote JWKS: the first verify can take seconds, and the hello (sent on
+  // open) must not be lost meanwhile. dev:<uid>:<name>:<ms> delays verify; a chat sent right after the hello is queued.
+  const t0 = Date.now();
+  const c = await client('uid-c', 'Cy', 1500, { type: 'chat', text: 'early bird' });
+  check('slow token verify: hello kept, player welcomed', !!c.welcome && Date.now() - t0 >= 1400, `${Date.now() - t0} ms`);
+  await sleep(600);
+  check('messages sent during verify are delivered after join', c.chats.includes('early bird'), JSON.stringify(c.chats));
+  c.ws.close(); await sleep(300);
 } catch (e) { check('harness', false, String(e)); }
 finally {
   srv.kill(); const f = results.filter((x) => !x).length;

@@ -566,7 +566,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'shore',
     stages: [
       {
-        id: 'shore', journal: 'Ysolde says there are Radiance knights at Abbeyshore, standing in the shallows, and that they have been standing there since before she was born.',
+        id: 'shore', journal: 'Ysolde says there are Radiance knights at Abbeyshore, standing in the shallows, and that they have been standing there for thirty years.',
         objectives: [{ id: 'cuthbert', text: 'Find the Shorewatch at Abbeyshore', talk: CL, marker: { landmark: 'landmark:oathbound-shorewatch-post' } }],
         next: 'rota',
       },
@@ -768,7 +768,7 @@ const quests: QuestDef[] = [
     requires: req({ flag: 'oathbound.nemesis_fate' }, { flag: 'oathbound.beatrix_message' }), autoStart: true, firstStage: 'grey',
     stages: [
       {
-        id: 'grey', journal: 'A grey horse in March harness is standing in the Legion camp among the hollow horses, saddled, as if for a long ride. It is the grey that walked through the Dawn Gate ahead of you.',
+        id: 'grey', journal: 'A grey horse in March harness is standing in the Legion camp among the hollow horses, saddled, as if for a long ride. It is the grey that came through the Dawn Gate behind you.',
         objectives: [{ id: 'grey', text: 'Look at the grey horse in the Legion camp', interact: 'obj:oathbound-ilsabet-grey', marker: { landmark: 'landmark:legion-camp' } }],
         next: 'promise',
       },

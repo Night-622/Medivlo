@@ -53,7 +53,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'It’s under the Forge. It’s calling me there.', to: 'forge' },
           { text: 'It sounds like a hammer on an anvil, very far off. Patient.', to: 'hammer', trust: 1 },
-          { text: '[Iron] (Put your hand flat on the table. Let him feel it hum.)', to: 'hum', school: 'iron' },
+          { text: '(Put your hand flat on the table. Let him feel it hum.)', to: 'hum', school: 'iron' },
         ],
       },
       forge: { speaker: GM, text: 'The Forge half. Of course. It fell under the Regency’s throne when the crown broke, and it has never come out for any of them. They have tried. Konrad has tried hardest.', next: 'colossus' },
@@ -319,7 +319,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Then something down there was taught by Ironhold.', to: 'taught' },
           { text: 'You came all this way to count hammer-strokes?', to: 'why' },
-          { text: '[Iron] (Lay your gauntlet on the wall beside her hand, and count with her.)', to: 'together', school: 'iron', trustNpc: PS, trust: 1 },
+          { text: '(Lay your gauntlet on the wall beside her hand, and count with her.)', to: 'together', school: 'iron', trustNpc: PS, trust: 1 },
         ],
       },
       taught: { speaker: PS, text: 'Or it taught us. The embassy papers call it the Crown-Smith. I always assumed the clerk was being poetic. Clerks so rarely are.', next: 'stay' },
@@ -403,7 +403,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'The line. Everyone behind me.', to: 'line' },
           { text: 'Gideon’s spurs, and the walk he could not finish.', to: 'spurs' },
-          { text: '[Iron] (Say nothing. Hold your shield before you until your arms ache, as a wall would.)', to: 'wall', school: 'iron' },
+          { text: '(Say nothing. Hold your shield before you until your arms ache, as a wall would.)', to: 'wall', school: 'iron' },
         ],
       },
       line: { speaker: 'narrator', text: 'You say it aloud, and a bearer on the way past stops, and kneels beside you without a word, and then another. It is not a long vigil. It does not need to be.', next: 'rise' },
@@ -428,7 +428,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'At the edge of the Legion camp the freed have laid down their weapons in heaps: pikes, picks, a ladle, a great many swords. Most are black with tears. A few are not.',
         choices: [
           { text: '(Take a plain sword with no crest on the pommel.)', to: 'plain-sword' },
-          { text: '[Iron] (Find the oldest one, and polish it on your tabard first.)', to: 'old', school: 'iron' },
+          { text: '(Find the oldest one, and polish it on your tabard first.)', to: 'old', school: 'iron' },
         ],
       },
       'plain-sword': { speaker: 'narrator', text: 'A plain, honest Ironhold sword, the kind every squire is issued and nobody remembers. No crest. No name. It will do very well for something that has neither.', effects: [{ setFlag: 'knight.shield_sword', value: true }], next: 'give' },

@@ -174,7 +174,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'You’re not a cat. You’re a Bloomkin.', to: 'no' },
           { text: 'Come on, puss. Prudence has cheese.', to: 'yes' },
-          { text: '[Verdant] (Hum to it the way you’d hum to a seedling.)', to: 'yes', school: 'verdant' },
+          { text: '(Hum to it the way you’d hum to a seedling.)', to: 'yes', school: 'verdant' },
         ],
       },
       no: { speaker: 'npc:tibbs', mood: 'angry', text: 'MROW. (It turns its back on you, which is the most cat-like thing it has done yet.)', next: null },
@@ -284,7 +284,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       pour: {
         speaker: 'narrator', text: 'You pour. The sap sighs and lets go, a little at a time: one hand, then the other hand, then the knee, then, with a sound like a boot coming out of mud, the beard.',
-        choices: [{ text: '[Verdant] (Ask the tap nicely to let him go.)', to: 'ask', school: 'verdant' }, { text: '(Keep pouring.)', to: null }],
+        choices: [{ text: '(Ask the tap nicely to let him go.)', to: 'ask', school: 'verdant' }, { text: '(Keep pouring.)', to: null }],
       },
       ask: { speaker: 'narrator', text: 'The tap gurgles, and the last of the sap slides off Dunstan like a cat off a lap. He falls over backwards, delighted.', next: null },
       after: { speaker: 'narrator', text: 'Dunstan’s tap, dripping innocently.', next: null },
@@ -361,7 +361,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:hester-mudlark', text: '(She is standing in the empty doorway with her hand on the frame.) Silly. It’s only a door. It’s only a house. Only every one of mine was born in it.',
         choices: [
           { text: '(Stand with her until she’s ready.)', to: 'ready' },
-          { text: '[Verdant] (Ask the roots to close over it gently.)', to: 'gentle', school: 'verdant' },
+          { text: '(Ask the roots to close over it gently.)', to: 'gentle', school: 'verdant' },
         ],
       },
       ready: { speaker: 'narrator', text: 'After a while she takes her hand off the frame and walks up the stairs without looking back. Behind you, the roots slide across the doorway, slow as a blanket being drawn up.', next: null },
@@ -521,7 +521,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'It asked if it could. I said yes.', to: 'yes' },
           { text: 'It dropped every leaf at once. It looked relieved.', to: 'relieved' },
-          { text: '[Verdant] I sang it the winter. It knew the tune.', to: 'sung', school: 'verdant', when: { flag: 'hedgewitch.pruning', value: 'winter' }, trust: 1, trustNpc: 'npc:nanbriar' },
+          { text: 'I sang it the winter. It knew the tune.', to: 'sung', school: 'verdant', when: { flag: 'hedgewitch.pruning', value: 'winter' }, trust: 1, trustNpc: 'npc:nanbriar' },
         ],
       },
       yes: { speaker: 'npc:nanbriar', text: '(Very quietly.) Good. Thirty years it held on, because nobody came to tell it that it could stop. Nobody tells trees anything. That’s why your Yarrow is worth ten of any Circle.', next: 'ostara' },

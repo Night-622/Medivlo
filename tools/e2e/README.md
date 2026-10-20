@@ -52,6 +52,11 @@ node tools/e2e/new-player.mjs               # REAL input only: fresh profile →
 node tools/e2e/coop-world.mjs               # REAL co-op: host in WorldV2 opens its world, guest joins by code → both heroes in the host sim, guest input moves it, chat crosses (11)
 node tools/e2e/realm-duel.mjs               # live Duels realm: two tabs, /duel, Accept prompt, duel:started both sides (6) — needs the realm server
 node tools/e2e/ui-shots.mjs [--only a,b]    # screenshots of every overlay: dialogue, journal, codex, people, pack, skills, spells, map, pause
+node tools/e2e/hud.mjs [--base …]           # HUD behaviour via window.__hud (DEV probe): frame, bars in combat, buttons, rebinding, layout, boss bar, toast, banner, Pause, Death (35)
+
+# Before ANY hosting deploy (user's rule): every suite above plus Claude 3's and the narrative gate, one after another.
+# Starts its own servers (:5190 web, :8080 realm) and stops them; the hosting guard needs its passing stamp.
+node tools/release/predeploy-check.mjs      # --list | --only a,b (debug, no stamp)
 node tools/e2e/shot.mjs "<url>" out.png [waitMs]         # screenshot; CLICKS="x,y;x,y" clicks first. ?scene=<Key>&data=<json> opens a scene directly
 node tools/e2e/eval.mjs "<url>" "<async expr>" [waitMs]  # evaluate in the page, print JSON
 ```

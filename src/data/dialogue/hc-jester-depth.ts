@@ -44,7 +44,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'It wants the palace.', to: 'palace' },
           { text: 'It frightens me.', to: 'afraid' },
-          { text: '[Guile] (Make a joke of it. Hum along, badly.)', to: 'hum2', school: 'guile' },
+          { text: '(Make a joke of it. Hum along, badly.)', to: 'hum2', school: 'guile' },
         ],
       },
       palace: { speaker: FE, text: 'Of course it does. Everything worth having in Tidecourt is in that palace, and most of it is pawned. The Court half is under the King’s cushion, if my bones are right. My bones are always right about cushions.', next: 'why' },
@@ -80,7 +80,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Why are you so kind to the pages?', to: 'pages' },
           { text: 'What is the cap at court, really?', to: 'cap' },
-          { text: '[Guile] (Do the card trick back to him, better.)', to: 'trick2', school: 'guile' },
+          { text: '(Do the card trick back to him, better.)', to: 'trick2', school: 'guile' },
         ],
       },
       pages: { speaker: SO, text: 'Because nobody else is. Because they are seven, and frightened, and the palace is very big. I was a page here myself, once. (A pause.) A long time ago.', next: 'laugh' },
@@ -168,7 +168,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The last line on the slate is dated C. 1012, in a hand you know: “Why did the fool fall over? To stop a King. Did it work?” And under it, in the toll-keeper’s chalk: “Did not laugh. Pass anyway.”',
         choices: [
           { text: '(Chalk a joke of your own under his.)', to: 'chalk', effects: [{ unlockLore: 'lore:hc-jester-jest-house' }] },
-          { text: '[Guile] (Rub out “Did not laugh”, and write “Laughed”.)', to: 'rub', school: 'guile', effects: [{ unlockLore: 'lore:hc-jester-jest-house' }] },
+          { text: '(Rub out “Did not laugh”, and write “Laughed”.)', to: 'rub', school: 'guile', effects: [{ unlockLore: 'lore:hc-jester-jest-house' }] },
         ],
       },
       chalk: { speaker: 'narrator', text: 'You chalk the worst joke you know under his. Nobody laughs; the booth is empty. But the road ahead looks a little less like a debt, and a little more like a road.', next: null },
@@ -187,7 +187,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'The debt was never meant to be paid. It was bait: a whole street bought, so that one stubborn fishwife would climb the Crooked Stairs and sell him thirty years of tears to settle it.',
         choices: [
           { text: '(Tear the page out.)', to: 'tear', effects: [{ setFlag: 'jester.gudgeon_page', value: 'torn' }] },
-          { text: '[Guile] (Write SETTLED, TWICE across it, in his own ink.)', to: 'write', school: 'guile', effects: [{ setFlag: 'jester.gudgeon_page', value: 'settled' }] },
+          { text: '(Write SETTLED, TWICE across it, in his own ink.)', to: 'write', school: 'guile', effects: [{ setFlag: 'jester.gudgeon_page', value: 'settled' }] },
           { text: '(Leave it, and remember every word.)', to: 'leave', effects: [{ setFlag: 'jester.gudgeon_page', value: 'seen' }] },
         ],
       },
@@ -249,7 +249,7 @@ const dialogues: DialogueDef[] = [
       groom: {
         speaker: 'narrator', text: 'When his turn comes he opens his mouth and nothing comes out. He sold his own vow last month, on the same stall, to pay for the wedding, and he has been too ashamed to tell her.',
         choices: [
-          { text: '[Guile] (Feed him the words from the back pew, the way a prompter does.)', to: 'prompt', school: 'guile' },
+          { text: '(Feed him the words from the back pew, the way a prompter does.)', to: 'prompt', school: 'guile' },
           { text: '(Hold up the old “lightly worn” label from her vow, so they both see it.)', to: 'label' },
           { text: '(Stand up and say: a vow you make today can’t have been sold yesterday.)', to: 'new' },
         ],
@@ -271,7 +271,7 @@ const dialogues: DialogueDef[] = [
       ask: {
         speaker: 'narrator', text: '“I have paid,” he says, with tremendous dignity, “for sunshine. I should like it delivered.”',
         choices: [
-          { text: '[Guile] (Sell him a sunny painting from Clementine Daub’s studio, and call it delivery in the Velvet Harbour manner.)', to: 'paint', school: 'guile', effects: [{ setFlag: 'jester.sunshine', value: 'painting' }] },
+          { text: '(Sell him a sunny painting from Clementine Daub’s studio, and call it delivery in the Velvet Harbour manner.)', to: 'paint', school: 'guile', effects: [{ setFlag: 'jester.sunshine', value: 'painting' }] },
           { text: '(Hold one of Mizzle’s umbrellas over him and call it a fine day, underneath.)', to: 'brolly', effects: [{ setFlag: 'jester.sunshine', value: 'umbrella' }] },
           { text: '(Tell him a joke so warm he forgets the weather.)', to: 'joke', effects: [{ setFlag: 'jester.sunshine', value: 'joke' }] },
         ],

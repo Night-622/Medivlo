@@ -36,5 +36,5 @@ screenshot. Deploy steps are in docs/DEPLOY.md.
 - [ ] Auth providers on (Email/Password, Anonymous); Blaze plan + $10 budget alert
 - [x] `firebase deploy --only firestore:rules` (deployed to medivlo 2026-10-20; redeploy if the rules change)
 - [ ] Realm server on Cloud Run; `VITE_REALM_SERVER` set
-- [ ] `npm run build && HOLLOW_CROWN_RELEASE=1 firebase deploy --only hosting` (the guard in tools/release/guard.mjs blocks hosting deploys without the flag)
+- [ ] `node tools/release/predeploy-check.mjs` passes (HUD, hitboxes, every feature), then `npm run build && HOLLOW_CROWN_RELEASE=1 firebase deploy --only hosting` (tools/release/guard.mjs blocks hosting deploys without the flag or without a passing test stamp for the exact code)
 - [ ] Post-deploy smoke test on the live URL: title → New Game → play 5 min; Public Realms lists 4; sign up with a username (recovery code shown); invite a friend from another machine

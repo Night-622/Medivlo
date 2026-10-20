@@ -66,10 +66,15 @@ Notes:
 
 ## 6. LAUNCH (only when all 24 campaigns are done)
 ```bash
-cd ~/Desktop/Medival
+cd <path>/Medival
+node tools/release/predeploy-check.mjs                  # required before EVERY hosting deploy, test or launch (below)
 npm run build
 HOLLOW_CROWN_RELEASE=1 firebase deploy --only hosting   # the flag is required: a predeploy guard blocks hosting deploys before launch
 ```
+- **Every deploy is tested first (the user's rule, 2026-10-20).** `predeploy-check.mjs` runs 22 suites, about 15–25 min:
+  the HUD, enemy and player hitboxes, every feature (spells, dash, potions, skill tree, gear and sets, legendaries,
+  shops, Runeforge, story, co-op, public realms) and the production build. The hosting guard refuses the deploy unless
+  that run passed for the exact code being deployed: any later edit means running it again. `--list` shows the suites.
 - Old saves are wiped automatically: the new game deletes old local Medival saves (`medival.save.N`) on boot, ignores old cloud saves (they have no `game: 'hollowcrown'` tag), and overwrites them with the first new save in that slot. Nothing to run.
 - After launch, open the site in a private window: title → New Game → play; Public Realms lists 4 realms; Account → create a username account (the recovery code is shown once).
 

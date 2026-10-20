@@ -72,7 +72,7 @@ const dialogues: DialogueDef[] = [
         speaker: BN, text: 'Gloves? For me? (He puts both hands behind his back like a boy caught at the larder.) Mistress Pockle has been after me for forty years. I don’t like being measured. It makes me feel like a horse.',
         choices: [
           { text: 'Then don’t be measured. Shake my hand, that’s all.', to: 'shake', effects: [{ setFlag: 'huntsman.bannock_measured', value: 'shake' }] },
-          { text: '[Hunt] Put your hand down in the mud by the door. I’ll read it like a track.', to: 'track', school: 'hunt', effects: [{ setFlag: 'huntsman.bannock_measured', value: 'track' }] },
+          { text: 'Put your hand down in the mud by the door. I’ll read it like a track.', to: 'track', school: 'hunt', effects: [{ setFlag: 'huntsman.bannock_measured', value: 'track' }] },
           { text: 'She’s eighty-one, Master Bannock. She wants to finish her work.', to: 'kind', trust: 1, effects: [{ setFlag: 'huntsman.bannock_measured', value: 'asked' }] },
         ],
       },
@@ -103,7 +103,7 @@ const dialogues: DialogueDef[] = [
       run: {
         speaker: 'narrator', text: 'The paddock behind the Lodge. A short run, a low fence and a hare from the warren that is fat, lazy and in no hurry. Biscuit is lying in the sun with her eyes shut.',
         choices: [
-          { text: '[Hunt] Lay the scent downwind of her, so she finds it herself.', to: 'scent', school: 'hunt' },
+          { text: 'Lay the scent downwind of her, so she finds it herself.', to: 'scent', school: 'hunt' },
           { text: 'Clap your hands and let the hare go.', to: 'go' },
         ],
       },
@@ -176,7 +176,7 @@ const dialogues: DialogueDef[] = [
       start: {
         speaker: 'npc:grandfer-lumm', text: 'Well? You’ve seen it. Was it a boar or wasn’t it?',
         choices: [
-          { text: '[Hunt] Those bristles are a boar’s. A piglet, in the calving moon. It would just about fit.', to: 'piglet', school: 'hunt', effects: [{ setFlag: 'huntsman.lumm_settled', value: 'piglet' }] },
+          { text: 'Those bristles are a boar’s. A piglet, in the calving moon. It would just about fit.', to: 'piglet', school: 'hunt', effects: [{ setFlag: 'huntsman.lumm_settled', value: 'piglet' }] },
           { text: 'It was a boar. I’ll tell the whole Lodge I’ve seen the proof.', to: 'boar', trust: 1, effects: [{ setFlag: 'huntsman.lumm_settled', value: 'boar' }] },
           { text: 'Those are hedgehog prickles, Grandfer.', to: 'hog', effects: [{ setFlag: 'huntsman.lumm_settled', value: 'hedgehog' }] },
         ],
@@ -275,7 +275,7 @@ const dialogues: DialogueDef[] = [
         choices: [
           { text: 'Those pelts are hollowing your customers. Shut the room, or I’ll shut it.', to: 'shut', effects: [{ setFlag: 'huntsman.back_room', value: 'shut' }] },
           { text: 'Who sells them to you?', to: 'who', effects: [{ setFlag: 'huntsman.back_room', value: 'followed' }] },
-          { text: '[Hunt] You’re a tanner. You can smell it on them. You knew.', to: 'knew', school: 'hunt', effects: [{ setFlag: 'huntsman.back_room', value: 'shut' }] },
+          { text: 'You’re a tanner. You can smell it on them. You knew.', to: 'knew', school: 'hunt', effects: [{ setFlag: 'huntsman.back_room', value: 'shut' }] },
         ],
       },
       shut: { speaker: 'npc:griselda-lusk', text: '(She looks at you, and at the pelts, and at her own black-stained hands.) …Fine. Fine. Burn them. I’ll find the coin somewhere else.', next: null },
@@ -461,7 +461,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: '“To the Master of the Lodge, from Osric Fallow, Elkway warden, in the autumn of C. 1013. The herd did not come down the road this year. They came through the trees in a rabble, lost. The cairns on the Elkway are down, every one, and there are cart tracks where they stood.”',
         choices: [
           { text: 'Read the rest.', to: 'rest' },
-          { text: '[Hunt] Cart tracks where the cairns stood. Somebody pulled them down.', to: 'pulled', school: 'hunt', insight: 'cairns_pulled' },
+          { text: 'Cart tracks where the cairns stood. Somebody pulled them down.', to: 'pulled', school: 'hunt', insight: 'cairns_pulled' },
         ],
       },
       rest: { speaker: 'narrator', text: '“I mean to go into the Snares and see who drives the carts. If I am not home by the calving moon, someone else must count the herd. Count what is left as well as what is taken.” The letter was never delivered.', next: null },
@@ -529,7 +529,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'A birch with its bark rubbed white at stag height. At its foot, a ring of glowcaps, the most valuable thing in the Gloamwood, enough to buy a month at the Gilded Goose.',
         choices: [
           { text: '(Leave them.)', to: 'leave' },
-          { text: '[Hunt] (Leave them, and brush the moss back over them so nobody else finds them.)', to: 'hide', school: 'hunt' },
+          { text: '(Leave them, and brush the moss back over them so nobody else finds them.)', to: 'hide', school: 'hunt' },
           { text: '(Pick a few. Just a few.)', to: 'take', effects: [{ setFlag: 'huntsman.trail_cold', value: true }] },
         ],
       },
@@ -631,7 +631,7 @@ const dialogues: DialogueDef[] = [
       kill: {
         speaker: 'narrator', text: 'A hollowed wolf has brought down a hind on the Stag’s trail and eaten almost none of it. It killed, and left. The Ranger bearer crouches by it, frowning. “There. Death feeding life. Isn’t it?”',
         choices: [
-          { text: '[Hunt] It didn’t feed. It killed and walked away. That isn’t the wild. That’s the tears.', to: 'hunt', school: 'hunt' },
+          { text: 'It didn’t feed. It killed and walked away. That isn’t the wild. That’s the tears.', to: 'hunt', school: 'hunt' },
           { text: 'Something will eat it. The crows. The foxes. You’re not wrong.', to: 'crows' },
           { text: 'What did the hind owe the wolf?', to: 'owe' },
         ],
@@ -653,7 +653,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:bearer-duskweaver', text: 'The Spinner is unpicking the records of every Turning hunt, every procession through the Gloamwood, back to the founding. When they’re gone, nobody will know where the road ran. Except a hunter, maybe. Do you know the old trails?',
         choices: [
           { text: 'I know how trails go. Walk them with me and write.', to: null, quest: true, effects: [{ setFlag: 'huntsman.lune_asked', value: true }] },
-          { text: '[Hunt] A trail is never lost. It’s only waiting for feet.', to: null, quest: true, school: 'hunt', effects: [{ setFlag: 'huntsman.lune_asked', value: true }] },
+          { text: 'A trail is never lost. It’s only waiting for feet.', to: null, quest: true, school: 'hunt', effects: [{ setFlag: 'huntsman.lune_asked', value: true }] },
         ],
       },
       back: {
