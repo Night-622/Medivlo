@@ -7,7 +7,7 @@
  *    replaced the tick they die), their damage calibrated per class so the base build loses its health in about a
  *    minute (one hit capped at 5% of the hero's health).
  * The bot stands still, targets the bag and presses casts / slash / attack like the fight bot, and dashes sideways about
- * once a second when it can (put back on its spot after); no potions.
+ * every 3 s when it can (put back on its spot after); no potions.
  * The hero is topped up to full at 12% HP (not a heal), so HP cycles like a real fight and the window is always full.
  * Measures DPS (everything hit), net HP drain (taken − healed) → seconds to die from full, and EHP from the build's
  * stats against a fixed damage mix.
@@ -112,11 +112,12 @@ export function probeOnce(save: CharacterSave, seed: number, dmgMult: number, se
     let buttons = Btn.ATTACK;
     if (tick % 15 === 0) { const s = chooseSlot(a.sim, p); if (s !== undefined) buttons |= CAST[s]; }
     if (martial && tick % 2 === 0 && a.sim.w.t >= (p.cds.get('slash') ?? 0)) buttons |= Btn.SLASH;
-    // dash about once a second when a charge and the stamina are there (sideways, alternating), as players do: dash /
-    // dash-end / stamina-spent perks get measured; the hero is put back on its spot once the move ends (Claude 5)
-    const dashNow = tick % 30 === 15 && p.dashCharges > 0 && p.stamina >= 25 && !p.motion;
+    // dash every 3 s when a charge and the stamina are there (sideways, alternating), as players do: dash / dash-end /
+    // stamina-spent perks get measured, and 'standing still for 1 s' perks keep most of their window; the hero is put
+    // back on its spot once the move ends (Claude 5)
+    const dashNow = tick % 90 === 45 && p.dashCharges > 0 && p.stamina >= 25 && !p.motion;
     if (dashNow) buttons |= Btn.DASH;
-    const frame: InputFrame = { seq: ++seq, t: a.sim.w.t, move: dashNow ? { x: 0, y: (tick / 30) % 2 < 1 ? 1 : -1 } : { x: 0, y: 0 }, aim: { x: bag.x, y: bag.y }, buttons: buttons & ~held | (buttons & Btn.ATTACK), target: bag.id };
+    const frame: InputFrame = { seq: ++seq, t: a.sim.w.t, move: dashNow ? { x: 0, y: (tick / 90) % 2 < 1 ? 1 : -1 } : { x: 0, y: 0 }, aim: { x: bag.x, y: bag.y }, buttons: buttons & ~held | (buttons & Btn.ATTACK), target: bag.id };
     held = buttons & ~Btn.ATTACK;
     const hp0 = p.hp, taken0 = a.m.taken;
     a.sim.step(DT, tick + 1, new Map([[PID, [frame]]]));

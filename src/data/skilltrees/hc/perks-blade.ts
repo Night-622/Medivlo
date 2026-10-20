@@ -8,8 +8,10 @@ import type { ClassPerks, PerkDef, PerkKind, SchoolPerks } from '@/systems/rules
 import type { Passive } from '@/systems/rules/types';
 
 const one = (id: string, name: string, kind: PerkKind, text: string, fx: Passive): PerkDef => ({ id, name, kind, ranks: 1, text: [text], effects: [fx] });
+/** 3-rank perks are front-loaded: text / fx get a rank weight of 1.5 / 2.25 / 3 (rank 3 as written, rank 1 half of it) */
+const RANK_W = [1.5, 2.25, 3];
 const three = (id: string, name: string, kind: PerkKind, text: (r: number) => string, fx: (r: number) => Passive): PerkDef =>
-  ({ id, name, kind, ranks: 3, text: [1, 2, 3].map(text), effects: [1, 2, 3].map(fx) });
+  ({ id, name, kind, ranks: 3, text: RANK_W.map(text), effects: RANK_W.map(fx) });
 const near = (r: number) => ({ shape: 'circle' as const, at: 'self' as const, r });
 const tgt = { shape: 'single' as const, at: 'target' as const };
 
@@ -20,8 +22,8 @@ const swordsman: ClassPerks = {
   classId: 'swordsman',
   signature: [
     // path 0: Riposte (+ new spell 3): the duellist's answer
-    one('pk_swordsman_quick_guard', 'Quick Guard', 'power', '+1 to Riposte and Counter Stance.',
-      { spellLevels: [{ spell: RIPOSTE, levels: 1 }, { spell: 'spell:counter-stance', levels: 1 }] }),
+    one('pk_swordsman_quick_guard', 'Quick Guard', 'power', 'Riposte and Counter Stance recharge 25% faster; +5% critical chance.',
+      { spellMods: [{ spell: RIPOSTE, cd: -0.25 }, { spell: 'spell:counter-stance', cd: -0.25 }], mods: [{ stat: 'crit', op: 'flat', value: 0.05 }] }),
     three('pk_swordsman_counter_rhythm', 'Counter Rhythm', 'trigger', (r) => `A parry: +${r * 8}% damage for 4 s.`,
       (r) => ({ procs: [{ on: 'parry', do: [{ a: 'buff', id: 'swd:counter', dur: 4000, to: 'self', mods: [{ stat: 'dmg', op: 'flat', value: 0.08 * r }] }] }] })),
     one('pk_swordsman_perfect_parry', 'Perfect Parry', 'trigger', 'A parry restores 25 stamina and cuts your cooldowns by 0.4 s.',
@@ -29,15 +31,15 @@ const swordsman: ClassPerks = {
     one('pk_swordsman_open_guard', 'Open Guard', 'tradeoff', '+30% attack damage, −15% armour and block.',
       { mods: [{ stat: 'attackDmg', op: 'flat', value: 0.3 }, { stat: 'armor', op: 'pct', value: -0.15 }, { stat: 'block', op: 'flat', value: -0.15 }] }),
     // path 1: Lunge (+ new spell 4): closing the distance
-    one('pk_swordsman_long_lunge', 'Long Lunge', 'power', 'Lunge recharges 20% faster and costs 15% less.', { spellMods: [{ spell: LUNGE, cd: -0.2, cost: -0.15 }] }),
-    three('pk_swordsman_footwork', 'Footwork', 'resource', (r) => `Your dash costs ${r * 8}% less stamina and recharges ${r * 5}% faster.`,
-      (r) => ({ mods: [{ stat: 'staminaCost', op: 'flat', value: -0.08 * r }, { stat: 'dashCd', op: 'flat', value: -0.05 * r }] })),
-    one('pk_swordsman_flowing_steel', 'Flowing Steel', 'trigger', 'Every 50 stamina spent: +15% attack speed for 4 s.',
-      { procs: [{ on: 'staminaSpent', do: [{ a: 'buff', id: 'swd:flow', dur: 4000, to: 'self', mods: [{ stat: 'atkSpeed', op: 'flat', value: 0.15 }] }] }] }),
+    one('pk_swordsman_long_lunge', 'Long Lunge', 'power', 'Lunge recharges 20% faster, costs 15% less and hits 25% harder.', { spellMods: [{ spell: LUNGE, cd: -0.2, cost: -0.15, dmg: 0.25 }] }),
+    three('pk_swordsman_footwork', 'Footwork', 'resource', (r) => `Your dash costs ${r * 8}% less stamina and recharges ${r * 5}% faster; +${r.toFixed(1)}% attack speed.`,
+      (r) => ({ mods: [{ stat: 'atkSpeed', op: 'flat', value: 0.01 * r }, { stat: 'staminaCost', op: 'flat', value: -0.08 * r }, { stat: 'dashCd', op: 'flat', value: -0.05 * r }] })),
+    one('pk_swordsman_flowing_steel', 'Flowing Steel', 'trigger', 'Every 50 stamina spent: +15% attack speed for 4 s; +5% attack speed.',
+      { mods: [{ stat: 'atkSpeed', op: 'flat', value: 0.05 }], procs: [{ on: 'staminaSpent', do: [{ a: 'buff', id: 'swd:flow', dur: 4000, to: 'self', mods: [{ stat: 'atkSpeed', op: 'flat', value: 0.15 }] }] }] }),
     one('pk_swordsman_lunging_cut', 'Lunging Cut', 'trigger', 'Landing a dash cuts the foes around you for 60% weapon power.',
       { procs: [{ on: 'dashEnd', icd: 800, do: [{ a: 'damage', coef: 0.6, kind: 'blade', area: near(56) }] }] }),
     // path 2: Whirling Edge (+ new spell 5): the crowd
-    one('pk_swordsman_storm_of_steel', 'Storm of Steel', 'power', 'Whirling Edge recharges 20% faster.', { spellMods: [{ spell: WHIRL, cd: -0.2 }] }),
+    one('pk_swordsman_storm_of_steel', 'Storm of Steel', 'power', 'Whirling Edge recharges 20% faster and hits 25% harder.', { spellMods: [{ spell: WHIRL, cd: -0.2, dmg: 0.25 }] }),
     three('pk_swordsman_battle_trance', 'Battle Trance', 'resource', (r) => `Kills restore ${r * 6} stamina and +${r}% of damage healed back.`,
       (r) => ({ mods: [{ stat: 'staminaOnKill', op: 'flat', value: 6 * r }, { stat: 'lifesteal', op: 'flat', value: 0.01 * r }] })),
     one('pk_swordsman_whirlwind_heart', 'Whirlwind Heart', 'trigger', 'Kills: +20% move and attack speed for 3 s.',
@@ -60,7 +62,7 @@ const samurai: ClassPerks = {
     one('pk_samurai_bleeding_edge', 'Bleeding Edge', 'trigger', 'Attack critical hits make the foe bleed (4 s).',
       { procs: [{ on: 'attackCrit', do: [{ a: 'status', status: { id: 'bleed', dur: 4000 }, area: tgt }] }] }),
     // path 1: Wind Step (+ new spell 4): through the line
-    one('pk_samurai_gale_step', 'Gale Step', 'power', 'Wind Step recharges 20% faster.', { spellMods: [{ spell: WIND, cd: -0.2 }] }),
+    one('pk_samurai_gale_step', 'Gale Step', 'power', 'Wind Step recharges 20% faster and hits 25% harder.', { spellMods: [{ spell: WIND, cd: -0.2, dmg: 0.25 }] }),
     three('pk_samurai_wind_breath', 'Wind Breath', 'resource', (r) => `Your dash costs ${r * 8}% less stamina; +${r * 5}% stamina regeneration.`,
       (r) => ({ mods: [{ stat: 'staminaCost', op: 'flat', value: -0.08 * r }, { stat: 'staminaRegen', op: 'pct', value: 0.05 * r }] })),
     one('pk_samurai_passing_cut', 'Passing Cut', 'trigger', 'Landing a dash: your next hit within 2 s is a critical hit (3 s).',
@@ -68,7 +70,7 @@ const samurai: ClassPerks = {
     one('pk_samurai_ronin', 'Ronin', 'tradeoff', '+30% critical damage and +5% critical chance, −15% max health.',
       { mods: [{ stat: 'critd', op: 'flat', value: 0.3 }, { stat: 'crit', op: 'flat', value: 0.05 }, { stat: 'hp', op: 'pct', value: -0.15 }] }),
     // path 2: Still Mind (+ new spell 5): focus
-    one('pk_samurai_deep_focus', 'Deep Focus', 'power', 'Still Mind recharges 25% faster.', { spellMods: [{ spell: STILL, cd: -0.25 }] }),
+    one('pk_samurai_deep_focus', 'Deep Focus', 'power', 'Still Mind recharges 25% faster; +4% critical chance.', { spellMods: [{ spell: STILL, cd: -0.25 }], mods: [{ stat: 'crit', op: 'flat', value: 0.04 }] }),
     three('pk_samurai_zanshin', 'Zanshin', 'power', (r) => `+${r * 2}% critical chance and +${r * 6}% critical damage.`,
       (r) => ({ mods: [{ stat: 'crit', op: 'flat', value: 0.02 * r }, { stat: 'critd', op: 'flat', value: 0.06 * r }] })),
     one('pk_samurai_clear_water', 'Clear Water', 'resource', 'Critical hits restore 4 stamina and 2 Ember (0.5 s).',
@@ -82,8 +84,8 @@ const school: PerkDef[] = [
   // p0 offence
   one('pk_blade_keen', 'Keen', 'power', '+12% Blade damage and +3% critical chance.',
     { mods: [{ stat: 'dmg.blade', op: 'flat', value: 0.12 }, { stat: 'crit', op: 'flat', value: 0.03 }] }),
-  one('pk_blade_hamstring', 'Hamstring', 'trigger', 'Hits have a 15% chance to slow the foe (2 s).',
-    { procs: [{ on: 'hit', chance: 0.15, do: [{ a: 'status', status: { id: 'slow', dur: 2000 }, area: tgt }] }] }),
+  one('pk_blade_hamstring', 'Hamstring', 'trigger', 'Hits have a 15% chance to slow the foe (2 s); +3% critical chance.',
+    { mods: [{ stat: 'crit', op: 'flat', value: 0.03 }], procs: [{ on: 'hit', chance: 0.15, do: [{ a: 'status', status: { id: 'slow', dur: 2000 }, area: tgt }] }] }),
   // p1 defence
   three('pk_blade_parry_stance', 'Parry Stance', 'power', (r) => `+${r * 3}% block chance and +${r * 3}% armour.`,
     (r) => ({ mods: [{ stat: 'block', op: 'flat', value: 0.03 * r }, { stat: 'armor', op: 'pct', value: 0.03 * r }] })),
