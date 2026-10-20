@@ -17,8 +17,12 @@ const dialogues: DialogueDef[] = [
   // ---------- Halla (general + mentor thread)
   {
     id: 'dialogue:rimecaller-halla', name: 'Halla (general)',
-    entries: [{ node: 'start' }],
+    entries: [
+      { when: { all: [stage('quest:rimecaller-the-hold-gauges', 'gauges'), { not: { flag: 'rimecaller.delight.tea' } }] }, node: 'tea' },
+      { node: 'start' },
+    ],
     nodes: {
+      tea: { speaker: HV, text: 'Back already? I have been looking at the tea, as promised. (She has. It has not moved.) Five gauges, please. Then we can both look at it.', effects: [{ setFlag: 'rimecaller.delight.tea', value: true }], next: null },
       start: {
         speaker: HV, text: 'Yes? Be accurate. I have very little to do and I would like to do it properly.',
         choices: [
@@ -180,8 +184,12 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:rimecaller-osgar', name: 'Osgar Rusk (bounties)',
-    entries: [{ node: 'start' }],
+    entries: [
+      { when: { all: [{ questCompleted: 'quest:rimecaller-the-first-tick' }, { not: { flag: 'rimecaller.delight.tray' } }] }, node: 'tray' },
+      { node: 'start' },
+    ],
     nodes: {
+      tray: { speaker: 'npc:osgar-rusk', text: 'You heard it too? I dropped a tray. First thing I’ve dropped in thirty years. (He looks fondly at a spot on the floor.) I’ve left it there. It’s the most interesting thing on the Stair.', effects: [{ setFlag: 'rimecaller.delight.tray', value: true }], next: 'start' },
       start: {
         speaker: 'npc:osgar-rusk', text: 'Bounties on the board. Pinned with ice. Don’t breathe on them, they curl.',
         choices: [

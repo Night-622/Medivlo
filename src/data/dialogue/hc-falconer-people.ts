@@ -106,7 +106,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:falconer-pibb', name: 'Pibb',
     entries: [{ node: 'look' }],
-    nodes: { look: { speaker: 'npc:pibb', text: '(Pibb looks at you with one eye, then the other, then turns his head almost all the way round to report to Wren.)', next: null } },
+    nodes: { look: { speaker: 'npc:pibb', text: '(Pibb looks at you with one eye, then the other, then turns his head almost all the way round to report to Wren.)', effects: [{ setFlag: 'falconer.delight.pibb-met', value: true }], next: null } },
   },
   {
     id: 'dialogue:falconer-pibb-roof', name: 'Side: coaxing Pibb down', scope: 'party',

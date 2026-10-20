@@ -17,8 +17,12 @@ const dialogues: DialogueDef[] = [
   // ---------- Thrane (general + mentor thread)
   {
     id: 'dialogue:arcanist-thrane', name: 'Thrane (general)',
-    entries: [{ node: 'start' }],
+    entries: [
+      { when: { all: [{ questStage: 'quest:arcanist-a-permit-to-burn', stage: 'braziers' }, { not: { flag: 'arcanist.delight.permit' } }] }, node: 'permit' },
+      { node: 'start' },
+    ],
     nodes: {
+      permit: { speaker: TH, text: 'Back already? Is something on fire that shouldn’t be? (He peers at the permit in your hand.) Nobody’s read it closely? Good. Good. Five braziers, then come and tell me what you saw.', effects: [{ setFlag: 'arcanist.delight.permit', value: true }], next: null },
       start: {
         speaker: TH, text: 'Have you eaten? You look like a person who forgets. Sit, if you can find a chair under the paper.',
         choices: [
@@ -63,8 +67,11 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:arcanist-pudding', name: 'Pudding',
-    entries: [{ node: 'blorp' }],
-    nodes: { blorp: { speaker: 'npc:pudding', text: '(Pudding looks up at you, and very slowly eats a corner of your sleeve.)', next: null } },
+    entries: [{ when: { all: [{ flag: 'arcanist.delight.pudding_met' }, { not: { flag: 'arcanist.delight.pudding_trade' } }] }, node: 'trade' }, { node: 'blorp' }],
+    nodes: {
+      blorp: { speaker: 'npc:pudding', text: '(Pudding looks up at you, and very slowly eats a corner of your sleeve.)', effects: [{ setFlag: 'arcanist.delight.pudding_met', value: true }], next: null },
+      trade: { speaker: 'npc:pudding', text: '(Pudding finishes your sleeve, considers you, and then, with enormous ceremony, coughs up a damp, scorched corner of a Conclave minute and pushes it towards your boot. It seems to be a fair trade.)', effects: [{ setFlag: 'arcanist.delight.pudding_trade', value: true }], next: null },
+    },
   },
   // ---------- Provost Morrow (general)
   {

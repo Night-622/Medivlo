@@ -104,8 +104,11 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:sparkwright-kettle-twenty', name: 'Kettle Twenty',
-    entries: [{ node: 'tweet' }],
-    nodes: { tweet: { speaker: 'npc:kettle-twenty', text: '(Kettle Twenty walks a small circle on three copper legs, settles at your feet, and lets out one contented puff of steam.)', next: null } },
+    entries: [{ when: { all: [{ questCompleted: 'quest:sparkwright-every-workshop-at-once' }, { not: { flag: 'sparkwright.delight.kettle' } }] }, node: 'wake' }, { node: 'tweet' }],
+    nodes: {
+      tweet: { speaker: 'npc:kettle-twenty', text: '(Kettle Twenty walks a small circle on three copper legs, settles at your feet, and lets out one contented puff of steam.)', next: null },
+      wake: { speaker: 'npc:kettle-twenty', text: '(Kettle Twenty trots up on three copper legs, stops beside your ear, and whistles, very loudly. It was told to wake you. Nobody has told it to stop.)', effects: [{ setFlag: 'sparkwright.delight.kettle', value: true }], next: null },
+    },
   },
   // ---------- Volta (general)
   {

@@ -30,6 +30,16 @@ function beat(id: string, name: string, when: NarrativeCondition, text: string, 
   };
 }
 
+/** first-hour delight: a one-time second look at an object scene, checked just before its plain line */
+function again(d: DialogueDef, when: NarrativeCondition, flag: string, text: string): DialogueDef {
+  const last = d.entries.length - 1;
+  return {
+    ...d,
+    entries: [...d.entries.slice(0, last), { when: { all: [when, { not: { flag } }] }, node: 'again' }, d.entries[last]],
+    nodes: { ...d.nodes, again: { speaker: 'narrator', text, effects: [{ setFlag: flag, value: true }], next: null } },
+  };
+}
+
 const dialogues: DialogueDef[] = [
   // ======================= I-1 The Horn at Midnight: the head count, Dagny’s quarters
   ...[
@@ -37,7 +47,9 @@ const dialogues: DialogueDef[] = [
     'Behind the stables, a recruit is stuck to the waist in a drift, in his nightshirt, holding his shield over his head. He has been holding the line since the wolves came. The line was somewhere else.',
     'On the Rampart steps a Warden in her nightshirt stands quite still, looking north at the Breach. “Listen,” she says. “The patch. It creaks every night, like a ship. Tonight it’s quiet. Tonight it’s listening.”',
   ].map((text, i): DialogueDef => beat(`warden-missing-warden-${i + 1}`, `I-1 a missing Warden (${i + 1})`, stage('quest:warden-the-horn-at-midnight', 'heads'),
-    text, i === 2 ? 'warden.patch_quiet' : `warden.head_${i + 1}`, 'Footprints in the snow, going back to bed.')),
+    text, i === 2 ? 'warden.patch_quiet' : `warden.head_${i + 1}`, 'Footprints in the snow, going back to bed.'))
+    .map((d, i) => i > 0 ? d : again(d, { all: [{ questCompleted: 'quest:warden-the-horn-at-midnight' }, { flag: 'warden.head_1' }] }, 'warden.delight.horn_loft',
+      'Up in the horn-loft, the Warden of fifty is asleep again, the horn in his arms. He opens one eye. “Is it breakfast yet?” It is not. He closes it again, satisfied that somebody is keeping track.')),
   {
     id: 'dialogue:warden-dagny-quarters', name: 'I-1 Dagny’s quarters, after the wolves', scope: 'party',
     entries: [{ node: 'in' }],

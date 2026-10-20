@@ -92,7 +92,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:bard-encore', name: 'Encore',
     entries: [{ node: 'snuff' }],
-    nodes: { snuff: { speaker: 'npc:encore', text: '(Encore smells your shoes with great seriousness, then sneezes, exactly on the beat.)', next: null } },
+    nodes: { snuff: { speaker: 'npc:encore', text: '(Encore smells your shoes with great seriousness, then sneezes, exactly on the beat.)', effects: [{ setFlag: 'bard.delight.encore-met', value: true }], next: null } },
   },
   // ---------- the Opera Quarter: Tobble, Fothergill, the Spragg brothers
   {

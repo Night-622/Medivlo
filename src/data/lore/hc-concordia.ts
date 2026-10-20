@@ -56,7 +56,7 @@ const entries: LoreEntry[] = [
     body: 'Each school kept an embassy in Concordia and a Sentinel: a great guardian that escorted the crown along the Turning Road to the next school. When the crown was emptied the Sentinels were the first things the tears touched.\n\nThey are hollowed now, and each guards its school’s old embassy: Ashmaw, the Rimeheart Colossus, the Stormcrow, Abbess Morwen, the Spinner Below, the Weeping Willow, Bonelord Varric, the Gilded Engine, the Ooze Sovereign, the White Stag and the Lantern Queen. Morwen serves two schools, Radiance and Song.\n\nA bearer who would stand at the Citadel’s door must carry their school’s Sentinel mark.',
   },
   {
-    id: 'lore:hc-weeping-wall', name: 'The Weeping Wall', category: 'places', source: 'seen from the Abbey shore',
+    id: 'lore:hc-weeping-wall', name: 'The Weeping Wall', category: 'places', source: 'seen from Abbeyshore',
     body: 'A curtain of black tears round the Heart of Morvane, falling forever and never reaching the ground. It parts only when the Turning Bell rings for a true Turning. It has parted.',
   },
   {

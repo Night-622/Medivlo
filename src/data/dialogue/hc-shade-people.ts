@@ -20,8 +20,9 @@ const dialogues: DialogueDef[] = [
   // ---------- Mab (general + mentor thread)
   {
     id: 'dialogue:shade-mab', name: 'Grey Mab (general)',
-    entries: [{ node: 'start' }],
+    entries: [{ when: { all: [{ questActive: 'quest:shade-mabs-toll' }, { not: { flag: 'shade.delight.toll' } }] }, node: 'toll' }, { node: 'start' }],
     nodes: {
+      toll: { speaker: GM, text: '(Without looking up.) Is that silk? (She looks up.) That isn’t silk. Then what are you doing in my nest, petal? The Deeps are down. (She points at the floor.) Keep going till it’s damp.', effects: [{ setFlag: 'shade.delight.toll', value: true }], next: null },
       start: {
         speaker: GM, text: 'What. (She does not look up from whatever she is unpicking.) If it’s money, no. If it’s advice, also no, but I’ll give it you anyway.',
         choices: [

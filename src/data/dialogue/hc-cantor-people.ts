@@ -20,8 +20,12 @@ const dialogues: DialogueDef[] = [
   // ---------- Celestine (general + mentor thread)
   {
     id: 'dialogue:cantor-celestine', name: 'Celestine (general)',
-    entries: [{ node: 'start' }],
+    entries: [
+      { when: { all: [stage('quest:cantor-the-sleepers-census', 'novices'), { not: { flag: 'cantor.delight.counting' } }] }, node: 'counting' },
+      { node: 'start' },
+    ],
     nodes: {
+      counting: { speaker: CH, text: 'Back already? You cannot have found all six. Unless you have fallen asleep and are dreaming this, in which case: wake up. They are counting.', effects: [{ setFlag: 'cantor.delight.counting', value: true }], next: null },
       start: {
         speaker: CH, text: 'Sit, if you can do it without nodding off. I’m told it’s contagious.',
         choices: [
@@ -141,8 +145,13 @@ const dialogues: DialogueDef[] = [
   // ---------- Cathedral Close: Bellamy (the Word for It, bounties), Prue
   {
     id: 'dialogue:cantor-bellamy', name: 'Sergeant Bellamy (the Word for It, bounties)',
-    entries: [{ when: stage('quest:cantor-the-word-for-it', 'bellamy'), node: 'word' }, { node: 'start' }],
+    entries: [
+      { when: stage('quest:cantor-the-word-for-it', 'bellamy'), node: 'word' },
+      { when: { all: [done('quest:cantor-the-hour-of-no-night'), { not: { flag: 'cantor.delight.mark' } }] }, node: 'mark' },
+      { node: 'start' },
+    ],
     nodes: {
+      mark: { speaker: OB, text: 'I went looking for this Novice Mark, for the fine-book. Found him in the choir. (He sighs.) He does sing flat. I hadn’t the heart to fine him for it. It isn’t illegal. It ought to be.', effects: [{ setFlag: 'cantor.delight.mark', value: true }], next: 'start' },
       start: {
         speaker: OB, text: 'Morning. It’s always morning. Fines on the left, bounties on the right, confessions to the Inquisitor.',
         choices: [

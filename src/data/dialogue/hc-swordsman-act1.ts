@@ -50,8 +50,9 @@ const dialogues: DialogueDef[] = [
   // ---------- I-2 Strike Them Off (five old challenges)
   {
     id: 'dialogue:obj-ladder-challenge-1', name: 'I-2 challenge one',
-    entries: [{ when: CH, node: 'now' }, { node: 'after' }],
+    entries: [{ when: CH, node: 'now' }, { when: { all: [{ questCompleted: STRIKE }, { not: { flag: 'swordsman.delight.goose' } }] }, node: 'goose2' }, { node: 'after' }],
     nodes: {
+      goose2: { speaker: 'narrator', text: 'A smudge where the goose challenge used to be. Under it, in fresh chalk and two different hands: “The goose was MINE.” “It was NOT.” And under that, smaller, in the first hand: “Drink on Thursday?”', effects: [{ setFlag: 'swordsman.delight.goose', value: true }], next: null },
       now: {
         speaker: 'narrator', text: 'Rung 1,880 challenges rung 1,879, “for the matter of the goose”. Both duellists are here, both seventy, neither can remember the goose.',
         choices: [{ text: 'Ask them if anyone still minds about the goose.', to: 'goose' }, { text: 'Referee it: one touch, and done.', to: 'touch', school: 'blade' }],

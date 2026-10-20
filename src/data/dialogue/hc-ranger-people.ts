@@ -24,8 +24,9 @@ const dialogues: DialogueDef[] = [
   // ---------- Holt (general + mentor thread)
   {
     id: 'dialogue:ranger-holt', name: 'Holt (general)',
-    entries: [{ node: 'start' }],
+    entries: [{ when: { all: [stage('quest:ranger-walk-the-ways', 'blazes'), { not: { flag: 'ranger.delight.blazes' } }] }, node: 'blazes' }, { node: 'start' }],
     nodes: {
+      blazes: { speaker: HB, text: 'Hm. (He looks at your knife, at you, at the forest.) Back already. Paths still wrong? Course they are. (You turn to go.) A beetle, a boar and a Circle w… no. Blazes first. It keeps.', effects: [{ setFlag: 'ranger.delight.blazes', value: true }], next: null },
       start: {
         speaker: HB, text: 'Hm.',
         choices: [

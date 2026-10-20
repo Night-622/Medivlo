@@ -24,8 +24,9 @@ const dialogues: DialogueDef[] = [
   // ---------- Ferro (general + mentor thread)
   {
     id: 'dialogue:swordsman-ferro', name: 'Ferro (general)',
-    entries: [{ node: 'start' }],
+    entries: [{ when: { all: [stage('quest:swordsman-strike-them-off', 'challenges'), { not: { flag: 'swordsman.delight.salle' } }] }, node: 'salle' }, { node: 'start' }],
     nodes: {
+      salle: { speaker: LF, text: 'Five challenges on the Ladder board, and you are standing in my salle. I have looked. The Ladder board is not in my salle. (You turn to go.) Hm. That turn was better. Go.', effects: [{ setFlag: 'swordsman.delight.salle', value: true }], next: null },
       start: {
         speaker: LF, text: 'Feet. Show me your feet. Hm. Better. Not good. Better.',
         choices: [

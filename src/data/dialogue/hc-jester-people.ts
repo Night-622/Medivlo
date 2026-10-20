@@ -170,7 +170,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:jester-gull', name: 'Gull Number Nine',
     entries: [{ when: { flag: 'jester.gull_saved' }, node: 'free' }, { node: 'cell' }],
     nodes: {
-      cell: { speaker: 'npc:gull-number-nine', text: '(The gull, in a very small cell, fixes you with one yellow eye and says something that sounds extremely like “innocent”.)', next: null },
+      cell: { speaker: 'npc:gull-number-nine', text: '(The gull, in a very small cell, fixes you with one yellow eye and says something that sounds extremely like “innocent”.)', effects: [{ setFlag: 'jester.delight.gull-met', value: true }], next: null },
       free: { speaker: 'npc:gull-number-nine', text: '(Gull Number Nine is following you. It is looking at your pockets. It has always been looking at your pockets. It is not sorry.)', next: null },
     },
   },

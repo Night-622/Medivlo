@@ -27,8 +27,9 @@ const dialogues: DialogueDef[] = [
   // ---------- Kanemori (general + mentor thread)
   {
     id: 'dialogue:samurai-kanemori', name: 'Kanemori (general)',
-    entries: [{ node: 'start' }],
+    entries: [{ when: { all: [stage('quest:samurai-tea-before-steel', 'tea'), { not: { flag: 'samurai.delight.tray' } }] }, node: 'tray' }, { node: 'start' }],
     nodes: {
+      tray: { speaker: 'narrator', text: 'Kanemori looks at the tray in your hands, and at the cups still on it. He looks down at the five yards on the Terraces, and back at the tray. One eyebrow rises, by about the width of a pine needle. You go.', effects: [{ setFlag: 'samurai.delight.tray', value: true }], next: null },
       start: {
         speaker: 'narrator', text: 'Sensei Kanemori looks up from his tea, and waits.',
         choices: [

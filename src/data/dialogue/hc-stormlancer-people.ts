@@ -112,8 +112,11 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:stormlancer-old-biddy', name: 'Old Biddy',
-    entries: [{ node: 'start' }],
-    nodes: { start: { speaker: 'npc:old-biddy', text: '(Old Biddy looks at you, decides you are not worth throwing today, and goes back to eating a glove.)', next: null } },
+    entries: [{ when: { all: [{ questCompleted: 'quest:stormlancer-the-bell-in-the-chimes' }, { not: { flag: 'stormlancer.delight.curtain' } }] }, node: 'curtain' }, { node: 'start' }],
+    nodes: {
+      start: { speaker: 'npc:old-biddy', text: '(Old Biddy looks at you, decides you are not worth throwing today, and goes back to eating a glove.)', next: null },
+      curtain: { speaker: 'npc:old-biddy', text: '(Old Biddy has a long strip of Odran’s curtain hanging out of the side of her mouth. She chews it slowly, looking you dead in the eye, daring you to tell him.)', effects: [{ setFlag: 'stormlancer.delight.curtain', value: true }], next: null },
+    },
   },
   {
     id: 'dialogue:stormlancer-cass', name: 'Cass (general)',

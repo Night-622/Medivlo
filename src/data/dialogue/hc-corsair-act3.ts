@@ -139,6 +139,21 @@ const dialogues: DialogueDef[] = [
       later: { speaker: NB, text: '(The ghost touches the brim of his hat to you.)', next: null },
     },
   },
+  // ---------- First-hour delights (Claude 5): one-time lines when the player does something optional (Act I, kept here because act1 is near 400 lines)
+  {
+    id: 'dialogue:corsair-delight-barrel', name: 'Delight: Dot behind her barrel',
+    entries: [{ node: 'barrel' }],
+    nodes: {
+      barrel: { speaker: DB, text: '(She is crouched behind a barrel on her own deck.) Is it a creditor? Oh. It’s you. (She stays behind the barrel.) Sweetheart, the creditors are out there. Go and renegotiate. Take a barrel. Not this one. This one’s mine.', effects: [{ setFlag: 'corsair.delight.barrel', value: true }], next: null },
+    },
+  },
+  {
+    id: 'dialogue:corsair-delight-interest', name: 'Delight: Interest compounds',
+    entries: [{ node: 'again' }],
+    nodes: {
+      again: { speaker: 'npc:interest', text: '(Interest looks you up and down, and remembers you. “PAY UP,” it says, and then, with terrible satisfaction: “COMPOUNDED.”)', effects: [{ setFlag: 'corsair.delight.interest-again', value: true }], next: null },
+    },
+  },
 ];
 
 export default dialogues;

@@ -25,8 +25,9 @@ const dialogues: DialogueDef[] = [
   // ---------- Mother Yarrow (general + mentor thread)
   {
     id: 'dialogue:hedgewitch-yarrow', name: 'Yarrow (general)',
-    entries: [{ node: 'start' }],
+    entries: [{ when: { all: [{ questActive: 'quest:hedgewitch-pruning-day' }, { not: { flag: 'hedgewitch.delight.shears' } }] }, node: 'shears' }, { node: 'start' }],
     nodes: {
+      shears: { speaker: YA, text: '(She looks at her second-best shears in your hand.) You’re holding them like a bread knife, dear. Thumb here. (She moves it.) There. The tree says thank you. (It didn’t. She can tell anyway.)', effects: [{ setFlag: 'hedgewitch.delight.shears', value: true }], next: null },
       start: {
         speaker: YA, text: 'Hello, dear. I was just telling the tree about you. Nothing bad. Mostly nothing bad.',
         choices: [
@@ -167,7 +168,11 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:hedgewitch-tibbs', name: 'Tibbs, who is a cat',
-    entries: [{ when: stage('quest:hedgewitch-too-many-cats', 'tibbs'), node: 'stubborn' }, { node: 'purr' }],
+    entries: [
+      { when: stage('quest:hedgewitch-too-many-cats', 'tibbs'), node: 'stubborn' },
+      { when: { all: [{ flag: 'hedgewitch.delight.tibbs-met' }, { not: { flag: 'hedgewitch.delight.tibbs-again' } }] }, node: 'blink' },
+      { node: 'purr' },
+    ],
     nodes: {
       stubborn: {
         speaker: 'npc:tibbs', text: '(A Bloomkin the size of a loaf, round and red as a rose-hip, sitting in a knot-hole with its paws tucked in. It looks at you. It says, with enormous dignity:) Mrow.',
@@ -179,7 +184,8 @@ const dialogues: DialogueDef[] = [
       },
       no: { speaker: 'npc:tibbs', mood: 'angry', text: 'MROW. (It turns its back on you, which is the most cat-like thing it has done yet.)', next: null },
       yes: { speaker: 'npc:tibbs', mood: 'happy', text: '(It hops down, winds once round your ankles, and trots off towards Prudence’s, tail-stalk high.)', next: null },
-      purr: { speaker: 'npc:tibbs', text: '(It is sitting in a patch of sun, purring. It cannot purr. It is doing it anyway.)', next: null },
+      purr: { speaker: 'npc:tibbs', text: '(It is sitting in a patch of sun, purring. It cannot purr. It is doing it anyway.)', effects: [{ setFlag: 'hedgewitch.delight.tibbs-met', value: true }], next: null },
+      blink: { speaker: 'npc:tibbs', mood: 'happy', text: '(It opens one eye and gives you the slow blink a cat gives a person it has decided to put up with. A petal falls off. It pretends that was on purpose.)', effects: [{ setFlag: 'hedgewitch.delight.tibbs-again', value: true }], next: null },
     },
   },
   ...objs('lantern-cat', 'quest:hedgewitch-too-many-cats', 'cats', [

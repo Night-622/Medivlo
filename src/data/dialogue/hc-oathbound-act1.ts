@@ -73,8 +73,13 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:obj-haybright-villager-1', name: 'I-2 a villager and his shadow',
-    entries: [{ when: { questStage: 'quest:oathbound-no-village-alone', stage: 'shadows' }, node: 'pym' }, { node: 'calm' }],
+    entries: [
+      { when: { questStage: 'quest:oathbound-no-village-alone', stage: 'shadows' }, node: 'pym' },
+      { when: { all: [{ questCompleted: 'quest:oathbound-no-village-alone' }, { not: { flag: 'oathbound.delight.pym' } }] }, node: 'manners' },
+      { node: 'calm' },
+    ],
     nodes: {
+      manners: { speaker: 'narrator', text: 'Old Pym has stopped being frightened of his shadow and started teaching it manners. Just now he is showing it how to bow. It is picking it up rather faster than he did.', effects: [{ setFlag: 'oathbound.delight.pym', value: true }], next: null },
       pym: {
         speaker: 'narrator', text: 'Old Pym is standing quite still in the middle of the street, looking at the long dark shape stretched out behind him. “It’s following me,” he whispers. “Wherever I go.”',
         choices: [

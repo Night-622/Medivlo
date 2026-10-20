@@ -20,8 +20,9 @@ const dialogues: DialogueDef[] = [
   // ---------- Nyx (general + mentor thread)
   {
     id: 'dialogue:duskweaver-nyx', name: 'Nyx (general)',
-    entries: [{ when: KNOWS, node: 'start_t' }, { node: 'start' }],
+    entries: [{ when: { all: [{ questActive: 'quest:duskweaver-chalk-the-doors' }, { not: { flag: 'duskweaver.delight.chalk' } }] }, node: 'chalk' }, { when: KNOWS, node: 'start_t' }, { node: 'start' }],
     nodes: {
+      chalk: { speaker: NX, mood: 'happy', text: '(She peers at the chalk dust on your fingers.) Chalk! I gave you that. I remember giving you that! (She is enormously pleased with herself.) Off you go, dear. The doors won’t name themselves. Well. At this rate they might.', effects: [{ setFlag: 'duskweaver.delight.chalk', value: true }], next: null },
       start: {
         speaker: NX, text: 'Imogen! Or Sebastian. One of the two, I’m nearly sure. Come in, dear, mind the cat, there isn’t a cat, I keep thinking there’s a cat.',
         choices: [
@@ -205,9 +206,14 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:duskweaver-horace', name: 'Horace Fairweather',
-    entries: [{ when: stage('quest:duskweaver-courtesy-calls', 'horace'), node: 'how' }, { node: 'start' }],
+    entries: [
+      { when: stage('quest:duskweaver-courtesy-calls', 'horace'), node: 'how' },
+      { when: { all: [{ flag: 'duskweaver.delight.horace-met' }, { not: { flag: 'duskweaver.delight.horace-again' } }] }, node: 'again' },
+      { node: 'start' },
+    ],
     nodes: {
-      start: { speaker: 'npc:horace-fairweather', text: 'Have you met my wife? Charming woman. I meet her every morning. Every morning I can’t believe my luck.', next: null },
+      start: { speaker: 'npc:horace-fairweather', text: 'Have you met my wife? Charming woman. I meet her every morning. Every morning I can’t believe my luck.', effects: [{ setFlag: 'duskweaver.delight.horace-met', value: true }], next: null },
+      again: { speaker: 'npc:horace-fairweather', mood: 'happy', text: 'Have you met my wife? (He peers at you.) You have, haven’t you. You’ve got the look. Everybody who’s met her has the look. (He beams.) I get it every morning.', effects: [{ setFlag: 'duskweaver.delight.horace-again', value: true }], next: null },
       how: {
         speaker: 'npc:horace-fairweather', text: 'How we met? (He brightens.) Rain. Pouring. I had my sister’s blue umbrella and a girl in a yellow coat was standing under a lamp-post getting soaked, so I gave it her and walked home wet. My sister never forgave me. (Quietly.) Is this for a card? She’s forgetting me, you know. She doesn’t know I know.',
         choices: [

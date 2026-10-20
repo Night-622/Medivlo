@@ -16,11 +16,16 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:obj-village-ring-corner', name: 'I-1 turning for the corner', scope: 'party',
-    entries: [{ when: stage('quest:brawler-the-bell-in-round-three', 'bout'), node: 'turn' }, { node: 'plain' }],
+    entries: [
+      { when: stage('quest:brawler-the-bell-in-round-three', 'bout'), node: 'turn' },
+      { when: { all: [{ questCompleted: 'quest:brawler-the-bell-in-round-three' }, { not: { flag: 'brawler.delight.chalk' } }] }, node: 'chalk' },
+      { node: 'plain' },
+    ],
     nodes: {
       turn: { speaker: 'narrator', text: 'You are halfway to your corner when Big Corran’s right hand arrives, a little late and extremely sincere. The lanterns swing. The canvas comes up to meet you, the way it always does, like an old friend who has had a drink.', next: 'down' },
       down: { speaker: 'narrator', text: 'Lying there, you notice two things. One is that something in your chest is singing, loud and stubborn, like it wants you to get up. The other is a small old man kneeling over you, fanning you with a noodle menu.', next: null },
       plain: { speaker: 'narrator', text: 'Your corner of the village ring. A stool, a bucket, and a noodle menu someone has left on the post.', next: null },
+      chalk: { speaker: 'narrator', text: 'Your corner of the village ring. Somebody has chalked a small cross on the canvas where you went down, and beside it, in very careful capitals: BIG CORRAN WAS HERE. Underneath, smaller: SORRY.', effects: [{ setFlag: 'brawler.delight.chalk', value: true }], next: null },
     },
   },
   {
@@ -301,6 +306,14 @@ const dialogues: DialogueDef[] = [
       king: { speaker: 'narrator', text: 'The King looks down at you. I do not fight pit-rats, he says, and closes his eyes.', next: 'pops' },
       pops: { speaker: TK, mood: 'angry', text: '(From the back of the crowd, very loud.) DORAN KELL! LOWFOLD CHAMPIONSHIP, C. 1009! WHO PUT YOU ON THE CANVAS IN THE FOURTH? WHO WAS IT, DORAN?', next: 'up' },
       up: { speaker: 'narrator', text: 'The Mountain King’s eyes open. He looks over your head at a small old man beside a noodle cart. Then he stands, and the landing cracks under him, and he lifts his frozen fists. Knuckletown cheers. Get knocked down. Get up. Keep getting up.', next: null },
+    },
+  },
+  // ---------- First-hour delights (Claude 5): one-time lines when the player does something optional
+  {
+    id: 'dialogue:brawler-delight-bowls', name: 'Delight: Pops and the undelivered bowls',
+    entries: [{ node: 'bowls' }],
+    nodes: {
+      bowls: { speaker: TK, text: '(He looks at the bowls still in your arms.) Those are deliveries, kid, not a packed lunch. Sweat Lane. Go on. And if you eat one on the way, I’ll know. Number nine leaves a smell.', effects: [{ setFlag: 'brawler.delight.bowls', value: true }], next: null },
     },
   },
 ];

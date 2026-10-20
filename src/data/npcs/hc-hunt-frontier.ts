@@ -25,6 +25,7 @@ const npcs: NpcDef[] = [
       { when: at('quest:falconer-the-first-hood', 'burn'), dialogue: 'dialogue:falconer-wren-hood' },
       { when: at('quest:falconer-pibbs-eyes', 'wren'), dialogue: 'dialogue:falconer-wren-eyes' },
       { when: at('quest:falconer-pibb-wont-come-down', 'wren'), dialogue: 'dialogue:falconer-wren-pibb-back' },
+      { when: { all: [at('quest:falconer-the-falling-birds', 'count'), { not: { flag: 'falconer.delight.count' } }] }, dialogue: 'dialogue:falconer-delight-count' },
       { dialogue: 'dialogue:falconer-wren' },
     ],
     barks: [{ lines: ['I can see you. Well. Pibb can see you, and he isn’t impressed.', 'Never hood a bird that’s only frightened. Frightened is how they stay alive.', 'Sit down. You’re blocking my kestrel.'] }],
@@ -38,6 +39,7 @@ const npcs: NpcDef[] = [
     schedule: [{ from: 0, to: 24, at: 'landmark:mews-chapel-roof', activity: 'idle', when: at('quest:falconer-pibb-wont-come-down', 'coax') }],
     dialogue: [
       { when: at('quest:falconer-pibb-wont-come-down', 'coax'), dialogue: 'dialogue:falconer-pibb-roof' },
+      { when: { all: [{ flag: 'falconer.delight.pibb-met' }, { not: { flag: 'falconer.delight.pibb-again' } }] }, dialogue: 'dialogue:falconer-delight-pibb' },
       { dialogue: 'dialogue:falconer-pibb' },
     ],
     barks: [{ lines: ['(Pibb looks at you, then at Wren, then back at you, and reports.)', '(A small, offended kek.)', '(He fluffs up to twice his size and refuses to explain.)'] }],

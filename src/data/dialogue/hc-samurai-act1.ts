@@ -62,8 +62,9 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:obj-hushpine-dojo-4', name: 'I-2 the fourth dojo yard',
-    entries: [{ when: { questStage: 'quest:samurai-tea-before-steel', stage: 'tea' }, node: 'now' }, { node: 'after' }],
+    entries: [{ when: { questStage: 'quest:samurai-tea-before-steel', stage: 'tea' }, node: 'now' }, { when: { all: [{ questCompleted: 'quest:samurai-tea-before-steel' }, { not: { flag: 'samurai.delight.cat' } }] }, node: 'cat' }, { node: 'after' }],
     nodes: {
+      cat: { speaker: 'narrator', text: 'The cat is still asleep on the instructor’s mat. It opens one eye. You have brought no tea this time. It closes the eye again, slowly, the way Kanemori closes a door.', effects: [{ setFlag: 'samurai.delight.cat', value: true }], next: null },
       now: { speaker: 'narrator', text: 'The fourth yard is empty but for a cat asleep on the instructor’s mat. It opens one eye, considers your tea, and closes the eye again. It too has taken a vow of silence, apparently.', next: null },
       after: { speaker: 'narrator', text: 'An empty dojo yard, and a cat.', next: null },
     },

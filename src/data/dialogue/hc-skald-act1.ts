@@ -359,6 +359,21 @@ const dialogues: DialogueDef[] = [
       end: { speaker: RG, text: 'Go on, then. Before I forget you are going. That is a joke. Mostly.', next: null },
     },
   },
+  // ---------- First-hour delights (Claude 5): one-time lines when the player does something optional
+  {
+    id: 'dialogue:skald-delight-twice', name: 'Delight: Ragna says it twice',
+    entries: [{ node: 'twice' }],
+    nodes: {
+      twice: { speaker: RG, text: 'Back already? Did you drum it twice? The Fells only believe what they hear twice. (She frowns.) Did I tell you that already? Good. Then that’s twice, and now you’ll believe it. Off you go.', effects: [{ setFlag: 'skald.delight.twice', value: true }], next: null },
+    },
+  },
+  {
+    id: 'dialogue:skald-delight-bluebell', name: 'Delight: Bluebell gives the E',
+    entries: [{ node: 'e' }],
+    nodes: {
+      e: { speaker: 'npc:bluebell', text: '(Baa. A perfect A. Last time you never gave her the E. This time she does not wait: she bleats the E herself, pointedly, and turns her back on you.)', effects: [{ setFlag: 'skald.delight.bluebell-e', value: true }], next: null },
+    },
+  },
 ];
 
 export default dialogues;

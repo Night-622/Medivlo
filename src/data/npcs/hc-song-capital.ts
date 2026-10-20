@@ -30,6 +30,7 @@ const npcs: NpcDef[] = [
       { when: at('quest:bard-curtain-call', 'farewell'), dialogue: 'dialogue:bard-rosalind-farewell' },
       { when: at('quest:bard-resting-the-voice', 'rosalind'), dialogue: 'dialogue:bard-rosalind-resting' },
       { when: at('quest:bard-the-understudy', 'rosalind'), dialogue: 'dialogue:bard-rosalind-understudy' },
+      { when: { all: [at('quest:bard-the-five-bars', 'bars'), { not: { flag: 'bard.delight.humming' } }] }, dialogue: 'dialogue:bard-delight-humming' },
       { dialogue: 'dialogue:bard-rosalind' },
     ],
     barks: [{ lines: ['Darling. Darling. Stand up straight, the gods can see you.', 'I am resting the voice. I have been resting it for seven years. It is very well rested.', 'Encore, no. That is a wig. Put it down.'] }],
@@ -40,7 +41,10 @@ const npcs: NpcDef[] = [
   {
     id: 'npc:encore', name: 'Encore', title: 'a pug of discerning ear', school: 'song', origin: 'song',
     region: Z1, home: 'landmark:rosalind-dressing-room', presentWhen: { all: [BARD, { not: { flag: 'bard.encore_pet' } }] },
-    dialogue: [{ dialogue: 'dialogue:bard-encore' }],
+    dialogue: [
+      { when: { all: [{ flag: 'bard.delight.encore-met' }, { not: { flag: 'bard.delight.encore-approved' } }] }, dialogue: 'dialogue:bard-delight-encore' },
+      { dialogue: 'dialogue:bard-encore' },
+    ],
     barks: [{ lines: ['(Encore sneezes, on the beat.)', '(He howls along to a note only he can hear. It is a B flat.)', '(Encore is wearing a ruff. He does not seem to mind.)'] }],
     roles: ['ambient'],
     look: { skin: 0xc8a070, cloth: 0xf0a0ff, build: 'short' },

@@ -347,6 +347,21 @@ const dialogues: DialogueDef[] = [
       end: { speaker: WR, text: 'Go on. Cut the jesses. That’s what we say, when a falconer leaves the Mews. It means go and fly. It doesn’t mean don’t come back.', next: null },
     },
   },
+  // ---------- First-hour delights (Claude 5): one-time lines when the player does something optional
+  {
+    id: 'dialogue:falconer-delight-count', name: 'Delight: Wren and the unfinished count',
+    entries: [{ node: 'count' }],
+    nodes: {
+      count: { speaker: WR, text: 'Back already? Pibb says you haven’t finished counting. (Pibb says nothing at all, very smugly.) He counts faster than you. He counts faster than everybody, and he is unbearable about it. Go on. Three tors.', effects: [{ setFlag: 'falconer.delight.count', value: true }], next: null },
+    },
+  },
+  {
+    id: 'dialogue:falconer-delight-pibb', name: 'Delight: Pibb reports again',
+    entries: [{ node: 'again' }],
+    nodes: {
+      again: { speaker: 'npc:pibb', text: '(Pibb looks at you with one eye. He has seen this one before. He does not trouble the other eye, and turns his head almost all the way round to report to Wren: only you again.)', effects: [{ setFlag: 'falconer.delight.pibb-again', value: true }], next: null },
+    },
+  },
 ];
 
 export default dialogues;

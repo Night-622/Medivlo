@@ -126,8 +126,13 @@ const dialogues: DialogueDef[] = [
   // ---------- Oathkeep: Hamish, Wystan, Mallard (bounties), Sterling
   {
     id: 'dialogue:oathbound-hamish', name: 'Squire Hamish (the Squire Who Swears Too Much)',
-    entries: [{ when: stage('quest:oathbound-the-squire-who-swears-too-much', 'hamish'), node: 'kept' }, { node: 'start' }],
+    entries: [
+      { when: stage('quest:oathbound-the-squire-who-swears-too-much', 'hamish'), node: 'kept' },
+      { when: { all: [done('quest:oathbound-the-vigil'), { not: { flag: 'oathbound.delight.sworn' } }] }, node: 'sworn' },
+      { node: 'start' },
+    ],
     nodes: {
+      sworn: { speaker: 'npc:hamish-goodbody', mood: 'happy', text: 'You’re sworn! I heard the swords from the yard. I swear that was the finest vigil I ever… oh no. (He counts on his fingers.) Two hundred and thirteen. Again. I think that one was already on the list.', effects: [{ setFlag: 'oathbound.delight.sworn', value: true }], next: null },
       start: {
         speaker: 'npc:hamish-goodbody', text: 'I swear I’ll be with you in a moment. Oh no. That’s two hundred and thirteen.',
         choices: [

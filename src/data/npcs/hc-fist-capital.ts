@@ -30,6 +30,7 @@ const npcs: NpcDef[] = [
       { when: at('quest:monk-the-long-descent', 'farewell'), dialogue: 'dialogue:monk-shirin-farewell' },
       { when: at('quest:monk-stones-with-the-abbess', 'shirin'), dialogue: 'dialogue:monk-shirin-stones' },
       { when: at('quest:monk-the-thirtieth-move', 'shirin'), dialogue: 'dialogue:monk-shirin-thirtieth' },
+      { when: { all: [at('quest:monk-tea-on-every-landing', 'cups'), { not: { flag: 'monk.delight.urn' } }] }, dialogue: 'dialogue:monk-delight-urn' },
       { dialogue: 'dialogue:monk-shirin' },
     ],
     barks: [{ lines: ['Stand still until you know which way to move.', 'Tea? I cheated a pilgrim out of it.', 'Mind the step. You know the one.'] }],
@@ -62,7 +63,10 @@ const npcs: NpcDef[] = [
   {
     id: 'npc:gelek-amble', name: 'Night-Porter Gelek Amble', title: 'of the Thousand Stairs', school: 'fist', origin: 'fist', trust: 1,
     region: Z1, home: 'landmark:landing-600-tea-stall', presentWhen: MK,
-    dialogue: [{ dialogue: 'dialogue:monk-gelek' }],
+    dialogue: [
+      { when: { all: [{ questCompleted: 'quest:monk-the-bell-on-the-stair' }, { not: { flag: 'monk.delight.gelek' } }] }, dialogue: 'dialogue:monk-delight-gelek' },
+      { dialogue: 'dialogue:monk-gelek' },
+    ],
     barks: [{ lines: ['Bounties on the post. Do not play stones with the Abbess.', 'Six hundred stairs up, four hundred to go. Every night.'] }],
     roles: ['quest'],
     look: { skin: 0xb07a5a, hair: 0x3a2a20, cloth: 0x6a4a2a, accent: 0xd9a066, build: 'short' },

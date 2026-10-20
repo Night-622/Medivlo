@@ -165,6 +165,21 @@ const dialogues: DialogueDef[] = [
       plain: { speaker: 'narrator', text: 'The top of the Twelve Stairs, looking across at the Citadel. Somewhere below, every so often, a crumhorn plays one note.', next: null },
     },
   },
+  // ---------- First-hour delights (Claude 5): one-time lines when the player does something optional (Act I, kept here because act1 is at 400 lines)
+  {
+    id: 'dialogue:bard-delight-humming', name: 'Delight: Rosalind hears the gaps',
+    entries: [{ node: 'humming' }],
+    nodes: {
+      humming: { speaker: RV, text: 'Darling. You are humming. Do not stop. (She listens with her eyes shut.) Not all five bars. I can hear the gaps from here. An overture is not a buffet, darling. Out you go, and bring me the rest.', effects: [{ setFlag: 'bard.delight.humming', value: true }], next: null },
+    },
+  },
+  {
+    id: 'dialogue:bard-delight-encore', name: 'Delight: Encore approves',
+    entries: [{ node: 'again' }],
+    nodes: {
+      again: { speaker: 'npc:encore', text: '(Encore smells your shoes again, briefly, the way a critic rereads a review he has already written. No sneeze. You have been approved.)', effects: [{ setFlag: 'bard.delight.encore-approved', value: true }], next: null },
+    },
+  },
 ];
 
 export default dialogues;

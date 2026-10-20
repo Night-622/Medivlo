@@ -59,8 +59,9 @@ const dialogues: DialogueDef[] = [
   // ---------- I-2 Forty Gates
   {
     id: 'dialogue:obj-anvilgate-toll-gate-1', name: 'I-2 the first toll-gate',
-    entries: [{ when: stage('quest:knight-forty-gates', 'tolls'), node: 'toll' }, { node: 'plain' }],
+    entries: [{ when: stage('quest:knight-forty-gates', 'tolls'), node: 'toll' }, { when: { all: [{ questCompleted: 'quest:knight-forty-gates' }, { not: { flag: 'knight.delight.toll' } }] }, node: 'habit' }, { node: 'plain' }],
     nodes: {
+      habit: { speaker: 'narrator', text: 'The first of forty gates. You have nowhere to be on the far side of it. The box rattles hopefully, and you find, to your own surprise, that you have put a penny in it. Anvilgate does that to people.', effects: [{ setFlag: 'knight.delight.toll', value: true }], next: null },
       toll: { speaker: 'narrator', text: 'A toll-box on a chain, and a painted board: Persons, one penny. Persons with Shields, two pennies. Persons with Shields on Order Business, two pennies and a form. You pay two pennies and hope nobody asks about the form.', next: null },
       plain: { speaker: 'narrator', text: 'The first of forty gates. The box rattles hopefully.', next: null },
     },

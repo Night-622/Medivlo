@@ -86,7 +86,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:huntsman-biscuit', name: 'Biscuit',
     entries: [{ node: 'lean' }],
-    nodes: { lean: { speaker: 'npc:biscuit', text: '(Biscuit leans her whole weight against your legs, which is a good deal of weight, and looks up at you as if you might know where the herd went.)', next: null } },
+    nodes: { lean: { speaker: 'npc:biscuit', text: '(Biscuit leans her whole weight against your legs, which is a good deal of weight, and looks up at you as if you might know where the herd went.)', effects: [{ setFlag: 'huntsman.delight.biscuit-met', value: true }], next: null } },
   },
   {
     id: 'dialogue:huntsman-biscuit-hare', name: 'Mentor: Biscuit catches something', scope: 'party',
@@ -151,6 +151,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       start: {
         speaker: 'npc:grandfer-lumm', text: 'Did I ever tell you about the boar? In my hat? A boar, in my hat, and I had the hat on at the time.',
+        effects: [{ setFlag: 'huntsman.delight.lumm-told', value: true }],
         choices: [
           offer('quest:huntsman-grandfer-lumms-hat', 'Every feast, Grandfer. The Lodge wants proof.', 'proof'),
           { text: 'How big was the herd, when you were young?', to: 'herd' },

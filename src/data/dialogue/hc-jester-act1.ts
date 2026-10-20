@@ -345,6 +345,21 @@ const dialogues: DialogueDef[] = [
       end: { speaker: FE, text: 'Go on, then. Exit, pursued by a fool. That’s me, by the way. I’ll be pursuing you in spirit. My knees won’t manage the rest.', next: null },
     },
   },
+  // ---------- First-hour delights (Claude 5): one-time lines when the player does something optional
+  {
+    id: 'dialogue:jester-delight-ticket', name: 'Delight: Fennick smells the ticket',
+    entries: [{ node: 'ticket' }],
+    nodes: {
+      ticket: { speaker: FE, text: '(He sniffs, and his eyes water.) You still have my ticket. I can tell from here. Eleven years in a shoe, child, and it has opinions. Tuttle’s Pawn. Go, before it learns to walk there on its own.', effects: [{ setFlag: 'jester.delight.ticket', value: true }], next: null },
+    },
+  },
+  {
+    id: 'dialogue:jester-delight-gull', name: 'Delight: the gull, more innocent',
+    entries: [{ node: 'again' }],
+    nodes: {
+      again: { speaker: 'npc:gull-number-nine', text: '(Gull Number Nine is still in its very small cell. Since your last visit it has arranged its feathers to look more innocent. It is not working, and it knows it is not working.)', effects: [{ setFlag: 'jester.delight.gull-again', value: true }], next: null },
+    },
+  },
 ];
 
 export default dialogues;

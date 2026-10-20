@@ -25,6 +25,7 @@ const npcs: NpcDef[] = [
       { when: at('quest:corsair-dots-reckoning', 'dot'), dialogue: 'dialogue:corsair-dot-farewell' },
       { when: at('quest:corsair-quills-price', 'dot'), dialogue: 'dialogue:corsair-dot-quill' },
       { when: at('quest:corsair-the-first-article', 'dot'), dialogue: 'dialogue:corsair-dot-article' },
+      { when: { all: [at('quest:corsair-dots-creditors', 'creditors'), { not: { flag: 'corsair.delight.barrel' } }] }, dialogue: 'dialogue:corsair-delight-barrel' },
       { dialogue: 'dialogue:corsair-dot' },
     ],
     barks: [{ lines: ['If anybody asks, I’m not here, and you’ve never heard of me, and the Overdraft is a fishing boat.', 'Owe? I don’t owe. I’m between payments.', 'A free captain chooses her targets. That’s the whole of it.'] }],
@@ -35,7 +36,10 @@ const npcs: NpcDef[] = [
   {
     id: 'npc:interest', name: 'Interest', title: 'Dot Brine’s parrot', school: 'guile', origin: 'guile', trust: 1,
     region: Z1, home: 'landmark:the-overdraft', presentWhen: { all: [CS, { not: { flag: 'corsair.interest_pet' } }] },
-    dialogue: [{ dialogue: 'dialogue:corsair-interest' }],
+    dialogue: [
+      { when: { all: [{ flag: 'corsair.delight.interest-met' }, { not: { flag: 'corsair.delight.interest-again' } }] }, dialogue: 'dialogue:corsair-delight-interest' },
+      { dialogue: 'dialogue:corsair-interest' },
+    ],
     barks: [{ lines: ['(Interest says “Pay up!” and then, louder, “PAY UP!”)', '(The parrot compounds.)', '(Interest bites a button off your coat and keeps it.)'] }],
     roles: ['ambient'],
     look: { skin: 0x3aa84a, cloth: 0xd83a2a, accent: 0xffd36a, build: 'short' },

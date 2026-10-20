@@ -49,10 +49,15 @@ const dialogues: DialogueDef[] = [
   // ---------- I-2 Tea on Every Landing
   {
     id: 'dialogue:obj-landing-cup-1', name: 'I-2 the first landing',
-    entries: [{ when: stage('quest:monk-tea-on-every-landing', 'cups'), node: 'pour' }, { node: 'plain' }],
+    entries: [
+      { when: stage('quest:monk-tea-on-every-landing', 'cups'), node: 'pour' },
+      { when: { all: [{ questCompleted: 'quest:monk-tea-on-every-landing' }, { not: { flag: 'monk.delight.sparrow' } }] }, node: 'sparrow' },
+      { node: 'plain' },
+    ],
     nodes: {
       pour: { speaker: 'narrator', text: 'You pour a cup and leave it on the landing’s tea stall, steaming. The stall is shuttered. Chalked on the shutter: GONE UP TO THE KING. BACK WHEN HE IS. The tea goes cold without anyone drinking it.', next: null },
       plain: { speaker: 'narrator', text: 'A shuttered tea stall, and a cold cup of tea on its counter.', next: null },
+      sparrow: { speaker: 'narrator', text: 'The cup is still on the counter, under GONE UP TO THE KING. A mountain sparrow is perched on its rim, drinking, with the air of a customer who has waited a very long time to be served.', effects: [{ setFlag: 'monk.delight.sparrow', value: true }], next: null },
     },
   },
   {
@@ -293,6 +298,21 @@ const dialogues: DialogueDef[] = [
       weeps: { speaker: 'narrator', text: 'Before you reach the last stair, the Mountain King looks up and sees you, and knows you, and knows what you said in the Bell Courts. The black ice in his beard creaks. He is weeping before you have taken a step.', next: 'king' },
       king: { speaker: 'narrator', text: 'Master Doran Kell sits on the last stair before the Stair Gate, huge, grey, his beard frozen into a black crown of icicles. He has sat there since the night of the Bell. Behind him, Kestrel is a grey shape at the gate, waiting.', next: 'stand' },
       stand: { speaker: 'narrator', text: 'The King stands. The stair cracks under him. He does not ask who you are. He lifts his fists and the mountain comes with them, and you understand that you cannot out-hit him. You will have to out-still him.', next: null },
+    },
+  },
+  // ---------- First-hour delights (Claude 5): one-time lines when the player does something optional
+  {
+    id: 'dialogue:monk-delight-urn', name: 'Delight: the Abbess and the full urn',
+    entries: [{ node: 'urn' }],
+    nodes: {
+      urn: { speaker: ST, text: '(She looks at the urn. She looks at you. She looks at the urn again.) Little one, I can hear it sloshing from here. Tea does not go up a mountain by being admired. Every landing. Mind the step.', effects: [{ setFlag: 'monk.delight.urn', value: true }], next: null },
+    },
+  },
+  {
+    id: 'dialogue:monk-delight-gelek', name: 'Delight: Gelek counts the stones',
+    entries: [{ node: 'count' }],
+    nodes: {
+      count: { speaker: 'npc:gelek-amble', text: '(The night porter has the stones board out on the counter and is counting the stones back into their box, out loud.) …thirty-nine, forty. Forty. She always starts with forty. (He tips them out and counts again.) Fifty-two. You were there. Tell me you saw her do it.', effects: [{ setFlag: 'monk.delight.gelek', value: true }], next: null },
     },
   },
 ];

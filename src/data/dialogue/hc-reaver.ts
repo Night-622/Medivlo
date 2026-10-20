@@ -233,8 +233,12 @@ const dialogues: DialogueDef[] = [
   // ---------- Brenna (general) and the mentor thread
   {
     id: 'dialogue:reaver-brenna', name: 'Brenna (general)',
-    entries: [{ node: 'start' }],
+    entries: [
+      { when: { all: [stage('quest:reaver-count-the-fallen', 'field'), { not: { flag: 'reaver.delight.gorse' } }] }, node: 'gorse' },
+      { node: 'start' },
+    ],
     nodes: {
+      gorse: { speaker: BR, text: 'Back already, pup? (She hands you a heel of bread without looking up.) Gorse Ironside grunted about you this morning. Twice. From Gorse, that’s a speech.', effects: [{ setFlag: 'reaver.delight.gorse', value: true }], next: 'start' },
       start: {
         speaker: BR, text: 'Eat. War’s no excuse for an empty belly.',
         choices: [
@@ -286,8 +290,13 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:reaver-cookie', name: 'Cookie Mallow (the Cook’s Last Ox)',
-    entries: [{ when: stage('quest:reaver-the-cooks-last-ox', 'cook'), node: 'soup' }, { node: 'start' }],
+    entries: [
+      { when: stage('quest:reaver-the-cooks-last-ox', 'cook'), node: 'soup' },
+      { when: { all: [{ questCompleted: 'quest:reaver-the-bell-on-the-fields' }, { flag: 'reaver.wounded_3' }, { not: { flag: 'reaver.delight.broth' } }] }, node: 'broth' },
+      { node: 'start' },
+    ],
     nodes: {
+      broth: { speaker: 'npc:cookie-mallow', text: 'You. You were by the wounded last night, looking at my broth like it might bite. (She ladles you a bowl anyway.) It doesn’t bite. It’s the only thing on the Fields that doesn’t.', effects: [{ setFlag: 'reaver.delight.broth', value: true }], next: 'start' },
       start: {
         speaker: 'npc:cookie-mallow', text: 'Last ox. Last one. Then it’s boots. And there’s talk of a raid on the truce villages for grain, which there’ll be no coming back from.',
         choices: [offer('quest:reaver-the-cooks-last-ox', 'I’ll find food that isn’t stolen.', 'caps'), bye],

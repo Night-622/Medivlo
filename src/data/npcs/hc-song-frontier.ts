@@ -30,6 +30,7 @@ const npcs: NpcDef[] = [
       { when: at('quest:skald-ragnas-last-saga', 'farewell'), dialogue: 'dialogue:skald-ragna-farewell' },
       { when: at('quest:skald-the-saga-of-nobody-much', 'ragna'), dialogue: 'dialogue:skald-ragna-nobody' },
       { when: at('quest:skald-the-first-saga-she-lost', 'ragna'), dialogue: 'dialogue:skald-ragna-first-saga' },
+      { when: { all: [at('quest:skald-the-drum-relay', 'drums'), { not: { flag: 'skald.delight.twice' } }] }, dialogue: 'dialogue:skald-delight-twice' },
       { dialogue: 'dialogue:skald-ragna' },
     ],
     barks: [{ lines: ['Nine hundred sagas. Eight hundred and… well. A good many.', 'Sit. I’ll tell you one. Which one did I just say?', 'Drum it twice, little one. The Fells only believe things they hear twice.'] }],
@@ -69,7 +70,10 @@ const npcs: NpcDef[] = [
   {
     id: 'npc:bluebell', name: 'Bluebell', title: 'a ewe, in tune', school: 'song', origin: 'song',
     region: Z1, home: 'landmark:sigrun-fold', presentWhen: SK,
-    dialogue: [{ dialogue: 'dialogue:skald-bluebell' }],
+    dialogue: [
+      { when: { all: [{ flag: 'skald.delight.bluebell-met' }, { not: { flag: 'skald.delight.bluebell-e' } }] }, dialogue: 'dialogue:skald-delight-bluebell' },
+      { dialogue: 'dialogue:skald-bluebell' },
+    ],
     barks: [{ lines: ['(Baa. A perfect A.)', '(Bluebell bleats a fifth above the drum, and looks pleased with herself.)'] }],
     roles: ['ambient'],
     look: { skin: 0xf0ece4, cloth: 0x9a9a9a, build: 'short' },

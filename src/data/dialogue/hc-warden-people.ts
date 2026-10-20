@@ -18,8 +18,12 @@ const dialogues: DialogueDef[] = [
   // ---------- Dagny (general + mentor thread)
   {
     id: 'dialogue:warden-dagny', name: 'Dagny (general)',
-    entries: [{ node: 'start' }],
+    entries: [
+      { when: { all: [stage('quest:warden-the-watch-fires', 'fires'), { not: { flag: 'warden.delight.trousers' } }] }, node: 'trousers' },
+      { node: 'start' },
+    ],
     nodes: {
+      trousers: { speaker: DO, text: 'WHAT? Oh, it’s you. You’re wearing trousers. Good. That’s already an improvement on last night. (She points along the Rampart.) Fires. That way. Speak UP when you find out.', effects: [{ setFlag: 'warden.delight.trousers', value: true }], next: null },
       start: {
         speaker: DO, text: 'WHAT? Oh, it’s you. Speak up. Shield’s crooked. Go on.',
         choices: [

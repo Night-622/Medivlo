@@ -29,6 +29,16 @@ function clue(id: string, name: string, when: NarrativeCondition, text: string, 
   };
 }
 
+/** first-hour delight: a one-time second look at an object scene, checked just before its plain line */
+function again(d: DialogueDef, when: NarrativeCondition, flag: string, text: string): DialogueDef {
+  const last = d.entries.length - 1;
+  return {
+    ...d,
+    entries: [...d.entries.slice(0, last), { when: { all: [when, { not: { flag } }] }, node: 'again' }, d.entries[last]],
+    nodes: { ...d.nodes, again: { speaker: 'narrator', text, effects: [{ setFlag: flag, value: true }], next: null } },
+  };
+}
+
 const dialogues: DialogueDef[] = [
   // ======================= I-1 Every Workshop at Once: the head count, tea with Tess
   {
@@ -39,9 +49,11 @@ const dialogues: DialogueDef[] = [
   clue('sparkwright-blast-site-1', 'I-1 the Ohms’ workshop', stage('quest:sparkwright-every-workshop-at-once', 'street'),
     'The Ohms’ workshop has no roof. Mr Ohm is sitting in the middle of it in his nightshirt, delighted, taking notes. Mrs Ohm’s hat is on the weathervane, and the weathervane is pointing north.', 'sparkwright.blast_1',
     'The Ohms’ workshop, with a tarpaulin where the roof was.'),
-  clue('sparkwright-blast-site-2', 'I-1 the varnish shop', stage('quest:sparkwright-every-workshop-at-once', 'street'),
+  again(clue('sparkwright-blast-site-2', 'I-1 the varnish shop', stage('quest:sparkwright-every-workshop-at-once', 'street'),
     'The varnish shop. Everything in the street outside is now very shiny, including the varnisher, who is stuck to his own doorstep and asking politely for a chisel. The scorch on his wall points north.', 'sparkwright.blast_2',
     'The varnish shop, gleaming.'),
+    { all: [{ questCompleted: 'quest:sparkwright-every-workshop-at-once' }, { flag: 'sparkwright.blast_2' }] }, 'sparkwright.delight.varnisher',
+    'The varnish shop. The varnisher is still stuck to his own doorstep, but somebody has brought him a cushion, a cup of tea and, at last, a chisel. He waves the chisel at you, cheerfully. He has not yet decided to use it.'),
   clue('sparkwright-blast-site-3', 'I-1 the bellows-mender’s', stage('quest:sparkwright-every-workshop-at-once', 'street'),
     'The bellows-mender’s, blown clean through. Nobody hurt. But every scorch on Coil Street is a long black finger on the cobbles, and every finger points the same way: north, to the storm over the Copper Gate.', 'sparkwright.scorch_north',
     'The bellows-mender’s, with daylight showing through both walls.', 'As if the whole street had been pulled towards it at once, and then let go.'),

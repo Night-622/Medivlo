@@ -31,7 +31,10 @@ const npcs: NpcDef[] = [
       { when: at('quest:ranger-the-old-rot', 'holt'), dialogue: 'dialogue:ranger-holt-old-rot' },
       { dialogue: 'dialogue:ranger-holt' },
     ],
-    barks: [{ lines: ['Hm.', 'A beetle, a boar and a Circle witch… later.', 'Paths moved again. Course they did.'] }],
+    barks: [
+      { when: { questStage: 'quest:ranger-walk-the-ways', stage: 'blazes' }, lines: ['Five blazes. Not four. Not six. Five.', 'Cut them so a child could follow. A tired child.', 'A beetle, a boar… after the blazes.'] },
+      { lines: ['Hm.', 'A beetle, a boar and a Circle witch… later.', 'Paths moved again. Course they did.'] },
+    ],
     roles: ['quest', 'trainer'], essential: true,
     look: { skin: 0xb88a6a, hair: 0x8a8a7a, cloth: 0x3a4a2a, accent: 0x8a6a3a, build: 'tall' },
     bio: 'Warden-of-Ways of the Wayfarers, laconic, weathered, smelling of pine. He has walked every path in the Thornwilds, and has been trying to finish one joke for the whole of the hero’s life. Something always interrupts him.',

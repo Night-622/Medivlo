@@ -27,8 +27,9 @@ const dialogues: DialogueDef[] = [
   // ======================= I-1 The Bell on the Bridges: the note on the bunk
   {
     id: 'dialogue:obj-shade-bunk-note', name: 'I-1 the note on your bunk', scope: 'party',
-    entries: [{ when: stage('quest:shade-the-bell-on-the-bridges', 'bunk'), node: 'bunk' }, { node: 'plain' }],
+    entries: [{ when: stage('quest:shade-the-bell-on-the-bridges', 'bunk'), node: 'bunk' }, { when: { all: [{ questCompleted: 'quest:shade-the-bell-on-the-bridges' }, { not: { flag: 'shade.delight.bunk' } }] }, node: 'dent' }, { node: 'plain' }],
     nodes: {
+      dent: { speaker: 'narrator', text: 'Your bunk in the Veil hall. You lie down on it, just to check. The lantern throws the shadow of the blanket, the pillow and one boot, and not a scrap of you. Still, you leave a very good dent. Mab would call that a witness.', effects: [{ setFlag: 'shade.delight.bunk', value: true }], next: null },
       bunk: { speaker: 'narrator', text: 'Your bunk in the Veil hall: the blanket folded the way you never fold it, the pillow plumped. On the pillow, a scrap of ledger-paper, and on the paper, in your own handwriting, a note.', next: 'note' },
       note: {
         speaker: 'narrator', text: '“Sorry. Back soon. Don’t wait up. — Me.” Under it, drawn very quickly, a little figure with no shadow, waving.',

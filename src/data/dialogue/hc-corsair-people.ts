@@ -98,7 +98,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:corsair-interest', name: 'Interest',
     entries: [{ node: 'pay' }],
-    nodes: { pay: { speaker: 'npc:interest', text: '(The parrot looks you up and down and says “PAY UP.” A moment later, louder: “PAY UP! PAY UP WITH INTEREST!”)', next: null } },
+    nodes: { pay: { speaker: 'npc:interest', text: '(The parrot looks you up and down and says “PAY UP.” A moment later, louder: “PAY UP! PAY UP WITH INTEREST!”)', effects: [{ setFlag: 'corsair.delight.interest-met', value: true }], next: null } },
   },
   {
     id: 'dialogue:corsair-saltmarsh', name: 'Saltmarsh (general)',

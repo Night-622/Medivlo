@@ -27,6 +27,16 @@ function beat(id: string, name: string, when: NarrativeCondition, text: string, 
   };
 }
 
+/** first-hour delight: a one-time second look at an object scene, checked just before its plain line */
+function again(d: DialogueDef, when: NarrativeCondition, flag: string, text: string): DialogueDef {
+  const last = d.entries.length - 1;
+  return {
+    ...d,
+    entries: [...d.entries.slice(0, last), { when: { all: [when, { not: { flag } }] }, node: 'again' }, d.entries[last]],
+    nodes: { ...d.nodes, again: { speaker: 'narrator', text, effects: [{ setFlag: flag, value: true }], next: null } },
+  };
+}
+
 const dialogues: DialogueDef[] = [
   // ======================= I-1 The Bell in the Chimes: the strays, the steading
   {
@@ -34,9 +44,11 @@ const dialogues: DialogueDef[] = [
     entries: [{ when: stage('quest:stormlancer-the-bell-in-the-chimes', 'strays'), node: 'b' }],
     nodes: { b: { speaker: 'narrator', text: 'Every chime on the Heights is still ringing the same note, very softly, like a crowd humming a song none of them knows the words to.', next: null } },
   },
-  beat('stormlancer-stray-ram-1', 'I-1 a stray ram (1)', stage('quest:stormlancer-the-bell-in-the-chimes', 'strays'),
+  again(beat('stormlancer-stray-ram-1', 'I-1 a stray ram (1)', stage('quest:stormlancer-the-bell-in-the-chimes', 'strays'),
     'A young ram wedged head-first in a hedge, back legs going like a drummer. You haul him out by the tail. He looks at you with deep offence and trots home on his own.',
     'stormlancer.stray_1', 'A ram-shaped hole in a hedge.'),
+    { all: [{ questCompleted: 'quest:stormlancer-the-bell-in-the-chimes' }, { flag: 'stormlancer.stray_1' }] }, 'stormlancer.delight.hedge',
+    'The ram-shaped hole in the hedge has a ram in it again: the same young ram, wedged in from the other side this time. He looks at you as if this is somehow your fault. You haul him out by the tail, and he trots off, deeply offended.'),
   beat('stormlancer-stray-ram-2', 'I-1 a stray ram (2)', stage('quest:stormlancer-the-bell-in-the-chimes', 'strays'),
     'An old ewe standing in Gwenna Fold’s washing, wearing a nightshirt over one horn. She has decided this is home now. It takes some time, and an apple, to change her mind.',
     'stormlancer.stray_2', 'A washing line, considerably shorter than it was.'),

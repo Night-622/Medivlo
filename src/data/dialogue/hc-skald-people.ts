@@ -130,7 +130,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:skald-bluebell', name: 'Bluebell',
     entries: [{ node: 'baa' }],
-    nodes: { baa: { speaker: 'npc:bluebell', text: '(Baa. A perfect A. She waits to see if you will give her an E.)', next: null } },
+    nodes: { baa: { speaker: 'npc:bluebell', text: '(Baa. A perfect A. She waits to see if you will give her an E.)', effects: [{ setFlag: 'skald.delight.bluebell-met', value: true }], next: null } },
   },
   {
     id: 'dialogue:skald-eskil', name: 'Eskil Ottarsson (News from Two Valleys Over)',

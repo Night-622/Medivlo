@@ -16,8 +16,14 @@ const dialogues: DialogueDef[] = [
   // ---------- Gideon (general + mentor thread + the replica crown)
   {
     id: 'dialogue:knight-gideon', name: 'Gideon (general)',
-    entries: [{ node: 'start' }],
+    entries: [{ when: { all: [{ questActive: 'quest:knight-forty-gates' }, { not: { flag: 'knight.delight.breakfast' } }] }, node: 'breakfast' }, { node: 'start' }],
     nodes: {
+      breakfast: {
+        speaker: GM, text: '(He looks up from the paint pot.) The Chapterhouse is that way. Forty gates that way. (A pause.) Did you eat the breakfast?', effects: [{ setFlag: 'knight.delight.breakfast', value: true }],
+        choices: [{ text: 'Yes, ser.', to: 'ate' }, { text: '(Say nothing.)', to: 'bread' }],
+      },
+      ate: { speaker: GM, text: '(He nods, as if a great matter of state has been settled.) Good. Hold the line.', next: null },
+      bread: { speaker: GM, text: '(He takes a heel of bread off the shelf, puts it in your hand without a word, and points at the door.)', next: null },
       start: {
         speaker: GM, text: 'Squire. Sit, if you want. Do not touch the pot of paint, if you want to keep your fingers.',
         choices: [

@@ -21,6 +21,7 @@ const dialogues: DialogueDef[] = [
     entries: [
       { when: stage('quest:rimecaller-the-first-tick', 'tick'), node: 'blink' },
       { when: { flag: 'rimecaller.halfstone' }, node: 'awake' },
+      { when: { all: [{ questCompleted: 'quest:rimecaller-the-first-tick' }, { not: { flag: 'rimecaller.delight.lamplighter' } }] }, node: 'watch' },
       { node: 'still' },
     ],
     nodes: {
@@ -28,6 +29,7 @@ const dialogues: DialogueDef[] = [
       halla: { speaker: HV, mood: 'happy', text: '(Behind you, in a dressing-gown and an extraordinary hat.) He’s never done that before.', next: null },
       awake: { speaker: 'narrator', text: 'The lamplighter is lighting lamps along the Stair at a furious pace, muttering that he is thirty years behind and nobody told him.', next: null },
       still: { speaker: 'narrator', text: 'The lamplighter, pole raised, mid-blink. He looks as if he has just remembered something.', next: null },
+      watch: { speaker: 'narrator', text: 'Halla said to note the time if he blinked again. You watch him for a long, cold minute. He does not blink. You note the time anyway, to be thorough: eleven fifty-two. It is always eleven fifty-two.', effects: [{ setFlag: 'rimecaller.delight.lamplighter', value: true }], next: null },
     },
   },
   {

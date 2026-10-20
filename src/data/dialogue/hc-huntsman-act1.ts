@@ -351,6 +351,21 @@ const dialogues: DialogueDef[] = [
       end: { speaker: BN, text: 'Go on, then. I’ll put you down in the tally. I’ve never written down a hunter before. Only what they hunted.', next: null },
     },
   },
+  // ---------- First-hour delights (Claude 5): one-time lines when the player does something optional
+  {
+    id: 'dialogue:huntsman-delight-biscuit', name: 'Delight: Biscuit remembers you',
+    entries: [{ node: 'boots' }],
+    nodes: {
+      boots: { speaker: 'npc:biscuit', text: '(Biscuit knows you now. She sighs through her nose, folds up all four legs at once and lies down across both your boots, so that you cannot possibly leave. From a deerhound, there is no higher honour.)', effects: [{ setFlag: 'huntsman.delight.biscuit-boots', value: true }], next: null },
+    },
+  },
+  {
+    id: 'dialogue:huntsman-delight-lumm', name: 'Delight: the boar grows',
+    entries: [{ node: 'bigger' }],
+    nodes: {
+      bigger: { speaker: 'npc:grandfer-lumm', text: '(He squints at you.) Did I ever tell you about the boar? In my hat? I did? Then I told it wrong. It was bigger. (He holds his hands apart. They are a good deal further apart than last time.)', effects: [{ setFlag: 'huntsman.delight.lumm-bigger', value: true }], next: null },
+    },
+  },
 ];
 
 export default dialogues;

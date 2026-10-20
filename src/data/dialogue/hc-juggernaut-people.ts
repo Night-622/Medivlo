@@ -35,8 +35,9 @@ const dialogues: DialogueDef[] = [
   // ---------- Gussie (general + mentor thread) and Sergeant
   {
     id: 'dialogue:juggernaut-gussie', name: 'Gussie (general)',
-    entries: [{ node: 'start' }],
+    entries: [{ when: { all: [stage('quest:juggernaut-stopped-golems', 'golems'), { not: { flag: 'juggernaut.delight.kick' } }] }, node: 'kick' }, { node: 'start' }],
     nodes: {
+      kick: { speaker: GH, text: 'WHAT? Oh, it’s you. (She looks at your boot, then up at you, which takes a while.) The golems are on the main line. This is my whistle-house. I have never once needed kicking. Go on. Kick them nicely.', effects: [{ setFlag: 'juggernaut.delight.kick', value: true }], next: null },
       start: {
         speaker: GH, text: 'WHAT? Oh, it’s you. Sorry. Whistle-ears. Everybody in this town shouts. It’s not personal. It’s the whistles.',
         choices: [
@@ -64,8 +65,11 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:juggernaut-sergeant', name: 'Sergeant',
-    entries: [{ node: 'chirp' }],
-    nodes: { chirp: { speaker: 'npc:sergeant', text: '(Sergeant the canary eyes you from his cage, puffs up to twice his size, and sings one furious bar at the floor.)', next: null } },
+    entries: [{ when: { all: [{ questCompleted: 'quest:juggernaut-the-bell-in-the-rock' }, { not: { flag: 'juggernaut.delight.sergeant' } }] }, node: 'chest' }, { node: 'chirp' }],
+    nodes: {
+      chirp: { speaker: 'npc:sergeant', text: '(Sergeant the canary eyes you from his cage, puffs up to twice his size, and sings one furious bar at the floor.)', next: null },
+      chest: { speaker: 'npc:sergeant', text: '(Sergeant eyes you. He does not puff up. He hops to the side of his cage nearest you and sings one small, puzzled bar at your chest instead of the floor. Then he goes back to glaring at the floor, as if it never happened.)', effects: [{ setFlag: 'juggernaut.delight.sergeant', value: true }], next: null },
+    },
   },
   {
     id: 'dialogue:obj-haldt-lamp', name: 'Mentor: Haldt’s lamp', scope: 'party',

@@ -48,6 +48,7 @@ const npcs: NpcDef[] = [
     schedule: [{ from: 0, to: 24, at: 'landmark:great-lodge-hall', activity: 'idle', when: { questActive: 'quest:huntsman-biscuits-hunt' } }],
     dialogue: [
       { when: at('quest:huntsman-biscuits-hunt', 'biscuit'), dialogue: 'dialogue:huntsman-biscuit-hare' },
+      { when: { all: [{ flag: 'huntsman.delight.biscuit-met' }, { not: { flag: 'huntsman.delight.biscuit-boots' } }] }, dialogue: 'dialogue:huntsman-delight-biscuit' },
       { dialogue: 'dialogue:huntsman-biscuit' },
     ],
     barks: [{ lines: ['(Biscuit leans her whole weight against your legs.)', '(She sniffs your boots, thoroughly, for news.)', '(Her tail goes once, slowly, like a door in the wind.)'] }],
@@ -86,6 +87,7 @@ const npcs: NpcDef[] = [
     region: Z1, home: 'landmark:great-lodge-hall', presentWhen: HS,
     dialogue: [
       { when: at('quest:huntsman-grandfer-lumms-hat', 'lumm'), dialogue: 'dialogue:huntsman-lumm-verdict' },
+      { when: { all: [{ flag: 'huntsman.delight.lumm-told' }, { not: { flag: 'huntsman.delight.lumm-bigger' } }] }, dialogue: 'dialogue:huntsman-delight-lumm' },
       { dialogue: 'dialogue:huntsman-lumm' },
     ],
     barks: [{ lines: ['In my hat. A boar. Ask anyone. Ask anyone who was there, which was me.', 'When I was a lad the herd took three days to cross the Elkway.', 'Bigger than this. No, bigger.'] }],

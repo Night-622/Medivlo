@@ -20,8 +20,9 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:obj-dusk-shadow-jar-1', name: 'I-1 a bottled shadow',
-    entries: [{ when: { questStage: 'quest:duskweaver-the-bell-at-dusk', stage: 'jars' }, node: 'weave' }, { node: 'jar' }],
+    entries: [{ when: { questStage: 'quest:duskweaver-the-bell-at-dusk', stage: 'jars' }, node: 'weave' }, { when: { all: [{ questCompleted: 'quest:duskweaver-the-bell-at-dusk' }, { not: { flag: 'duskweaver.delight.jar' } }] }, node: 'wave' }, { node: 'jar' }],
     nodes: {
+      wave: { speaker: 'narrator', text: 'The grandmother in the green bottle is facing her kitchen, as she should. As you pass she turns for a moment and lifts the shape of a hand to you, the way grandmothers wave from windows. Then back to her kitchen.', effects: [{ setFlag: 'duskweaver.delight.jar', value: true }], next: null },
       weave: { speaker: 'narrator', text: 'A shadow in a green bottle on a sill: somebody’s grandmother, by the shape of the shawl, pressed flat against the glass towards the Obelisk. You draw a thread of dusk round the bottle the way you were taught, gently, and she turns back to face her own kitchen.', next: null },
       jar: { speaker: 'narrator', text: 'A bottled shadow on a windowsill, facing the room, the way a shadow should.', next: null },
     },

@@ -26,6 +26,7 @@ const npcs: NpcDef[] = [
       { when: at('quest:brawler-the-towel', 'noodles'), dialogue: 'dialogue:brawler-pops-towel' },
       { when: at('quest:brawler-the-last-herb', 'pops'), dialogue: 'dialogue:brawler-pops-herb' },
       { when: at('quest:brawler-names-on-the-wall', 'pops'), dialogue: 'dialogue:brawler-pops-names' },
+      { when: { all: [at('quest:brawler-noodles-and-debts', 'round'), { not: { flag: 'brawler.delight.bowls' } }] }, dialogue: 'dialogue:brawler-delight-bowls' },
       { dialogue: 'dialogue:brawler-pops' },
     ],
     barks: [{ lines: ['Hands up. Chin down. Get up every time.', 'Number nine’s the beef. Don’t ask about eleven.', 'Getting up. That’s the whole sport.'] }],

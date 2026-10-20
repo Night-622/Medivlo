@@ -62,8 +62,13 @@ const dialogues: DialogueDef[] = [
   },
   {
     id: 'dialogue:obj-sleeping-novice-6', name: 'I-2 the last sleeping novice', scope: 'party',
-    entries: [{ when: { questStage: 'quest:cantor-the-sleepers-census', stage: 'novices' }, node: 'dream' }, { node: 'empty' }],
+    entries: [
+      { when: { questStage: 'quest:cantor-the-sleepers-census', stage: 'novices' }, node: 'dream' },
+      { when: { all: [{ questCompleted: 'quest:cantor-the-sleepers-census' }, { not: { flag: 'cantor.delight.window_seat' } }] }, node: 'again' },
+      { node: 'empty' },
+    ],
     nodes: {
+      again: { speaker: 'narrator', text: 'The window seat. The smallest novice is back in it, asleep again, sitting up, smiling a very small smile. You decide that you haven’t seen him, and go past on tiptoe.', effects: [{ setFlag: 'cantor.delight.window_seat', value: true }], next: null },
       dream: { speaker: 'narrator', text: 'The smallest novice of all, asleep sitting up in a window seat. When you wake him he grabs your sleeve. “I was dreaming about the dark,” he whispers. “It was soft. Is that wicked?”', next: null },
       empty: { speaker: 'narrator', text: 'An empty window seat, warm in the sun. Everything in Dawnspire is warm in the sun.', next: null },
     },
