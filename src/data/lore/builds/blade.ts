@@ -9,7 +9,7 @@ export const PERKS: Record<string, BuildText> = {
   // ---------- Swordsman (Edgewater)
   pk_swordsman_quick_guard: { flavour: 'Maestra Ferro’s first lesson is the guard. Her second is the guard. Her third, if you are lucky, is lunch.' },
   pk_swordsman_counter_rhythm: { flavour: 'Every parry is a question. The Salles of Edgewater teach that the answer should come quickly, and smart.' },
-  pk_swordsman_perfect_parry: { flavour: 'Named for the Grand Salle’s automaton, which has never been touched, and has never been invited anywhere.' },
+  pk_swordsman_perfect_parry: { name: 'Untouched', flavour: 'Named for the Grand Salle’s automaton, which has never been touched, and has never been invited anywhere.' },
   pk_swordsman_open_guard: { flavour: 'Leave a gap in your guard and see who walks through it. On the Duelling Bridges, most of them land in the river.' },
   pk_swordsman_long_lunge: { flavour: 'Ferro learned the lunge from her grandmother, who sold eels, and never once let one get away.' },
   pk_swordsman_footwork: { flavour: 'In Edgewater they say a duel is won by the feet and signed by the sword. The feet never get the credit.' },

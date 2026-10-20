@@ -18,6 +18,7 @@ import * as guile from './builds/guile';
 import * as song from './builds/song';
 import * as shared from './builds/shared';
 import * as uniques from './builds/uniques';
+import * as schoolSpells from './builds/school-spells';
 
 /** a perk, keystone, mastery, rune or item: an optional new name and one in-world line */
 export interface BuildText { name?: string; flavour: string }
@@ -31,7 +32,8 @@ export interface AffixText { label: string }
 const SCHOOLS = [ash, rime, storm, radiance, umbral, verdant, blade, iron, fist, hunt, guile, song];
 
 export const PERK_TEXT: Record<string, BuildText> = Object.assign({}, ...SCHOOLS.map((s) => s.PERKS));
-export const SPELL_TEXT: Record<string, SpellText> = Object.assign({}, ...SCHOOLS.map((s) => s.SPELLS));
+/** the 72 kit spells (per school file) and the 36 tome-taught school spells */
+export const SPELL_TEXT: Record<string, SpellText> = Object.assign({}, ...SCHOOLS.map((s) => s.SPELLS), schoolSpells.SPELLS);
 export const KEYSTONE_TEXT: Record<string, BuildText> = shared.KEYSTONES;
 /** key `${classId}:${weapon}` */
 export const MASTERY_TEXT: Record<string, BuildText> = shared.MASTERY;
@@ -40,3 +42,5 @@ export const RUNE_TEXT: Record<string, BuildText> = shared.RUNES;
 /** materials (rune dust, essences) and tomes */
 export const ITEM_TEXT: Record<string, BuildText> = shared.ITEMS;
 export const UNIQUE_TEXT: Record<string, UniqueText> = uniques.UNIQUES;
+/** curated hybrid set bonuses, key `${schools[0]}+${schools[1]}` as HC_HYBRIDS lists them */
+export const HYBRID_TEXT: Record<string, BuildText> = shared.HYBRIDS;

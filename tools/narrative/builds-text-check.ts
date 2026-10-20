@@ -8,10 +8,12 @@ import { HC_SCHOOL_PERKS } from '@/data/skilltrees/hc/index';
 import { HC_SHARED_KEYSTONES } from '@/data/skilltrees/hc/keystones';
 import { HC_MASTERY } from '@/data/skilltrees/hc/mastery';
 import { HC_KIT_SPELLS_NEW } from '@/data/spells/hc/kit-spells-new';
+import { HC_SCHOOL_SPELL_DEFS } from '@/data/spells/hc/school-spells';
 import { HC_AFFIXES } from '@/data/items/hc/affixes';
 import { HC_BUILD_ITEMS, HC_RUNES } from '@/data/items/hc/build-items';
 import { HC_UNIQUES } from '@/data/items/hc/uniques';
-import { AFFIX_TEXT, ITEM_TEXT, KEYSTONE_TEXT, MASTERY_TEXT, PERK_TEXT, RUNE_TEXT, SPELL_TEXT, UNIQUE_TEXT } from '@/data/lore/hc-builds-text';
+import { HC_HYBRIDS } from '@/data/items/hc/hybrid-sets';
+import { AFFIX_TEXT, ITEM_TEXT, KEYSTONE_TEXT, MASTERY_TEXT, PERK_TEXT, RUNE_TEXT, SPELL_TEXT, UNIQUE_TEXT, HYBRID_TEXT } from '@/data/lore/hc-builds-text';
 
 const SCHOOL = process.env.SCHOOL;
 let bad = 0;
@@ -40,7 +42,7 @@ function table(name: string, ids: string[], text: Record<string, { name?: string
 const schools = HC_SCHOOL_PERKS.filter((s) => !SCHOOL || s.school === SCHOOL);
 const perks = schools.flatMap((s) => [...s.classes.flatMap((c) => c.signature), ...s.perks]);
 const classIds = new Set(schools.flatMap((s) => s.classes.map((c) => c.classId)));
-const spells = HC_KIT_SPELLS_NEW.filter((sp) => !SCHOOL || sp.school === SCHOOL);
+const spells = [...HC_KIT_SPELLS_NEW, ...HC_SCHOOL_SPELL_DEFS].filter((sp) => !SCHOOL || sp.school === SCHOOL);
 table('perks', perks.map((p) => p.id), SCHOOL ? Object.fromEntries(Object.entries(PERK_TEXT).filter(([id]) => perks.some((p) => p.id === id))) : PERK_TEXT);
 table('spells', spells.map((s) => s.id), SCHOOL ? Object.fromEntries(Object.entries(SPELL_TEXT).filter(([id]) => spells.some((s) => s.id === id))) : SPELL_TEXT);
 if (!SCHOOL) {
@@ -50,15 +52,17 @@ if (!SCHOOL) {
   table('runes', HC_RUNES.map((r) => r.id), RUNE_TEXT);
   table('items', HC_BUILD_ITEMS.filter((i) => i.cat !== 'rune').map((i) => i.id), ITEM_TEXT);
   table('uniques', HC_UNIQUES.map((u) => u.id), UNIQUE_TEXT);
+  table('hybrids', HC_HYBRIDS.map((h) => h.schools.join('+')), HYBRID_TEXT);
 } else void classIds;
 
-// display names stay unique across perks, keystones, spells and uniques (a renamed spell must not collide with a perk)
+// display names stay unique across perks, keystones, spells, uniques and hybrid sets (a renamed spell must not collide with a perk)
 const names = new Map<string, string[]>();
 const add = (id: string, n: string) => names.set(n, [...(names.get(n) ?? []), id]);
 for (const p of perks) add(p.id, PERK_TEXT[p.id]?.name ?? p.name);
 for (const s of spells) add(s.id, SPELL_TEXT[s.id]?.name ?? s.name);
 if (!SCHOOL) for (const k of HC_SHARED_KEYSTONES) add(k.id, KEYSTONE_TEXT[k.id]?.name ?? k.name);
 if (!SCHOOL) for (const u of HC_UNIQUES) add(u.id, UNIQUE_TEXT[u.id]?.name ?? u.name);
+if (!SCHOOL) for (const h of HC_HYBRIDS) { const k = h.schools.join('+'); add(k, HYBRID_TEXT[k]?.name ?? h.name); }
 for (const [n, ids] of names) if (ids.length > 1) fail(`name “${n}” used by ${ids.join(', ')}`);
 
 for (const l of out) console.log(l);

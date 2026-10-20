@@ -25,7 +25,7 @@ export const PERKS: Record<string, BuildText> = {
   pk_skald_battle_cry: { flavour: 'Every Fells child is given a name-beat at their first singing. Shout yours in battle and your whole valley answers.' },
   pk_skald_berserkergang: { flavour: 'The sagas sing of warriors who fought without shirts, shields or sense. The sagas are long, and the warriors brief.' },
   pk_skald_steady_beat: { flavour: 'Ketil and Sweyn have drummed side by side for years and never agreed on a tempo. The steady beat is the one between them.' },
-  pk_skald_war_drum: { flavour: 'News crosses the Fells by drum, valley to valley. War is the only news that makes the drummers hurry.' },
+  pk_skald_war_drum: { name: 'Valley Drums', flavour: 'News crosses the Fells by drum, valley to valley. War is the only news that makes the drummers hurry.' },
   pk_skald_thunder_beat: { flavour: 'The great drums of the Drum-Steads are struck so hard that the sheep in the next valley lie down to listen.' },
   pk_skald_marching_song: { flavour: 'A Fells marching song has a verse for every hill on the road. Skalds take the long way home on purpose.' },
   pk_skald_retold_saga: { flavour: 'A saga changes a little every time it is told. Ragna says that is how you know it is still alive.' },

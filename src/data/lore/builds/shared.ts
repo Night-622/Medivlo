@@ -23,7 +23,7 @@ export const KEYSTONES: Record<string, BuildText> = {
   ks_ember_shield: { flavour: 'Spirehold engineers stand inside their own sparks. The sparks, out of professional courtesy, go round.' },
   ks_berserker: { flavour: 'The Red Muster says a wound is only your body arguing. Win the argument.' },
   ks_fortress: { flavour: 'An Ironhold saying: a wall that walks is just a cart. Stand still and be a wall.' },
-  ks_tempest: { flavour: 'Stormlancers count the beats between strikes. On the last beat, the sky joins in.' },
+  ks_tempest: { name: 'The Last Beat', flavour: 'Stormlancers count the beats between strikes. On the last beat, the sky joins in.' },
   ks_hoarder: { flavour: 'Velvet Harbour wisdom: nobody ever lost a fight by stopping to pick up the money. Several lost one that way.' },
   ks_phase_step: { flavour: 'Duskmere thieves never land where they jumped from. They land where a shadow was waiting for them.' },
   ks_chain_reaction: { flavour: 'Kilnhold’s fire wardens have a word for what happens when one barrel goes up. The word is “barrels”.' },
@@ -176,3 +176,19 @@ export const ITEMS: Record<string, BuildText> = {
   't_war-drum': { flavour: 'A drum-book of the Fells. Each rhythm is named for whoever first played it too loud.' },
 };
 
+
+/** the twelve curated hybrid set bonuses (HC_HYBRIDS), keyed `${schools[0]}+${schools[1]}`; the effect line stays Claude 5’s */
+export const HYBRIDS: Record<string, BuildText> = {
+  'ash+rime': { name: 'Scald', flavour: 'Cinderreach and Frostmere have argued for a thousand years. Put them together and the argument boils.' },
+  'rime+storm': { name: 'Hailstorm', flavour: 'Frostmere sends the cold, Thunderreach sends the wind, and everybody else sends apologies.' },
+  'storm+iron': { flavour: 'Ironhold builds tall and Thunderreach strikes tall. Somebody had to stand in between, holding a shield.' },
+  'iron+fist': { flavour: 'Anvilgate plate on a Stonecloister frame. The monks call it cheating. The knights call it a good start.' },
+  'fist+blade': { flavour: 'Mountainreach fists and Steelvale steel, in no particular order and in great quantity.' },
+  'blade+guile': { name: 'Dirty Fencing', flavour: 'Edgewater teaches the rules of the duel. Tidecourt teaches which ones nobody is watching.' },
+  'guile+umbral': { flavour: 'Nocturne keeps the memories and Tidecourt sells them. Between the two, nobody quite sees you leave.' },
+  'umbral+hunt': { flavour: 'The Greywilds hunt by day and Nocturne by dusk. Wear both and the quarry never gets an evening off.' },
+  'hunt+verdant': { flavour: 'The Lodge takes only what the forest gives. In this coat, the forest gives rather a lot of roots.' },
+  'verdant+song': { flavour: 'Wildheart grows it and Harmonia sings to it. Nothing in the meadow stays hurt for long.' },
+  'song+radiance': { flavour: 'Solarian oaths set to Harmonian music. The choir keeps every promise, and keeps it on key.' },
+  'radiance+ash': { flavour: 'Dawnspire’s light and Kilnhold’s fire. Mending a friend has never been so warm for everybody else.' },
+};

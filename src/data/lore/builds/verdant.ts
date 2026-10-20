@@ -26,7 +26,7 @@ export const PERKS: Record<string, BuildText> = {
   pk_hedgewitch_wild_growth: { flavour: 'Can there be too much life? The Elder Tree grows a ring a day, swallowing streets, and is no help with the answer.' },
   pk_hedgewitch_strong_brew: { flavour: 'Nettle, yarrow and whatever was nearest. Mother Yarrow says the secret is stirring with conviction.' },
   pk_hedgewitch_herbalist: { flavour: 'Every Hedgewitch knows a herb for every ailment, and a second herb for what the first one does to you.' },
-  pk_hedgewitch_overgrowth: { flavour: 'When a Hedgewitch mends somebody, the ground mends with her, and holds on to anyone who tries to interrupt.' },
+  pk_hedgewitch_overgrowth: { name: 'Mending Ground', flavour: 'When a Hedgewitch mends somebody, the ground mends with her, and holds on to anyone who tries to interrupt.' },
   pk_hedgewitch_tea_circle: { flavour: 'The Root Circle meets in a ring and disagrees in a ring, but nobody has ever once refused the tea.' },
   pk_hedgewitch_bright_moths: { flavour: 'Moths come to a lantern the way gossip comes to the Bough Markets: quickly, and in great numbers.' },
   pk_hedgewitch_moth_dust: { flavour: 'Moth dust in the eyes is quite harmless, the witches say, unless you were hoping to see anything.' },

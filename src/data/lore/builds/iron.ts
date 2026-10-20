@@ -12,7 +12,7 @@ export const PERKS: Record<string, BuildText> = {
   pk_knight_trample: { flavour: 'Anvilgate charges a toll between every street. No knight at the gallop has ever once paid it.' },
   pk_knight_heavy_horse: { flavour: 'Ser Gideon’s old horse Steadfast carried him in full plate, and complained every step, as horses do.' },
   pk_knight_binding_oath: { flavour: 'An Anvil knight swears on the anvil itself, so the oath is struck, not spoken, and rings for a while after.' },
-  pk_knight_shield_wall: { flavour: 'Walls within walls within walls. Given time, Anvilgate’s builders would have made the knights out of stone too.' },
+  pk_knight_shield_wall: { name: 'Walls Within Walls', flavour: 'Walls within walls within walls. Given time, Anvilgate’s builders would have made the knights out of stone too.' },
   pk_knight_shield_bash: { flavour: 'The kite shield is for keeping blows off. The rim is for discussing the matter afterwards.' },
   pk_knight_rallying_banner: { flavour: 'Raise the colours and the line remembers what it is for. Squires are told this, and to keep the pole upright.' },
   pk_knight_steel_resolve: { flavour: 'The Barrow of Knights is full of men who stood their ground. The Order would like you to stand yours alive.' },

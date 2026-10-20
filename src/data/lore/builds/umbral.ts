@@ -8,13 +8,13 @@ import type { BuildText, SpellText } from '../hc-builds-text';
 export const PERKS: Record<string, BuildText> = {
   // ---------- Shade (the Veilwarrens)
   pk_shade_deep_step: { flavour: 'Grey Mab’s first lesson: the dark is a door. Her second: knock first, in case somebody is using it.' },
-  pk_shade_backstab: { flavour: 'The Veil does not call it a backstab. It calls it a conversation the other fellow was not ready for.' },
+  pk_shade_backstab: { name: 'Over the Shoulder', flavour: 'The Veil does not call it a backstab. It calls it a conversation the other fellow was not ready for.' },
   pk_shade_ambush: { flavour: 'In the warrens you never hear a Shade arrive. You hear them leave, and then you check your pockets.' },
   pk_shade_shadow_dance: { flavour: 'Rope bridges, wet stone and no light at all. Veilwarrens children learn to dance before they learn to fall.' },
   pk_shade_glass_edges: { flavour: 'Nightglass from the Moonwell market. The seller swears it was cut in moonshade, and charges as if it was.' },
   pk_shade_serrated_glass: { flavour: 'Nightglass chips when it meets bone. The Veil considers this a feature, and the bone is not consulted.' },
   pk_shade_night_blades: { flavour: 'Dip the blade in your own shadow and it comes out colder, darker and very slightly offended.' },
-  pk_shade_thousand_cuts: { flavour: 'Grey Mab, on swords: why hit a man once with a big thing, when you can annoy him to death with a small one?' },
+  pk_shade_thousand_cuts: { name: 'Death by Annoyance', flavour: 'Grey Mab, on swords: why hit a man once with a big thing, when you can annoy him to death with a small one?' },
   pk_shade_long_contract: { flavour: 'Grey Mab never forgets a mark. She forgets birthdays, faces and the way home, but never a mark.' },
   pk_shade_executioner: { name: 'Paid in Full', flavour: 'Every debt in the warrens is settled sooner or later. The Veil simply prefers sooner.' },
   pk_shade_vanish: { flavour: 'There, then not there, then not there at all. Grizel Gall could do it mid-sentence, usually when the bill came.' },
