@@ -86,7 +86,8 @@ export function chooseSlot(sim: Sim, p: PlayerEnt): number | undefined {
     if (!sp) return 'other';
     const acts = flatActions(sp.actions);
     if (sp.tags.includes('heal') || acts.some((a) => a.a === 'heal')) return 'heal';
-    if (acts.some((a) => a.a === 'shield') || (sp.tags.includes('buff') && acts.some((a) => a.a === 'buff' && (a.to === 'self' || a.to === 'allies')))) return 'defend';
+    // a self / ally buff is a defence only when it defends (Claude 5): Net Shot's move-speed buff made the bot hold Ember for it
+    if (acts.some((a) => a.a === 'shield') || (sp.tags.includes('buff') && acts.some((a) => a.a === 'buff' && (a.to === 'self' || a.to === 'allies') && defensive(a)))) return 'defend';
     return 'other';
   };
   // below 80% health, keep Ember for the cheapest heal / defence: a damage spell may not dip under its cost
@@ -100,6 +101,12 @@ export function chooseSlot(sim: Sim, p: PlayerEnt): number | undefined {
   }
   const ult = [0, 1, 2, 3].find((i) => usable(i) && !!p.spells.get(p.save.hotbar[i]!)?.tags.includes('ultimate'));
   return ult ?? [0, 1, 2, 3].find(usable);
+}
+
+const DEF_STATS = /^(dmgTaken|armor|block|dodge|hp|hpRegen|healingTaken|res\.)/;
+const DEF_FLAGS = new Set(['parry', 'invulnerable', 'unstoppable', 'stealth', 'untargetable', 'taunt', 'reflect', 'blockFront', 'absorb', 'lifesteal']);
+function defensive(a: Extract<Action, { a: 'buff' }>): boolean {
+  return (a.mods ?? []).some((m) => DEF_STATS.test(m.stat)) || (a.flags ?? []).some((f) => DEF_FLAGS.has(f));
 }
 
 /** a spell's actions, flattened through delays, repeats, moves, zones and projectile hits */

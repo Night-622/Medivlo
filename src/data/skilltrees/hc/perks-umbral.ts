@@ -41,7 +41,7 @@ const shade: ClassPerks = {
     one('pk_shade_long_contract', 'Long Contract', 'power', 'Mark for Death recharges 20% faster, costs 15% less and lasts 30% longer.', { spellMods: [{ spell: MARK, cd: -0.2, cost: -0.15, dur: 0.3 }] }),
     three('pk_shade_executioner', 'Executioner', 'power', (r) => `+${r * 8}% damage to foes below 30% health; +${(2 * r).toFixed(1)}% damage to all foes.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.02 * r }, { stat: 'dmg', op: 'flat', value: 0.08 * r, when: { c: 'targetHpBelow', pct: 0.3 } }] })),
-    one('pk_shade_vanish', 'Vanish', 'trigger', 'Kills, or dropping below 50% health, hide you in shadow for 1.5 s (6 s; 30 s below half health).',
+    one('pk_shade_vanish', 'Vanish', 'trigger', 'Kills hide you in shadow for 1.5 s, once every 6 s; so does dropping below 50% health, once every 30 s.',
       { procs: [{ on: 'kill', icd: 6000, do: [{ a: 'buff', id: 'shd:vanish', dur: 1500, to: 'self', flags: ['untargetable'] }] }, { on: 'lowHp', icd: 30000, do: [{ a: 'buff', id: 'shd:vanish', dur: 1500, to: 'self', flags: ['untargetable'] }] }] }),
     one('pk_shade_bloodprice', 'Blood Price', 'resource', 'Kills restore 20 stamina and 4% of max health; critical hits heal 1%, once every 1 s.',
       { mods: [{ stat: 'staminaOnKill', op: 'flat', value: 20 }], procs: [{ on: 'kill', do: [{ a: 'heal', pctMax: 0.04, to: 'self' }] }, { on: 'crit', icd: 1000, do: [{ a: 'heal', pctMax: 0.01, to: 'self' }] }] }),

@@ -65,7 +65,7 @@ const OFFENCE: AffixDef[] = [
   pre('sweeping', 'area', '+{v}% area of effect', ['offhand', 'head', ...JEWEL], 'area', T([0.03, 0.05], [0.05, 0.08], [0.08, 0.11], [0.11, 0.14], [0.14, 0.18])),
   pre('afflicting', 'statusChance', '+{v}% status chance', WEAPONISH, 'statusChance', T([0.05, 0.08], [0.08, 0.12], [0.12, 0.16], [0.16, 0.2], [0.2, 0.25])),
   pre('lingering', 'statusDur', '+{v}% status duration', ['weapon', 'offhand', 'amulet'], 'statusDur', UTIL, { weight: 60 }),
-  pre('leeching', 'lifesteal', '{v}% of damage healed back', ['weapon', 'ring'], 'lifesteal', T([0.01, 0.015], [0.015, 0.02], [0.02, 0.028], [0.028, 0.034], [0.034, 0.04]), { weight: 50 }),
+  pre('leeching', 'lifesteal', 'Heal for {v}% of the damage you deal', ['weapon', 'ring'], 'lifesteal', T([0.01, 0.015], [0.015, 0.02], [0.02, 0.028], [0.028, 0.034], [0.034, 0.04]), { weight: 50 }),
   pre('commanding', 'minionDmg', '+{v}% summon damage', ['offhand', ...JEWEL], 'minionDmg', PCT_DMG, { weight: 50 }),
   pre('mending', 'healing', '+{v}% healing done', ['weapon', 'offhand', 'amulet'], 'healing', PCT_DMG, { weight: 60 }),
   ...([['burn', 'Searing'], ['bleed', 'Serrated'], ['poison', 'Venomous']] as const).map(([s, adj]): AffixDef => ({
