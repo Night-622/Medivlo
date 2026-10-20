@@ -293,9 +293,17 @@ try {
   const pts = await ev(`(async () => (await import('/src/systems/rules/character.ts')).availablePoints(window.__hc.character()))()`);
   if (pts > 0) {
     await page.press('KeyK'); await sleep(900); await shot('6-skills');
+    const avail = () => ev(`(async () => (await import('/src/systems/rules/character.ts')).availablePoints(window.__hc.character()))()`);
+    // the mouse at the spot hc-features uses; if that node isn't learnable in this class's tree, the keyboard path
+    // (Claude 3's panelNav): a branch key, then Tab to each node, Enter picks it, Enter again learns it
     await page.click(468, 548); await sleep(250); await page.click(468, 548); await sleep(700);
-    const pts2 = await ev(`(async () => (await import('/src/systems/rules/character.ts')).availablePoints(window.__hc.character()))()`);
-    check('a skill point can be spent by clicking in Skills (K)', pts2 < pts, `${pts} → ${pts2}`);
+    let pts2 = await avail(), how = 'mouse';
+    for (const branch of ['Digit2', 'Digit1', 'Digit3']) {
+      if (pts2 < pts) break;
+      await page.press(branch); await sleep(500); how = `keys (branch ${branch.slice(5)})`;
+      for (let i = 0; i < 40 && pts2 >= pts; i++) { await page.press('Tab'); await sleep(60); await page.press('Enter'); await sleep(120); await page.press('Enter'); await sleep(200); pts2 = await avail(); }
+    }
+    check('a skill point can be spent in Skills (K), by click or by keys', pts2 < pts, `${pts} → ${pts2} via ${how}`);
     await page.press('Escape'); await sleep(500);
   } else note(`no level-up in this session (level ${st1.level}); skill-point check skipped`);
 
