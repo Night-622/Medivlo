@@ -61,8 +61,14 @@ async function fight(ms = 20000, radius = 260) {
 
 // ── walk to a pixel point with WASD steering; sidestep when stuck; teleport only on long hauls ──
 const focused = async (id) => { const f = await ev('window.__world.focus()'); return !!f && !!id && (id.endsWith('*') ? f.startsWith(id.slice(0, -1)) : f === id); };
-async function walkTo(x, y, { near = 40, budget = 90000, focusId = null, haul = 90 } = {}) {
+async function walkTo(x, y, { near = 40, budget = 90000, focusId = null, haul = 90, until = null } = {}) {
   let p = await me(); const start = Date.now(); let stuck = 0, side = 1;
+  // a mark on blocked ground (a cliff perch, a waystone, a statue): head for the nearest walkable tile round it
+  const open = await ev(`(() => { const q = window.__game.scene.getScene('WorldV2').query, gx = Math.floor(${x} / 32), gy = Math.floor(${y} / 32);
+    if (q.isWalkable(gx, gy)) return null; let best = null;
+    for (let r = 1; r <= 6 && !best; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r && q.isWalkable(gx + dx, gy + dy) && (!best || Math.hypot(dx, dy) < best[2])) best = [gx + dx, gy + dy, Math.hypot(dx, dy)];
+    return best ? [best[0] * 32 + 16, best[1] * 32 + 16, best[2]] : null; })()`);
+  if (open) { near = Math.max(near, 20); x = open[0]; y = open[1]; }
   const far = Math.hypot(x - p.x, y - p.y) / 32;
   if (far > haul) { // a long haul: a player would walk minutes; we jump to ~25 tiles out and walk the rest
     const k = 25 / far; await ev(`window.__world.tp(${Math.round((x + (p.x - x) * k) / 32)}, ${Math.round((y + (p.y - y) * k) / 32)})`);
@@ -75,6 +81,7 @@ async function walkTo(x, y, { near = 40, budget = 90000, focusId = null, haul = 
     p = await me();
     if (await active('Death')) return { ok: false, why: 'died', stuck };
     if (focusId && (await focused(focusId))) return { ok: true, stuck };
+    if (until && (await until())) return { ok: true, stuck }; // e.g. a reach objective counted on the way
     if (Math.hypot(x - p.x, y - p.y) < near) return { ok: true, stuck };
     while (wp < path.length - 1 && Math.hypot(path[wp][0] - p.x, path[wp][1] - p.y) < 14) wp++;
     const [tx, ty] = path[wp];
@@ -203,7 +210,8 @@ try {
         return all.sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y))[0] ?? null; })()`);
       if (next) { o.at = [next.x, next.y]; o.id = next.id; (log.used ??= []).push(next.id); }
     }
-    const w = await walkTo(o.at[0], o.at[1], { near: o.kind === 'kill' || o.kind === 'reach' ? 64 : 48, focusId: o.kind === 'talk' || o.kind === 'interact' ? o.id : null });
+    const moved = async () => { const a = await nextObjective(); return !a || a.quest !== o.quest || a.stage !== o.stage || a.text !== o.text || (a.count ?? 0) > (o.count ?? 0); };
+    const w = await walkTo(o.at[0], o.at[1], { near: o.kind === 'kill' || o.kind === 'reach' ? 64 : 48, focusId: o.kind === 'talk' || o.kind === 'interact' ? o.id : null, until: o.kind === 'reach' ? moved : null });
     row.walkS = Math.round((Date.now() - t) / 1000); row.stuck = w.stuck;
     if (!w.ok) { row.why = w.why; if (w.why === 'died') { log.deaths++; await page.press('Enter'); await sleep(3000); } continue; }
     if (o.kind === 'talk' || o.kind === 'interact') {
@@ -262,6 +270,10 @@ try {
 
   // ── 8. death → Death screen → respawn ──
   if (!(await active('Death'))) {
+    // creatures don't engage in a 'safe' zone (waystones, villages): step out into the wilds first, like a real death
+    for (let i = 0; i < 8 && (await ev('window.__world.where().rule')) === 'safe'; i++) {
+      const w0 = await ev('window.__world.where()'); await ev(`window.__world.tp(${w0.tx + 12 * (i % 2 ? -1 : 1)}, ${w0.ty + 10 * (i + 1)})`); await sleep(800);
+    }
     await ev(`window.__hc.spawn('bx_${await ev(`(async () => (await import('/src/core/index.ts')).classSchool(${JSON.stringify(CLS)}))()`)}_5', 2, undefined, 60)`);
     await waitFor(`window.__game.scene.isActive('Death')`, 90000);
   }

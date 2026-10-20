@@ -43,6 +43,7 @@ const SUITES = [
   { id: 'integrity-save', what: 'saves: account-scoped slots, malformed slots never crash, old saves get defaults, New Game never overwrites a cloud hero', cmd: e2e('integrity-save.mjs'), file: 'tools/e2e/integrity-save.mjs', owner: 'Claude 6' },
   { id: 'boss-marks', what: 'every class’s lair-boss kill objective is marked at its lair door', cmd: e2e('qa-boss-marks.mjs'), file: 'tools/e2e/qa-boss-marks.mjs', owner: 'Claude 7' },
   { id: 'interact-once', what: 'counted searches count distinct objects (pressing F twice on one object counts once)', cmd: e2e('qa-interact-once.mjs'), file: 'tools/e2e/qa-interact-once.mjs', owner: 'Claude 7' },
+  { id: 'reachable', what: 'every class’s Act I objectives are reachable on foot from its start waystone', cmd: e2e('qa-reachable.mjs'), file: 'tools/e2e/qa-reachable.mjs', owner: 'Claude 7' },
   { id: 'realm-server', what: 'public realm server: join (incl. slow sign-in), snapshots, chat, systems', cmd: e2e('realm-server.mjs') },
   { id: 'new-player', what: 'fresh player, real input: create → play → autosave', cmd: e2e('new-player.mjs', '--base', BASE), needs: ['web'] },
   { id: 'save-roundtrip', what: 'save → reload → load restores the hero', cmd: e2e('save-roundtrip.mjs', BASE), needs: ['web'] },
