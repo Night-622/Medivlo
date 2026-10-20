@@ -1,0 +1,124 @@
+rules_version = '2';
+
+// The Hollow Crown: saves, accounts, friends, co-op signalling.
+// PROPOSED by Claude 6 (rules audit, tools/e2e/integrity-rules.mjs). Not deployed: deploying rules is the user's call.
+// Changes from firestore.rules: fixed save slots + save fields; bounded sizes/types everywhere a client writes;
+// profile fields whitelisted; username claims need the matching synthetic-email account; signalling messages capped.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function me(uid) { return signedIn() && request.auth.uid == uid; }
+    function str(v, max) { return v is string && v.size() <= max; }
+    function optStr(d, k, max) { return !(k in d) || d[k] == null || str(d[k], max); }
+    function optNum(d, k) { return !(k in d) || d[k] is number; }
+
+    // Saves: each player reads and writes only their own three slots, as one JSON string (SaveService).
+    match /users/{uid}/saves/{slot} {
+      allow read, delete: if me(uid);
+      allow create, update: if me(uid) && slot in ['0', '1', '2']
+        && request.resource.data.keys().hasOnly(['game', 'json', 'name', 'level', 'classId', 'updatedAt', 'rev', 'version'])
+        && request.resource.data.game == 'hollowcrown'
+        && str(request.resource.data.json, 900000)
+        && optStr(request.resource.data, 'name', 64) && optStr(request.resource.data, 'classId', 32)
+        && optNum(request.resource.data, 'level') && optNum(request.resource.data, 'updatedAt')
+        && optNum(request.resource.data, 'rev') && optNum(request.resource.data, 'version');
+    }
+
+    // Crash reports from the client (create-only, bounded fields; read in the console).
+    match /clientErrors/{id} {
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'build', 'message', 'stack', 'scenes', 'role', 'ua', 'at'])
+        && str(request.resource.data.message, 500) && str(request.resource.data.stack, 1500)
+        && optStr(request.resource.data, 'build', 64) && optStr(request.resource.data, 'scenes', 300)
+        && optStr(request.resource.data, 'role', 32) && optStr(request.resource.data, 'ua', 200) && optNum(request.resource.data, 'at');
+    }
+
+    // Chat reports: any signed-in player may file one about someone else; nobody can read them from the client.
+    match /reports/{id} {
+      allow create: if signedIn() && request.resource.data.reporter == request.auth.uid
+        && request.resource.data.keys().hasOnly(['reporter', 'target', 'targetName', 'recent', 'at'])
+        && str(request.resource.data.target, 128) && str(request.resource.data.targetName, 64)
+        && lines(request.resource.data.recent) && optNum(request.resource.data, 'at');
+      // the last ≤ 10 chat lines, each a chat line (≤ 240 chars); the rules language can't loop, so index them
+      function line(l, i) { return l.size() <= i || str(l[i], 240); }
+      function lines(l) {
+        return l is list && l.size() <= 10 && line(l, 0) && line(l, 1) && line(l, 2) && line(l, 3) && line(l, 4)
+          && line(l, 5) && line(l, 6) && line(l, 7) && line(l, 8) && line(l, 9);
+      }
+    }
+
+    // Public profile (display name, friend code, presence/hosted room). Readable by signed-in players.
+    match /profiles/{uid} {
+      allow read: if signedIn();
+      allow write: if me(uid)
+        && request.resource.data.keys().hasOnly(['name', 'friendCode', 'kind', 'createdAt', 'lastSeen', 'hosting'])
+        && optStr(request.resource.data, 'name', 24) && optStr(request.resource.data, 'friendCode', 9)
+        && optStr(request.resource.data, 'kind', 16) && optStr(request.resource.data, 'hosting', 8)
+        && optNum(request.resource.data, 'createdAt') && optNum(request.resource.data, 'lastSeen');
+      // friend list: only the owner manages it
+      match /friends/{friendUid} {
+        allow read, delete: if me(uid);
+        allow create, update: if me(uid) && request.resource.data.keys().hasOnly(['name', 'addedAt'])
+          && optStr(request.resource.data, 'name', 24) && optNum(request.resource.data, 'addedAt');
+      }
+    }
+
+    // Friend-code → uid lookup (unique codes; created once by the owner).
+    match /friendCodes/{code} {
+      allow read: if signedIn();
+      allow create: if signedIn() && code.matches('^[A-Z0-9]{8}$')
+        && request.resource.data.keys().hasOnly(['uid']) && request.resource.data.uid == request.auth.uid;
+    }
+
+    // Username → uid (username+password accounts without email). Unique, created once, and only by the account
+    // whose synthetic email is that username (else anyone, even a guest, could squat every name).
+    match /usernames/{name} {
+      allow read: if true;
+      allow create: if signedIn() && name.matches('^[a-z0-9_]{3,16}$')
+        && request.auth.token.email == name + '@players.thehollowcrown.invalid'
+        && request.resource.data.keys().hasOnly(['uid']) && request.resource.data.uid == request.auth.uid;
+    }
+
+    // Password-recovery vault for username accounts: ciphertext only (useless without the recovery code).
+    // Only the username's owner may write its vault (else anyone could replace someone else's and take the account).
+    match /recovery/{name} {
+      function ownsName() { return get(/databases/$(database)/documents/usernames/$(name)).data.uid == request.auth.uid; }
+      function vault() {
+        return request.resource.data.keys().hasOnly(['uid', 'salt', 'iv', 'ct']) && request.resource.data.uid == request.auth.uid
+          && str(request.resource.data.salt, 64) && str(request.resource.data.iv, 64) && str(request.resource.data.ct, 512);
+      }
+      allow read: if true;
+      allow create: if signedIn() && ownsName() && vault();
+      allow update: if signedIn() && resource.data.uid == request.auth.uid && vault();
+    }
+
+    // Co-op signalling (SDP/ICE only; game traffic is peer-to-peer).
+    match /rooms/{code} {
+      allow read: if signedIn();
+      allow create: if signedIn() && code.matches('^[A-Z0-9]{6}$') && request.resource.data.host == request.auth.uid
+        && request.resource.data.keys().hasOnly(['host', 'open', 'createdAt']);
+      allow update: if signedIn() && resource.data.host == request.auth.uid && request.resource.data.host == request.auth.uid
+        && request.resource.data.keys().hasOnly(['host', 'open', 'createdAt']);
+      allow delete: if signedIn() && resource.data.host == request.auth.uid;
+
+      match /peers/{peerId} {
+        function isHost() { return get(/databases/$(database)/documents/rooms/$(code)).data.host == request.auth.uid; }
+        allow read: if signedIn() && (request.auth.uid == peerId || isHost());
+        allow create: if me(peerId) && request.resource.data.keys().hasOnly(['createdAt', 'nonce']) && optStr(request.resource.data, 'nonce', 64);
+        allow delete: if signedIn() && (request.auth.uid == peerId || isHost());
+
+        match /msgs/{msgId} {
+          allow read, delete: if signedIn() && (request.auth.uid == peerId || isHost());
+          // one SDP or ICE message (an SDP is a few KB): capped so nobody can stuff a host's room
+          allow create: if signedIn() && request.resource.data.keys().hasOnly(['from', 'm', 'ts']) && str(request.resource.data.m, 16000)
+            && ((request.auth.uid == peerId && request.resource.data.from == 'guest')
+             || (isHost() && request.resource.data.from == 'host'));
+        }
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

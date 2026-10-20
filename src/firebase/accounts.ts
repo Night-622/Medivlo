@@ -61,6 +61,9 @@ export async function signUpUsername(username: string, password: string): Promis
   const user = cur?.isAnonymous
     ? (await linkWithCredential(cur, EmailAuthProvider.credential(synthEmail(name), password))).user
     : (await createUserWithEmailAndPassword(auth, synthEmail(name), password)).user;
+  // the username claim is checked against the token's email (rules: only that account may claim the name), so make
+  // sure the token we send already carries it (a guest that was just linked may still hold its anonymous token)
+  await user.getIdToken(true);
   await runTransaction(db, async (tx) => {
     const ref = doc(db, 'usernames', name);
     if ((await tx.get(ref)).exists()) throw new Error('That username is taken');
