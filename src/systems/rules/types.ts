@@ -237,5 +237,7 @@ export interface TreeNode {
   free?: boolean;
   typeLabel: string;
   diamond?: boolean;
+  /** a shared keystone (BUILDS.md §3): a character holds at most MAX_SHARED_KEYSTONES of them */
+  shared?: boolean;
 }
 

@@ -20,8 +20,8 @@ const stormlancer: ClassPerks = {
   classId: 'stormlancer',
   signature: [
     // path 0: Lightning Lunge (+ new spell 3): striking along the lance
-    one('pk_stormlancer_bright_lance', 'Bright Lance', 'power', '+1 to Lightning Lunge and its new sister spell.',
-      { spellLevels: [{ spell: LUNGE, levels: 1 }, { spell: 'spell:new-stormlancer-3', levels: 1 }] }),
+    one('pk_stormlancer_bright_lance', 'Bright Lance', 'power', '+1 to Lightning Lunge and Thunder Charge.',
+      { spellLevels: [{ spell: LUNGE, levels: 1 }, { spell: 'spell:thunder-charge', levels: 1 }] }),
     three('pk_stormlancer_momentum', 'Charge Momentum', 'trigger', (r) => `Landing a dash: +${r * 6}% damage for 3 s.`,
       (r) => ({ procs: [{ on: 'dashEnd', do: [{ a: 'buff', id: 'stl:charge', dur: 3000, to: 'self', mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r }] }] }] })),
     one('pk_stormlancer_thunderstep', 'Thunderstep', 'trigger', 'Landing a dash shocks the foes around you.',
@@ -51,8 +51,8 @@ const sparkwright: ClassPerks = {
   classId: 'sparkwright',
   signature: [
     // path 0: Arc Gauntlet (+ new spell 3): the beam
-    one('pk_sparkwright_tuned_coils', 'Tuned Coils', 'power', '+1 to Arc Gauntlet and its new sister spell.',
-      { spellLevels: [{ spell: ARC, levels: 1 }, { spell: 'spell:new-sparkwright-3', levels: 1 }] }),
+    one('pk_sparkwright_tuned_coils', 'Tuned Coils', 'power', '+1 to Arc Gauntlet and Arc Mine.',
+      { spellLevels: [{ spell: ARC, levels: 1 }, { spell: 'spell:arc-mine', levels: 1 }] }),
     three('pk_sparkwright_high_voltage', 'High Voltage', 'power', (r) => `+${r * 6}% Storm damage.`, (r) => ({ mods: [{ stat: 'dmg.storm', op: 'flat', value: 0.06 * r }] })),
     one('pk_sparkwright_feedback', 'Feedback Loop', 'resource', 'Spell critical hits restore 5 Ember (0.5 s).',
       { procs: [{ on: 'spellCrit', icd: 500, do: [{ a: 'resource', ember: 5 }] }] }),

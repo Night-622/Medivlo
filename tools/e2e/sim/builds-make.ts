@@ -1,6 +1,7 @@
 /**
- * Build simulator (Claude 3 helper): character builds per class and level. Starter (creation kit, no tree),
- * typical (Spells branch first, then Skills offence, kept-up kit weapon + own-school armour), three archetypes
+ * Build simulator (Claude 3 helper): character builds per class and level. Fresh (creation kit, no tree), starter
+ * (a player who never optimises: common gear at level, points clicked in tree order), typical (Spells branch first,
+ * then Skills offence, kept-up kit weapon + own-school armour), three archetypes
  * (spell-heavy, melee/attack, tank) and seeded random LEGAL builds (canLearn / availablePoints / allNodes).
  */
 import { Rng } from '@/core/rng';
@@ -10,11 +11,11 @@ import { availablePoints, newCharacter } from '@/systems/rules/character';
 import { allNodes, canLearn, rankOf } from '@/systems/rules/tree';
 import type { CharacterSave, SchoolId } from '@/systems/rules/types';
 import {
-  AMULET_IDS, RING_IDS, SCHOOLS, casterKitWeapon, equip, fastestKitWeapon, gearText, heaviestStyle, keptUpTier, stockConsumables, tierAt,
+  AMULET_IDS, RING_IDS, SCHOOLS, casterKitWeapon, commonTier, equip, fastestKitWeapon, gearText, heaviestStyle, keptUpTier, stockConsumables, tierAt,
   type GearSpec,
 } from './builds-gear';
 
-export type BuildKind = 'starter' | 'typical' | 'spell' | 'melee' | 'tank' | 'random';
+export type BuildKind = 'fresh' | 'starter' | 'typical' | 'spell' | 'melee' | 'tank' | 'random';
 export interface Build {
   cls: string;
   level: number;
@@ -46,7 +47,7 @@ export function learnList(cls: string, s: CharacterSave, list: readonly (string 
   }
 }
 
-/** Leftover points: greedy in node order (fight.ts pattern). */
+/** Points in node order (fight.ts pattern): Spells root → p0 → p1 → p2 → bridges → tops → ultimate, then Skills, then Upgrades. */
 function greedy(cls: string, s: CharacterSave): void {
   for (let g = 0; g < 200 && availablePoints(s) > 0; g++) {
     const n = allNodes(cls).find((x) => canLearn(cls, x.id, s.tree, availablePoints(s)).ok);
@@ -99,8 +100,25 @@ const TANK: (string | [string, number])[] = [
 ];
 
 // ───────────── builds ─────────────
+/** A brand-new character at this level: creation kit only (start weapon at item level 1), tree unspent. Not gated. */
+export function freshBuild(cls: string, level: number): Build {
+  return finish(cls, level, 'fresh', 'fresh', base(cls, level), null);
+}
+
+/**
+ * A player who never optimises: COMMON gear at the build level (kit weapon + own-school armour, no trinkets) and
+ * points clicked in the order the tree shows them — each branch from its root, path p0 node by node, filling Spells,
+ * then Skills, then Upgrades (canLearn decides) — with the first school spell learned bound to slot 4.
+ */
 export function starterBuild(cls: string, level: number): Build {
-  return finish(cls, level, 'starter', 'starter', base(cls, level), null);
+  const s = base(cls, level);
+  const t = commonTier(level);
+  const g: GearSpec = { weapon: kitFor(cls).weapons[0], mat: t, style: t, school: CLASS_SCHOOL[cls] };
+  equip(s, g);
+  greedy(cls, s);
+  const first = allNodes(cls).find((n) => n.grantsSpell && (s.tree[n.id] ?? 0) > 0 && !kitFor(cls).spells.includes(n.grantsSpell));
+  s.hotbar[3] = first?.grantsSpell ?? null;
+  return finish(cls, level, 'starter', 'starter', s, g);
 }
 
 export function typicalGear(cls: string, level: number): GearSpec {

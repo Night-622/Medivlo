@@ -5,7 +5,7 @@
  * Seeded and deterministic: asserts on events and state, never on damage rolls.
  * Output (tools/release/predeploy-check.mjs): failing lines start with "FAIL", the run time is the second-to-last
  * line and the last line is "N/M passed"; process.exitCode = 1 on any failure.
- * Run: node tools/e2e/sim/run.mjs features [section] [classId]   (sections: casts, tree, gear, progress, hooks, slash, facing, builds, lifecycle)
+ * Run: node tools/e2e/sim/run.mjs features [section] [classId]   (sections: casts, tree, gear, progress, hooks, slash, facing, builds, lifecycle, affixes)
  */
 import { castChecks } from './features-casts';
 import { gearChecks } from './features-gear';
@@ -17,6 +17,7 @@ import { slashChecks } from './features-slash';
 import { facingChecks } from './features-facing';
 import { buildChecks } from './features-builds';
 import { lifecycleChecks } from './features-lifecycle';
+import { affixChecks } from './features-affixes';
 
 const t0 = Date.now();
 const [section, only] = process.argv.slice(3);
@@ -37,6 +38,7 @@ run('slash', () => slashChecks(only));
 run('facing', () => facingChecks());
 run('builds', () => buildChecks());
 run('lifecycle', () => lifecycleChecks());
+run('affixes', () => affixChecks());
 
 const { checks, fails } = tally();
 if (fails) process.exitCode = 1;

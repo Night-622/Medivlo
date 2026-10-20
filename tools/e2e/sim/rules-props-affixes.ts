@@ -7,6 +7,7 @@
  */
 import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
 import { kitFor } from '@/data/classes/hc/kits';
+import { NEW_KIT } from '@/data/spells/hc/kit-spells-new';
 import { HC_AFFIXES } from '@/data/items/hc/affixes';
 import { AFFIX_COUNT, type AffixDef, type AffixSlot } from '@/systems/rules/affixTypes';
 import { spellDef } from '@/systems/rules/spells';
@@ -58,11 +59,11 @@ export function affixProps(): void {
   for (const a of A) {
     if ('spellLevels' in a.effect) {
       const id = a.effect.spellLevels, cls = a.only?.classId;
-      if (!cls || !spellDef(id) || !kitFor(cls).spells.includes(id)) spellBad.push(a.id);
+      if (!cls || !spellDef(id) || ![...kitFor(cls).spells, ...(NEW_KIT[cls] ?? [])].includes(id)) spellBad.push(a.id);
     }
     if ('schoolLevels' in a.effect && a.only?.school !== a.effect.schoolLevels) spellBad.push(a.id);
   }
-  const kitSpells = HC_CLASSES.reduce((n, c) => n + kitFor(c.id).spells.length, 0);
+  const kitSpells = HC_CLASSES.reduce((n, c) => n + kitFor(c.id).spells.length + (NEW_KIT[c.id]?.length ?? 0), 0);
   const lvl = A.filter((a) => 'spellLevels' in a.effect).length, sch = A.filter((a) => 'schoolLevels' in a.effect).length;
   check(!spellBad.length && lvl === kitSpells && sch === 12, `affixes: "+1 to <spell>" for all ${kitSpells} kit spells and "+1 to <school>" for 12 schools, each locked to its own class / school`, spellBad.slice(0, 5).join(', '));
 

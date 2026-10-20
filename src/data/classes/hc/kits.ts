@@ -17,7 +17,7 @@ const momentum: Proc = onHit(3, [{ a: 'resource', momentum: 1 }]);
 const DMG_SCALE: Record<string, number> = {
   warden: 1.25, rimecaller: 0.92, ranger: 1.12, hedgewitch: 1.22, arcanist: 0.9, reaver: 0.81, stormlancer: 1.05, sparkwright: 0.7,
   oathbound: 1.12, cantor: 1.3, shade: 0.9, duskweaver: 1.07, swordsman: 1.02, samurai: 0.84, knight: 1.46, juggernaut: 1.65,
-  monk: 1.28, brawler: 0.78, huntsman: 0.75, falconer: 1.06, corsair: 1.09, jester: 1.07, bard: 1.13, skald: 1.28,
+  monk: 1.28, brawler: 0.78, huntsman: 0.75, falconer: 1.06, corsair: 1.25, jester: 1.07, bard: 1.13, skald: 1.28,
 };
 
 function kit(classId: string, weapons: WeaponType[], passive: Passive, extra: Partial<HcKit> = {}): HcKit {

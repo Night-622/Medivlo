@@ -19,8 +19,8 @@ const bard: ClassPerks = {
   classId: 'bard',
   signature: [
     // path 0: Rousing Ballad (+ new spell 3): the rallying song
-    one('pk_bard_full_chorus', 'Full Chorus', 'power', '+1 to Rousing Ballad and its new sister spell.',
-      { spellLevels: [{ spell: BALLAD, levels: 1 }, { spell: 'spell:new-bard-3', levels: 1 }] }),
+    one('pk_bard_full_chorus', 'Full Chorus', 'power', '+1 to Rousing Ballad and Ballad of Swiftness.',
+      { spellLevels: [{ spell: BALLAD, levels: 1 }, { spell: 'spell:ballad-of-swiftness', levels: 1 }] }),
     three('pk_bard_anthem', 'Anthem', 'aura', (r) => `You and allies near you deal ${r * 3}% more damage.`,
       (r) => ({ aura: [{ id: 'brd:anthem', r: 160, mods: [{ stat: 'dmg', op: 'flat', value: 0.03 * r }] }] })),
     one('pk_bard_crescendo', 'Crescendo', 'trigger', 'Casting: +10% damage for 6 s (2 s).',
@@ -50,8 +50,8 @@ const skald: ClassPerks = {
   classId: 'skald',
   signature: [
     // path 0: War Chant (+ new spell 3): the war song
-    one('pk_skald_loud_chant', 'Loud Chant', 'power', '+1 to War Chant and its new sister spell.',
-      { spellLevels: [{ spell: CHANT, levels: 1 }, { spell: 'spell:new-skald-3', levels: 1 }] }),
+    one('pk_skald_loud_chant', 'Loud Chant', 'power', '+1 to War Chant and Chant of Fury.',
+      { spellLevels: [{ spell: CHANT, levels: 1 }, { spell: 'spell:chant-of-fury', levels: 1 }] }),
     three('pk_skald_shield_song', 'Shield Song', 'aura', (r) => `You and allies near you gain ${r * 4}% armour and ${r * 2}% max health.`,
       (r) => ({ aura: [{ id: 'skd:shield', r: 160, mods: [{ stat: 'armor', op: 'pct', value: 0.04 * r }, { stat: 'hp', op: 'pct', value: 0.02 * r }] }] })),
     one('pk_skald_battle_cry', 'Battle Cry', 'trigger', 'Kills: allies near you deal 10% more damage for 4 s.',

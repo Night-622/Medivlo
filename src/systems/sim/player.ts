@@ -6,13 +6,13 @@ import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
 import { kitFor, spellScaling } from '@/data/classes/hc/kits';
 import { Btn, type InputFrame } from '@/net/types';
 import { P } from '@/systems/rules/curves';
-import { weaponBase, weaponDamage } from '@/systems/rules/gear';
+import { itemWeaponDamage, weaponBase, weaponDamage } from '@/systems/rules/gear';
 import { playerPassives } from '@/systems/rules/playerStats';
 import { compile, hook } from '@/systems/rules/stats';
 import { spellDef } from '@/systems/rules/spells';
 import type { Action, Area, BasicAttack, CharacterSave, HcSpell, SpellMod, WeaponType } from '@/systems/rules/types';
 import { motionStep, motionTick, runActions } from './actions';
-import { spellLevel, spend, tickAuras } from './builds';
+import { setCaster, spellblade, spellLevel, spend, tickAuras } from './builds';
 import { tickKeystones } from './keystones';
 import { slash } from './slash';
 import { basicCast, consumeCharge, dealDamage, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
@@ -78,8 +78,8 @@ export function rebuildPlayer(_w: SimWorld, p: PlayerEnt): void {
   // weapons: main hand, else the class start weapon at 70%
   const main = s.equipment.main, off = s.equipment.off;
   const mainId = main?.base ?? p.kit.startWeapon, mainLvl = main?.ilvl ?? s.level;
-  const [min, max] = weaponDamage(mainId, mainLvl).map((v) => v * (main ? 1 : 0.7));
-  const [offMin, offMax] = off ? weaponDamage(off.base, off.ilvl).map((v) => v * 0.5) : [0, 0];
+  const [min, max] = (main ? itemWeaponDamage(main) : weaponDamage(mainId, mainLvl).map((v) => v * 0.7));
+  const [offMin, offMax] = off ? itemWeaponDamage(off).map((v) => v * 0.5) : [0, 0];
   p.weapon = { type: weaponBase(mainId)?.type ?? p.kit.weapons[0], min, max, offMin, offMax };
   // spells: kit + tree grants
   p.spells.clear();
@@ -214,7 +214,8 @@ const attackRange = (p: PlayerEnt): number => basicOf(p).range;
 
 export function weaponRoll(w: SimWorld, p: PlayerEnt): number {
   const roll = w.rng.range(p.weapon.min, p.weapon.max) + (p.weapon.offMax ? w.rng.range(p.weapon.offMin, p.weapon.offMax) : 0);
-  const caster = p.weapon.type === 'staff' || p.weapon.type === 'wand' ? (p.stats.stats.sp ?? 0) * 0.6 : 0;
+  // casters' staves / wands carry spell power; Iron Grip (spToAttack) lends it to every weapon
+  const caster = (p.weapon.type === 'staff' || p.weapon.type === 'wand' ? (p.stats.stats.sp ?? 0) * 0.6 : 0) + (p.stats.stats.sp ?? 0) * 0.5 * hook(p.stats, 'spToAttack');
   return roll * (1 + (p.stats.stats.power ?? 0)) + caster;
 }
 
@@ -234,6 +235,7 @@ function autoAttack(w: SimWorld, p: PlayerEnt): void {
   p.anim = 'attack'; p.animUntil = w.t + 250;
   p.attackCount++;
   fireProcs(w, p, 'attack', t);
+  spellblade(w, p);
   const fromStealth = p.stealth;
   const hits = b.hits ?? 1;
   for (let i = 0; i < hits; i++) {
@@ -289,7 +291,7 @@ function targetBound(a: Action): boolean {
   return !!area && (area.shape === 'single' || area.at === 'target');
 }
 
-export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: HcSpell): boolean {
+export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: HcSpell, mult = 1): boolean {
   const id = spellOverride?.id ?? p.save.hotbar[slot];
   const spell = spellOverride ?? (id ? p.spells.get(id) : undefined);
   if (!spell || incapacitated(p) || p.windup || p.motion) return false;
@@ -326,7 +328,7 @@ export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: Hc
   const power = scaling === 'spell' ? (p.stats.stats.sp ?? 0) + wAvg * 0.25 : wAvg + (p.stats.stats.sp ?? 0) * 0.25;
   const ctx: CastCtx = {
     caster: p, spellId: spell.id, kind: spell.kind, power, isSpell: true, target, aim: aimPt, dir,
-    dmgMult: v.dmg, areaMult: v.area, durMult: v.dur, flags: [], depth: 0, ...(unreachable ? { unreachable: true } : {}),
+    dmgMult: v.dmg * mult, areaMult: v.area, durMult: v.dur, flags: [], depth: 0, ...(unreachable ? { unreachable: true } : {}),
   };
   const actions = v.split ? spell.actions.map((a) => (a.a === 'projectile' ? { ...a, count: (a.count ?? 1) * 3, spread: (a.spread ?? 0) + 30, coef: a.coef * 0.4 } : a)) : spell.actions;
   const go = () => {
@@ -351,6 +353,8 @@ export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: Hc
   else go();
   return true;
 }
+
+setCaster(cast);
 
 const clampTo = (p: Combatant, pt: { x: number; y: number }, range: number) => {
   const d = dist(p, pt);

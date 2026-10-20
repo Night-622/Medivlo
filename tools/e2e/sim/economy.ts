@@ -88,6 +88,7 @@ console.log(fails ? `FAIL ${fails}` : 'OK');
 // ── runeforge (PACING D): reforge item level, socket gems, salvage
 {
   const { reforgeCost, salvageYield, socketCost } = await import('@/systems/rules/runeforge');
+  const { gemsOf } = await import('@/systems/rules/gear');
   const s4 = new Sim(ports, 13);
   const c = newCharacter('knight'); c.level = 20; c.gold = 5000;
   c.inventory.push({ uid: 'old', base: 'w_sword_iron', ilvl: 6, qty: 1 }, { uid: 'ing', base: 'i_ingot', ilvl: 1, qty: 10 }, { uid: 'rb', base: 'i_ruby', ilvl: 1, qty: 1 },
@@ -105,9 +106,9 @@ console.log(fails ? `FAIL ${fails}` : 'OK');
   check(c.gold === g0 - cost.gold, 'no runeforge at the inn');
   const hp0 = p.maxHp, sc = socketCost(c.equipment.main!, 'i_ruby')!;
   act('socket', { shop: 'npc:odo', uid: 'main', gem: 'i_ruby' });
-  check(c.equipment.main!.gem === 'i_ruby' && !c.inventory.some((x) => x.base === 'i_ruby') && p.maxHp > hp0, `ruby set in the worn ${runed.id} for ${sc} (hp ${hp0} → ${p.maxHp})`);
+  check(gemsOf(c.equipment.main!).includes('i_ruby') && !c.inventory.some((x) => x.base === 'i_ruby') && p.maxHp > hp0, `ruby set in the worn ${runed.id} for ${sc} (hp ${hp0} → ${p.maxHp})`);
   act('socket', { shop: 'npc:odo', uid: 'main', gem: 'i_ruby' });
-  check(c.equipment.main!.gem === 'i_ruby', 'no second ruby to set');
+  check(gemsOf(c.equipment.main!).join() === 'i_ruby', 'no second ruby to set');
   const y = salvageYield(c.inventory.find((x) => x.uid === 'junk')!)!;
   const ing = c.inventory.find((x) => x.base === 'i_ingot')?.qty ?? 0;
   act('salvage', { shop: 'npc:odo', uid: 'junk' });
@@ -119,6 +120,6 @@ console.log(fails ? `FAIL ${fails}` : 'OK');
   const gs = s4.w.players.get('p:g')!.save;
   const bow = gs.equipment.main!;
   s4.receive({ type: 'loadout', data: { ...JSON.parse(JSON.stringify(gs)), equipment: { ...gs.equipment, main: { ...bow, gem: 'i_embershard', ilvl: 40 } } } }, 'g');
-  check(!s4.w.players.get('p:g')!.save.equipment.main?.gem && s4.w.players.get('p:g')!.save.equipment.main?.ilvl === bow.ilvl, 'loadouts cannot add gems or item levels');
+  check(!gemsOf(s4.w.players.get('p:g')!.save.equipment.main!).length && s4.w.players.get('p:g')!.save.equipment.main?.ilvl === bow.ilvl, 'loadouts cannot add gems or item levels');
   console.log(fails ? `FAIL ${fails}` : 'OK (runeforge)');
 }

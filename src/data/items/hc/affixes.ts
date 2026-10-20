@@ -4,12 +4,13 @@
  * Values follow Modifier conventions (fractions: 0.08 = +8%). Flat hp / armour / spell power / Ember are written at
  * the L1 scale: the engine (rules/affixes.ts) multiplies them by P(ilvl), so their tiers only widen the roll band.
  * Negative stats (cost, dash cooldown, damage taken) grow in size tier by tier. No conditional pct on a scaled stat.
- * The spell-specific affixes ("+1 to <kit spell>", "+1 to all <school> spells") are generated from the class kits,
- * so new kit spells get theirs automatically. {v} in a text is the rolled value.
+ * The spell-specific affixes ("+1 to <kit spell>" for all 6 kit spells, "+1 to all <school> spells") are generated from
+ * the class kits and NEW_KIT, so kit spells get theirs automatically. {v} in a text is the rolled value.
  */
 import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
 import { kitFor } from '@/data/classes/hc/kits';
 import { HC_KIT_SPELLS } from '@/data/spells/hc/kit-spells';
+import { HC_KIT_SPELLS_NEW, NEW_KIT } from '@/data/spells/hc/kit-spells-new';
 import { SCHOOL_NAME } from '@/data/classes/hc';
 import type { AffixDef, AffixSlot, AffixTier } from '@/systems/rules/affixTypes';
 import type { Action, DamageKind, Modifier, Proc, SchoolId, StatKey } from '@/systems/rules/types';
@@ -140,8 +141,9 @@ const PROCS: AffixDef[] = [
 
 // ───────────── spell-specific (generated from the kits) ─────────────
 const SPELL_LEVELS: AffixTier[] = [{ ilvl: 1, min: 1, max: 1 }, { ilvl: 20, min: 1, max: 2 }, { ilvl: 38, min: 2, max: 2 }];
-const KIT_SPELL_AFFIXES: AffixDef[] = HC_CLASSES.flatMap((c) => kitFor(c.id).spells.map((sid): AffixDef => {
-  const name = HC_KIT_SPELLS.find((s) => s.id === sid)?.name ?? sid;
+// the 3 starting kit spells and the 3 learned on the Spells branch (NEW_KIT)
+const KIT_SPELL_AFFIXES: AffixDef[] = HC_CLASSES.flatMap((c) => [...kitFor(c.id).spells, ...(NEW_KIT[c.id] ?? [])].map((sid): AffixDef => {
+  const name = [...HC_KIT_SPELLS, ...HC_KIT_SPELLS_NEW].find((s) => s.id === sid)?.name ?? sid;
   return { id: `pre_lvl_${sid.replace(/^spell:/, '')}`, kind: 'prefix', text: `+{v} to ${name}`, slots: ['weapon', 'amulet'], group: `spell:${sid}`,
     weight: 30, minIlvl: 1, tiers: SPELL_LEVELS, effect: { spellLevels: sid }, only: { classId: c.id } };
 }));

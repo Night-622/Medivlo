@@ -11,7 +11,13 @@ import type { CharacterSave, HcSpell, Passive, Trigger } from '@/systems/rules/t
 import { Btn } from '@/net/types';
 import { spend } from '@/systems/sim/builds';
 import { applyStatus, convertShares, dealDamage } from '@/systems/sim/combat';
-import { cast, spellView } from '@/systems/sim/player';
+import { cast, spellView, weaponRoll } from '@/systems/sim/player';
+import { availablePoints } from '@/systems/rules/character';
+import { allNodes, canLearn, MAX_SHARED_KEYSTONES } from '@/systems/rules/tree';
+import { compileStats } from '@/systems/rules/playerStats';
+import { weaponBase } from '@/systems/rules/gear';
+import { HC_MASTERY } from '@/data/skilltrees/hc/mastery';
+import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import type { PlayerEnt } from '@/systems/sim/state';
 import { check, dummy, hero, world, type World } from './features-harness';
 
@@ -134,10 +140,13 @@ function newStats(w0: () => World): void {
   {
     const w = w0(), p = hero(w, 'a', save('arcanist')), d = dummy(w, 40, 0), d2 = dummy(w, 80, 0);
     applyStatus(w.sim.w, p, d, { id: 'burn' });
+    const b0p = p.base.stats['statusDmg.burn'] ?? 0;
     give(p, { mods: [{ stat: 'statusDmg.burn', op: 'flat', value: 0.5 }] });
     applyStatus(w.sim.w, p, d2, { id: 'burn' });
     const r = (d2.statuses.get('burn')?.dps ?? 0) / Math.max(1e-9, d.statuses.get('burn')?.dps ?? 0);
-    check(Math.abs(r - 1.5) < 1e-6, 'stats: +50% burn damage makes a burn tick 1.5× as hard', `ratio ${r.toFixed(3)}`);
+    // additive with the class's own burn damage (mastery / perks): (1 + base + 0.5) / (1 + base)
+    const want = (1.5 + b0p) / (1 + b0p);
+    check(Math.abs(r - want) < 1e-6, `stats: +50% burn damage adds to the burn tick (×${want.toFixed(3)} over the class's own ${Math.round(b0p * 100)}%)`, `ratio ${r.toFixed(3)}`);
     give(p, { mods: [{ stat: 'statusChance', op: 'flat', value: 1 }] });
     let landed = 0;
     for (let i = 0; i < 200; i++) { const t = dummy(w, 200 + i, 0); applyStatus(w.sim.w, p, t, { id: 'bleed', chance: 0.25 }); if (t.statuses.has('bleed')) landed++; }
@@ -186,7 +195,73 @@ function newStats(w0: () => World): void {
   }
 }
 
+/** Shared keystones (cap 2, Upgrades c1), their 5 sim hooks, and weapon mastery. */
+function keystonesAndMastery(): void {
+  // cap: with points to spare, a third shared keystone is refused
+  const s: CharacterSave = { ...newCharacter('arcanist'), level: 40, tree: {} };
+  const ks = allNodes('arcanist').filter((n) => n.shared);
+  for (const n of ks) for (const id of [...n.req.filter((r) => !r.endsWith('root')), n.id]) {
+    for (const step of ['a', 'm1', 'm2', 'b', 'b', 'b'].map((x) => id.replace(/c1$/, x))) if (canLearn('arcanist', step, s.tree, availablePoints(s)).ok) s.tree[step] = (s.tree[step] ?? 0) + 1;
+    if (canLearn('arcanist', n.id, s.tree, availablePoints(s)).ok) s.tree[n.id] = 1;
+  }
+  const held = ks.filter((n) => s.tree[n.id]).length;
+  const third = ks.find((n) => !s.tree[n.id]);
+  const why = third ? canLearn('arcanist', third.id, s.tree, availablePoints(s)) : { ok: true };
+  check(ks.length === 3 && held === MAX_SHARED_KEYSTONES && !why.ok && /shared keystones/.test(why.ok ? '' : why.why), `shared keystones: 3 offered, ${MAX_SHARED_KEYSTONES} can be held, the third is refused`, `offered ${ks.length}, held ${held}`);
+  // spToAttack (Iron Grip): spell power lends to a sword's swing
+  {
+    const w = world(), p = hero(w, 'a', save('swordsman'));
+    const avg = (q: PlayerEnt) => { let t = 0; for (let i = 0; i < 400; i++) t += weaponRoll(w.sim.w, q); return t / 400; };
+    const a0 = avg(p);
+    give(p, { hooks: [{ id: 'spToAttack', value: 1 }] });
+    const a1 = avg(p), want = (p.stats.stats.sp ?? 0) * 0.5;
+    check(Math.abs(a1 - a0 - want) < want * 0.15, `Iron Grip: half your spell power adds to each weapon swing (+${want.toFixed(1)})`, `${a0.toFixed(1)} → ${a1.toFixed(1)}`);
+  }
+  // emberShield: 30% of a hit is paid from Ember
+  {
+    const w = world(), p = hero(w, 'a', save('warden')), d = dummy(w, 40, 0);
+    d.dmg = 1;
+    p.spawnProtectUntil = 0;
+    give(p, { hooks: [{ id: 'emberShield', value: 0.3 }], mods: [{ stat: 'armor', op: 'flat', value: -1e6 }] });
+    p.ember = 100;
+    const hp0 = p.hp;
+    dealDamage(w.sim.w, d, p, 100, 'ash');
+    check(p.ember < 100 && p.ember >= 60 && hp0 - p.hp < 100 && hp0 - p.hp > 40, 'Ember Shield: part of a hit is paid from Ember, the rest from health', `ember 100 → ${p.ember.toFixed(1)}, hp −${(hp0 - p.hp).toFixed(0)}`);
+  }
+  // convertPower (Elementalist): conversions are 25% stronger
+  const sh = convertShares([{ from: 'attack', to: 'ash', pct: 0.4 }], 'physical', false, 1.25);
+  check(Math.abs((sh[0]?.[1] ?? 0) - 0.5) < 1e-9, 'Elementalist: a 40% conversion becomes 50%', JSON.stringify(sh));
+  // spellblade: every 4th basic attack casts slot 1 at 40%
+  {
+    const w = world(), p = hero(w, 'a', save('warden')), d = dummy(w, 30, 0);
+    give(p, { hooks: [{ id: 'spellblade', value: 0.4 }] });
+    const n0 = w.events.length;
+    w.run(8000, { a: { target: d.id, aim: { x: 30, y: 0 } } });
+    const attacks = p.attackCount, slot1 = w.since(n0, 'ability:cast').filter((e) => e.p.casterId === p.id && e.p.ability === p.save.hotbar[0]).length;
+    check(attacks >= 8 && slot1 === Math.floor(attacks / 4), `Spellblade: ${attacks} basic attacks cast ${p.save.hotbar[0]} ${slot1}× (every 4th)`, `attacks ${attacks}, casts ${slot1}`);
+  }
+  // auraHitsEnemies (Conduit)
+  {
+    const w = world(), p = hero(w, 'a', save('bard')), foe = dummy(w, 80, 0);
+    give(p, { aura: [{ id: 'song', r: 200, mods: [{ stat: 'dmg', op: 'flat', value: 0.05 }] }], hooks: [{ id: 'auraHitsEnemies' }] });
+    const n0 = w.events.length;
+    w.run(2200);
+    const hits = w.since(n0, 'combat:hit').filter((e) => e.p.sourceId === p.id && e.p.targetId === foe.id && e.p.kind === 'dmg').length;
+    check(hits >= 2, 'Conduit: your aura also strikes foes in its reach each pulse', `${hits} hits in 2.2 s`);
+  }
+  // mastery: the passive for the weapon in hand, and only that one
+  const sw = newCharacter('warden');
+  const ms = HC_MASTERY.filter((m) => m.classId === 'warden');
+  const inHand = weaponBase(sw.equipment.main?.base ?? kitFor('warden').startWeapon)!.type;
+  const sig = (x: CharacterSave) => JSON.stringify(compileStats(x).stats);
+  const other = ms.find((m) => m.weapon !== inHand);
+  const otherBase = other && HC_WEAPONS.find((x) => x.type === other.weapon)!.id;
+  const swapped = otherBase ? { ...sw, equipment: { ...sw.equipment, main: { uid: 'm', base: otherBase, ilvl: 1, qty: 1 } } } : sw;
+  check(ms.some((m) => m.weapon === inHand) && !!other && sig(swapped) !== sig(sw), `weapon mastery: warden's ${inHand} passive applies; switching to a ${other?.weapon} changes it`);
+}
+
 export function buildChecks(): void {
+  keystonesAndMastery();
   conversion();
   spellLevels();
   auras();

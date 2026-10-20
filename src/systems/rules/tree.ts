@@ -4,6 +4,10 @@
  */
 import { HC_CLASSES, HC_SCHOOL_ELEMENT, HC_SCHOOL_KEYSTONES, HC_SCHOOL_SPELLS } from '@/data/classes/hc/classes.gen';
 import { HC_KIT_SPELLS } from '@/data/spells/hc/kit-spells';
+import { HC_KIT_SPELLS_NEW, NEW_KIT } from '@/data/spells/hc/kit-spells-new';
+import { HC_SCHOOL_PERKS } from '@/data/skilltrees/hc';
+import { HC_SHARED_KEYSTONES, KEYSTONE_OFFERS } from '@/data/skilltrees/hc/keystones';
+import type { PerkDef, SchoolPerks } from './perkTypes';
 import { slug } from '@/data/spells/hc/build';
 import { SCHOOL_NAME } from '@/data/classes/hc';
 import type { Modifier, Passive, SchoolId, StatKey, TreeBranch, TreeNode } from './types';
@@ -16,40 +20,49 @@ const pct = (stat: StatKey, value: number): Modifier => ({ stat, op: 'pct', valu
 const pc = (v: number) => `${Math.round(v * 100)}%`;
 
 /** A node spec: per-rank text + passive builders. */
-interface Spec { name: string; icon: string; max?: number; text: (r: number) => string; fx: (r: number) => Passive; spell?: string; free?: boolean }
+interface Spec { name: string; icon: string; max?: number; text: (r: number) => string; fx: (r: number) => Passive; spell?: string; free?: boolean; label?: string; shared?: boolean }
 const one = (name: string, icon: string, text: string, fx: Passive, spell?: string): Spec => ({ name, icon, text: () => text, fx: () => fx, spell });
 const ranks = (name: string, icon: string, max: number, text: (r: number) => string, fx: (r: number) => Passive): Spec => ({ name, icon, max, text, fx });
+
+// ───────────── perks (BUILDS.md §3; tables by Claude 5 in src/data/skilltrees/hc) ─────────────
+const PERK_LABEL: Record<PerkDef['kind'], string> = {
+  conversion: 'Perk · conversion', trigger: 'Perk · trigger', resource: 'Perk · resource', aura: 'Perk · aura', tradeoff: 'Perk · trade-off', power: 'Perk',
+};
+const perk = (p: PerkDef, icon: string, label?: string): Spec =>
+  ({ name: p.name, icon: p.icon ?? icon, max: p.ranks, text: (r) => p.text[r - 1], fx: (r) => p.effects[r - 1], label: label ?? PERK_LABEL[p.kind] });
+function schoolPerks(school: SchoolId): SchoolPerks {
+  const sp = HC_SCHOOL_PERKS.find((x) => x.school === school);
+  if (!sp) throw new Error(`[tree] no perk table for ${school}`);
+  return sp;
+}
+const classPerks = (classId: string, school: SchoolId): PerkDef[] => {
+  const c = schoolPerks(school).classes.find((x) => x.classId === classId);
+  if (!c) throw new Error(`[tree] no signature perks for ${classId}`);
+  return c.signature;
+};
+export const MAX_SHARED_KEYSTONES = 2;
 
 interface PathSpec { a: Spec; m1: Spec; m2: Spec; b: Spec; c1: Spec; c2: Spec }
 interface BranchSpec { root: Spec; paths: PathSpec[]; bridge: Spec; tops: [Spec, Spec]; ult: Spec; topsExclusive?: boolean; ultAny?: boolean; labels: Record<string, string> }
 
 // ───────────── Spells branch ─────────────
-const VARIANTS: [string, string, (id: string) => Passive, string, string, (id: string) => Passive][] = [
-  ['Echo', 'Each cast has a 25% chance to repeat.', (s) => ({ spellMods: [{ spell: s, echo: 0.25 }] }), 'Split', 'Splits into three weaker copies.', (s) => ({ spellMods: [{ spell: s, split: true }] })],
-  ['Twin', 'Also hits a second foe nearby.', (s) => ({ spellMods: [{ spell: s, twin: true }] }), 'Wide', 'The area is 40% larger.', (s) => ({ spellMods: [{ spell: s, area: 0.4 }] })],
-  ['Lingering', 'Leaves a lingering field for 3s.', (s) => ({ spellMods: [{ spell: s, linger: 3000 }] }), 'Burst', 'Hits all at once for 50% more.', (s) => ({ spellMods: [{ spell: s, burst: true, dmg: 0.5 }] })],
-];
-const UPGRADE: [string, string, number, (s: string, r: number) => Passive][] = [
-  ['Empowered', 'damage', 0.15, (s, r) => ({ spellMods: [{ spell: s, dmg: 0.15 * r }] })],
-  ['Quickened', 'faster cooldown', 0.1, (s, r) => ({ spellMods: [{ spell: s, cd: -0.1 * r }] })],
-  ['Efficient', 'less Ember', 0.12, (s, r) => ({ spellMods: [{ spell: s, cost: -0.12 * r }] })],
-];
-
+// Path i: kit spell i (free) → the new kit spell i+3 (m1) → 4 signature perks (m2, b with 3 ranks, the c1 / c2 pick).
+// The old Echo / Split / Twin / Wide / Linger / Burst variants are spell runes now (BUILDS.md §2.2).
 function spellsBranch(classId: string, school: SchoolId): BranchSpec {
   const c = HC_CLASSES.find((x) => x.id === classId)!;
   const si = `school_${school}`;
   const kitIds = c.abilities.map((a) => HC_KIT_SPELLS.find((s) => s.name === a.name)!);
   const SP = HC_SCHOOL_SPELLS[school];
+  const sig = classPerks(classId, school), fresh = NEW_KIT[classId] ?? [];
   const paths = kitIds.map((sp, i): PathSpec => {
-    const [vn1, vd1, vf1, vn2, vd2, vf2] = VARIANTS[i];
-    const [un, ul, uv, uf] = UPGRADE[i];
+    const nw = HC_KIT_SPELLS_NEW.find((s) => s.id === fresh[i]);
     return {
       a: { ...one(sp.name, sp.icon, sp.desc, {}, sp.id), free: true },
-      m1: one(`+8% ${sp.name} damage`, sp.icon, `+8% ${sp.name} damage`, { spellMods: [{ spell: sp.id, dmg: 0.08 }] }),
-      m2: one(`−8% ${sp.name} Ember cost`, sp.icon, `−8% ${sp.name} Ember cost`, { spellMods: [{ spell: sp.id, cost: -0.08 }] }),
-      b: ranks(`${un} ${sp.name}`, sp.icon, 3, (r) => `+${Math.round(r * uv * 100)}% ${ul}`, (r) => uf(sp.id, r)),
-      c1: one(`${sp.name}: ${vn1}`, sp.icon, vd1, vf1(sp.id)),
-      c2: one(`${sp.name}: ${vn2}`, sp.icon, vd2, vf2(sp.id)),
+      m1: nw ? { ...one(nw.name, nw.icon, nw.desc, {}, nw.id), label: 'New spell' } : one(`+8% ${sp.name} damage`, sp.icon, `+8% ${sp.name} damage`, { spellMods: [{ spell: sp.id, dmg: 0.08 }] }),
+      m2: perk(sig[4 * i], sp.icon),
+      b: perk(sig[4 * i + 1], sp.icon),
+      c1: perk(sig[4 * i + 2], sp.icon, 'Perk · pick one of two'),
+      c2: perk(sig[4 * i + 3], sp.icon, 'Perk · pick one of two'),
     };
   });
   const top = (i: 0 | 1): Spec => {
@@ -60,7 +73,7 @@ function spellsBranch(classId: string, school: SchoolId): BranchSpec {
   return {
     root: { ...one(`${c.name} Spellcraft`, si, 'Your path into magic. Every spell grows from here.', {}), free: true },
     paths,
-    bridge: one('Spell Weaving', si, '+3% damage with all spells', { spellMods: [{ spell: '*', dmg: 0.03 }] }),
+    bridge: one('Spell Weaving', si, '+6% spell damage and +6% cast speed', { mods: [f('spellDmg', 0.06), f('castSpeed', 0.06)] }),
     tops: [top(0), top(1)],
     ult: one(SP[2][0], si, SP[2][1], {}, `spell:${slug(SP[2][0])}`),
     labels: { root: 'Path root', major: 'Spell', minor: 'Minor node', choice: 'Variant · pick one of two', top: 'New school spell', ult: 'Ultimate spell' },
@@ -108,32 +121,32 @@ function keystone(school: SchoolId, i: 0 | 1): Spec {
   return one(name, `school_${school}`, desc, P[school][i]);
 }
 
+// Path 0 offence, 1 defence, 2 focus; the school's 8 perks sit at p0 c1/c2, p1 b/c1/c2, p2 b/c1/c2 (BUILDS.md §3)
 function skillsBranch(school: SchoolId): BranchSpec {
   const S = SCHOOL_NAME[school], si = `school_${school}`;
   const dk = `dmg.${school}` as StatKey;
+  const P = schoolPerks(school).perks;
+  const pick = 'School perk · pick one of two';
   return {
     root: { ...one(`${S} Discipline`, si, 'The core of your school. Grow outward into offence, defence and utility.', {}), free: true },
     paths: [
       { a: ranks(`${S} Attunement`, si, 5, (r) => `+${r * 3}% ${S} damage`, (r) => ({ mods: [f(dk, 0.03 * r)] })),
-        m1: one('+2% crit chance', 'icon_dagger', '+2% crit chance', { mods: [f('crit', 0.02)] }),
-        m2: one('+4% crit damage', 'icon_dagger', '+4% crit damage', { mods: [f('critd', 0.04)] }),
+        m1: one('Set Mastery', 'icon_robe', 'Attuned armour bonuses are 25% stronger.', { hooks: [{ id: 'setMastery', value: 0.25 }] }),
+        m2: one('Keen Eye', 'icon_dagger', '+3% crit chance and +10% crit damage', { mods: [f('crit', 0.03), f('critd', 0.1)] }),
         b: elementNode(school),
-        c1: one('Set Mastery', 'icon_robe', 'Attuned armour bonuses are 25% stronger.', { hooks: [{ id: 'setMastery', value: 0.25 }] }),
-        c2: one('Hunter’s Focus', 'icon_bow', '+15% damage to foes above 80% health.', { mods: [f('dmg', 0.15, { c: 'targetHpAbove', pct: 0.8 })] }) },
+        c1: perk(P[0], si, pick), c2: perk(P[1], si, pick) },
       { a: ranks('Toughness', 'icon_shield', 5, (r) => `+${r * 4}% max health`, (r) => ({ mods: [pct('hp', 0.04 * r)] })),
-        m1: one('+5% armour', 'icon_helm', '+5% armour', { mods: [pct('armor', 0.05)] }),
-        m2: one('+3% max health', 'icon_potion_red', '+3% max health', { mods: [pct('hp', 0.03)] }),
-        b: ranks('Iron Will', 'icon_helm', 3, (r) => `+${r * 5}% armour, ${r * 5}% less stun time`, (r) => ({ mods: [pct('armor', 0.05 * r), f('stunTaken', -0.05 * r)] })),
-        c1: one('Last Stand', 'icon_shield', 'Below 25% health you take 20% less damage.', { mods: [f('dmgTaken', -0.2, { c: 'hpBelow', pct: 0.25 })] }),
-        c2: one('Thick Skin', 'icon_robe', 'The first hit every 10s deals half damage.', { hooks: [{ id: 'thickSkin', value: 10000 }] }) },
+        m1: one('+10% armour', 'icon_helm', '+10% armour', { mods: [pct('armor', 0.1)] }),
+        m2: one('+5% max health', 'icon_potion_red', '+5% max health', { mods: [pct('hp', 0.05)] }),
+        b: perk(P[2], si, 'School perk'),
+        c1: perk(P[3], si, pick), c2: perk(P[4], si, pick) },
       { a: ranks('Focus', 'icon_potion_ember', 5, (r) => `+${r * 10} max Ember`, (r) => ({ mods: [f('ember', 10 * r)] })),
-        m1: one('+0.3 Ember regen', 'icon_potion_ember', '+0.3 Ember regen per second', { mods: [f('emberRegen', 0.3)] }),
-        m2: one('3% shorter cooldowns', 'icon_staff', '3% shorter cooldowns', { mods: [f('cdr', 0.03)] }),
-        b: ranks('Quick Mind', 'icon_staff', 3, (r) => `${r * 4}% shorter cooldowns`, (r) => ({ mods: [f('cdr', 0.04 * r)] })),
-        c1: one('Overflow', 'icon_potion_red', 'Healing beyond full health becomes a shield.', { hooks: [{ id: 'overheal' }] }),
-        c2: one('Ember Well', 'icon_potion_ember', 'Kills restore 5 Ember.', { procs: [{ on: 'kill', do: [{ a: 'resource', ember: 5 }] }] }) },
+        m1: one('+0.6 Ember regen', 'icon_potion_ember', '+0.6 Ember regen per second', { mods: [f('emberRegen', 0.6)] }),
+        m2: one('5% shorter cooldowns', 'icon_staff', '5% shorter cooldowns', { mods: [f('cdr', 0.05)] }),
+        b: perk(P[5], si, 'School perk'),
+        c1: perk(P[6], si, pick), c2: perk(P[7], si, pick) },
     ],
-    bridge: one('Versatility', 'icon_ring', '+2% to all stats', { mods: [pct('hp', 0.02), pct('armor', 0.02), pct('sp', 0.02), f('dmg', 0.02)] }),
+    bridge: one('Versatility', 'icon_ring', '+3% to all stats', { mods: [pct('hp', 0.03), pct('armor', 0.03), pct('sp', 0.03), f('dmg', 0.03)] }),
     tops: [keystone(school, 0), keystone(school, 1)],
     topsExclusive: true, ultAny: true,
     ult: one(`Avatar of ${S}`, si, `Your keystone also grants +10% ${S} damage and its effect is 50% stronger.`, { mods: [f(dk, 0.1)], hooks: [{ id: 'keystonePower', value: 0.5 }] }),
@@ -142,7 +155,13 @@ function skillsBranch(school: SchoolId): BranchSpec {
 }
 
 // ───────────── Upgrades branch ─────────────
-function upgradesBranch(): BranchSpec {
+// Each path's c1 is one of the class's 3 offered shared keystones (≤ MAX_SHARED_KEYSTONES held), against a utility in c2
+function upgradesBranch(classId: string): BranchSpec {
+  const offers = (KEYSTONE_OFFERS[classId] ?? []).map((id) => HC_SHARED_KEYSTONES.find((k) => k.id === id));
+  const ks = (i: number, fallback: Spec): Spec => {
+    const k = offers[i];
+    return k ? { ...perk(k, 'icon_amulet', 'Shared keystone · max 2 · or the other option'), shared: true } : fallback;
+  };
   return {
     root: { ...one('Adventurer', 'icon_coin', 'Experience upgrades for any class: body, pack and road.', {}), free: true },
     paths: [
@@ -150,20 +169,20 @@ function upgradesBranch(): BranchSpec {
         m1: one('+2% move speed', 'icon_boots', '+2% move speed', { mods: [f('moveSpeed', 0.02)] }),
         m2: one('+2% max health', 'icon_potion_red', '+2% max health', { mods: [pct('hp', 0.02)] }),
         b: ranks('Fleet Foot', 'icon_boots', 3, (r) => `+${r * 3}% move speed`, (r) => ({ mods: [f('moveSpeed', 0.03 * r)] })),
-        c1: one('Extra Dash', 'school_storm', '+1 dash charge.', { mods: [f('dashCharges', 1)] }),
-        c2: one('Sure Footed', 'icon_boots', 'You can’t be slowed while dashing.', { hooks: [{ id: 'dashNoSlow' }] }) },
+        c1: ks(0, one('Extra Dash', 'school_storm', '+1 dash charge.', { mods: [f('dashCharges', 1)] })),
+        c2: one('Sure Footed', 'icon_boots', '+1 dash charge, and you can’t be slowed while dashing.', { mods: [f('dashCharges', 1)], hooks: [{ id: 'dashNoSlow' }] }) },
       { a: ranks('Ember Reserve', 'icon_potion_ember', 5, (r) => `+${r * 15} max Ember`, (r) => ({ mods: [f('ember', 15 * r)] })),
         m1: one('+3 bag slots', 'icon_robe', '+3 bag slots', { mods: [f('bag', 3)] }),
         m2: one('+5% potion healing', 'icon_potion_red', '+5% potion healing', { mods: [f('potionHeal', 0.05)] }),
         b: ranks('Deep Pockets', 'icon_robe', 3, (r) => `+${r * 6} bag slots`, (r) => ({ mods: [f('bag', 6 * r)] })),
-        c1: one('Potion Belt', 'icon_potion_red', 'Potions recharge 40% faster.', { hooks: [{ id: 'potionCdr', value: 0.4 }] }),
-        c2: one('Magnet', 'icon_coin', 'Loot flies to you from twice as far.', { mods: [f('lootRange', 48)] }) },
+        c1: ks(1, one('Potion Belt', 'icon_potion_red', 'Potions recharge 40% faster.', { hooks: [{ id: 'potionCdr', value: 0.4 }] })),
+        c2: one('Potion Belt', 'icon_potion_red', 'Potions recharge 40% faster, and loot flies to you from twice as far.', { hooks: [{ id: 'potionCdr', value: 0.4 }], mods: [f('lootRange', 48)] }) },
       { a: ranks('Endurance', 'icon_potion_stamina', 5, (r) => `+${r * 10} max stamina`, (r) => ({ mods: [f('stamina', 10 * r)] })),
         m1: one('+5% stamina regen', 'icon_potion_stamina', '+5% stamina regen', { mods: [pct('staminaRegen', 0.05)] }),
         m2: one('+3% XP gained', 'icon_amulet', '+3% XP gained', { mods: [f('xp', 0.03)] }),
         b: ranks('Second Breath', 'icon_potion_stamina', 3, (r) => `+${r * 10}% stamina regen`, (r) => ({ mods: [pct('staminaRegen', 0.1 * r)] })),
-        c1: one('Quick Study', 'icon_amulet', '+15% XP gained.', { mods: [f('xp', 0.15)] }),
-        c2: one('Haggler', 'icon_coin', 'Shop prices are 20% lower.', { hooks: [{ id: 'shopDiscount', value: 0.2 }] }) },
+        c1: ks(2, one('Quick Study', 'icon_amulet', '+15% XP gained.', { mods: [f('xp', 0.15)] })),
+        c2: one('Haggler', 'icon_coin', 'Shop prices are 20% lower, and +15% XP gained.', { hooks: [{ id: 'shopDiscount', value: 0.2 }], mods: [f('xp', 0.15)] }) },
     ],
     bridge: one('Treasure Sense', 'icon_ring', '+3% chance of rarer loot', { mods: [f('itemFind', 0.03)] }),
     tops: [
@@ -183,7 +202,7 @@ function nodesFor(spec: BranchSpec, branch: TreeBranch): TreeNode[] {
     out.push({
       id: p + id, branch, kind, name: s.name, icon: s.icon, x, y, size, maxRank: max,
       text: Array.from({ length: max }, (_, i) => s.text(i + 1)), effects: Array.from({ length: max }, (_, i) => s.fx(i + 1)),
-      grantsSpell: s.spell, req: [], free: s.free, typeLabel: spec.labels[kind], ...extra,
+      grantsSpell: s.spell, req: [], free: s.free, typeLabel: s.label ?? spec.labels[kind], ...(s.shared ? { shared: true } : {}), ...extra,
     });
   };
   N('root', 410, 476, 52, 'root', spec.root);
@@ -213,7 +232,7 @@ export function buildTree(classId: string, branch: TreeBranch): TreeNode[] {
   if (hit) return hit;
   const c = HC_CLASSES.find((x) => x.id === classId);
   if (!c) throw new Error(`[tree] unknown class ${classId}`);
-  const spec = branch === 'spells' ? spellsBranch(classId, c.school) : branch === 'skills' ? skillsBranch(c.school) : upgradesBranch();
+  const spec = branch === 'spells' ? spellsBranch(classId, c.school) : branch === 'skills' ? skillsBranch(c.school) : upgradesBranch(classId);
   const nodes = nodesFor(spec, branch);
   cache.set(key, nodes);
   return nodes;
@@ -232,6 +251,7 @@ export function canLearn(classId: string, nodeId: string, T: TreeRanks, availabl
   if (n.free) return { ok: false, why: 'Starting spell' };
   if (rankOf(n, T) >= n.maxRank) return { ok: false, why: 'Maxed' };
   if (n.excludes && (T[n.excludes] ?? 0) > 0) return { ok: false, why: n.kind === 'top' ? 'You already chose the other keystone.' : 'You already chose the other option.' };
+  if (n.shared && allNodes(classId).filter((x) => x.shared && rankOf(x, T) > 0).length >= MAX_SHARED_KEYSTONES) return { ok: false, why: `You already hold ${MAX_SHARED_KEYSTONES} shared keystones.` };
   const nodes = buildTree(classId, n.branch);
   const rq = n.req.map((id) => nodes.find((x) => x.id === id)!).filter(Boolean);
   const met = rq.map((x) => rankOf(x, T) > 0);

@@ -20,6 +20,9 @@ export const tierAt = (level: number): number => Math.max(0, ...[0, 1, 2, 3, 4, 
 /** What a player who kept up carries (fight.ts): one tier behind the newest unlock. */
 export const keptUpTier = (level: number): number => Math.max(0, tierAt(level) - 1);
 
+/** Highest COMMON material / style index (wood, iron / cloth, leather) unlocked at this level. */
+export const commonTier = (level: number): number => Math.min(1, tierAt(level));
+
 export interface GearSpec {
   weapon: WeaponType;
   /** material index (0 wood … 7 spark) */

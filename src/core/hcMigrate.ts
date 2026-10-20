@@ -8,7 +8,7 @@ import type { CharacterSave, ItemInstance } from './hc';
  * The tree refund (buildVersion < 2 → empty tree, one free respec) runs only once the perk tree has landed
  * (Claude 3's phase 3b). Until then saves keep their tree untouched.
  */
-export const PERK_TREE_LIVE = false;
+export const PERK_TREE_LIVE = true;
 export const BUILD_VERSION = PERK_TREE_LIVE ? 2 : 1;
 
 /** Old single gem → sockets; items without rarity keep the base's rarity (nothing to write). */

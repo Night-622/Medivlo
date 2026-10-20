@@ -27,6 +27,7 @@ const SUITES = [
   { id: 'sim-hitboxes', what: 'enemy + player hitboxes: hits inside reach/shape, misses outside, bodies match sprites', cmd: sim('hitboxes'), file: 'tools/e2e/sim/hitboxes.ts', owner: 'Claude 3' },
   { id: 'sim-features', what: 'every class: spells 1–4, dash, potions, skill tree, gear + sets, legendaries, level-up, shop, Runeforge', cmd: sim('features'), file: 'tools/e2e/sim/features.ts', owner: 'Claude 3' },
   { id: 'rules-props', what: 'rules invariants: trees, stat engine, gear/sets/Runeforge/paperdoll, affixes, perks, keystones, mastery', cmd: sim('rules-props'), file: 'tools/e2e/sim/rules-props.ts', owner: 'Claude 3 + Claude 5' },
+  { id: 'builds', what: 'balance gate: every class, starter and typical build, beats its lair-2, nemesis and Act III bosses', cmd: sim('builds'), owner: 'Claude 3' },
   { id: 'sim-coop', what: 'co-op + PvP rules, downed/revive, loot, escorts', cmd: sim('coop') },
   { id: 'sim-economy', what: 'quest rewards, shops, chests, Runeforge prices', cmd: sim('economy') },
   { id: 'sim-security', what: 'remote loadouts sanitised', cmd: sim('security') },

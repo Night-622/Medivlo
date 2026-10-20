@@ -11,7 +11,7 @@ import { HC_ITEM_CATS } from '@/data/items/hc/items.gen';
 import { SCHOOL_COLOR } from '@/data/classes/hc';
 import { kitFor } from '@/data/classes/hc/kits';
 import { campaignItem } from '@/data/items/hc/campaign-items';
-import { itemInfo, legendary, slotsFor, weaponDamage } from '@/systems/rules/gear';
+import { itemInfo, itemWeaponDamage, legendary, slotsFor, weaponDamage } from '@/systems/rules/gear';
 import { compileStats } from '@/systems/rules/playerStats';
 import { compareLines, fmtStat, itemTooltip, statLabel } from '@/systems/rules/describeHc';
 import { xpToNext } from '@/systems/rules/curves';
@@ -79,7 +79,7 @@ export class InventoryPanel {
     const xpPct = Math.round((ch.xp / xpToNext(ch.level)) * 100);
     this.c.add(s.add.text(72, 460, `XP ${ch.xp} / ${xpToNext(ch.level)} (${xpPct}%)`, typeStyle('caption', C.text300)));
     const main = ch.equipment.main;
-    const [dmin, dmax] = main ? weaponDamage(main.base, main.ilvl) : weaponDamage(kit.startWeapon, ch.level).map((v) => Math.round(v * 0.7));
+    const [dmin, dmax] = main ? itemWeaponDamage(main) : weaponDamage(kit.startWeapon, ch.level).map((v) => Math.round(v * 0.7));
     const rows: [string, string][] = [['Weapon damage', `${dmin}–${dmax}`], ...STATS.map((k) => [statLabel(k), fmtStat(k, st[k] ?? 0)] as [string, string])];
     rows.forEach(([k, v], i) => {
       const col = i % 2, row = Math.floor(i / 2);

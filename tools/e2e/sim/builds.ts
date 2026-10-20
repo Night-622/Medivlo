@@ -1,7 +1,7 @@
 /**
  * Build simulator + balance gate (Claude 3): measures today's build space through the real authority sim.
- * For all 24 classes at L8 (lair-2), L14 (nemesis) and L34 (Act III): starter (creation kit, no tree) and typical
- * builds; in full mode also three archetypes (spell-heavy, melee/attack, tank), six seeded random LEGAL builds and
+ * For all 24 classes at L8 (lair-2), L14 (nemesis) and L34 (Act III): starter (common gear at level, points clicked
+ * in tree order) and typical builds, plus "fresh" (creation kit, no tree) at L8 for reference, not gated; in full mode also three archetypes (spell-heavy, melee/attack, tank), six seeded random LEGAL builds and
  * a dead-content A/B of every tree node and kit / school spell. Each build fights a realm pack, a 5-room lair and
  * its campaign boss with the fight.ts bot. Deterministic (seeded Sims and RNGs).
  * GATE: every class's starter AND typical build beats its lair-2, nemesis and Act III bosses, and nothing crashes.
@@ -11,7 +11,7 @@
  */
 import { writeFileSync } from 'node:fs';
 import { CLASS_SCHOOL } from '@/core/constants';
-import { archetypeBuilds, randomBuild, seedOf, starterBuild, typicalBuild, type Build } from './builds-make';
+import { archetypeBuilds, freshBuild, randomBuild, seedOf, starterBuild, typicalBuild, type Build } from './builds-make';
 import { BOSS_SLOT, LEVELS, runBuild, type Level, type Row } from './builds-run';
 import { classTable, deadLines, deadSummary, outliers } from './builds-report';
 import { deadContent, type ClassDead } from './builds-dead';
@@ -28,7 +28,7 @@ if (!classes.length) { console.log(`FAIL unknown class ${ONLY}`); console.log('r
 const secs = (): string => ((Date.now() - t0) / 1000).toFixed(1);
 const errors: string[] = [];
 const rows: Row[] = [];
-console.log(`# builds ${FULL ? 'full' : 'quick'}: ${classes.length} classes × L${LEVELS.join('/L')} — ${FULL ? `starter, typical, 3 archetypes, ${RANDOM_N} random each + dead-content A/B at L${PROBE_LEVEL}` : 'starter + typical'}`);
+console.log(`# builds ${FULL ? 'full' : 'quick'}: ${classes.length} classes × L${LEVELS.join('/L')} — ${FULL ? `starter, typical, 3 archetypes, ${RANDOM_N} random each + dead-content A/B at L${PROBE_LEVEL}` : 'starter + typical (+ fresh at L8, not gated)'}`);
 
 function play(b: Build): void {
   try {
@@ -42,6 +42,7 @@ function play(b: Build): void {
 
 classes.forEach((c, ci) => {
   for (const L of LEVELS) {
+    if (L === LEVELS[0]) play(freshBuild(c, L)); // the creation kit, for reference (not gated)
     play(starterBuild(c, L));
     play(typicalBuild(c, L));
     if (FULL) {

@@ -20,8 +20,8 @@ const swordsman: ClassPerks = {
   classId: 'swordsman',
   signature: [
     // path 0: Riposte (+ new spell 3): the duellist's answer
-    one('pk_swordsman_quick_guard', 'Quick Guard', 'power', '+1 to Riposte and its new sister spell.',
-      { spellLevels: [{ spell: RIPOSTE, levels: 1 }, { spell: 'spell:new-swordsman-3', levels: 1 }] }),
+    one('pk_swordsman_quick_guard', 'Quick Guard', 'power', '+1 to Riposte and Counter Stance.',
+      { spellLevels: [{ spell: RIPOSTE, levels: 1 }, { spell: 'spell:counter-stance', levels: 1 }] }),
     three('pk_swordsman_counter_rhythm', 'Counter Rhythm', 'trigger', (r) => `A parry: +${r * 8}% damage for 4 s.`,
       (r) => ({ procs: [{ on: 'parry', do: [{ a: 'buff', id: 'swd:counter', dur: 4000, to: 'self', mods: [{ stat: 'dmg', op: 'flat', value: 0.08 * r }] }] }] })),
     one('pk_swordsman_perfect_parry', 'Perfect Parry', 'trigger', 'A parry restores 25 stamina and cuts your cooldowns by 0.4 s.',
@@ -51,8 +51,8 @@ const samurai: ClassPerks = {
   classId: 'samurai',
   signature: [
     // path 0: Iaijutsu (+ new spell 3): the single cut
-    one('pk_samurai_drawn_blade', 'Drawn Blade', 'power', '+1 to Iaijutsu and its new sister spell.',
-      { spellLevels: [{ spell: IAI, levels: 1 }, { spell: 'spell:new-samurai-3', levels: 1 }] }),
+    one('pk_samurai_drawn_blade', 'Drawn Blade', 'power', '+1 to Iaijutsu and Crescent Cut.',
+      { spellLevels: [{ spell: IAI, levels: 1 }, { spell: 'spell:crescent-cut', levels: 1 }] }),
     three('pk_samurai_first_cut', 'First Cut', 'power', (r) => `+${r * 6}% damage to foes above 80% health.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'targetHpAbove', pct: 0.8 } }] })),
     one('pk_samurai_one_stroke', 'One Stroke', 'trigger', 'After standing still for 1 s: +40% critical damage.',

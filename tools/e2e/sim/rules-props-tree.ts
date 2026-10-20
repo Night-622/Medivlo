@@ -6,7 +6,7 @@
  */
 import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
 import { spellDef } from '@/systems/rules/spells';
-import { buildTree, canLearn, rankOf, resetBranch, spentPoints, treePassives, type TreeRanks } from '@/systems/rules/tree';
+import { MAX_SHARED_KEYSTONES, buildTree, canLearn, rankOf, resetBranch, spentPoints, treePassives, type TreeRanks } from '@/systems/rules/tree';
 import { scalePassive } from '@/systems/rules/scale';
 import type { Passive, TreeBranch, TreeNode } from '@/systems/rules/types';
 import { check } from './features-harness';
@@ -60,15 +60,18 @@ export function treeProps(only?: string): void {
       const bad = structure(branch, nodes);
       check(!bad.length, `${c.id} ${branch}: ${nodes.length} nodes well-formed (prefix, requirements, exclusions, ranks, spell ids)`, bad.slice(0, 4).join('; '));
 
-      // reachability through the real canLearn: two greedy passes (first and second of every exclusive pair) cover all
-      const A = greedy(c.id, nodes), B = greedy(c.id, [...nodes].reverse());
+      // reachability through the real canLearn: greedy passes forward and reversed (first and second of every exclusive
+      // pair), plus one pass per shared keystone that tries it first (the cap lets only MAX_SHARED_KEYSTONES in per pass)
+      const shared = nodes.filter((n) => n.shared);
+      const passes = [greedy(c.id, nodes), greedy(c.id, [...nodes].reverse()), ...shared.map((sk) => greedy(c.id, [sk, ...nodes.filter((n) => n !== sk)]))];
       const learnable = nodes.filter((n) => !n.free);
-      const unreached = learnable.filter((n) => !(A[n.id] || B[n.id])).map((n) => n.id);
-      const clash = [A, B].flatMap((T) => nodes.filter((n) => n.excludes && T[n.id] && T[n.excludes]).map((n) => n.id));
-      const notMax = [A, B].flatMap((T) => nodes.filter((n) => T[n.id] && rankOf(n, T) !== n.maxRank).map((n) => n.id));
-      check(!unreached.length && !clash.length && !notMax.length,
-        `${c.id} ${branch}: every node reachable through canLearn, exclusive pairs never both, ranks stop at max`,
-        `unreached ${unreached.join(',')}; both of a pair ${clash.join(',')}; not maxed ${notMax.join(',')}`);
+      const unreached = learnable.filter((n) => !passes.some((T) => T[n.id])).map((n) => n.id);
+      const clash = passes.flatMap((T) => nodes.filter((n) => n.excludes && T[n.id] && T[n.excludes]).map((n) => n.id));
+      const notMax = passes.flatMap((T) => nodes.filter((n) => T[n.id] && rankOf(n, T) !== n.maxRank).map((n) => n.id));
+      const overCap = passes.some((T) => shared.filter((n) => T[n.id]).length > MAX_SHARED_KEYSTONES);
+      check(!unreached.length && !clash.length && !notMax.length && !overCap,
+        `${c.id} ${branch}: every node reachable through canLearn, exclusive pairs never both, ranks stop at max${shared.length ? `, ≤ ${MAX_SHARED_KEYSTONES} of ${shared.length} shared keystones` : ''}`,
+        `unreached ${unreached.join(',')}; both of a pair ${clash.join(',')}; not maxed ${notMax.join(',')}; over the cap ${overCap}`);
 
       // the gate itself: no points → no; maxed → no; an unmet requirement → no
       const first = learnable.find((n) => canLearn(c.id, n.id, {}, MANY).ok);
@@ -81,6 +84,8 @@ export function treeProps(only?: string): void {
     // resets: a branch reset clears exactly that branch's ranks and returns its points
     const all = BRANCHES.flatMap((b) => buildTree(c.id, b));
     const full = greedy(c.id, all);
+    const held = all.filter((n) => n.shared && full[n.id]).length;
+    check(held === Math.min(MAX_SHARED_KEYSTONES, all.filter((n) => n.shared).length), `${c.id}: learning everything stops at ${MAX_SHARED_KEYSTONES} shared keystones (held ${held})`);
     const resetsOk = BRANCHES.every((b) => {
       const after = resetBranch(full, b);
       const keptOthers = Object.entries(full).every(([id, r]) => (id.startsWith(PFX[b]) ? !(id in after) : after[id] === r));

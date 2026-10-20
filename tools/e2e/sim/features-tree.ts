@@ -18,6 +18,7 @@ import { allNodes, buildTree, canLearn, resetBranch } from '@/systems/rules/tree
 import type { CharacterSave, Passive, TreeBranch } from '@/systems/rules/types';
 import { sanitizeLoadout } from '@/systems/rules/validate';
 import { spellView } from '@/systems/sim/player';
+import { NEW_KIT } from '@/data/spells/hc/kit-spells-new';
 import { ULT_PATH, learnViaLoadout } from './features-casts';
 import { check, DT, dummy, hero, near, world } from './features-harness';
 
@@ -28,7 +29,7 @@ function signature(s: CharacterSave): string {
   const { passives, spells } = playerPassives(s);
   const c = compile(passives);
   const round = (t: Record<string, number>) => Object.fromEntries(Object.entries(t).sort().map(([k, v]) => [k, Math.round(v * 1e6) / 1e6]));
-  return JSON.stringify([round(c.stats), round(c.more), c.conditional, c.procs, [...c.hooks].sort(), c.spellMods, [...spells].sort()]);
+  return JSON.stringify([round(c.stats), round(c.more), c.conditional, c.procs, [...c.hooks].sort(), c.spellMods, [...spells].sort(), c.convert, c.auras, [...c.spellLevels].sort()]);
 }
 
 function everyNodeChangesSomething(classId: string): void {
@@ -82,13 +83,13 @@ function pointPerBranch(): void {
   check(p.maxHp === Math.round(hpStat0 * 1.04) && availablePoints(p.save) === pts0 - 1, `skills: Toughness rank 1 → max HP ×1.04 (${Math.round(hpStat0)} → ${p.maxHp}), one point spent`, `maxHp ${p.maxHp}, points ${availablePoints(p.save)}`);
   learnViaLoadout(w, 'a', ['up_p2a']);
   check(p.staminaMax === st0 + 10, `upgrades: Endurance rank 1 → +10 max stamina (${st0} → ${p.staminaMax})`);
-  learnViaLoadout(w, 'a', ['sp_p0m1', 'sp_p0m2']);
+  // Spells: path 0's second node teaches the class's new kit spell; the third is a signature perk
+  const fresh = NEW_KIT.warden[0], dmg0 = spellView(p, kit0).dmg, sig0 = signature(p.save);
+  learnViaLoadout(w, 'a', ['sp_p0m1']);
+  const learned = p.spells.has(fresh), sig1 = signature(p.save);
+  learnViaLoadout(w, 'a', ['sp_p0m2']);
   const v = spellView(p, kit0);
-  w.tick({ a: { aim: { x: 40, y: 0 } } });
-  const em0 = p.ember, regen = (p.stats.stats.emberRegen ?? 5) * DT / 1000;
-  w.tick({ a: { aim: { x: 40, y: 0 }, buttons: Btn.CAST1 } });
-  const paid = em0 - p.ember + regen;
-  check(near(v.dmg, 1.08) && near(paid, kit0.cost * 0.92), `spells: +8% ${kit0.name} damage (×${v.dmg.toFixed(2)}) and −8% Ember (${kit0.cost} → ${paid.toFixed(2)} paid in the sim)`, `dmg ×${v.dmg}, paid ${paid}`);
+  check(learned && sig1 !== sig0 && signature(p.save) !== sig1 && availablePoints(p.save) === pts0 - 4, `spells: sp_p0m1 teaches ${fresh}, the sp_p0m2 perk changes the hero (${kit0.name} ×${(v.dmg / dmg0).toFixed(2)} damage)`, `learned ${learned}`);
 }
 
 // path 1 (defence) feeds both keystones: t0 needs a fork of path 0 or 1, t1 one of path 1 or 2

@@ -2,6 +2,7 @@
 import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
 import { HC_KITS } from '@/data/classes/hc/kits';
 import { HC_KIT_SPELLS } from '@/data/spells/hc/kit-spells';
+import { HC_KIT_SPELLS_NEW } from '@/data/spells/hc/kit-spells-new';
 import { HC_SCHOOL_SPELL_DEFS, HC_SCROLL_SPELLS, SCROLL_SPELL } from '@/data/spells/hc/school-spells';
 import { allCreatures, unmappedAbilities } from '@/systems/rules/creatures';
 import { HC_BESTIARY } from '@/data/enemies/hc/bestiary.gen';
@@ -9,7 +10,7 @@ import { buildTree } from '@/systems/rules/tree';
 import { itemInfo } from '@/systems/rules/gear';
 
 const problems: string[] = [];
-const spells = [...HC_KIT_SPELLS, ...HC_SCHOOL_SPELL_DEFS, ...HC_SCROLL_SPELLS];
+const spells = [...HC_KIT_SPELLS, ...HC_KIT_SPELLS_NEW, ...HC_SCHOOL_SPELL_DEFS, ...HC_SCROLL_SPELLS];
 const ids = new Map<string, number>();
 for (const s of spells) ids.set(s.id, (ids.get(s.id) ?? 0) + 1);
 for (const [id, n] of ids) if (n > 1) problems.push(`duplicate spell id ${id}`);
@@ -23,7 +24,7 @@ for (const c of HC_CLASSES) {
     for (const n of nodes) {
       if (n.grantsSpell && !ids.has(n.grantsSpell)) problems.push(`${n.id}: missing spell ${n.grantsSpell}`);
       for (const r of n.req) if (!nodes.some((x) => x.id === r)) problems.push(`${n.id}: bad req ${r}`);
-      if (!n.free && n.effects.every((e) => !e.mods?.length && !e.procs?.length && !e.hooks?.length && !e.spellMods?.length) && !n.grantsSpell) problems.push(`${c.id} ${n.id} (${n.name}): no effect`);
+      if (!n.free && n.effects.every((e) => !e.mods?.length && !e.procs?.length && !e.hooks?.length && !e.spellMods?.length && !e.convert?.length && !e.aura?.length && !e.spellLevels?.length) && !n.grantsSpell) problems.push(`${c.id} ${n.id} (${n.name}): no effect`);
     }
   }
   if (!itemInfo(HC_KITS.find((k) => k.classId === c.id)!.startWeapon)) problems.push(`${c.id}: bad start weapon`);

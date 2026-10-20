@@ -20,8 +20,8 @@ const oathbound: ClassPerks = {
   classId: 'oathbound',
   signature: [
     // path 0: Sunder Light (+ new spell 3): the holy hammer
-    one('pk_oathbound_dawn_hammer', 'Dawn Hammer', 'power', '+1 to Sunder Light and its new sister spell.',
-      { spellLevels: [{ spell: SUNDER, levels: 1 }, { spell: 'spell:new-oathbound-3', levels: 1 }] }),
+    one('pk_oathbound_dawn_hammer', 'Dawn Hammer', 'power', '+1 to Sunder Light and Hammer of Dawn.',
+      { spellLevels: [{ spell: SUNDER, levels: 1 }, { spell: 'spell:hammer-of-dawn', levels: 1 }] }),
     three('pk_oathbound_judgement', 'Judgement', 'power', (r) => `+${r * 6}% damage to foes above 80% health.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'targetHpAbove', pct: 0.8 } }] })),
     one('pk_oathbound_blinding_blow', 'Blinding Blow', 'trigger', 'Attack critical hits blind the foe (1.5 s).',
@@ -51,8 +51,8 @@ const cantor: ClassPerks = {
   classId: 'cantor',
   signature: [
     // path 0: Hymn of Mending (+ new spell 3): the healing choir
-    one('pk_cantor_full_voice', 'Full Voice', 'power', '+1 to Hymn of Mending and its new sister spell.',
-      { spellLevels: [{ spell: HYMN, levels: 1 }, { spell: 'spell:new-cantor-3', levels: 1 }] }),
+    one('pk_cantor_full_voice', 'Full Voice', 'power', '+1 to Hymn of Mending and Choral Burst.',
+      { spellLevels: [{ spell: HYMN, levels: 1 }, { spell: 'spell:choral-burst', levels: 1 }] }),
     three('pk_cantor_choir', 'Choir', 'power', (r) => `+${r * 8}% healing done.`, (r) => ({ mods: [{ stat: 'healing', op: 'flat', value: 0.08 * r }] })),
     one('pk_cantor_overflow', 'Grace Overflowing', 'trigger', 'Healing gives the healed a shield of 5% of your max health (2 s).',
       { procs: [{ on: 'heal', icd: 2000, do: [{ a: 'shield', pctMax: 0.05, dur: 4000, to: 'allies', r: 140 }] }] }),

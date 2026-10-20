@@ -2,12 +2,16 @@
  * rules-props: perk table invariants (Claude 5, docs/systems/BUILDS.md §3, rules/perkTypes.ts). Per school file: its
  * two classes are the school's; 12 signatures per class and 8 school perks; 3 ranks exactly in the b slots; one text
  * and one effect per rank, every effect doing something; ranks never weaker than the one before; exclusive c1 / c2
- * picks differ; ids unique and prefixed; spell references resolve (or are this class's new-spell placeholders); no
+ * picks differ; ids unique and prefixed; spell references resolve (kit, school or the new kit spells); no
  * conditional pct/more on a scaled stat; no old variant (echo/split/twin/wide/linger/burst: runes now).
  */
 import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
 import { HC_SCHOOL_PERKS } from '@/data/skilltrees/hc';
+import { HC_KIT_SPELLS_NEW, NEW_KIT } from '@/data/spells/hc/kit-spells-new';
 import { spellDef } from '@/systems/rules/spells';
+
+/** the new kit spells count as real even before rules/spells.ts registers them */
+const NEW_IDS = new Set(HC_KIT_SPELLS_NEW.map((s) => s.id));
 import type { PerkDef, SchoolPerks } from '@/systems/rules/perkTypes';
 import type { Passive } from '@/systems/rules/types';
 import { check } from './features-harness';
@@ -34,8 +38,8 @@ function perkBad(p: PerkDef, want: 1 | 3, prefix: string, classId?: string): str
   for (const fx of p.effects) {
     for (const m of fx.mods ?? []) if (m.when && SCALED.includes(m.stat) && m.op !== 'flat') bad.push(`${p.id}: conditional ${m.op} on ${m.stat}`);
     for (const s of [...(fx.spellMods ?? []).map((x) => x.spell), ...(fx.spellLevels ?? []).map((x) => x.spell)]) {
-      const placeholder = !!classId && new RegExp(`^spell:new-${classId}-[345]$`).test(s);
-      if (s !== '*' && !spellDef(s) && !placeholder) bad.push(`${p.id}: unknown spell ${s}`);
+      if (s !== '*' && !spellDef(s) && !NEW_IDS.has(s)) bad.push(`${p.id}: unknown spell ${s}`);
+      if (NEW_IDS.has(s) && (!classId || !NEW_KIT[classId]?.includes(s))) bad.push(`${p.id}: ${s} is another class's new spell`);
     }
     for (const sm of fx.spellMods ?? []) for (const v of VARIANTS) if (v in sm) bad.push(`${p.id}: '${v}' is a rune now`);
     if ((fx.spellMods ?? []).some((sm) => 'area' in sm)) bad.push(`${p.id}: spell area is the Wide rune now`);

@@ -18,9 +18,16 @@ node tools/e2e/sim/run.mjs xp-project          # static Act I–III end-level pr
 node tools/e2e/sim/run.mjs hitboxes [hero|creature|dash|pvp|art]   # every hero attack/spell and creature ability: in → hit,
                                                # out → miss; telegraphs resolve where drawn (dodging works); dash i-frames; PvP;
                                                # body radius vs art (report only, "note" lines)
-node tools/e2e/sim/run.mjs features [casts|tree|gear|progress|hooks] [cls]  # 24 classes: slots 1–4, dash, potions; every
-                                               # tree node + keystones + hooks; gear/sets/Attuned/legendaries; level-up, shops,
-                                               # Runeforge, scrolls
+node tools/e2e/sim/run.mjs features [casts|tree|gear|progress|hooks|slash|facing|builds|lifecycle|affixes] [cls]
+                                               # 24 classes: slots 1–4, dash, potions; every tree node (perks, shared
+                                               # keystones ≤ 2) + hooks; gear/sets/Attuned/legendaries; affixes, sockets,
+                                               # upgrades, imbue; level-up, shops, Runeforge, scrolls; restarts and loads
+node tools/e2e/sim/run.mjs builds [quick|full] [cls]  # deeper-builds balance gate (docs/systems/BUILDS.md §7): every
+                                               # class's starter + typical build beats its lair-2 (L8), nemesis (L14) and
+                                               # Act III (L34) boss; full adds archetypes, random builds, outliers and the
+                                               # dead-content A/B (BUILDS_JSON=<file> writes every row)
+node tools/e2e/sim/run.mjs rules-props [tree|stats|gear|affixes|perks|keystones|spells]  # structural invariants over all
+                                               # content (Claude 5): trees, Conds, sets, affix pools, perk tables
 ```
 
 ## Browser (real keyboard/mouse over the Chrome DevTools Protocol)

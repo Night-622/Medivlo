@@ -20,8 +20,8 @@ const corsair: ClassPerks = {
   classId: 'corsair',
   signature: [
     // path 0: Cutlass Flurry (+ new spell 3): the boarding fight
-    one('pk_corsair_quick_cutlass', 'Quick Cutlass', 'power', '+1 to Cutlass Flurry and its new sister spell.',
-      { spellLevels: [{ spell: FLURRY, levels: 1 }, { spell: 'spell:new-corsair-3', levels: 1 }] }),
+    one('pk_corsair_quick_cutlass', 'Quick Cutlass', 'power', '+1 to Cutlass Flurry and Pistol Shot.',
+      { spellLevels: [{ spell: FLURRY, levels: 1 }, { spell: 'spell:pistol-shot', levels: 1 }] }),
     three('pk_corsair_boarding_party', 'Boarding Party', 'power', (r) => `+${r * 4}% attack speed and +${r * 3}% attack damage.`,
       (r) => ({ mods: [{ stat: 'atkSpeed', op: 'flat', value: 0.04 * r }, { stat: 'attackDmg', op: 'flat', value: 0.03 * r }] })),
     one('pk_corsair_salt_wounds', 'Salt in the Wound', 'trigger', 'Attack critical hits make the foe bleed (4 s).',
@@ -42,8 +42,8 @@ const corsair: ClassPerks = {
       (r) => ({ mods: [{ stat: 'gold', op: 'flat', value: 0.1 * r }, { stat: 'itemFind', op: 'flat', value: 0.03 * r }] })),
     one('pk_corsair_pirates_luck', 'Pirate’s Luck', 'trigger', 'Critical hits steal Embershards from the foe.',
       { procs: [{ on: 'crit', icd: 1000, do: [{ a: 'steal', gold: 1, buffs: false, area: tgt }] }] }),
-    one('pk_corsair_rum_ration', 'Rum Ration', 'resource', 'Kills restore 15 stamina and 3% of max health.',
-      { mods: [{ stat: 'staminaOnKill', op: 'flat', value: 15 }], procs: [{ on: 'kill', do: [{ a: 'heal', pctMax: 0.03, to: 'self' }] }] }),
+    one('pk_corsair_rum_ration', 'Rum Ration', 'resource', 'Kills restore 15 stamina and 3% of max health; when hit, restore 8 stamina (3 s).',
+      { mods: [{ stat: 'staminaOnKill', op: 'flat', value: 15 }], procs: [{ on: 'kill', do: [{ a: 'heal', pctMax: 0.03, to: 'self' }] }, { on: 'hurt', icd: 3000, do: [{ a: 'resource', stamina: 8 }] }] }),
   ],
 };
 
@@ -51,8 +51,8 @@ const jester: ClassPerks = {
   classId: 'jester',
   signature: [
     // path 0: Juggle (+ new spell 3): the bouncing daggers
-    one('pk_jester_more_balls', 'More Balls', 'power', '+1 to Juggle and its new sister spell.',
-      { spellLevels: [{ spell: JUGGLE, levels: 1 }, { spell: 'spell:new-jester-3', levels: 1 }] }),
+    one('pk_jester_more_balls', 'More Balls', 'power', '+1 to Juggle and Knife Fan.',
+      { spellLevels: [{ spell: JUGGLE, levels: 1 }, { spell: 'spell:knife-fan', levels: 1 }] }),
     three('pk_jester_showmanship', 'Showmanship', 'power', (r) => `+${r * 2}% critical chance and +${r * 8}% critical damage.`,
       (r) => ({ mods: [{ stat: 'crit', op: 'flat', value: 0.02 * r }, { stat: 'critd', op: 'flat', value: 0.08 * r }] })),
     one('pk_jester_ricochet', 'Ricochet', 'trigger', 'Critical hits bounce to a nearby foe for 40% weapon power.',

@@ -19,8 +19,8 @@ const huntsman: ClassPerks = {
   classId: 'huntsman',
   signature: [
     // path 0: Heavy Bolt (+ new spell 3): the piercing shot
-    one('pk_huntsman_heavy_draw', 'Heavy Draw', 'power', '+1 to Heavy Bolt and its new sister spell.',
-      { spellLevels: [{ spell: BOLT, levels: 1 }, { spell: 'spell:new-huntsman-3', levels: 1 }] }),
+    one('pk_huntsman_heavy_draw', 'Heavy Draw', 'power', '+1 to Heavy Bolt and Spike Trap.',
+      { spellLevels: [{ spell: BOLT, levels: 1 }, { spell: 'spell:spike-trap', levels: 1 }] }),
     three('pk_huntsman_long_shot', 'Long Shot', 'power', (r) => `+${r * 5}% damage to foes 200 px or more away.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.05 * r, when: { c: 'targetFar', px: 200 } }] })),
     one('pk_huntsman_broadheads', 'Broadheads', 'trigger', 'Attack critical hits make the foe bleed (4 s).',
@@ -39,8 +39,8 @@ const huntsman: ClassPerks = {
     one('pk_huntsman_keen_tracker', 'Keen Tracker', 'power', 'Tracker’s Mark recharges 20% faster.', { spellMods: [{ spell: MARK, cd: -0.2 }] }),
     three('pk_huntsman_quarry', 'Quarry', 'power', (r) => `+${r * 6}% damage to marked foes.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'targetHas', status: 'mark' } }] })),
-    one('pk_huntsman_mark_the_herd', 'Mark the Herd', 'trigger', 'Kills mark the nearest foe (+25% damage taken, 6 s).',
-      { procs: [{ on: 'kill', do: [{ a: 'status', status: { id: 'mark', dur: 6000, power: 0.25 }, area: { shape: 'single', at: 'target', r: 220 }, maxTargets: 1 }] }] }),
+    one('pk_huntsman_mark_the_herd', 'Mark the Herd', 'trigger', 'Kills, and every 8th attack, mark the nearest foe (+25% damage taken, 6 s).',
+      { procs: [{ on: 'kill', do: [{ a: 'status', status: { id: 'mark', dur: 6000, power: 0.25 }, area: { shape: 'single', at: 'target', r: 220 }, maxTargets: 1 }] }, { on: 'attack', every: 8, do: [{ a: 'status', status: { id: 'mark', dur: 6000, power: 0.25 }, area: tgt, maxTargets: 1 }] }] }),
     one('pk_huntsman_relentless', 'Relentless Pursuit', 'resource', 'Kills restore 15 stamina; +8% move speed.',
       { mods: [{ stat: 'staminaOnKill', op: 'flat', value: 15 }, { stat: 'moveSpeed', op: 'flat', value: 0.08 }] }),
   ],
@@ -50,8 +50,8 @@ const falconer: ClassPerks = {
   classId: 'falconer',
   signature: [
     // path 0: Stoop (+ new spell 3): the dive
-    one('pk_falconer_high_stoop', 'High Stoop', 'power', '+1 to Stoop and its new sister spell.',
-      { spellLevels: [{ spell: STOOP, levels: 1 }, { spell: 'spell:new-falconer-3', levels: 1 }] }),
+    one('pk_falconer_high_stoop', 'High Stoop', 'power', '+1 to Stoop and Talon Rake.',
+      { spellLevels: [{ spell: STOOP, levels: 1 }, { spell: 'spell:talon-rake', levels: 1 }] }),
     three('pk_falconer_sharp_talons', 'Sharp Talons', 'power', (r) => `+${r * 10}% summon damage.`, (r) => ({ mods: [{ stat: 'minionDmg', op: 'flat', value: 0.1 * r }] })),
     one('pk_falconer_rending_dive', 'Rending Dive', 'trigger', 'Summoning makes the target bleed (4 s, 2 s).',
       { procs: [{ on: 'summon', icd: 2000, do: [{ a: 'status', status: { id: 'bleed', dur: 4000 }, area: tgt }] }] }),

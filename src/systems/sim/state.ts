@@ -6,7 +6,7 @@ import type { Compiled } from '@/systems/rules/stats';
 import type { CreatureDef } from '@/systems/rules/creatures';
 import type {
   Action, Area, BuffFlag, SchoolId, CharacterSave, CreatureTier, DamageKind, HcKit, HcSpell, HitFlag, Modifier, Proc, StatusApply,
-  StatusId, WeaponType,
+  ItemInstance, StatusId, WeaponType,
 } from '@/systems/rules/types';
 import type { CreatureAbility } from '@/data/enemies/hc/abilities';
 
@@ -192,7 +192,7 @@ export interface ZoneEnt {
 
 export interface LootEnt {
   id: string; space: string; x: number; y: number;
-  item?: { base: string; ilvl: number; qty: number; gem?: string };
+  item?: Omit<ItemInstance, 'uid'>;
   gold?: number;
   /** only this player may pick it up until `lockUntil` (PvP gold piles) */
   lockTo?: string; lockUntil?: number;

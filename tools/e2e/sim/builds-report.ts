@@ -29,7 +29,8 @@ export function classTable(rows: Row[], full: boolean): string[] {
   for (const c of classes) for (const L of LEVELS) {
     const rs = rows.filter((r) => r.b.cls === c && r.b.level === L);
     if (!rs.length) continue;
-    const st = rs.find((r) => r.b.kind === 'starter'), ty = rs.find((r) => r.b.kind === 'typical');
+    const fr = rs.find((r) => r.b.kind === 'fresh'), st = rs.find((r) => r.b.kind === 'starter'), ty = rs.find((r) => r.b.kind === 'typical');
+    if (fr) out.push(rowLine(fr));
     if (st) out.push(rowLine(st));
     if (ty) out.push(rowLine(ty));
     if (full) {
@@ -80,7 +81,7 @@ export function deadLines(d: ClassDead): string[] {
   const live = d.items.filter((x) => x.verdict === 'live').sort((a, b) => Math.max(Math.abs(b.dDps), Math.abs(b.dSurv)) - Math.max(Math.abs(a.dDps), Math.abs(a.dSurv)));
   out.push(`# ${d.cls}: ${d.items.filter((x) => x.verdict === 'dead').length} dead, ${d.items.filter((x) => x.verdict === 'utility').length} utility-only, ${live.length} live of ${d.items.length}; strongest: ${live.slice(0, 4).map((i) => `${i.id} ${pc(i.dDps)}dps/${pc(i.dSurv)}surv`).join(', ')}`);
   // harmful: costs over 5% of DPS or survival without paying 2% back in the other (or in EHP)
-  const harm = (x: Item): boolean => (x.dDps < -DEAD_NEG && x.dSurv < DEAD_PCT && x.dEhp < DEAD_PCT) || (x.dSurv < -DEAD_NEG && x.dDps < DEAD_PCT);
+  const harm = (x: Item): boolean => (x.dDps < -DEAD_NEG && x.dSurv < DEAD_PCT && x.dEhp < DEAD_PCT) || (x.dSurv < -DEAD_NEG && x.dDps < DEAD_PCT && x.dEhp < DEAD_PCT);
   for (const i of live.filter(harm)) out.push(itemLine('harm', i));
   return out;
 }

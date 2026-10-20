@@ -78,7 +78,8 @@ export class SimWorld {
   /** Can `a` damage `b`? Teams, PvP rules by realm type, duels, safe zones and spawn protection. */
   hostile(a: Combatant, b: Combatant): boolean {
     if (a === b || a.dead || b.dead) return false;
-    if (a.team !== b.team) return true;
+    // spawn / respawn protection: creatures neither hit nor pick a freshly (re)spawned hero (it ends when the hero strikes)
+    if (a.team !== b.team) return !(b.kind === 'player' && a.kind !== 'player' && this.t < (b as PlayerEnt).spawnProtectUntil);
     if (a.kind !== 'player' || b.kind !== 'player') return false;
     const pa = a as PlayerEnt, pb = b as PlayerEnt;
     if (pa.downed || pb.downed || this.t < pb.spawnProtectUntil || this.t < pa.spawnProtectUntil) return false;

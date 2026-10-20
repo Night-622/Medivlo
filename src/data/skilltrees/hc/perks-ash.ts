@@ -20,8 +20,8 @@ const arcanist: ClassPerks = {
   classId: 'arcanist',
   signature: [
     // path 0: Ash Bolt (+ new spell 3): a bolt caster who stokes burning foes
-    one('pk_arcanist_kindled_bolt', 'Kindled Bolt', 'power', '+1 to Ash Bolt and its new sister spell.',
-      { spellLevels: [{ spell: AB, levels: 1 }, { spell: 'spell:new-arcanist-3', levels: 1 }] }),
+    one('pk_arcanist_kindled_bolt', 'Kindled Bolt', 'power', '+1 to Ash Bolt and Ember Comet.',
+      { spellLevels: [{ spell: AB, levels: 1 }, { spell: 'spell:ember-comet', levels: 1 }] }),
     three('pk_arcanist_combustion', 'Combustion', 'power', (r) => `+${r * 6}% damage to burning foes.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'targetHas', status: 'burn' } }] })),
     one('pk_arcanist_ember_well', 'Ember Well', 'resource', 'Spell critical hits restore 6 Ember (0.5 s).',
@@ -53,8 +53,8 @@ const reaver: ClassPerks = {
   classId: 'reaver',
   signature: [
     // path 0: Cinder Cleave (+ new spell 3): the burning axe
-    one('pk_reaver_muster_flame', 'Flame of the Muster', 'power', '+1 to Cinder Cleave and its new sister spell.',
-      { spellLevels: [{ spell: CLEAVE, levels: 1 }, { spell: 'spell:new-reaver-3', levels: 1 }] }),
+    one('pk_reaver_muster_flame', 'Flame of the Muster', 'power', '+1 to Cinder Cleave and Searing Rend.',
+      { spellLevels: [{ spell: CLEAVE, levels: 1 }, { spell: 'spell:searing-rend', levels: 1 }] }),
     three('pk_reaver_red_fury', 'Red Fury', 'power', (r) => `+${r * 6}% damage below 70% health.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'hpBelow', pct: 0.7 } }] })),
     one('pk_reaver_searing_edge', 'Searing Edge', 'trigger', 'Attack critical hits set the foe burning (3 s); +4% critical chance.',
@@ -71,8 +71,9 @@ const reaver: ClassPerks = {
       { procs: [{ on: 'hurt', icd: 2000, do: [{ a: 'buff', id: 'rea:pain', dur: 3000, to: 'self', mods: [{ stat: 'dmg', op: 'flat', value: 0.12 }] }] }] }),
     // path 2: Pyre Leap (+ new spell 5): crashing in
     one('pk_reaver_pyre_landing', 'Pyre Landing', 'power', 'Pyre Leap recharges 25% faster.', { spellMods: [{ spell: LEAP, cd: -0.25 }] }),
-    three('pk_reaver_kill_frenzy', 'Kill Frenzy', 'trigger', (r) => `Kills: +${[10, 18, 25][r - 1]}% attack speed for 4 s.`,
-      (r) => ({ procs: [{ on: 'kill', do: [{ a: 'buff', id: 'rea:frenzy', dur: 4000, to: 'self', mods: [{ stat: 'atkSpeed', op: 'flat', value: [0.1, 0.18, 0.25][r - 1] }] }] }] })),
+    three('pk_reaver_kill_frenzy', 'Kill Frenzy', 'trigger', (r) => `Kills, and every 8th hit: +${[10, 18, 25][r - 1]}% attack speed for 4 s.`,
+      (r) => { const frenzy = { a: 'buff' as const, id: 'rea:frenzy', dur: 4000, to: 'self' as const, mods: [{ stat: 'atkSpeed' as const, op: 'flat' as const, value: [0.1, 0.18, 0.25][r - 1] }] };
+        return { procs: [{ on: 'kill', do: [frenzy] }, { on: 'hit', every: 8, do: [frenzy] }] }; }),
     one('pk_reaver_undying', 'Undying Rage', 'trigger', 'Below 50% health: take 60% less damage for 3 s (45 s).',
       { procs: [{ on: 'lowHp', icd: 45000, do: [{ a: 'buff', id: 'rea:undying', dur: 3000, to: 'self', mods: [{ stat: 'dmgTaken', op: 'flat', value: -0.6 }] }] }] }),
     one('pk_reaver_scorched_steel', 'Scorched Steel', 'conversion', 'Attacks deal 40% of their damage as Ash; +12% Ash damage.',

@@ -8,7 +8,7 @@ import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { HC_SCROLL_SPELLS, SCROLL_SPELL } from '@/data/spells/hc/school-spells';
 import { availablePoints, newCharacter } from '@/systems/rules/character';
 import { LEVEL_CAP, xpForKill, xpToNext } from '@/systems/rules/curves';
-import { itemInfo, rarityIndex } from '@/systems/rules/gear';
+import { gemsOf, itemInfo, rarityIndex } from '@/systems/rules/gear';
 import { reforgeCost } from '@/systems/rules/runeforge';
 import { scrollSpell } from '@/systems/rules/spells';
 import type { CharacterSave } from '@/systems/rules/types';
@@ -18,7 +18,7 @@ import type { PlayerEnt } from '@/systems/sim/state';
 import { learnViaLoadout } from './features-casts';
 import { check, dummy, EffectWatch, expectedEffects, describe, hero, world, type World } from './features-harness';
 
-const act = (w: World, action: string, args: Record<string, string>, pid = 'a') => w.sim.receive({ type: 'act', domain: 'systems', action, args }, pid);
+const act = (w: World, action: string, args: Record<string, string | number>, pid = 'a') => w.sim.receive({ type: 'act', domain: 'systems', action, args }, pid);
 const qty = (p: PlayerEnt, base: string) => p.save.inventory.filter((x) => x.base === base).reduce((a, x) => a + x.qty, 0);
 const notices = (w: World, n0: number) => w.since(n0, 'systems:notice').map((e) => String(e.p.text));
 
@@ -110,7 +110,7 @@ function runeforge(): void {
   s.equipment.main = { uid: 'main', base: runed.id, ilvl: 20, qty: 1, gem: 'i_ruby' };
   s.equipment.head = { uid: 'helm', base: 'a_iron_plate_helm', ilvl: 5, qty: 1 };
   const p = hero(w, 'a', s);
-  const smith = (action: string, uid: string, gem?: string) => { const n0 = w.events.length; act(w, action, { shop: 'npc:odo', uid, ...(gem ? { gem } : {}) }); return notices(w, n0); };
+  const smith = (action: string, uid: string, gem?: string, socket?: number) => { const n0 = w.events.length; act(w, action, { shop: 'npc:odo', uid, ...(gem ? { gem } : {}), ...(socket !== undefined ? { socket } : {}) }); return notices(w, n0); };
   let g = p.save.gold;
   const old = p.save.inventory.find((x) => x.uid === 'old')!;
   const need = reforgeCost(old, 20)!;
@@ -122,16 +122,16 @@ function runeforge(): void {
   g = p.save.gold;
   smith('reforge', 'helm');
   check(p.save.equipment.head!.ilvl === 20 && (p.stats.stats.armor ?? 0) > armor0 && p.save.gold < g, `reforging the worn helm (L5 → L20) raises armour at once (${armor0.toFixed(0)} → ${(p.stats.stats.armor ?? 0).toFixed(0)})`);
-  check(rarityIndex(itemInfo('w_sword_iron')!.rarity) < 3 && smith('socket', 'old', 'i_ruby').length === 1 && qty(p, 'i_ruby') === 1 && !old.gem, 'an iron sword has no socket: the ruby stays in the pack');
+  check(rarityIndex(itemInfo('w_sword_iron')!.rarity) < 3 && smith('socket', 'old', 'i_ruby').length === 1 && qty(p, 'i_ruby') === 1 && !gemsOf(old).length, 'an iron sword has no socket: the ruby stays in the pack');
   const em0 = p.emberMax;
-  smith('socket', 'main', 'i_sapphire');
-  check(p.save.equipment.main!.gem === 'i_sapphire' && !qty(p, 'i_sapphire') && qty(p, 'i_ruby') === 1 && p.emberMax > em0, `a sapphire replaces the worn ruby (the ruby is lost), Ember ${em0} → ${p.emberMax}`);
+  smith('socket', 'main', 'i_sapphire', 0);
+  check(gemsOf(p.save.equipment.main!)[0] === 'i_sapphire' && !gemsOf(p.save.equipment.main!).includes('i_ruby') && !qty(p, 'i_sapphire') && qty(p, 'i_ruby') === 1 && p.emberMax > em0, `a sapphire replaces the worn ruby (the ruby is lost), Ember ${em0} → ${p.emberMax}`);
   const topaz = qty(p, 'i_topaz'), ing0 = qty(p, 'i_ingot');
   smith('salvage', 'gemmed');
   check(!p.save.inventory.some((x) => x.uid === 'gemmed') && qty(p, 'i_topaz') === topaz + 1 && qty(p, 'i_ingot') > ing0, 'salvaging a socketed piece gives its topaz back with the ingots');
   check(smith('salvage', 'lg').length === 1 && p.save.inventory.some((x) => x.uid === 'lg'), 'the smith will not break a legendary');
   p.save.gold = 0;
-  check(smith('socket', 'main', 'i_ruby').includes('Not enough Embershards.') && qty(p, 'i_ruby') === 1 && p.save.equipment.main!.gem === 'i_sapphire', 'no gold: socketing refused, ruby kept');
+  check(smith('socket', 'main', 'i_ruby', 0).includes('Not enough Embershards.') && qty(p, 'i_ruby') === 1 && gemsOf(p.save.equipment.main!)[0] === 'i_sapphire', 'no gold: socketing refused, ruby kept');
 }
 
 function scrolls(): void {

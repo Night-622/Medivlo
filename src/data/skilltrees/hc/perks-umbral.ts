@@ -19,8 +19,8 @@ const shade: ClassPerks = {
   classId: 'shade',
   signature: [
     // path 0: Umbral Step (+ new spell 3): the blink behind
-    one('pk_shade_deep_step', 'Deep Step', 'power', '+1 to Umbral Step and its new sister spell.',
-      { spellLevels: [{ spell: STEP, levels: 1 }, { spell: 'spell:new-shade-3', levels: 1 }] }),
+    one('pk_shade_deep_step', 'Deep Step', 'power', '+1 to Umbral Step and Shadowstrike.',
+      { spellLevels: [{ spell: STEP, levels: 1 }, { spell: 'spell:shadowstrike', levels: 1 }] }),
     three('pk_shade_backstab', 'Backstab', 'power', (r) => `+${r * 8}% damage from behind.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.08 * r, when: { c: 'behind' } }] })),
     one('pk_shade_ambush', 'Ambush', 'trigger', 'Hits from stealth deal double damage and make the foe bleed.',
@@ -39,10 +39,10 @@ const shade: ClassPerks = {
     one('pk_shade_long_contract', 'Long Contract', 'power', 'Mark for Death recharges 20% faster and costs 15% less.', { spellMods: [{ spell: MARK, cd: -0.2, cost: -0.15 }] }),
     three('pk_shade_executioner', 'Executioner', 'power', (r) => `+${r * 8}% damage to foes below 30% health.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.08 * r, when: { c: 'targetHpBelow', pct: 0.3 } }] })),
-    one('pk_shade_vanish', 'Vanish', 'trigger', 'Kills hide you in shadow for 1.5 s (6 s).',
-      { procs: [{ on: 'kill', icd: 6000, do: [{ a: 'buff', id: 'shd:vanish', dur: 1500, to: 'self', flags: ['untargetable'] }] }] }),
-    one('pk_shade_bloodprice', 'Blood Price', 'resource', 'Kills restore 20 stamina and 4% of max health.',
-      { mods: [{ stat: 'staminaOnKill', op: 'flat', value: 20 }], procs: [{ on: 'kill', do: [{ a: 'heal', pctMax: 0.04, to: 'self' }] }] }),
+    one('pk_shade_vanish', 'Vanish', 'trigger', 'Kills, or dropping below 50% health, hide you in shadow for 1.5 s (6 s; 30 s below half health).',
+      { procs: [{ on: 'kill', icd: 6000, do: [{ a: 'buff', id: 'shd:vanish', dur: 1500, to: 'self', flags: ['untargetable'] }] }, { on: 'lowHp', icd: 30000, do: [{ a: 'buff', id: 'shd:vanish', dur: 1500, to: 'self', flags: ['untargetable'] }] }] }),
+    one('pk_shade_bloodprice', 'Blood Price', 'resource', 'Kills restore 20 stamina and 4% of max health; critical hits heal 1% (1 s).',
+      { mods: [{ stat: 'staminaOnKill', op: 'flat', value: 20 }], procs: [{ on: 'kill', do: [{ a: 'heal', pctMax: 0.04, to: 'self' }] }, { on: 'crit', icd: 1000, do: [{ a: 'heal', pctMax: 0.01, to: 'self' }] }] }),
   ],
 };
 
@@ -50,8 +50,8 @@ const duskweaver: ClassPerks = {
   classId: 'duskweaver',
   signature: [
     // path 0: Night Thread (+ new spell 3): binding foes together
-    one('pk_duskweaver_strong_thread', 'Strong Thread', 'power', '+1 to Night Thread and its new sister spell.',
-      { spellLevels: [{ spell: THREAD, levels: 1 }, { spell: 'spell:new-duskweaver-3', levels: 1 }] }),
+    one('pk_duskweaver_strong_thread', 'Strong Thread', 'power', '+1 to Night Thread and Soul Link.',
+      { spellLevels: [{ spell: THREAD, levels: 1 }, { spell: 'spell:soul-link', levels: 1 }] }),
     three('pk_duskweaver_tangle', 'Tangle', 'power', (r) => `+${r * 6}% damage to linked foes.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'targetHas', status: 'linked' } }] })),
     one('pk_duskweaver_unravel', 'Unravel', 'trigger', 'Setting any status has a 20% chance to burst shadow around the foe.',
@@ -69,8 +69,8 @@ const duskweaver: ClassPerks = {
     one('pk_duskweaver_swift_curse', 'Swift Curse', 'power', 'Unmaking recharges 20% faster.', { spellMods: [{ spell: UNMAKE, cd: -0.2 }] }),
     three('pk_duskweaver_doom', 'Doomsayer', 'power', (r) => `Your statuses last ${r * 8}% longer and land ${r * 4}% more often.`,
       (r) => ({ mods: [{ stat: 'statusDur', op: 'flat', value: 0.08 * r }, { stat: 'statusChance', op: 'flat', value: 0.04 * r }] })),
-    one('pk_duskweaver_soul_harvest', 'Soul Harvest', 'resource', 'Kills restore 8 Ember and 3% of max health.',
-      { procs: [{ on: 'kill', do: [{ a: 'resource', ember: 8 }, { a: 'heal', pctMax: 0.03, to: 'self' }] }] }),
+    one('pk_duskweaver_soul_harvest', 'Soul Harvest', 'resource', 'Kills restore 8 Ember and 3% of max health; every 10th hit restores 4 Ember.',
+      { procs: [{ on: 'kill', do: [{ a: 'resource', ember: 8 }, { a: 'heal', pctMax: 0.03, to: 'self' }] }, { on: 'hit', every: 10, do: [{ a: 'resource', ember: 4 }] }] }),
     one('pk_duskweaver_chain_curse', 'Chained Curse', 'trigger', 'Kills spread darkness: foes around the body take 60% spell power.',
       { procs: [{ on: 'kill', do: [{ a: 'damage', coef: 0.6, kind: 'umbral', area: { shape: 'circle', at: 'target', r: 72 } }] }] }),
   ],

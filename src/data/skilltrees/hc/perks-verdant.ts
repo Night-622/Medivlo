@@ -20,8 +20,8 @@ const ranger: ClassPerks = {
   classId: 'ranger',
   signature: [
     // path 0: Volley (+ new spell 3): arrows by the handful
-    one('pk_ranger_full_quiver', 'Full Quiver', 'power', '+1 to Volley and its new sister spell.',
-      { spellLevels: [{ spell: VOLLEY, levels: 1 }, { spell: 'spell:new-ranger-3', levels: 1 }] }),
+    one('pk_ranger_full_quiver', 'Full Quiver', 'power', '+1 to Volley and Piercing Arrow.',
+      { spellLevels: [{ spell: VOLLEY, levels: 1 }, { spell: 'spell:piercing-arrow', levels: 1 }] }),
     three('pk_ranger_long_draw', 'Long Draw', 'power', (r) => `+${r * 5}% damage to foes 200 px or more away.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.05 * r, when: { c: 'targetFar', px: 200 } }] })),
     one('pk_ranger_barbed_heads', 'Barbed Heads', 'trigger', 'Hits have a 25% chance to make the foe bleed (3 s).',
@@ -51,8 +51,8 @@ const hedgewitch: ClassPerks = {
   classId: 'hedgewitch',
   signature: [
     // path 0: Bramble Lash (+ new spell 3): thorns that drag and bind
-    one('pk_hedgewitch_long_lash', 'Long Lash', 'power', '+1 to Bramble Lash and its new sister spell.',
-      { spellLevels: [{ spell: LASH, levels: 1 }, { spell: 'spell:new-hedgewitch-3', levels: 1 }] }),
+    one('pk_hedgewitch_long_lash', 'Long Lash', 'power', '+1 to Bramble Lash and Strangling Vines.',
+      { spellLevels: [{ spell: LASH, levels: 1 }, { spell: 'spell:strangling-vines', levels: 1 }] }),
     three('pk_hedgewitch_thornbound', 'Thornbound', 'power', (r) => `Your roots last ${r * 10}% longer.`, (r) => ({ mods: [{ stat: 'rootDur', op: 'flat', value: 0.1 * r }] })),
     one('pk_hedgewitch_bitter_sap', 'Bitter Sap', 'trigger', 'Hits have a 25% chance to poison the foe (4 s).',
       { procs: [{ on: 'hit', chance: 0.25, do: [{ a: 'status', status: { id: 'poison', dur: 4000 }, area: tgt }] }] }),

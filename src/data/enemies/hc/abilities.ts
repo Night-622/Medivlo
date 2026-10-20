@@ -111,8 +111,10 @@ const RULES: Rule[] = [
   [/calls (bolts|lightning)/i, (x) => A('attack', 7000, 300, 900, [dmg(1.4 * big(x), atT(48), 'storm', [st('shock', 1500)])])],
   // hazards
   // the ground hazard ticks over its whole area (centred on the zone, so the telegraph is exactly where it hurts)
-  [/pools|leaves|sets the ground|floods|lava|tears|rain|ice behind|webs (the room|the whole)|lays traps|sap/i, (x, t) => { const zr = /whole|floods|lava|room/i.test(t) ? 120 : 56; return A('attack', 9000, 260, 700, [{
-    a: 'zone', kind: 'field', area: atT(zr), dur: 6000, tick: 500,
+  [/pools|leaves|sets the ground|floods|lava|tears|rain|ice behind|webs (the room|the whole)|lays traps|sap/i, (x, t) => { const zr = /whole|floods|lava|room/i.test(t) ? 120 : 56, wide = zr > 56;
+    // a room-wide flood is up 4 s in every 12 (was 6 in 9: melee heroes beside the boss spent most of the fight walking out of it)
+    return A('attack', wide ? 12000 : 9000, 260, 700, [{
+    a: 'zone', kind: 'field', area: atT(zr), dur: wide ? 4000 : 6000, tick: 500,
     each: [dmg(0.25 * big(x), { shape: 'circle', at: 'aim', r: zr }, x.kind, /web|ice/i.test(t) ? [st('slow', 800, 0.4)] : /fire|burning|lava/i.test(t) ? [st('burn', 2000)] : undefined)],
   }]); }],
   [/ring of lanterns/i, (x) => A('attack', 18000, 0, 1500, [dmg(1.2 * big(x), { shape: 'ring', at: 'self', r: 140 }, x.kind)])],

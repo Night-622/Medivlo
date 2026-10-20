@@ -83,8 +83,8 @@ function castCase(classId: string, slot: number, label: string, setup?: (w: Worl
     if (p.ember < em0 - 0.001) why.push(`Ember also spent (${(em0 - p.ember).toFixed(2)})`);
   } else {
     const paid = em0 - p.ember + regenE;
-    payText = `${spell.cost} Ember paid`;
-    if (!near(paid, spell.cost)) why.push(`Ember paid ${paid.toFixed(2)} ≠ cost ${spell.cost}`);
+    payText = `${Math.round(v.cost * 100) / 100} Ember paid`;
+    if (!near(paid, v.cost)) why.push(`Ember paid ${paid.toFixed(2)} ≠ cost ${v.cost.toFixed(2)} (base ${spell.cost})`);
   }
   if (!(v.cd > 0) || !near(cdUntil, tCast + v.cd * 1000, 1)) why.push(`cooldown ends at +${((cdUntil - tCast) / 1000).toFixed(2)} s, want +${v.cd.toFixed(2)} s`);
   // re-press while cooling down: nothing happens

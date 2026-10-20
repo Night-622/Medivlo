@@ -64,7 +64,7 @@ try {
   const sword = () => page.eval(`(async () => JSON.stringify((await import('/src/systems/client/character.ts')).character().equipment.main))()`);
   check(JSON.parse(await sword()).ilvl === 10, `Reforge raises the sword to level 10 (${await sword()})`);
   await page.click(76 + 28, 480 + 28); await sleep(700); // first gem cell
-  check(JSON.parse(await sword()).gem === 'i_ruby', `clicking the ruby sets it (${await sword()})`);
+  check(((w) => (w.sockets ?? []).includes('i_ruby') || w.gem === 'i_ruby')(JSON.parse(await sword())), `clicking the ruby sets it (${await sword()})`);
   await page.screenshot(`${OUT}/panels-runeforge-done.png`);
   await page.press('Escape', 60); await sleep(600);
   check((await ui()).includes('ui:close:shop'), 'Esc closes the Anvil');

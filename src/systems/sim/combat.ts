@@ -44,7 +44,7 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
     w.emit('combat:hit', { ...hitInfo, amount: 0, crit: false, kind: 'immune' });
     return 0;
   }
-  if (src) { w.refresh(src); }
+  if (src) { w.refresh(src); if (src.kind === 'player' && tgt.kind !== 'player') (src as PlayerEnt).spawnProtectUntil = 0; }
   w.refresh(tgt);
   // blind: attacks miss half the time
   if (src && has(src, 'blind') && !o.isSpell && !o.dot && w.rng.chance(0.5)) {
@@ -61,7 +61,7 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
   }
   // conversion (BUILDS.md §3): a share of the hit is dealt as another kind, as its own hit (no procs, no statuses)
   if (src && !o.dot && !o.converted && src.stats.convert.length) {
-    const parts = convertShares(src.stats.convert, kind, !!o.isSpell);
+    const parts = convertShares(src.stats.convert, kind, !!o.isSpell, 1 + hook(src.stats, 'convertPower'));
     let left = 1;
     for (const [to, pct] of parts) { left -= pct; dealDamage(w, src, tgt, raw * pct, to, { ...o, converted: true, noProc: true, status: [] }); if (tgt.dead) return 0; }
     raw *= left;
@@ -128,6 +128,9 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
     if (thorn && !o.isSpell && (src.x - tgt.x) ** 2 + (src.y - tgt.y) ** 2 < 100 * 100) dealDamage(w, tgt, src, Math.min(amount * thorn, src.maxHp * 0.015), 'physical', { dot: true, noProc: true });
   }
   amount = Math.max(1, Math.round(amount));
+  // Ember Shield (hook value = share): part of a hero's damage is paid from Ember while it lasts
+  const es = tgt.kind === 'player' && !o.dot ? hook(tgt.stats, 'emberShield') : 0;
+  if (es) { const pl = tgt as PlayerEnt, pay = Math.min(pl.ember, amount * es); pl.ember -= pay; amount = Math.max(1, Math.round(amount - pay)); }
   // shields
   let landed = amount;
   if (tgt.shield > 0 && w.t < tgt.shieldUntil) {
@@ -327,11 +330,11 @@ function counterAttack(w: SimWorld, p: PlayerEnt, src: Combatant): void {
  * Conversion shares for one hit: entries matching its kind, or its source ('attack' / 'spell'), summed per target
  * kind and scaled down so the total never passes 100%. Converting a kind into itself does nothing.
  */
-export function convertShares(conv: readonly Convert[], kind: DamageKind, isSpell: boolean): [DamageKind, number][] {
+export function convertShares(conv: readonly Convert[], kind: DamageKind, isSpell: boolean, power = 1): [DamageKind, number][] {
   const by = new Map<DamageKind, number>();
   for (const c of conv) {
     if (c.to === kind || !(c.from === kind || c.from === (isSpell ? 'spell' : 'attack'))) continue;
-    by.set(c.to, (by.get(c.to) ?? 0) + c.pct);
+    by.set(c.to, (by.get(c.to) ?? 0) + c.pct * power);
   }
   const total = [...by.values()].reduce((a, b) => a + b, 0);
   const scale = total > 1 ? 1 / total : 1;

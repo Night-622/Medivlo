@@ -1,12 +1,14 @@
 /**
  * rules-props: shared keystones and weapon mastery (Claude 5, docs/systems/BUILDS.md §3). Keystones: 20, ks_ ids,
  * rank 1, each doing something and passing the content guard; every class offered exactly 3 distinct real keystones;
- * every keystone offered to at least 2 classes; Pack Leader only to classes with a summon spell. Mastery: exactly one
+ * every keystone offered to at least 2 classes; Pack Leader only to classes with a summon spell; Conduit only to classes
+ * with a Passive aura (kit or perks). Mastery: exactly one
  * entry per class × kit weapon type, each doing something, no broken text, guard clean.
  */
 import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
 import { kitFor } from '@/data/classes/hc/kits';
 import { HC_KIT_SPELLS } from '@/data/spells/hc/kit-spells';
+import { HC_SCHOOL_PERKS } from '@/data/skilltrees/hc';
 import { HC_SHARED_KEYSTONES, KEYSTONE_OFFERS } from '@/data/skilltrees/hc/keystones';
 import { HC_MASTERY } from '@/data/skilltrees/hc/mastery';
 import type { Passive } from '@/systems/rules/types';
@@ -36,6 +38,16 @@ export function keystoneProps(): void {
   const summoners = new Set(HC_CLASSES.filter((c) => kitFor(c.id).spells.some((id) => HC_KIT_SPELLS.find((s) => s.id === id)?.tags.includes('summon'))).map((c) => c.id));
   const packBad = Object.entries(KEYSTONE_OFFERS).filter(([cls, o]) => o.includes('ks_pack_leader') && !summoners.has(cls)).map(([cls]) => cls);
   check(!packBad.length, `keystones: Pack Leader offered only to classes with a summon spell (${[...summoners].join(', ')})`, packBad.join(', '));
+
+  // Conduit (auraHitsEnemies) works on Passive.aura only: offer it to classes whose kit or perks give one
+  const auraOf = (cls: string): boolean => {
+    const sp = HC_SCHOOL_PERKS.find((x) => x.classes.some((c) => c.classId === cls));
+    const perks = [...(sp?.classes.find((c) => c.classId === cls)?.signature ?? []), ...(sp?.perks ?? [])];
+    return !!kitFor(cls).passive.aura?.length || perks.some((p) => p.effects.some((e) => e.aura?.length));
+  };
+  const auraKs = K.filter((k) => k.effects[0].hooks?.some((h) => h.id === 'auraHitsEnemies')).map((k) => k.id);
+  const auraBad = Object.entries(KEYSTONE_OFFERS).filter(([cls, o]) => o.some((id) => auraKs.includes(id)) && !auraOf(cls)).map(([cls]) => cls);
+  check(auraKs.length > 0 && !auraBad.length, `keystones: ${auraKs.join(', ')} offered only to classes with a Passive aura in their kit or perks`, auraBad.join(', '));
 
   // mastery: exactly one per class × kit weapon
   const want = HC_CLASSES.flatMap((c) => kitFor(c.id).weapons.map((w) => `${c.id}/${w}`)).sort();

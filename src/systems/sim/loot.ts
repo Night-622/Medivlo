@@ -9,6 +9,7 @@ import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { P, dropRolls, unlockLevel } from '@/systems/rules/curves';
 import type { DropSpec } from '@/systems/rules/creatures';
 import { itemInfo, materialIndex, styleIndex } from '@/systems/rules/gear';
+import { rollInstance, type DropTier } from '@/systems/rules/affixes';
 import { ELITE } from '@/data/enemies/hc/elites';
 import type { ItemInstance } from '@/systems/rules/types';
 import type { EnemyEnt, LootEnt, PlayerEnt } from './state';
@@ -29,9 +30,15 @@ function pickIndex(w: SimWorld, level: number, max: number, luck: number): numbe
 }
 
 /** Who the drop is for: weapon types and armour school of the killers (drops lean toward what they can use). */
-export interface LootFor { weapons: string[]; school: string }
+export interface LootFor { weapons: string[]; school: string; classId?: string }
 
-export function rollGear(w: SimWorld, level: number, spec?: DropSpec, luck = 0, forWho?: LootFor): { base: string; ilvl: number } {
+/** A rolled gear drop: the base by material / style (as before), then rolled rarity, affixes and empty sockets. */
+export function rollGear(w: SimWorld, level: number, spec?: DropSpec, luck = 0, forWho?: LootFor, tier: DropTier = 'enemy'): Pick<ItemInstance, 'base' | 'ilvl' | 'rarity' | 'affixes' | 'sockets'> {
+  const g = rollBase(w, level, spec, luck, forWho);
+  return { ...g, ...rollInstance(w.rng, g.base, g.ilvl, luck, tier, forWho && { classId: forWho.classId, school: forWho.school }) };
+}
+
+function rollBase(w: SimWorld, level: number, spec?: DropSpec, luck = 0, forWho?: LootFor): { base: string; ilvl: number } {
   if (spec?.kind === 'spark') {
     const pool = w.rng.chance(0.5) ? HC_WEAPONS.filter((x) => x.material === 'spark').map((x) => x.id) : HC_PIECES.filter((p) => p.set.endsWith('_vestment')).map((p) => p.id);
     return { base: w.rng.pick(pool), ilvl: level };
@@ -69,7 +76,7 @@ export function rollKillLoot(w: SimWorld, e: EnemyEnt, killers: PlayerEnt[]): vo
       if (!w.rng.chance(Math.max(GEAR_CHANCE[e.tier], elite?.gear ?? 0) * (1 + luck))) continue;
       const spec = gearSpecs.length && w.rng.chance(0.6) ? w.rng.pick(gearSpecs) : undefined;
       const k = killers.length ? killers[(r + g) % killers.length] : undefined;
-      drop(w, e.space, e.x, e.y, { ...rollGear(w, e.level, spec, luck, k ? { weapons: k.kit.weapons, school: k.school } : undefined), qty: 1 });
+      drop(w, e.space, e.x, e.y, { ...rollGear(w, e.level, spec, luck, k ? { weapons: k.kit.weapons, school: k.school, classId: k.save.classId } : undefined, e.tier === 'boss' ? 'boss' : e.tier === 'mini' ? 'mini' : 'enemy'), qty: 1 });
     }
     for (const d of e.cdef.drops) {
       if (d.kind !== 'item') continue;
@@ -108,13 +115,13 @@ export function openChest(w: SimWorld, p: PlayerEnt, objectId: string, props: Re
   const level = Math.max(1, Math.min(40, Math.round(Number(props.level) || p.save.level)));
   const rare = props.rarity === 'rare';
   const luck = (rare ? 0.6 : 0.15) + (p.stats.stats.itemFind ?? 0);
-  const forWho = { weapons: p.kit.weapons, school: p.school };
+  const forWho = { weapons: p.kit.weapons, school: p.school, classId: p.save.classId };
   const gold = Math.round(GOLD.mini * (rare ? 1.5 : 0.5) * Math.pow(P(level), 0.6) * w.rng.range(0.8, 1.2) * (1 + (p.stats.stats.gold ?? 0)));
   drop(w, p.space, p.x, p.y, undefined, gold, p.id);
   const pieces = rare ? (w.rng.chance(0.4) ? 2 : 1) : w.rng.chance(0.6) ? 1 : 0;
   // Lucky (hook chestExtra, 0.1): a chance of one more item
   const extra = w.rng.chance(p.stats.hooks.get('chestExtra') ?? 0) ? 1 : 0;
-  for (let i = 0; i < pieces + extra; i++) drop(w, p.space, p.x, p.y, { ...rollGear(w, level, undefined, luck, forWho), qty: 1 }, undefined, p.id);
+  for (let i = 0; i < pieces + extra; i++) drop(w, p.space, p.x, p.y, { ...rollGear(w, level, undefined, luck, forWho, 'chest'), qty: 1 }, undefined, p.id);
   if (!rare || w.rng.chance(0.5)) drop(w, p.space, p.x, p.y, { base: w.rng.pick(['i_hp_s', 'i_hp_s', 'i_em_s', 'i_st']), ilvl: level, qty: 1 }, undefined, p.id);
   w.emit('chest:opened', { playerId: p.playerId, objectId });
   return true;
@@ -134,7 +141,7 @@ let uidSeq = 0;
 const uid = (w: SimWorld) => `it${w.tick.toString(36)}${(++uidSeq).toString(36)}${w.rng.int(0, 1295).toString(36)}`;
 
 /** Add to the authority's copy of the character and tell the owning client. */
-export function grantItem(w: SimWorld, p: PlayerEnt, it: { base: string; ilvl: number; qty: number; gem?: string }): boolean {
+export function grantItem(w: SimWorld, p: PlayerEnt, it: Omit<ItemInstance, 'uid'>): boolean {
   const info = itemInfo(it.base);
   if (!info) return false;
   const inv = p.save.inventory;
@@ -143,7 +150,8 @@ export function grantItem(w: SimWorld, p: PlayerEnt, it: { base: string; ilvl: n
   if (stack) { stack.qty += it.qty; instance = stack; }
   else {
     if (inv.length >= Math.round(p.stats.stats.bag ?? 66)) return false;
-    instance = { uid: uid(w), base: it.base, ilvl: it.ilvl, qty: it.qty, gem: it.gem };
+    instance = { ...it, uid: uid(w) };
+    if (!instance.gem) delete instance.gem;
     inv.push(instance);
   }
   w.emit('loot:granted', { playerId: p.playerId, item: it.base, qty: it.qty, instance: { ...instance, qty: it.qty } });

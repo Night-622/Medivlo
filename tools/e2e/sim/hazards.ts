@@ -16,6 +16,7 @@ function room(creature: string, tier: CreatureTier = 'boss') {
   s.localPlayer = 'p';
   s.receive({ type: 'loadout', data: newCharacter('reaver') as never }, 'p');
   const p = s.w.players.get('p:p')!;
+  p.spawnProtectUntil = 0; // a hero already in the world, not one just (re)spawned
   const id = s.spawn({ creature, level: 12, space: 'room', x: 100, y: 0, tier });
   const step = (ms: number) => { for (let t = 0; t < ms; t += 1000 / 30) s.step(1000 / 30, 0, new Map()); };
   return { s, p, boss: s.w.enemies.get(id)!, id, step, act: (hid: string) => s.receive({ type: 'act', domain: 'systems', action: 'hazard', args: { id: hid } }, 'p') };

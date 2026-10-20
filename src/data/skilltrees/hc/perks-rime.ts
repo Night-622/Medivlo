@@ -20,8 +20,8 @@ const warden: ClassPerks = {
   classId: 'warden',
   signature: [
     // path 0: Bulwark Slam (+ new spell 3): the shield as a hammer
-    one('pk_warden_heavy_slam', 'Heavy Slam', 'power', '+1 to Bulwark Slam and its new sister spell.',
-      { spellLevels: [{ spell: SLAM, levels: 1 }, { spell: 'spell:new-warden-3', levels: 1 }] }),
+    one('pk_warden_heavy_slam', 'Heavy Slam', 'power', '+1 to Bulwark Slam and Frost Rampart.',
+      { spellLevels: [{ spell: SLAM, levels: 1 }, { spell: 'spell:frost-rampart', levels: 1 }] }),
     three('pk_warden_glacial_weight', 'Glacial Weight', 'power', (r) => `+${r * 5}% damage to chilled foes.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.05 * r, when: { c: 'targetHas', status: 'chill' } }] })),
     one('pk_warden_frost_bite', 'Frost Bite', 'trigger', 'Hits have a 15% chance to freeze the foe for 1 s (3 s).',
@@ -50,8 +50,8 @@ const rimecaller: ClassPerks = {
   classId: 'rimecaller',
   signature: [
     // path 0: Rime Shard (+ new spell 3): the sniper of ice
-    one('pk_rimecaller_keen_shard', 'Keen Shard', 'power', '+1 to Rime Shard and its new sister spell.',
-      { spellLevels: [{ spell: SHARD, levels: 1 }, { spell: 'spell:new-rimecaller-3', levels: 1 }] }),
+    one('pk_rimecaller_keen_shard', 'Keen Shard', 'power', '+1 to Rime Shard and Frozen Lance.',
+      { spellLevels: [{ spell: SHARD, levels: 1 }, { spell: 'spell:frozen-lance', levels: 1 }] }),
     three('pk_rimecaller_brittle', 'Brittle', 'power', (r) => `+${r * 5}% damage to chilled foes.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.05 * r, when: { c: 'targetHas', status: 'chill' } }] })),
     one('pk_rimecaller_shatter_shot', 'Shatter Shot', 'trigger', 'Spell critical hits shatter, hitting foes around the target for 40% spell power.',

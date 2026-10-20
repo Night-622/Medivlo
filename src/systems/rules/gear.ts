@@ -169,9 +169,17 @@ export function itemMods(it: ItemInstance): Modifier[] {
   const lg = LEG.get(it.base);
   const trinketId = lg && lg.slot !== 'main' ? lg.base : statBase(it.base);
   if (TRINKET[trinketId]) out.push(...TRINKET[trinketId](L).map((m) => (lg ? { ...m, value: m.value * 1.5 } : m)));
-  if (it.gem && GEMS[it.gem]) out.push(...GEMS[it.gem].mods(L));
-  return out;
+  // Runeforge upgrade +n: +8% base stats per level (BUILDS.md §6)
+  const up = 1 + 0.08 * upgradeOf(it);
+  const based = up === 1 ? out : out.map((m) => ({ ...m, value: m.value * up }));
+  for (const g of gemsOf(it)) based.push(...GEMS[g].mods(L));
+  return based;
 }
+
+export const upgradeOf = (it: Pick<ItemInstance, 'upgrade'>): number => Math.max(0, Math.min(5, Math.floor(it.upgrade ?? 0)));
+/** Gems set in an item: its sockets, or the legacy single `gem` of items from before sockets. */
+export const gemsOf = (it: Pick<ItemInstance, 'gem' | 'sockets'>): string[] =>
+  (it.sockets ? it.sockets : it.gem ? [it.gem] : []).filter((g): g is string => !!g && !!GEMS[g]);
 
 // ───────────── armour sets ─────────────
 const STYLE_TRIGGER: Record<StyleId, { on: Trigger; every?: number; icd?: number }> = {
@@ -283,3 +291,10 @@ export function legendaryPassive(id: string): Passive {
 /** Material / style index for drop gating. */
 export const materialIndex = (id: string): number => MAT_INDEX.get(weaponBase(id)?.material ?? '') ?? 0;
 export const styleIndex = (pieceId: string): number => STYLE_INDEX.get(SET.get(PIECE.get(pieceId)?.set ?? '')?.style ?? '') ?? 0;
+
+/** A carried weapon's damage: its base at its item level, +8% per Runeforge upgrade. */
+export function itemWeaponDamage(it: Pick<ItemInstance, 'base' | 'ilvl' | 'upgrade'>): [number, number] {
+  const up = 1 + 0.08 * upgradeOf(it);
+  const [a, b] = weaponDamage(it.base, it.ilvl);
+  return up === 1 ? [a, b] : [Math.round(a * up), Math.round(b * up)];
+}

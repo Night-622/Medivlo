@@ -100,13 +100,17 @@ export function createHero(scene: Phaser.Scene, space: string, x: number, y: num
   return handle;
 }
 
+/** event counters live once per page (createHero runs on every World create; re-adding them leaked handlers) */
+const DEV_COUNTS: Record<string, number> = {};
+let devCounting = false;
 /** DEV / e2e: window.__hc — spawn creatures, read the local entity, convert world → screen, count events. */
 function installDevHandle(scene: Phaser.Scene, view: CombatView, space: () => string): void {
-  const counts: Record<string, number> = {};
-  for (const ev of ['enemy:killed', 'player:died', 'player:levelup', 'loot:granted', 'combat:hit', 'ability:cast', 'player:downed'] as const) {
+  const counts = DEV_COUNTS;
+  if (!devCounting) for (const ev of ['enemy:killed', 'player:died', 'player:levelup', 'loot:granted', 'combat:hit', 'ability:cast', 'player:downed'] as const) {
     bus.on(ev, () => { counts[ev] = (counts[ev] ?? 0) + 1; });
   }
-  const me = () => systemsAuthority()?.sim.w.players.get(`p:${Services.get('net').localPlayer}`);
+  devCounting = true;
+  const me =() => systemsAuthority()?.sim.w.players.get(`p:${Services.get('net').localPlayer}`);
   (window as unknown as { __hc: unknown }).__hc = {
     counts,
     character,

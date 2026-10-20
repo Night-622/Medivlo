@@ -20,8 +20,8 @@ const knight: ClassPerks = {
   classId: 'knight',
   signature: [
     // path 0: Shield Charge (+ new spell 3): the charge
-    one('pk_knight_lance_charge', 'Lance Charge', 'power', '+1 to Shield Charge and its new sister spell.',
-      { spellLevels: [{ spell: CHARGE, levels: 1 }, { spell: 'spell:new-knight-3', levels: 1 }] }),
+    one('pk_knight_lance_charge', 'Lance Charge', 'power', '+1 to Shield Charge and Ride Down.',
+      { spellLevels: [{ spell: CHARGE, levels: 1 }, { spell: 'spell:ride-down', levels: 1 }] }),
     three('pk_knight_impact', 'Impact', 'trigger', (r) => `Landing a dash: +${r * 6}% damage and armour for 3 s.`,
       (r) => ({ procs: [{ on: 'dashEnd', do: [{ a: 'buff', id: 'kn:impact', dur: 3000, to: 'self', mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r }, { stat: 'armor', op: 'pct', value: 0.06 * r }] }] }] })),
     one('pk_knight_trample', 'Trample', 'trigger', 'Landing a dash knocks down the foes around you (1 s, 3 s).',
@@ -50,8 +50,8 @@ const juggernaut: ClassPerks = {
   classId: 'juggernaut',
   signature: [
     // path 0: Maul Quake (+ new spell 3): the earth shakes
-    one('pk_juggernaut_deep_quake', 'Deep Quake', 'power', '+1 to Maul Quake and its new sister spell.',
-      { spellLevels: [{ spell: QUAKE, levels: 1 }, { spell: 'spell:new-juggernaut-3', levels: 1 }] }),
+    one('pk_juggernaut_deep_quake', 'Deep Quake', 'power', '+1 to Maul Quake and Seismic Slam.',
+      { spellLevels: [{ spell: QUAKE, levels: 1 }, { spell: 'spell:seismic-slam', levels: 1 }] }),
     three('pk_juggernaut_crushing', 'Crushing Blows', 'power', (r) => `+${r * 8}% damage to stunned foes.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.08 * r, when: { c: 'targetHas', status: 'stun' } }] })),
     one('pk_juggernaut_aftershock', 'Aftershock', 'trigger', 'Setting any status sends a quake around the foe for 50% weapon power (1 s).',

@@ -5,7 +5,8 @@
  * - tickAuras: Passive.aura re-applied every second as a 1.5 s buff on allies (or foes) in range
  */
 import type { HcSpell } from '@/systems/rules/types';
-import { addBuff, fireProcs } from './combat';
+import { hook } from '@/systems/rules/stats';
+import { addBuff, dealDamage, fireProcs, kindOf, srcPower } from './combat';
 import type { PlayerEnt } from './state';
 import type { SimWorld } from './world';
 
@@ -37,5 +38,20 @@ export function tickAuras(w: SimWorld, p: PlayerEnt): void {
       if (a.enemies ? !w.hostile(p, o) : w.hostile(p, o)) continue;
       addBuff(w, p, o, { a: 'buff', id: `aura:${a.id}`, dur: AURA_DUR, to: 'self', mods: a.mods });
     }
+    // Conduit (auraHitsEnemies): an ally aura also strikes foes in its reach, 25% of weapon power per pulse
+    if (!a.enemies && hook(p.stats, 'auraHitsEnemies')) for (const o of w.combatants(p.space)) {
+      if (w.hostile(p, o) && w.targetable(o) && (o.x - p.x) ** 2 + (o.y - p.y) ** 2 <= a.r * a.r) dealDamage(w, p, o, srcPower(p) * 0.25, kindOf(p), { noProc: true });
+    }
   }
 }
+
+/** Spellblade (shared keystone, hook value = power): every 4th basic attack also casts slot 1 at that power, free. */
+export function spellblade(w: SimWorld, p: PlayerEnt): void {
+  const power = hook(p.stats, 'spellblade');
+  if (!power || p.attackCount % 4 !== 0) return;
+  const sp = p.spells.get(p.save.hotbar[0] ?? '');
+  if (sp && !sp.tags.includes('ultimate')) castSpell(w, p, 0, { ...sp, castMs: 0 }, power);
+}
+let castSpell: (w: SimWorld, p: PlayerEnt, slot: number, sp: HcSpell, mult: number) => boolean = () => false;
+/** player.ts hands its cast() over (builds.ts must not import player.ts: player imports this module) */
+export const setCaster = (fn: typeof castSpell): void => { castSpell = fn; };

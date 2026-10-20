@@ -20,8 +20,8 @@ const monk: ClassPerks = {
   classId: 'monk',
   signature: [
     // path 0: Hundred Palms (+ new spell 3): the flurry
-    one('pk_monk_swift_palms', 'Swift Palms', 'power', '+1 to Hundred Palms and its new sister spell.',
-      { spellLevels: [{ spell: PALMS, levels: 1 }, { spell: 'spell:new-monk-3', levels: 1 }] }),
+    one('pk_monk_swift_palms', 'Swift Palms', 'power', '+1 to Hundred Palms and Flowing Palm.',
+      { spellLevels: [{ spell: PALMS, levels: 1 }, { spell: 'spell:flowing-palm', levels: 1 }] }),
     three('pk_monk_flowing_strikes', 'Flowing Strikes', 'power', (r) => `At 3+ Momentum: +${r * 6}% damage.`,
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'momentum', min: 3 } }] })),
     one('pk_monk_open_palm', 'Open Palm', 'trigger', 'Every 5th hit stuns the foe (0.6 s).',
@@ -51,8 +51,8 @@ const brawler: ClassPerks = {
   classId: 'brawler',
   signature: [
     // path 0: Haymaker (+ new spell 3): the big punch
-    one('pk_brawler_loaded_fist', 'Loaded Fist', 'power', '+1 to Haymaker and its new sister spell.',
-      { spellLevels: [{ spell: HAY, levels: 1 }, { spell: 'spell:new-brawler-3', levels: 1 }] }),
+    one('pk_brawler_loaded_fist', 'Loaded Fist', 'power', '+1 to Haymaker and Uppercut.',
+      { spellLevels: [{ spell: HAY, levels: 1 }, { spell: 'spell:uppercut', levels: 1 }] }),
     three('pk_brawler_knockout', 'Knockout', 'power', (r) => `At 5 Momentum: +${r * 10}% critical damage and +${r * 3}% damage.`,
       (r) => ({ mods: [{ stat: 'critd', op: 'flat', value: 0.1 * r, when: { c: 'momentum', min: 5 } }, { stat: 'dmg', op: 'flat', value: 0.03 * r, when: { c: 'momentum', min: 5 } }] })),
     one('pk_brawler_haymaker_heart', 'Spend It All', 'trigger', 'Every 50 stamina spent: +20% damage for 3 s.',
@@ -69,8 +69,8 @@ const brawler: ClassPerks = {
       { procs: [{ on: 'hurt', icd: 1500, do: [{ a: 'resource', momentum: 1 }] }] }),
     // path 2: Second Wind (+ new spell 5): getting back up
     one('pk_brawler_quick_recovery', 'Quick Recovery', 'power', 'Second Wind recharges 25% faster.', { spellMods: [{ spell: SECOND, cd: -0.25 }] }),
-    three('pk_brawler_tough_as_nails', 'Tough as Nails', 'resource', (r) => `Kills restore ${r * 6} stamina and ${r}% of max health.`,
-      (r) => ({ mods: [{ stat: 'staminaOnKill', op: 'flat', value: 6 * r }], procs: [{ on: 'kill', do: [{ a: 'heal', pctMax: 0.01 * r, to: 'self' }] }] })),
+    three('pk_brawler_tough_as_nails', 'Tough as Nails', 'resource', (r) => `Kills restore ${r * 6} stamina and ${r}% of max health; when hit, heal ${r}% of max health (4 s).`,
+      (r) => ({ mods: [{ stat: 'staminaOnKill', op: 'flat', value: 6 * r }], procs: [{ on: 'kill', do: [{ a: 'heal', pctMax: 0.01 * r, to: 'self' }] }, { on: 'hurt', icd: 4000, do: [{ a: 'heal', pctMax: 0.01 * r, to: 'self' }] }] })),
     one('pk_brawler_last_round', 'Last Round', 'power', 'Below 30% health: +25% damage and take 15% less.',
       { mods: [{ stat: 'dmg', op: 'flat', value: 0.25, when: { c: 'hpBelow', pct: 0.3 } }, { stat: 'dmgTaken', op: 'flat', value: -0.15, when: { c: 'hpBelow', pct: 0.3 } }] }),
     one('pk_brawler_crowd_pleaser', 'Crowd Pleaser', 'aura', 'You and allies near you gain 8% attack speed.',

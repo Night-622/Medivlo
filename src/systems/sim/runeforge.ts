@@ -6,6 +6,7 @@
  */
 import { shopByNpc } from '@/data/items/hc/shops';
 import { INGOT, reforgeCost, salvageYield, socketCost } from '@/systems/rules/runeforge';
+import { socketCount } from '@/systems/rules/affixes';
 import type { ItemInstance } from '@/systems/rules/types';
 import { grantItem } from './loot';
 import { rebuildPlayer } from './player';
@@ -71,7 +72,14 @@ export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Recor
     if (p.save.gold < cost) return 'Not enough Embershards.';
     pay(w, p, cost);
     spend(w, p, gem, 1);
-    it.gem = gem;
+    // sockets by rarity; legacy items carry their one gem into socket 0
+    const n = socketCount(it);
+    const sockets = it.sockets ?? Array.from({ length: n }, (_, i) => (i === 0 ? it.gem ?? null : null));
+    const want = Number(args.socket);
+    const at = Number.isInteger(want) && want >= 0 && want < n ? want : Math.max(0, sockets.indexOf(null));
+    sockets[at] = gem;
+    it.sockets = sockets.slice(0, n);
+    delete it.gem;
     changed(w, p, it, worn);
     return null;
   }
@@ -82,7 +90,7 @@ export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Recor
     p.save.inventory.splice(p.save.inventory.indexOf(it), 1);
     w.emit('item:used', { playerId: p.playerId, uid: it.uid, def: it.base as never });
     grantItem(w, p, { base: INGOT, ilvl: 1, qty: y.ingots });
-    if (y.gem) grantItem(w, p, { base: y.gem, ilvl: 1, qty: 1 });
+    for (const g of y.gems) grantItem(w, p, { base: g, ilvl: 1, qty: 1 });
     return null;
   }
   return 'The smith shrugs.';

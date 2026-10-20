@@ -14,6 +14,7 @@ import { Sim } from '@/systems/sim/Sim';
 import { hasSlash } from '@/systems/rules/slash';
 import { HC_CAMPAIGN_BOSSES } from '@/data/enemies/hc/campaign';
 import type { SimPorts } from '@/systems/sim/world';
+import { chooseSlot } from './builds-fight';
 
 const args = process.argv.slice(3); // node run.mjs fight [level] [class]
 const CAMPAIGN = args[0] === 'campaign';
@@ -117,7 +118,8 @@ function fight(classId: string, label: string, spawns: { creature: string; tier?
     let buttons = Btn.ATTACK;
     // casts: press one ready slot every 15 ticks (edge-triggered)
     if (tick % 15 === 0) {
-      const slot = [0, 1, 2, 3].find((i) => { const id = p.save.hotbar[i]; return id && sim.w.t >= (p.cds.get(id) ?? 0); });
+      // player habits (builds-fight.ts chooseSlot): skip unaffordable or out-of-range spells, ultimate first
+      const slot = chooseSlot(sim, p);
       if (slot !== undefined) { buttons |= [Btn.CAST1, Btn.CAST2, Btn.CAST3, Btn.CAST4][slot]; casts++; }
     }
     // martial classes press the slash / quick shot whenever it is up (NOSLASH=1: the bot without it, for comparison)

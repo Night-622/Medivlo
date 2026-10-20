@@ -53,8 +53,10 @@ function auras(): void {
 
 function keystonePower(): void {
   // Winter's Patience (rime sk_t1): +30% spell damage; with Avatar of Rime (sk_u) it is 50% stronger
-  const base = compileStats(save('rimecaller', { sk_t1: 1 })).stats.spellDmg ?? 0;
-  const avatar = compileStats(save('rimecaller', { sk_t1: 1, sk_u: 1 })).stats.spellDmg ?? 0;
+  // measured over the class's own spell damage (weapon mastery adds some)
+  const own = compileStats(save('rimecaller', {})).stats.spellDmg ?? 0;
+  const base = (compileStats(save('rimecaller', { sk_t1: 1 })).stats.spellDmg ?? 0) - own;
+  const avatar = (compileStats(save('rimecaller', { sk_t1: 1, sk_u: 1 })).stats.spellDmg ?? 0) - own;
   check(Math.abs(base - 0.3) < 1e-6 && Math.abs(avatar - 0.45) < 1e-6, 'Avatar capstone: the learned keystone is 50% stronger', `spell damage ${base} → ${avatar}`);
 }
 

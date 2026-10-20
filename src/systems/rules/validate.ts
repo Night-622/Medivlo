@@ -8,8 +8,11 @@ import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
 import { kitFor } from '@/data/classes/hc/kits';
 import { LEVEL_CAP, levelPoints, xpToNext } from './curves';
 import { itemInfo, slotsFor, TWO_HANDED } from './gear';
+import { rollable, sanitizeAffixes, socketCount } from './affixes';
+import { MAGIC_SCHOOLS, MARTIAL_SCHOOLS } from '@/core/constants';
+import { HC_LEGENDARIES } from '@/data/items/hc/legendary.gen';
 import { allNodes, canLearn } from './tree';
-import type { CharacterSave, GearSlot, ItemInstance } from './types';
+import { RARITY_ORDER, type CharacterSave, type GearSlot, type ItemInstance } from './types';
 
 const MAX_GOLD = 10_000_000, MAX_STACK = 999, MAX_PACK = 160, MAX_BONUS_POINTS = 60, ILVL_ABOVE = 5;
 const SLOTS: GearSlot[] = ['main', 'off', 'head', 'chest', 'hands', 'feet', 'ring1', 'ring2', 'amulet'];
@@ -32,6 +35,20 @@ function item(raw: unknown, level: number): ItemInstance | null {
   };
   const gem = str(r.gem);
   if (gem && itemInfo(gem)?.kind === 'gem') out.gem = gem;
+  // deeper builds (BUILDS.md §8): rolled rarity / affixes inside their tables, sockets by rarity, upgrade 0–5
+  if (rollable(base)) {
+    if (typeof r.rarity === 'string' && (RARITY_ORDER as string[]).includes(r.rarity)) out.rarity = r.rarity as ItemInstance['rarity'];
+    const affixes = sanitizeAffixes({ base, ilvl: out.ilvl, rarity: out.rarity, affixes: r.affixes as ItemInstance['affixes'] });
+    if (affixes.length) out.affixes = affixes;
+  }
+  const n = socketCount(out);
+  if (n && Array.isArray(r.sockets)) out.sockets = Array.from({ length: n }, (_, i) => { const g = str((r.sockets as unknown[])[i]); return g && itemInfo(g)?.kind === 'gem' ? g : null; });
+  const up = int(r.upgrade, 0, 5, 0);
+  if (up && info.slot) out.upgrade = up;
+  const imbue = str(r.imbue);
+  if (imbue && info.kind === 'weapon' && ([...MAGIC_SCHOOLS, ...MARTIAL_SCHOOLS] as readonly string[]).includes(imbue)) out.imbue = imbue as ItemInstance['imbue'];
+  const fx = str(r.uniqueFx);
+  if (fx && info.slot && uniqueFxOk(fx)) out.uniqueFx = fx;
   return out;
 }
 
@@ -109,3 +126,7 @@ function sanitizeLook(l: Record<string, unknown>): Record<string, number> {
   out.body = out.body ? 1 : 0;
   return out;
 }
+
+/** A unique effect id a loadout may carry (moved by the Runeforge): today the legendary effects (BUILDS.md §5). */
+const UNIQUE_FX = new Set(HC_LEGENDARIES.map((l) => l.id));
+const uniqueFxOk = (fx: string): boolean => UNIQUE_FX.has(fx);

@@ -91,7 +91,7 @@ node tools/release/predeploy-check.mjs                  # required before EVERY 
 npm run build
 HOLLOW_CROWN_RELEASE=1 firebase deploy --only hosting   # the flag is required: a predeploy guard blocks hosting deploys before launch
 ```
-- **Every deploy is tested first (the user's rule, 2026-10-20).** `predeploy-check.mjs` runs 31 suites, about 15–25 min:
+- **Every deploy is tested first (the user's rule, 2026-10-20).** `predeploy-check.mjs` runs 32 suites, about 15–25 min:
   the HUD, enemy and player hitboxes, every feature (spells, dash, potions, skill tree, gear and sets, legendaries,
   shops, Runeforge, story, co-op, public realms) and the production build. The hosting guard refuses the deploy unless
   that run passed for the exact code being deployed: any later edit means running it again. `--list` shows the suites.
