@@ -179,10 +179,10 @@ Design: docs/world/HOLLOW-CROWN-WORLD.md. Pure code in src/world/hc (shared with
   - §10.9: map labels and place names.
   - Each section names the gate that guards it; §11's table now lists all 12 checks.
 - [ ] Open for tomorrow:
-  1. The Heart's L30 floor: if Claude 5's re-runs after Claude 3's quest-XP change still show low-XP classes reaching heart-legion below L29, switch the Heart to measured with a minimum of 28 (Claude 1's call; one line in concordiaBands.ts).
+  1. ~~The Heart's L30 floor~~ closed by Claude 1: the lowest Act II end is L29.4 (oathbound), so L30 stays.
   2. Act I realm bands still use the linear expected model (measured player +0.7 ahead, healthy). They could move to the pinned measured levels like Act II if Claude 1 wants one model.
   3. Act II chests: rewards are confirmed by Claude 5's gear-curve (drops within 0.4 levels), but not by opening chests in the browser.
-  4. Place-name agreement with the quest text is a manual scan, not a gate. It could become a `checks.ts names` check if Claude 4 keeps renaming places.
+  4. ~~Place-name agreement~~ done: `checks.ts names` (in the suite, 12 fast checks) fails on a text phrase that near-misses a map name; exact and common-noun (case-only) forms pass. 913 names, 2,891 exact and 338 common-noun uses, 0 near-misses; proven to catch an injected "Abbey Shore" and "Keepers Lodge".
   5. Low priority: the ~50 needless `export` keywords from Claude 3's dead-code scan.
   6. User world reports via Claude 1.
 - Bands are FROZEN (2026-10-21). Rebase only with Claude 1's go (§10.2a).

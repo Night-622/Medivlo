@@ -231,11 +231,15 @@ Bosses roll their own tables; boss triggers carry no `loot` prop.
   - Concordia set pieces have explicit names (`concordiaPlaces.ts PIECE_NAMES`).
   - Waystones are named as the quests call them ("The Heart Camp", "Abbeyshore").
   - Names use the typographic ’.
-- **Guarded by** `labels`, which replays the placement in Node for 12 realms and Morvane with every optional area found: 0 labels on a marker or another label. Name agreement with the text is checked by a manual scan (Claude 2's naming pass, 2026-10-21), not a gate.
+- **Guarded by** `labels`, which replays the placement in Node for 12 realms and Morvane with every optional area found: 0 labels on a marker or another label.
+- **Guarded by** `names`: every place phrase in quest, journal and dialogue text ("to the X", "at X"…) that names a map place matches the map's name exactly, or differs only in case.
+  - Case-only is the documented **common-noun form**: prose may lowercase a generic word, as in "the Heart camp" for The Heart Camp.
+  - A multi-word phrase one or two letters off a map name, or with a space moved ("Abbey Shore" for Abbeyshore), fails.
+  - Deliberate exceptions go in `names.ts ALLOW`.
 
 ## 11. World checks
 
-`node tools/playthrough/suite.mjs` runs the fast set (11 checks) in about 25 s and exits 1 on any failure. It is part of the pre-deploy check. Each check also runs alone:
+`node tools/playthrough/suite.mjs` runs the fast set (12 checks) in about 30 s and exits 1 on any failure. It is part of the pre-deploy check. Each check also runs alone:
 
 `ENTRY=tools/playthrough/checks.ts OUT=<file> node tools/playthrough/build.mjs && node <file> <check>`
 
@@ -251,5 +255,6 @@ Bosses roll their own tables; boss triggers carry no `loot` prop.
 | `loot` | Every chest `loot` id is a known table, and every rare chest has one |
 | `labels` | Realm and Morvane map labels, all optional areas found, sit clear of markers and each other |
 | `quest-bands` | Every quest has a `QUEST_BANDS` entry and a `QUEST_ACT`; no entry names a missing quest |
+| `names` | Place phrases in the quest, journal and dialogue text match the map's names: exact or a common-noun (case-only) form; no near-miss |
 | `reach` | Walking from where a hero starts (a realm's two start waystones, Concordia's Gate Circle, an instance's entrance), a hero body (r12) reaches every quest objective place of all 24 campaigns, every NPC spot (on open ground), every chest and search object, every waystone and door; fast travel and doors land on reached open ground; every escort has a walk from a start spot of its NPC to its destination |
 | `bands-concordia` (`--full` only, ~6 min) | Against the pinned hero levels, every Act II/III pass is ≤ expected +2 and every main quest ≥ expected −4 (covers the story-instance bands the walks enter) |

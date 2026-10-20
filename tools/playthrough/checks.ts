@@ -16,6 +16,7 @@
  *   class-objects       class story objects: usable only in their own classes' campaigns (classObjects.ts)
  *   clearance           bodies fit their arenas, lair corridors and story markers (clearance.ts)
  *   smiths              every Runeforge within 30 tiles of a waystone; every capital and Concordia has one
+ *   names               place phrases in the text match the map's names (exact or a common-noun form; names.ts)
  *   quest-bands         every quest has an entry in src/data/regions/hc/questBands.ts (questBands.ts)
  *   labels              realm and Morvane map labels clear of markers and each other (mapLabels.ts)
  *   reach               a hero body reaches every objective place, NPC spot, chest and search object (reach.ts)
@@ -121,6 +122,8 @@ if (check === 'unplaced') {
   await import('./classObjects'); // each class as host sees only its own story objects, and all of them
 } else if (check === 'clearance') {
   await import('./clearance'); // bosses, minis and packs fit their arenas, corridors and markers
+} else if (check === 'names') {
+  await import('./names'); // quest, journal and dialogue place phrases name map places as the map does
 } else if (check === 'quest-bands') {
   await import('./questBands'); // every quest has a level-band entry for Claude 3's quest-XP scaling
 } else if (check === 'labels') {
