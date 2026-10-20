@@ -21,8 +21,11 @@ import { Sim } from '@/systems/sim/Sim';
 import type { EnemyEnt, PlayerEnt } from '@/systems/sim/state';
 import type { SimPorts } from '@/systems/sim/world';
 
-/** a gain this big (offence × EHP, geometric) counts as a real upgrade; anything better is still worn */
+/** a gain this big (offence × EHP, geometric) counts as a real upgrade; anything better is still worn. A weapon carries the
+ * whole offence side, an armour piece or trinket only a share of the defence, so a piece counts at a lower bar */
 export const REAL_UPGRADE = 0.03;
+export const REAL_UPGRADE_PIECE = 0.01;
+export const realBar = (slot: GearSlot): number => (slot === 'main' || slot === 'off' ? REAL_UPGRADE : REAL_UPGRADE_PIECE);
 
 /** One number for a loadout: √(offence × EHP), from the compiled stats (EHP as builds-probe refEhp). */
 export function gearScore(s: CharacterSave): number {
@@ -144,7 +147,7 @@ export class Player {
       this.s.equipment[fit.slot] = it;
       if (fit.slot === 'main' && TWO_HANDED.includes(itemInfo(it.base)?.weaponType as never) && this.s.equipment.off) { this.dispose(this.s.equipment.off); delete this.s.equipment.off; }
       if (old) this.dispose(old);
-      if (fit.gain >= REAL_UPGRADE) this.t.upgrades.push({ level: Math.floor(this.level), src, gain: fit.gain, rarity: r });
+      if (fit.gain >= realBar(fit.slot)) this.t.upgrades.push({ level: Math.floor(this.level), src, gain: fit.gain, rarity: r });
     } else this.dispose(it);
   }
   private dispose(it: ItemInstance): void {
@@ -166,7 +169,7 @@ export class Player {
       for (const l of lines) {
         const it = { uid: `s${++this.seq}`, base: l.item, ilvl: this.level, qty: 1 } as ItemInstance;
         const fit = bestFit(this.s, it);
-        if (!fit || fit.gain < REAL_UPGRADE || this.t.gold - l.price < reserve) continue;
+        if (!fit || fit.gain < realBar(fit.slot) || this.t.gold - l.price < reserve) continue;
         this.t.gold -= l.price; add(this.t.goldOut, /^[wa]_/.test(l.item) ? 'smith gear' : 'trinkets (Pell)', l.price);
         this.consider(it, 'shop');
       }
@@ -187,7 +190,7 @@ export class Player {
       const c = reforgeCost(it, this.level);
       if (!c) continue;
       const t: CharacterSave = { ...this.s, equipment: { ...this.s.equipment, [slot]: { ...it, ilvl: c.to } } };
-      if (gearScore(t) / gearScore(this.s) - 1 < REAL_UPGRADE || !pay(c.gold, c.ingots, 'runeforge reforges')) continue;
+      if (gearScore(t) / gearScore(this.s) - 1 < realBar(slot) || !pay(c.gold, c.ingots, 'runeforge reforges')) continue;
       it.ilvl = c.to;
       this.t.reforges++;
     }
