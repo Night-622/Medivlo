@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import type { QuestDef, WorldObject } from '@/core';
 import { CLASS_SCHOOL } from '@/core/constants';
 import { creature } from '@/systems/rules/creatures';
-import { LEVEL_CAP, spawnCountMult, xpForKill, xpToNext } from '@/systems/rules/curves';
+import { LEVEL_CAP, questXpMult, spawnCountMult, xpForKill, xpToNext } from '@/systems/rules/curves';
 import type { Rarity } from '@/systems/rules/types';
 import { QUEST_XP_TIER } from '@/systems/sim/shop';
 import { ELITE } from '@/data/enemies/hc/elites';
@@ -20,6 +20,7 @@ import { InstanceGen } from '@/world/hc/instanceGen';
 import { instanceDef } from '@/world/hc/spaces';
 import { startAreaOf } from '@/world/hc/worldService';
 import { spawnZones, type SpawnZoneDef } from '@/world/hc/spawns';
+import { levelAt, stepDone } from '@/world/hc/bands';
 import { Player } from './gear-curve-model';
 
 const EXPLORE = process.env.EXPLORE === '1';
@@ -95,7 +96,11 @@ export interface Run {
  * (boss-check copies the worn kit); `onQuest` gets each quest's id and the hero's exact level as it starts (hero-levels.ts).
  */
 export function runClass(cls: string, seed: number, own: QuestDef[], checks: readonly number[], onCheck?: (L: number, pl: Player) => void,
-  onQuest?: (quest: string, level: number) => void, opts: { party?: number; onXp?: (quest: string, src: XpSource, levels: number) => void } = {}): Run {
+  onQuest?: (quest: string, level: number) => void, opts: {
+    party?: number; onXp?: (quest: string, src: XpSource, levels: number) => void;
+    /** a quest's level band for rules/curves.ts questXpMult (the sim's lookup once it exports one); onQuestXp sees each reward's base levels and multiplier */
+    questBand?: (quest: string) => readonly [number, number] | null; onQuestXp?: (quest: string, baseLevels: number, mult: number) => void;
+  } = {}): Run {
   // a party meets bigger packs and lair waves (spawnCountMult); every hero near a kill gets its full XP (sim/death.ts),
   // so party size only changes how many kills there are. Bosses and quest objective kills stay single. (Loot here stays solo.)
   const crowd = spawnCountMult(opts.party ?? 1);
@@ -111,22 +116,29 @@ export function runClass(cls: string, seed: number, own: QuestDef[], checks: rea
   const bossLevel = (id: string) => { const d = instanceDef(lairOf.get(id) ?? ''); return [d?.boss, d?.boss2].find((b) => b?.creature === id)?.level; };
   const fallback = `bx_${CLASS_SCHOOL[cls]}_0`;
   const clearZone = (z: SpawnZoneDef) => { for (let k = 0; k < Math.round(z.cap * crowd); k++) h.kill(z.pool?.[k % Math.max(1, z.pool.length)] ?? fallback, (z.level[0] + z.level[1]) / 2, 'enemy', !!z.elite && k === 0); };
+  // the band in force for this host (sim levelAt with the quests done so far): Sentinel lairs, the barrow, the abbey and
+  // Morvane caves are banded per host class (Claude 2); their stored waves are at the instance level and shift by it
+  const done = new Set<string>(), steps = stepDone(cls, (q) => done.has(q));
   const clearLair = (inst: string, bossByObjective: boolean) => {
+    let chestShift = 0;
     for (const z of spawnZones(inst).filter((x) => EXPLORE || !x.id.includes(':side-'))) {
-      if (z.waves) for (const wave of z.waves) {
+      const band = levelAt(z, steps, cls), shift = band[0] - z.level[0];
+      if (!z.id.includes(':side-')) chestShift = shift;
+      if (z.waves) for (const wave0 of z.waves) {
+        const wave = wave0.map((e) => ({ ...e, level: e.level + shift }));
         // waves are stored for one player: a party's wave has round(n × mult) of the same creatures (bosses / minis stay one)
         const extra = wave.filter((e) => (e.tier ?? tierOf(e.creature)) === 'enemy');
         const more = Math.round(extra.length * crowd) - extra.length;
         for (const e of [...wave, ...Array.from({ length: Math.max(0, more) }, (_, k) => extra[k % Math.max(1, extra.length)])]) if (e) h.kill(e.creature, e.level, e.tier ?? tierOf(e.creature), !!e.elite);
       }
-      else clearZone(z);
+      else clearZone({ ...z, level: band });
     }
     const b = instanceDef(inst)?.boss;
     if (b && !bossByObjective) h.kill(b.creature, b.level, tierOf(b.creature));
     // the instance's own generated chests (main path and side rooms)
     const gen = new InstanceGen(instanceDef(inst)!);
     const objs = [...(gen as unknown as { objs: Map<string, WorldObject[]> }).objs.values()].flat().filter((o) => o.kind === 'chest');
-    for (const o of objs) pl.chest(o.id, o.props as Record<string, string | number | boolean>);
+    for (const o of objs) { const pr = o.props as Record<string, string | number | boolean>; pl.chest(o.id, { ...pr, level: Number(pr.level) + chestShift }); }
   };
   const snaps: Snap[] = [];
   const snap = (L: number) => {
@@ -175,7 +187,12 @@ export function runClass(cls: string, seed: number, own: QuestDef[], checks: rea
     }
     pl.quest(q.reward?.gold, q.reward?.hcItems);
     curSrc = 'quest';
-    if (q.reward?.xpTier) h.gain(QUEST_XP_TIER[q.reward.xpTier] * xpToNext(pl.level));
+    if (q.reward?.xpTier) {
+      const mult = questXpMult(pl.level, opts.questBand?.(q.id) ?? null);
+      opts.onQuestXp?.(q.id, QUEST_XP_TIER[q.reward.xpTier], mult);
+      h.gain(QUEST_XP_TIER[q.reward.xpTier] * xpToNext(pl.level) * mult);
+    }
+    done.add(q.id);
     pl.town();
     while (next < checks.length && pl.level >= checks[next]) snap(checks[next++]);
   }
