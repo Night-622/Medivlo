@@ -20,6 +20,8 @@ export class FocusPrompt {
   private focus: WorldObject | null = null;
   /** NPC entities (from snapshots) the player can talk to */
   npcs: () => { id: string; x: number; y: number; name: string }[] = () => [];
+  /** a search object an active objective has already counted (Claude 4's objectUsed): its prompt says so, dimmed */
+  used: (objectId: string) => boolean = () => false;
   private acc = 1e9;
   private key: Phaser.Input.Keyboard.Key | null = null;
 
@@ -72,9 +74,10 @@ export class FocusPrompt {
     const o = this.focus;
     this.text.setVisible(!!o && !this.paused());
     if (!o) return;
-    const label = String(o.props?.label ?? LABEL[o.kind] ?? 'Use');
+    const done = o.kind === 'interactable' && this.used(o.id);
+    const label = done ? (/read/i.test(String(o.props?.label)) ? 'Already read' : 'Already searched') : String(o.props?.label ?? LABEL[o.kind] ?? 'Use');
     const name = o.props?.name ? `${o.props.name} · ` : '';
-    this.text.setText(`[${keyLabel('interact')}] ${name}${label}`);
+    this.text.setText(`[${keyLabel('interact')}] ${name}${label}`).setColor(done ? C.text300 : C.text);
     // over an NPC, above its name plate (NpcView draws it 42 px over the feet)
     this.text.setPosition(o.at[0] * TILE_SIZE + 16, o.at[1] * TILE_SIZE - (o.kind === 'npc-anchor' && o.id.startsWith('npc') ? 24 : 6));
   }

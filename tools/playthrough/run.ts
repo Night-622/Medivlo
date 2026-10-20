@@ -99,7 +99,7 @@ const q = (space: string) => Services.get('worlds').query(space);
 const log: string[] = [];
 const stats = { deaths: 0, teleports: 0, waits: 0, travels: 0, talks: 0, uses: 0, equips: 0, points: 0 };
 /** pacing (Claude 1): what a human would spend — walking, fighting, reading, menus */
-const pace = { tiles: 0, walkTicks: 0, fights: 0, combatTicks: 0, nodes: 0, words: 0 };
+const pace = { tiles: 0, walkTicks: 0, fights: 0, combatTicks: 0, nodes: 0, words: 0, journal: 0 };
 let lastPos: { space: string; x: number; y: number } | null = null, inFight = false, lastText = '';
 let stuck: string | null = null;
 /** content findings: things a real player would also hit (talks that open nothing, objects that do nothing) */
@@ -120,6 +120,10 @@ const ev = bus as unknown as { on(ev: string, fn: (e: any) => void): void };
 for (const n of ['region:entered', 'area:entered', 'instance:entered']) ev.on(n, (e) => { const id = e.regionId ?? e.triggerId ?? e.instanceId; if (id) places.add(id); });
 ev.on('landmark:discovered', (e) => places.add(e.landmarkId));
 ev.on('quest:advanced', () => stages++);
+// the Journal shows each stage's prose (Claude 4, from 2026-10-21): read once per stage entered, at the same 200 wpm
+const journalOf = (quest: string, stage?: string) => { const q = questDef(quest as QuestDef['id']); const st = stage ? q?.stages.find((x) => x.id === stage) : q?.stages[0]; return st?.journal ? wordsOf(st.journal) : 0; };
+ev.on('quest:started', (e) => { pace.journal += journalOf(e.questId); });
+ev.on('quest:advanced', (e) => { pace.journal += journalOf(e.questId, e.stage); });
 bus.on('dialogue:started', (e) => { opens.add(e.dialogueId); if (e.dialogueId.startsWith('dialogue:area-')) banter++; });
 const wordsOf = (t: string) => t.split(/\s+/).filter(Boolean).length;
 function treeWords(id: string): number {
@@ -561,14 +565,14 @@ const done = (Registry.all('quest') as QuestDef[]).filter((x) => (x.campaign ===
 console.log(JSON.stringify({
   class: CLASS, act: getFlag('story.act') ?? 1, simHours: +(tick / 30 / 3600).toFixed(2), level: p?.save.level, space: p?.space,
   human: (() => {
-    const walk = pace.walkTicks / 30 / 0.6, combat = (pace.combatTicks / 30) * 1.5, read = (pace.words / 200) * 60, menus = (stats.equips + stats.points) * 8, quests = done * 120, stage = stages * 30;
+    const walk = pace.walkTicks / 30 / 0.6, combat = (pace.combatTicks / 30) * 1.5, read = ((pace.words + pace.journal) / 200) * 60, menus = (stats.equips + stats.points) * 8, quests = done * 120, stage = stages * 30;
     // the careful reader: every node of every conversation the bot opened, at the same 200 wpm (reported, not added to hours)
     const full = ([...opens].reduce((n, id) => n + treeWords(id), 0) / 200) * 60;
     const h = (x: number) => +(x / 3600).toFixed(2);
     return { hours: h(walk + combat + read + menus + quests + stage), walkH: h(walk), combatH: h(combat), readH: h(read), menusH: h(menus), questsH: h(quests), stagesH: h(stage), readFullH: h(full) };
   })(),
   acts: { explored, places: places.size, fightsPerQuest: done ? +(pace.fights / done).toFixed(1) : null, stages, banter, dialogues: opens.size },
-  pace: { tiles: Math.round(pace.tiles), fights: pace.fights, combatMin: Math.round(pace.combatTicks / 30 / 60), nodes: pace.nodes, words: pace.words },
+  pace: { tiles: Math.round(pace.tiles), fights: pace.fights, combatMin: Math.round(pace.combatTicks / 30 / 60), nodes: pace.nodes, words: pace.words, journalWords: pace.journal },
   questsDone: done, quests: mine.length, ...stats, deathsAt: Object.fromEntries(deathsAt), stuck, findings: [...findings], deathLog: deathLog.slice(-12), xpBy, hazards: fighter.hazardUses, gearIlvl: (() => { const w = Object.values(character().equipment).filter(Boolean) as { ilvl: number }[]; return w.length ? Math.round(w.reduce((n, x) => n + x.ilvl, 0) / w.length) : 0; })(),
   lastGoals: log.slice(-8),
 }));

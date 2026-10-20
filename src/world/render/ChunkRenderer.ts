@@ -189,6 +189,12 @@ export class ChunkRenderer {
     this.show(cx, cy);
   }
 
+  /** The prop sprites of the 3×3 chunks round a world point (see-through props, Occlusion.ts). */
+  *spritesNear(x: number, y: number): Iterable<Phaser.GameObjects.Image> {
+    const cx = Math.floor(x / CHUNK_PX), cy = Math.floor(y / CHUNK_PX);
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) yield* this.live.get(`${cx + dx},${cy + dy}`)?.sprites ?? [];
+  }
+
   destroy(): void {
     for (const k of [...this.live.keys()]) this.hide(k);
   }

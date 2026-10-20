@@ -11,6 +11,7 @@ import { character } from '@/systems/client/character';
 import { systemsAuthority } from '@/systems/sim';
 import { activeQuests, npcPlacements } from '@/narrative';
 import { currentStage, objectiveDone } from '@/narrative/engine/quests';
+import { objectUsed } from '@/narrative/client/markers';
 import type { HudV2Scene } from '@/ui/hud/HudV2Scene';
 import { MinimapV2 } from '@/ui/map/MinimapV2';
 import { MapScreen } from '@/ui/map/MapScreen';
@@ -21,6 +22,7 @@ import type { SpaceQuery } from '@/world/hc/runtime';
 import { installWorldAuthority, type WorldAuthority } from '@/world/hc/authority';
 import { InstanceGen } from '@/world/hc/instanceGen';
 import { ChunkRenderer } from '@/world/render/ChunkRenderer';
+import { Occlusion } from '@/world/render/Occlusion';
 import { bakeStats } from '@/world/render/artCache';
 import { chunkFeed } from '@/world/render/ChunkFeed';
 import { ListeningShadow } from '@/world/render/ListeningShadow';
@@ -65,6 +67,7 @@ export class WorldV2Scene extends Phaser.Scene {
   private clock!: WorldClock;
   private chunks!: ChunkRenderer;
   private light!: Lighting;
+  private seeThrough: Occlusion | null = null;
   private player: PlayerLike | null = null;
   /** dev fly camera position when there is no player */
   private fly: { x: number; y: number; keys: Record<string, Phaser.Input.Keyboard.Key> } | null = null;
@@ -160,6 +163,7 @@ export class WorldV2Scene extends Phaser.Scene {
     this.light = new Lighting(this);
     if (space.startsWith('inst:')) { this.light.look = 'abbey'; cam.setBackgroundColor(0x0e0b08); }
     this.chunks = new ChunkRenderer(this, rt, this.light);
+    this.seeThrough = new Occlusion((x, y) => this.chunks.spritesNear(x, y));
     // terrain ahead of the camera comes from the chunk worker (no fresh-terrain hitches); stale asks are dropped
     const feed = chunkFeed();
     feed.clear();
@@ -198,6 +202,7 @@ export class WorldV2Scene extends Phaser.Scene {
     const offNpcs = Services.tryGet('net')?.addConsumer(npcView);
     this.npcs = { view: npcView, off: offNpcs ?? (() => undefined) };
     this.focus.npcs = () => npcView.list();
+    this.focus.used = objectUsed; // counted search objects say so (Claude 4; always false on a guest)
 
     this.events.once('shutdown', () => this.teardown());
     if (import.meta.env.DEV) this.installDevHooks();
@@ -382,6 +387,7 @@ export class WorldV2Scene extends Phaser.Scene {
     this.map?.destroy(); this.map = null;
     this.focus?.destroy(); this.focus = null;
     this.npcs?.off(); this.npcs?.view.destroy(); this.npcs = null;
+    this.seeThrough?.clear();
     this.chunks?.destroy();
     this.light?.destroy();
     this.player?.destroy(); this.player = null;
@@ -404,5 +410,6 @@ export class WorldV2Scene extends Phaser.Scene {
     this.light.update(this.clock.darkness, time);
     this.minimap?.update(dt);
     this.focus?.update(dt);
+    this.seeThrough?.update(this.player ? this.pos() : null, dt);
   }
 }

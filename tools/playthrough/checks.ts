@@ -16,6 +16,7 @@
  *   class-objects       class story objects: usable only in their own classes' campaigns (classObjects.ts)
  *   clearance           bodies fit their arenas, lair corridors and story markers (clearance.ts)
  *   smiths              every Runeforge within 30 tiles of a waystone; every capital and Concordia has one
+ *   loot                chests' Claude 3 loot tables resolve; every rare chest has one
  *   merchants           smiths, plus each capital's smith + trader and each frontier's pedlar by its village waystone
  * Each check exits non-zero on failure; tools/playthrough/suite.mjs runs the fast set (pre-deploy).
  */
@@ -116,6 +117,34 @@ if (check === 'unplaced') {
   await import('./classObjects'); // each class as host sees only its own story objects, and all of them
 } else if (check === 'clearance') {
   await import('./clearance'); // bosses, minis and packs fit their arenas, corridors and markers
+} else if (check === 'loot') {
+  // Claude 3's loot tables on chests: every `loot` id resolves (lootTable), every rare chest carries one
+  const { lootTable } = await import('@/data/items/hc/lootTables');
+  const { REALMS, ARENAS } = await import('@/world/hc/spaces');
+  const insts = AREAS.flatMap((a) => [...[1, 2, 3].map((n) => `inst:${a.school}-${a.side}-lair-${n}`), `inst:${a.school}-${a.side}-cave`])
+    .concat(['frost', 'gilded', 'storm', 'abbey', 'gloam', 'briar', 'ash', 'alder', 'road', 'marsh'].map((r) => `inst:${r}-cave`), ['inst:varric-barrow', 'inst:drowned-abbey', 'inst:concord-citadel'], SENTINELS.map((s) => s.inst));
+  const per = new Map<string, number>();
+  let bad = 0, chests = 0, rare = 0;
+  for (const space of [...REALMS.map((r) => r.space), ...ARENAS.map((a) => a.id), ...insts]) {
+    const g = spaceRuntime(space).gen;
+    for (let cy = 0; cy < Math.ceil(g.heightTiles / CHUNK_TILES); cy++) for (let cx = 0; cx < Math.ceil(g.widthTiles / CHUNK_TILES); cx++) {
+      for (const o of g.objects(cx, cy)) {
+        if (o.kind !== 'chest') continue;
+        chests++;
+        const t = o.props?.loot;
+        if (o.props?.rarity === 'rare') rare++;
+        if (typeof t === 'string') {
+          if (!lootTable(t)) { bad++; console.log(`UNKNOWN ${t} on ${o.id} in ${space}`); }
+          per.set(t, (per.get(t) ?? 0) + 1);
+        } else if (o.props?.rarity === 'rare') { bad++; console.log(`NO TABLE on rare chest ${o.id} in ${space}`); }
+      }
+    }
+  }
+  const kinds = new Map<string, number>();
+  for (const [t, k] of per) { const g = t.replace(/^tbl:[a-z]+-(ruin|cave)$/, (m, x) => (/^tbl:morvane-/.test(m) ? m : `tbl:<school>-${x}`)); kinds.set(g, (kinds.get(g) ?? 0) + k); }
+  console.log([...kinds].sort().map(([t, k]) => `${t} ${k}`).join(' · '));
+  console.log(bad ? `loot: ${bad} problems` : `loot: ${chests} chests, ${rare} rare, every rare one on a known table (${per.size} tables placed)`);
+  if (bad) process.exitCode = 1;
 } else if (check === 'smiths' || check === 'merchants') {
   // every Runeforge (BUILDS.md §6: Odo plus one smith per realm capital) stands within reach of a waystone; and the
   // realm merchants (Claude 1's new-player fix): a smith and a trader by each capital's waystone, a pedlar by each
