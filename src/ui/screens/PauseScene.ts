@@ -151,12 +151,13 @@ export class PauseScene extends Phaser.Scene {
   }
 
   private quit(): void {
-    void SaveService.save().finally(() => {
-      leaveCoop();
-      sim.setPaused(false);
-      bus.emit('ui:close', { panel: 'pause' });
-      for (const k of [SceneKeys.HudV2, SceneKeys.Hud, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k)) this.scene.stop(k);
-      this.scene.start(SceneKeys.MainMenu);
-    });
+    // the local copy is written synchronously inside save(); the cloud copy finishes on its own (offline it would
+    // hold Quit to title for the whole cloud timeout)
+    void SaveService.save();
+    leaveCoop();
+    sim.setPaused(false);
+    bus.emit('ui:close', { panel: 'pause' });
+    for (const k of [SceneKeys.HudV2, SceneKeys.Hud, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k)) this.scene.stop(k);
+    this.scene.start(SceneKeys.MainMenu);
   }
 }

@@ -138,6 +138,8 @@ function runRules(rulesFile, tag) {
     const p = spawn('firebase', ['emulators:exec', '--only', 'firestore', '--project', PROJECT, '--config', `"${cfg}"`, `"${inner.replace(/"/g, '\\"')}"`], { cwd: root, shell: true, stdio: ['ignore', 'pipe', 'pipe'] });
     let log = ''; p.stdout.on('data', (d) => (log += d)); p.stderr.on('data', (d) => (log += d));
     p.on('exit', async (code) => {
+      const b = tag === 'b' ? 1 : 0;
+      await freePorts([8181 + b, 4410 + b, 4510 + b]);
       try { resolveRun({ ok: code === 0, results: JSON.parse((await import('node:fs')).readFileSync(resultFile, 'utf8')) }); }
       catch { resolveRun({ ok: false, results: null, log: log.slice(-1500) }); }
     });
@@ -163,9 +165,29 @@ async function runClient(rulesFile, tag) {
     const p = spawn('firebase', ['emulators:exec', '--only', 'auth,firestore', '--project', PROJECT, '--config', `"${cfg}"`, `"${inner.replace(/"/g, '\\"')}"`], { cwd: root, shell: true, stdio: ['ignore', 'pipe', 'pipe'] });
     let log = ''; p.stdout.on('data', (d) => (log += d)); p.stderr.on('data', (d) => (log += d));
     p.on('exit', async () => {
+      await freePorts([ports.auth, ports.fs, 4420 + (tag === 'b' ? 1 : 0), 4520 + (tag === 'b' ? 1 : 0)]);
       try { done(JSON.parse((await import('node:fs')).readFileSync(resultFile, 'utf8'))); } catch { done({ error: log.slice(-1500) }); }
     });
   });
+}
+
+/**
+ * On Windows `emulators:exec` exits but can leave its Java emulator running: stop whatever still listens on OUR
+ * emulator ports (never anything else's).
+ */
+async function freePorts(ports) {
+  const { execFileSync } = await import('node:child_process');
+  for (const port of ports) {
+    try {
+      if (process.platform === 'win32') {
+        const pids = new Set(execFileSync('netstat', ['-ano']).toString().split('\n')
+          .filter((l) => /LISTENING/.test(l) && new RegExp(`:${port}\\s`).test(l)).map((l) => l.trim().split(/\s+/).pop()));
+        for (const pid of pids) if (pid && pid !== '0') execFileSync('taskkill', ['/PID', pid, '/F'], { stdio: 'ignore' });
+      } else {
+        for (const pid of execFileSync('lsof', ['-ti', `tcp:${port}`]).toString().split('\n').filter(Boolean)) process.kill(Number(pid), 'SIGKILL');
+      }
+    } catch { /* nothing listening */ }
+  }
 }
 
 const single = arg('rules', null);

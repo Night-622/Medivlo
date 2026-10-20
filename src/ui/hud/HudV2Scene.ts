@@ -6,6 +6,7 @@ import { ChatBox } from './ChatBox';
 import { isAction } from '@/ui/kit/hc/keys';
 import { DuelUi } from './DuelUi';
 import { leaveCoop } from '@/net/coop';
+import { SaveService } from '@/firebase/SaveService';
 import { Game, SceneKeys, Services, bus, Settings, type Action, formatKeys, Registry, keyLabel } from '@/core';
 import type { EntityState, Snapshot } from '@/net';
 import { Art } from '@/art';
@@ -80,6 +81,9 @@ export class HudV2Scene extends Phaser.Scene {
     this.input.keyboard!.on('keydown', (ev: KeyboardEvent) => { if (isAction(ev, 'people') && ev.key !== 'Escape' && !(ev.target instanceof HTMLInputElement)) openPeople(); });
     bus.onScene(this, 'ui:open', ({ panel }) => { if (panel === 'people') openPeople(); });
     bus.onScene(this, 'net:kicked', ({ reason }) => {
+      // the host or realm is gone: keep everything earned until now (autosave may be up to 90 s behind). A guest's
+      // state is its own save (the host's story lives in the mirror), so this never writes the host's world.
+      if (Game.hasState && Game.state.player.hero) void SaveService.save(Game.state, { auto: true });
       leaveCoop();
       // overlays opened from Pause (Settings, Friends, Load…) or People would otherwise stay up over the title
       for (const k of [SceneKeys.Settings, SceneKeys.Friends, SceneKeys.Load, SceneKeys.Realms, SceneKeys.Account, SceneKeys.People, SceneKeys.Pause, SceneKeys.Death, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k) || this.scene.isPaused(k)) this.scene.stop(k);

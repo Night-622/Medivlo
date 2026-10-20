@@ -11,6 +11,9 @@ const ICE: RTCConfiguration = { iceServers: [{ urls: 'stun:stun.l.google.com:193
 const FAST_TYPES = new Set(['snapshot', 'input']);
 
 export class PeerLink {
+  /** how long a 'disconnected' link may try to recover before the session ends (tests shorten it) */
+  static disconnectGraceMs = 15_000;
+  private stall: ReturnType<typeof setTimeout> | null = null;
   readonly pc = new RTCPeerConnection(ICE);
   private rel?: RTCDataChannel;
   private fast?: RTCDataChannel;
@@ -22,8 +25,15 @@ export class PeerLink {
 
   constructor(private sig: SignalChannel, role: 'host' | 'guest') {
     this.pc.onicecandidate = (e) => { if (e.candidate) sig.send({ t: 'ice', c: e.candidate.toJSON() }); };
+    // 'disconnected' is transient in WebRTC (a stalled network often recovers by itself): give it a grace period
+    // instead of ending the session (meanwhile the guest's HUD shows "Waiting for the host…"); 'failed' and
+    // 'closed' are final.
     this.pc.onconnectionstatechange = () => {
-      if (['failed', 'closed', 'disconnected'].includes(this.pc.connectionState)) this.fireClose();
+      const st = this.pc.connectionState;
+      if (st === 'failed' || st === 'closed') { this.fireClose(); return; }
+      if (st === 'disconnected') {
+        this.stall ??= setTimeout(() => { this.stall = null; if (this.pc.connectionState !== 'connected') this.fireClose(); }, PeerLink.disconnectGraceMs);
+      } else if (this.stall) { clearTimeout(this.stall); this.stall = null; }
     };
     if (role === 'guest') {
       this.attach(this.pc.createDataChannel('rel', { ordered: true }));
@@ -76,5 +86,10 @@ export class PeerLink {
   close(): void { this.offSignal(); this.sig.close(); this.pc.close(); this.fireClose(); }
 
   private closed = false;
-  private fireClose(): void { if (this.closed) return; this.closed = true; for (const fn of this.closeHandlers) fn(); }
+  private fireClose(): void {
+    if (this.stall) { clearTimeout(this.stall); this.stall = null; }
+    if (this.closed) return;
+    this.closed = true;
+    for (const fn of this.closeHandlers) fn();
+  }
 }

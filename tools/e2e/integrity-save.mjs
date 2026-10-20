@@ -104,6 +104,24 @@ const r = hero(2, 'Counter', 'me'); r.meta.rev = 7;
 await SaveService.save(r);
 check('every save adds 1 to the counter, and the cloud copy carries it', r.meta.rev === 8 && fakeDb.docs.get('users/me/saves/2')?.rev === 8, JSON.stringify({ rev: r.meta.rev, cloud: fakeDb.docs.get('users/me/saves/2')?.rev }));
 
+// 6. offline: Firestore never settles a write and reads hang; nothing may wait on it (Save, Quit to title, Load)
+await reset('me');
+SaveService.cloudTimeoutMs = 300;
+fakeDb.offline = true;
+const off6 = hero(0, 'Offline', 'me');
+let t6 = Date.now();
+await SaveService.save(off6);
+const saveMs = Date.now() - t6;
+check('offline: a save returns (local copy written) instead of hanging on the cloud', saveMs < 2000 && JSON.parse(localStorage.getItem('hollowcrown.save.0')).player.name === 'Offline', `${saveMs} ms`);
+t6 = Date.now();
+const ld = await SaveService.load(0);
+const ls = await SaveService.list();
+check('offline: load and the Load screen list come back with the local copy', Date.now() - t6 < 2000 && ld?.player.name === 'Offline' && ls[0]?.name === 'Offline', `${Date.now() - t6} ms`);
+fakeDb.offline = false;
+await SaveService.save(off6);
+check('back online: the next save reaches the cloud', !!fakeDb.docs.get('users/me/saves/0'));
+SaveService.cloudTimeoutMs = 8000;
+
 console.warn = warn;
 console.log(fails ? `\nintegrity-save: ${fails} FAILED` : '\nintegrity-save: ALL PASS');
 process.exit(fails ? 1 : 0);

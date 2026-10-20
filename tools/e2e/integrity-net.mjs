@@ -217,6 +217,29 @@ check('ensureUser signs a new player in as a guest', u.isAnonymous && fakeAuth.s
   host.close();
 }
 
+// ───────── 5b. a stalled connection (ICE 'disconnected') recovers instead of ending the session ─────────
+{
+  m.PeerLink.disconnectGraceMs = 200;
+  let onPeer;
+  const host = new m.HostNet({ host: async (_c, _h, fn) => { onPeer = fn; return () => {}; } }, 'host-s', { name: 'H', classId: 'warden', level: 5, worldSeed: 1, hostInSafeZone: () => true, hasVisited: () => true, markVisited: () => {} });
+  await host.open('STALL1');
+  onPeer('guest-s2', { send() {}, onMessage() { return () => {}; }, close() {} });
+  const pc = pcs.at(-1);
+  const mk = (label) => ({ label, readyState: 'open', send() {} });
+  const rel = mk('rel'), fast = mk('fast');
+  pc.ondatachannel({ channel: rel }); pc.ondatachannel({ channel: fast });
+  rel.onmessage({ data: JSON.stringify({ type: 'hello', playerId: 'guest-s2', name: 'S', classId: 'warden', level: 1, firstVisit: false }) });
+  const seated = () => !!host.session().members.find((x) => x.playerId === 'guest-s2')?.connected;
+  const set = (st) => { pc.connectionState = st; pc.onconnectionstatechange?.(); };
+  set('disconnected'); await tick(100); const during = seated();
+  set('connected'); await tick(250); const recovered = seated();
+  check('a stalled link that recovers within the grace keeps the guest seated', during && recovered, JSON.stringify({ during, recovered }));
+  set('disconnected'); await tick(300);
+  check('…and one that stays down past it ends cleanly (seat freed)', !seated());
+  m.PeerLink.disconnectGraceMs = 15_000;
+  host.close();
+}
+
 // ───────── 6. per-player rates (duel requests are replicated to everyone: 1 msg → N events) ─────────
 {
   let onPeer;

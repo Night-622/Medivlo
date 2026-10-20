@@ -47,11 +47,23 @@ function writeLocal(state: GameState): void {
   catch (e) { console.warn('[save] local write failed', e); }
 }
 
+/**
+ * Offline, Firestore never settles a write (it waits for the server's ack) and reads can hang: every cloud call is
+ * time-boxed, so Save / Quit to title / Load never wait on the network. The local copy is always written first, and
+ * a timed-out write stays queued in Firestore and goes up when the browser is back online.
+ */
+function timeBox<T>(p: Promise<T>, what: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(`[save] ${what} timed out (offline?)`)), SaveService.cloudTimeoutMs);
+    p.then((v) => { clearTimeout(t); resolve(v); }, (e) => { clearTimeout(t); reject(e); });
+  });
+}
+
 async function readCloud(slot: number): Promise<GameState | null> {
   if (!isFirebaseConfigured) return null;
   try {
-    const user = await ensureUser();
-    const snap = await getDoc(doc(firebase().db, 'users', user.uid, 'saves', String(slot)));
+    const user = await timeBox(ensureUser(), 'sign-in');
+    const snap = await timeBox(getDoc(doc(firebase().db, 'users', user.uid, 'saves', String(slot))), 'cloud read');
     return snap.exists() && snap.data().game === GAME_TAG ? sane(JSON.parse(snap.data().json as string)) : null;
   } catch (e) { console.warn('[save] cloud read failed', e); return null; }
 }
@@ -59,9 +71,9 @@ async function readCloud(slot: number): Promise<GameState | null> {
 async function writeCloud(state: GameState): Promise<boolean> {
   if (!isFirebaseConfigured) return false;
   try {
-    const user = await ensureUser();
+    const user = await timeBox(ensureUser(), 'sign-in');
     // Stored as a JSON string: avoids Firestore's nested-array limits and keeps the schema opaque.
-    await setDoc(doc(firebase().db, 'users', user.uid, 'saves', String(state.meta.slot)), {
+    await timeBox(setDoc(doc(firebase().db, 'users', user.uid, 'saves', String(state.meta.slot)), {
       game: GAME_TAG,
       json: JSON.stringify(state),
       name: state.player.name,
@@ -70,7 +82,7 @@ async function writeCloud(state: GameState): Promise<boolean> {
       updatedAt: state.meta.updatedAt,
       rev: state.meta.rev ?? 0,
       version: state.meta.version,
-    });
+    }), 'cloud write');
     return true;
   } catch (e) { console.warn('[save] cloud write failed', e); return false; }
 }
@@ -93,6 +105,9 @@ function migrate(state: GameState): GameState {
 let lastCloudAt = 0;
 
 export const SaveService = {
+  /** How long a cloud read/write may take before the game carries on without it (tests shorten it). */
+  cloudTimeoutMs: 8000,
+
   /**
    * Launch rule (docs/REBUILD.md): old Medival saves are wiped. Local v1 keys are removed on boot; cloud v1 docs
    * (no `game` tag) are ignored by load/list and overwritten by the first Hollow Crown save in that slot.
@@ -142,8 +157,8 @@ export const SaveService = {
     // every local copy first; another account's copy gives way to this account's cloud slot (see load())
     const out = SaveService.listLocal(true);
     try {
-      const user = await ensureUser();
-      const snaps = await getDocs(collection(firebase().db, 'users', user.uid, 'saves'));
+      const user = await timeBox(ensureUser(), 'sign-in');
+      const snaps = await timeBox(getDocs(collection(firebase().db, 'users', user.uid, 'saves')), 'cloud list');
       for (const d of snaps.docs) {
         const slot = Number(d.id);
         if (!(slot >= 0 && slot < SAVE_SLOTS) || d.data().game !== GAME_TAG) continue;

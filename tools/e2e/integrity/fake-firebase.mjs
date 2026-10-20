@@ -76,6 +76,7 @@ function notify() {
 const later = (fn) => new Promise((resolve, reject) => setTimeout(() => { try { resolve(fn()); } catch (e) { reject(e); } }, 1));
 
 export function setDoc(ref, data, opts) {
+  if (fakeDb.offline) return new Promise(() => {}); // offline: Firestore never settles a write (waits for the server)
   return later(() => {
     if (fakeDb.failWrites) throw Object.assign(new Error('offline'), { code: 'unavailable' });
     const exists = docs.has(ref.path);
@@ -86,8 +87,8 @@ export function setDoc(ref, data, opts) {
 }
 export const addDoc = (coll, data) => later(() => { const p = `${coll.path}/m${Math.random().toString(36).slice(2, 10)}`; docs.set(p, { ...data }); notify(); return { path: p }; });
 export const deleteDoc = (ref) => later(() => { docs.delete(ref.path); notify(); });
-export const getDoc = (ref) => later(() => ({ exists: () => docs.has(ref.path), data: () => docs.get(ref.path) }));
-export const getDocs = (coll) => later(() => ({ docs: childrenOf(coll.path).map(snapDoc) }));
+export const getDoc = (ref) => fakeDb.offline ? new Promise(() => {}) : later(() => ({ exists: () => docs.has(ref.path), data: () => docs.get(ref.path) }));
+export const getDocs = (coll) => fakeDb.offline ? new Promise(() => {}) : later(() => ({ docs: childrenOf(coll.path).map(snapDoc) }));
 export function onSnapshot(q, fn) {
   const l = { coll: q.path, filters: q.filters, fn, seen: new Map() };
   listeners.add(l);
