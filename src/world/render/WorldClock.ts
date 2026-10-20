@@ -6,6 +6,10 @@ import type Phaser from 'phaser';
 import { Game, bus, type TimePhase } from '@/core';
 import { phaseOf } from '../hc/authority';
 
+/** one screen's tabs (HudV2Scene keeps the same groups) */
+const GROUPS = [['inventory', 'skills', 'spells'], ['journal', 'codex', 'book']];
+const groupOf = (p: string): string[] => GROUPS.find((g) => g.includes(p)) ?? [p];
+
 export class WorldClock {
   private pausers = new Set<string>();
   private phase: TimePhase;
@@ -14,8 +18,11 @@ export class WorldClock {
 
   constructor(scene: Phaser.Scene) {
     this.phase = phaseOf(this.hour);
-    bus.onScene(scene, 'ui:open', ({ panel }) => this.pausers.add(`ui:${panel}`));
-    bus.onScene(scene, 'ui:close', ({ panel }) => this.pausers.delete(`ui:${panel}`));
+    // Tabs of one screen announce only one side (Pack → Skills opens Skills and never closes the Pack; Journal → Codex
+    // by key says nothing; closing names only the current tab): a member opening replaces its group and any member
+    // closing clears the group, or a stale 'ui:inventory' kept the clock paused for good (the HUD's rule, 3641a48)
+    bus.onScene(scene, 'ui:open', ({ panel }) => { for (const p of groupOf(panel)) this.pausers.delete(`ui:${p}`); this.pausers.add(`ui:${panel}`); });
+    bus.onScene(scene, 'ui:close', ({ panel }) => { for (const p of groupOf(panel)) this.pausers.delete(`ui:${p}`); });
     bus.onScene(scene, 'dialogue:started', ({ dialogueId }) => this.pausers.add(`dlg:${dialogueId}`));
     bus.onScene(scene, 'dialogue:ended', ({ dialogueId }) => this.pausers.delete(`dlg:${dialogueId}`));
     bus.onScene(scene, 'game:paused', ({ paused }) => (paused ? this.pausers.add('pause') : this.pausers.delete('pause')));
