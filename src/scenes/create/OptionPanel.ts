@@ -18,7 +18,7 @@ export interface OptionPanelHooks {
 }
 
 const X = 856, Y = 96, W = 376, H = 524, CX = 880;
-const CLIP = { x: 864, y: 152, w: 360, h: 460 };
+const CLIP = { x: 864, y: 152, w: 360, h: 442 }; // the 20 px strip below holds the scroll cue, never a row
 
 export class OptionPanel {
   private body: Phaser.GameObjects.Container;
@@ -41,18 +41,14 @@ export class OptionPanel {
 
   private scroll = 0;
   private contentBottom = 0;
-  private cueUp?: Phaser.GameObjects.Text;
-  private cueDown?: Phaser.GameObjects.Text;
+  private cue?: Phaser.GameObjects.Text;
   private scrollTo(v: number): void {
     const max = Math.max(0, this.contentBottom - (CLIP.y + CLIP.h) + 8);
     this.scroll = Math.max(0, Math.min(max, v));
     this.body.y = -Math.round(this.scroll);
-    // scroll cues (the panel scrolls with the mouse wheel): there is more above / below
-    const cue = (y: number, label: string, oy: number) => this.scene.add.text(CLIP.x + CLIP.w / 2, y, label, { ...typeStyle('badge', C.gold300), backgroundColor: C.bg, padding: { x: 8, y: 2 } }).setOrigin(0.5, oy).setDepth(10);
-    this.cueUp ??= cue(CLIP.y + 2, '▲ more', 0);
-    this.cueDown ??= cue(CLIP.y + CLIP.h - 2, '▼ more · scroll', 1);
-    this.cueUp.setVisible(this.scroll > 2);
-    this.cueDown.setVisible(this.scroll < max - 2);
+    // scroll cue in its own strip under the clipped rows (the panel scrolls with the mouse wheel)
+    this.cue ??= this.scene.add.text(CLIP.x + CLIP.w / 2, CLIP.y + CLIP.h + 3, '', typeStyle('badge', C.gold300)).setOrigin(0.5, 0);
+    this.cue.setText(this.scroll < max - 2 ? '▼ more · scroll' : max > 2 ? '▲ scroll up' : '');
   }
 
   render(hc: HeroChoice): void {

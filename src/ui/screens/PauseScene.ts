@@ -4,6 +4,8 @@ import { sim } from '@/net';
 import { coopRole, hostGame, hostInSafeZone, leaveCoop } from '@/net/coop';
 import { C, typeStyle } from '@/ui/kit/hc';
 import { SaveService } from '@/firebase/SaveService';
+import { firebase } from '@/firebase/app';
+import { accountKind } from '@/firebase/accounts';
 import { defaultOutfit, heroSprite, heroTexture } from '@/scenes/create/heroChoice';
 import { classDisplay } from '@/data/classes/hc';
 
@@ -12,6 +14,12 @@ import { classDisplay } from '@/data/classes/hc';
  * Menu at (380,160) 340 wide, 56px items; side card 300×408 at (752,160) with hero, stats and party.
  * "Invite friends" starts hosting (join code shown); a guest sees "Leave party".
  */
+/** Where saves go. A guest (the automatic anonymous sign-in) does get cloud saves, but only on this browser's account. */
+function saveWhere(): string {
+  if (!SaveService.cloudEnabled) return 'This device';
+  try { return accountKind(firebase().auth.currentUser) === 'guest' ? 'Guest · this browser' : 'Cloud + local'; } catch { return 'This device'; }
+}
+
 export class PauseScene extends Phaser.Scene {
   private items: { bg: Phaser.GameObjects.NineSlice; label: Phaser.GameObjects.Text; arrow: Phaser.GameObjects.Text; act: () => void }[] = [];
   private sel = 0;
@@ -88,7 +96,7 @@ export class PauseScene extends Phaser.Scene {
     const lvl = (Game.hasState ? Game.state.character?.level : undefined) ?? p?.progression.level ?? 1;
     add(this.add.text(848, 214, hero ? `Lv ${lvl} ${classDisplay(hero.classId)?.name ?? hero.classId}` : '', typeStyle('body', C.text300)));
     const secs = Game.hasState ? Game.state.meta.playtimeSec : 0;
-    const rows: [string, string][] = [['Playtime', `${Math.floor(secs / 3600)}h ${Math.floor((secs % 3600) / 60)}m`], ['Saves', SaveService.cloudEnabled ? 'Cloud + local' : 'This device']];
+    const rows: [string, string][] = [['Playtime', `${Math.floor(secs / 3600)}h ${Math.floor((secs % 3600) / 60)}m`], ['Saves', saveWhere()]];
     rows.forEach(([k, v], i) => {
       add(this.add.text(772, 262 + i * 22, k, typeStyle('body', C.text500)));
       add(this.add.text(1032, 262 + i * 22, v, typeStyle('body', C.text)).setOrigin(1, 0));

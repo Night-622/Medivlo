@@ -30,7 +30,8 @@ screenshot. Deploy steps are in docs/DEPLOY.md.
 - [x] Production build boots and plays (vite preview smoke); vendor chunks cached across updates
 - [x] Worker-thread chunk generation (Claude 2)
 - [x] Fresh-terrain hitches (Claude 2: building bakes moved into the prefetch ring; no frame over 33 ms flying or walking, tools/playthrough/hitch.mjs)
-- [ ] Browser check on a normal desktop (Chrome, Firefox, Safari, Edge) at 1080p and 1440p, outside the headless harness
+- [x] Chrome 155 + Edge 155 (Windows) at 1080p, 1440p and maximised (letterboxed) windows: 0 console errors, real clicks land, hud + narrative-features pass under Edge (Claude 5, tools/e2e/out/browsers/)
+- [ ] Firefox and Safari at 1080p and 1440p (the user, on a test deploy: not available on this PC)
 
 ## 4. Ship (user + Claude 1, docs/DEPLOY.md)
 - [ ] Auth providers on (Email/Password, Anonymous); Blaze plan + $10 budget alert

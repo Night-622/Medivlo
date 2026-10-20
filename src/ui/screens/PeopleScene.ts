@@ -16,10 +16,11 @@ const TRUST_LABEL = ['Stranger', 'Wary', 'Neutral', 'Friendly', 'Trusted', 'Devo
  * tabs Everyone / Story / Trade / Villagers. Right: detail (4× sprite, title, trust, a bark line, place, services, bio).
  * Data: Claude 4's NpcDefs (Registry 'npc') + trust flags; grouped by home village; bearers (other heroes) are skipped.
  */
-/** Card grid viewport height (y 136 → 672): leaves the footer hint (y ≈ 698) clear of the cards. */
-const GRID_H = 536;
+/** Card grid viewport height (y 136 → 664); the scroll cue sits below it and the footer hint (y ≈ 698) below that. */
+const GRID_H = 528;
 
 export class PeopleScene extends Phaser.Scene {
+  private cue?: Phaser.GameObjects.Text;
   private tab: Tab = 'all';
   private sel = 0;
   private line = 0;
@@ -38,6 +39,7 @@ export class PeopleScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.cue = undefined; // the scene instance is reused across launches; the old text was destroyed with it
     const { width: W, height: H } = this.scale;
     bus.emit('ui:open', { panel: 'people' });
     this.add.rectangle(0, 0, W, H, parseInt(C.bg.slice(1), 16), 0.82).setOrigin(0).setInteractive();
@@ -113,10 +115,9 @@ export class PeopleScene extends Phaser.Scene {
     // clip to the grid viewport
     const mask = this.make.graphics({}, false).fillRect(40, 136, 744, GRID_H).createGeometryMask();
     this.grid.setMask(mask);
-    // scroll cues: more cards above / below the viewport (wheel or arrow keys)
-    const cue = (y: number, up: boolean) => this.grid.add(this.add.text(412, y, up ? '▲ more' : '▼ more · scroll', { ...typeStyle('badge', C.gold300), backgroundColor: C.bg, padding: { x: 8, y: 2 } }).setOrigin(0.5, up ? 0 : 1).setDepth(5));
-    if (this.scroll > 0) cue(138, true);
-    if (this.scroll < this.maxScroll()) cue(134 + GRID_H, false);
+    // scroll cue below the viewport, never over a card (wheel or arrow keys)
+    this.cue ??= this.add.text(412, 136 + GRID_H + 4, '', typeStyle('badge', C.gold300)).setOrigin(0.5, 0);
+    this.cue.setText(this.scroll < this.maxScroll() ? '▼ more · scroll' : this.maxScroll() > 0 ? '▲ scroll up' : '');
   }
 
   private drawDetail(): void {
