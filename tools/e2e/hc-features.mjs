@@ -37,7 +37,20 @@ const endDialogue = async () => {
 };
 
 async function enter(cls) {
-  await page.goto(`${BASE}/?scene=WorldV2&space=realm:${SCHOOL[cls] ?? 'ash'}&hc_class=${cls}`);
+  // a hero with a real look, as character creation makes it: CombatView bakes the paperdoll (bakeHero), so classes
+  // with side-view frames get their walk-side anims (the ?hc_class dev path draws the plain atlas sheet instead)
+  await page.goto(`${BASE}/`);
+  if (!(await waitFor(`!!window.__game?.scene.isActive('MainMenu')`, 90000))) throw new Error('title never appeared');
+  await ev(`(async () => {
+    const core = await import('/src/core/index.ts');
+    const { defaultLook } = await import('/src/data/classes/hc/index.ts');
+    const st = core.createNewGameState(0);
+    st.player.name = 'Tess';
+    st.player.hero = { classId: ${JSON.stringify(cls)}, look: defaultLook(${JSON.stringify(cls)}, 0), outfit: { dye: 0, headw: 0, cape: 0, neck: 0, face: 0, extra: 0 } };
+    core.Game.set(st);
+    window.__game.scene.getScene('MainMenu').scene.start('WorldV2');
+    return 1;
+  })()`);
   if (!(await waitFor('!!(window.__hc && window.__hc.local())', 90000))) throw new Error('hero never appeared');
   await sleep(2500);
   await endDialogue();
