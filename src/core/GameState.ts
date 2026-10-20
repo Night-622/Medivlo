@@ -78,6 +78,8 @@ export interface MetaState {
   createdAt: number;
   updatedAt: number;
   playtimeSec: number;
+  /** Firebase uid of the account that last saved this hero (local copies are per browser, not per account). */
+  ownerUid?: string;
   slot: number;
 }
 

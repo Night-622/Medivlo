@@ -148,3 +148,10 @@ export class HCBar extends Phaser.GameObjects.Container {
     }
   }
 }
+
+/**
+ * Is this game object still on screen? Phaser clears `scene` on destroy, and a screen closed while a Firestore or
+ * realm-server call was in flight has destroyed its texts: setText on one throws (WebGL frame source is null).
+ * Check this after every await before touching the screen.
+ */
+export const alive = (o: Phaser.GameObjects.GameObject | null | undefined): boolean => !!o?.scene;

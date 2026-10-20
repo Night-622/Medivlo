@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Game, SceneKeys, bus } from '@/core';
-import { C, typeStyle } from '@/ui/kit/hc';
+import { C, alive, typeStyle } from '@/ui/kit/hc';
 import { SAVE_SLOTS, SaveService, type SaveSummary } from '@/firebase/SaveService';
 import { classDisplay, SCHOOL_NAME } from '@/data/classes/hc';
 import { realmOf } from '@/world/hc/spaces';
@@ -23,6 +23,7 @@ export class LoadScene extends Phaser.Scene {
   constructor() { super(SceneKeys.Load); }
 
   private notice = '';
+  private cloudReady = true;
 
   init(data: { from?: string; notice?: string }): void { this.from = data?.from ?? SceneKeys.MainMenu; this.armed = null; this.notice = data?.notice ?? ''; }
 
@@ -37,10 +38,18 @@ export class LoadScene extends Phaser.Scene {
     this.status = this.add.text(W / 2, H - 40, this.notice, typeStyle('body', this.notice ? C.gold : C.text300)).setOrigin(0.5);
     this.input.keyboard!.on('keydown-ESC', () => this.close());
     this.saves = SaveService.listLocal();
+    this.cloudReady = !SaveService.cloudEnabled;
     this.render();
     if (SaveService.cloudEnabled) {
       if (!this.notice) this.status.setText('Checking cloud saves…');
-      void SaveService.list().then((s) => { this.saves = s; if (!this.notice) this.status.setText(''); this.render(); });
+      // the screen may be closed, or a slot already loading, by the time the cloud answers
+      void SaveService.list().then((s) => {
+        if (!alive(this.status) || this.status.text === 'Loading…') return;
+        this.cloudReady = true;
+        this.saves = s;
+        if (!this.notice) this.status.setText('');
+        this.render();
+      });
     }
   }
 
@@ -55,7 +64,11 @@ export class LoadScene extends Phaser.Scene {
       add(this.add.rectangle(214, y + 40, 104, 104, parseInt(C.panel600.slice(1), 16)).setOrigin(0));
       if (!s) {
         add(this.add.text(346, y + 62, 'Empty slot', typeStyle('h1', C.text500)));
-        this.button(add, 866, y + 56, 200, 'New hero', true, () => this.scene.start(SceneKeys.CharacterCreate, { slot }));
+        this.button(add, 866, y + 56, 200, 'New hero', true, () => {
+          // an "empty" slot may still hold a cloud hero until the cloud list is in
+          if (!this.cloudReady) { this.status.setText('Checking cloud saves… one moment').setColor(C.gold); return; }
+          this.scene.start(SceneKeys.CharacterCreate, { slot });
+        });
         continue;
       }
       if (s.hero) {
@@ -94,6 +107,11 @@ export class LoadScene extends Phaser.Scene {
   }
 
   private async remove(slot: number): Promise<void> {
+    // the hero being played: its next autosave would write the slot straight back
+    if (this.from !== SceneKeys.MainMenu && Game.hasState && Game.state.meta.slot === slot) {
+      this.status.setText('You\'re playing this hero. Quit to the title to delete it.').setColor(C.danger);
+      return;
+    }
     if (this.armed !== slot) { this.armed = slot; this.render(); return; }
     this.armed = null;
     await SaveService.remove(slot);

@@ -28,6 +28,8 @@ export class MainMenuScene extends Phaser.Scene {
   create(): void {
     this.items = [];
     this.sel = 0;
+    // the scene instance is reused: a successful join leaves without CodeEntry's cancel, which is what cleared this
+    this.joinOpen = false;
     this.drawBackdrop();
     this.drawLogo();
     this.buildMenu();
@@ -91,11 +93,7 @@ export class MainMenuScene extends Phaser.Scene {
     const latest = saves.filter((s) => s !== null).sort((a, b) => b!.updatedAt - a!.updatedAt)[0] ?? null;
     const def: [string, string | null, () => void, boolean][] = [
       ['Continue', latest ? `${latest.name} · Lv ${latest.level}` : null, () => latest && this.loadSlot(latest.slot), !!latest],
-      ['New Game', null, () => {
-        // never overwrite a hero silently: with every slot taken, send the player to Load to free one
-        if (saves.every((x) => x !== null)) { this.scene.launch(SceneKeys.Load, { from: SceneKeys.MainMenu, notice: 'All three slots hold a hero. Delete one to start a new one.' }); this.scene.pause(); return; }
-        this.scene.start(SceneKeys.CharacterCreate, { slot: this.firstFreeSlot(saves) });
-      }, true],
+      ['New Game', null, () => void this.newGame(), true],
       ['Join Game', 'Game code or a friend\'s friend code', () => this.openJoin(), true],
       ['Public Realms', null, () => { this.scene.launch(SceneKeys.Realms); this.scene.pause(); }, true],
       ['Load Game', null, () => { this.scene.launch(SceneKeys.Load, { from: SceneKeys.MainMenu }); this.scene.pause(); }, saves.some((x) => x !== null) || SaveService.cloudEnabled],
@@ -164,7 +162,7 @@ export class MainMenuScene extends Phaser.Scene {
     if (this.joinOpen) return;
     if (!Game.hasState || !Game.state.player.hero) {
       const saves = SaveService.listLocal().filter((s) => s !== null);
-      if (!saves.length) { this.scene.start(SceneKeys.CharacterCreate, { slot: 0 }); return; }
+      if (!saves.length) { void this.newGame(); return; } // slot 0 may hold a cloud-only hero
     }
     this.joinOpen = true;
     const entry = new CodeEntry(this, 'Join a friend', [6, 8], async (code) => {
@@ -201,6 +199,23 @@ export class MainMenuScene extends Phaser.Scene {
   private activate(i: number): void {
     const it = this.items[i];
     if (it?.enabled) it.act();
+  }
+
+  private choosing = false;
+  /**
+   * A free slot for the new hero. Signed-in players may have heroes only in the cloud (another device, cleared site
+   * data): picking from the local list alone overwrote them, so ask the cloud first.
+   */
+  private async newGame(): Promise<void> {
+    if (this.choosing) return;
+    this.choosing = true;
+    try {
+      const saves = SaveService.cloudEnabled ? await SaveService.list() : SaveService.listLocal();
+      if (!this.scene.isActive()) return;
+      // never overwrite a hero silently: with every slot taken, send the player to Load to free one
+      if (saves.every((x) => x !== null)) { this.scene.launch(SceneKeys.Load, { from: SceneKeys.MainMenu, notice: 'All three slots hold a hero. Delete one to start a new one.' }); this.scene.pause(); return; }
+      this.scene.start(SceneKeys.CharacterCreate, { slot: this.firstFreeSlot(saves) });
+    } finally { this.choosing = false; }
   }
 
   private firstFreeSlot(saves: ReturnType<typeof SaveService.listLocal>): number {

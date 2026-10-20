@@ -1,8 +1,11 @@
 import Phaser from 'phaser';
 import { Game, Registry, SceneKeys, bus, type NpcDef, type SchoolId } from '@/core';
-import { C, typeStyle } from '@/ui/kit/hc';
+import { C, isAction, typeStyle } from '@/ui/kit/hc';
 import { getTrust } from '@/narrative/engine/trust';
-import { npcMet, npcQuestInfo } from '@/narrative/engine';
+import { isPresent, npcMet, npcQuestInfo } from '@/narrative/engine';
+import { TILE_SIZE } from '@/core/constants';
+import { markerAt } from '@/world/hc/spawns';
+import { realmOf } from '@/world/hc/spaces';
 import { MORVANE_VILLAGES } from '@/data/regions/hc/morvane';
 import { SCHOOL_COLOR, SCHOOL_NAME } from '@/data/classes/hc';
 import { Art, npcTexture } from '@/art';
@@ -25,6 +28,8 @@ export class PeopleScene extends Phaser.Scene {
   private sel = 0;
   private line = 0;
   private village = 'brind';
+  /** In a school realm: its space. Realm homes share no village prefix, so people are grouped by where they live. */
+  private realm: string | null = null;
   private people: NpcDef[] = [];
   private grid!: Phaser.GameObjects.Container;
   private detail!: Phaser.GameObjects.Container;
@@ -35,6 +40,8 @@ export class PeopleScene extends Phaser.Scene {
 
   init(data: { village?: string }): void {
     this.tab = 'all'; this.sel = 0; this.line = 0; this.scroll = 0;
+    const loc = Game.hasState ? Game.state.world.location : null;
+    this.realm = !data?.village && loc?.space.startsWith('realm:') ? loc.space : null;
     this.village = data?.village ?? this.guessVillage();
   }
 
@@ -43,10 +50,13 @@ export class PeopleScene extends Phaser.Scene {
     const { width: W, height: H } = this.scale;
     bus.emit('ui:open', { panel: 'people' });
     this.add.rectangle(0, 0, W, H, parseInt(C.bg.slice(1), 16), 0.82).setOrigin(0).setInteractive();
-    const vil = villageName(this.village);
+    const vil = this.realm ? realmOf(this.realm)?.name ?? 'this realm' : villageName(this.village);
     const head = this.add.text(48, 24, `People of ${vil}`, { ...typeStyle('displayL', C.text), shadow: { offsetX: 3, offsetY: 3, color: C.ink, fill: true } });
     this.people = Registry.all('npc')
-      .filter((n) => villageOf(n) === this.village && !n.roles?.includes('bearer'))
+      .filter((n) => !n.roles?.includes('bearer') && (this.realm
+        // a realm's two class areas: only the people this hero's story has here (or has already met)
+        ? homeSpace(n) === this.realm && (isPresent(n.id) || npcMet(n.id))
+        : villageOf(n) === this.village))
       .sort((a, b) => Number(b.roles?.includes('quest') ?? false) - Number(a.roles?.includes('quest') ?? false) || a.name.localeCompare(b.name));
     this.add.text(48 + 16 + head.width, 62, `${vil} · ${this.people.filter((n) => npcMet(n.id)).length} met`, typeStyle('body', C.text300)).setOrigin(0, 1);
     this.tabs = this.add.container(0, 0);
@@ -56,7 +66,7 @@ export class PeopleScene extends Phaser.Scene {
     this.add.text(W / 2, H - 22, '← → choose · Enter next line · Esc back', typeStyle('caption', C.text500)).setOrigin(0.5);
     const kb = this.input.keyboard!;
     kb.on('keydown-ESC', () => this.close());
-    kb.on('keydown-P', () => this.close());
+    kb.on('keydown', (ev: KeyboardEvent) => { if (isAction(ev, 'people') && ev.key !== 'Escape') this.close(); });
     kb.on('keydown-LEFT', () => this.pick(this.sel - 1));
     kb.on('keydown-RIGHT', () => this.pick(this.sel + 1));
     kb.on('keydown-UP', () => this.pick(this.sel - 4));
@@ -191,11 +201,21 @@ export class PeopleScene extends Phaser.Scene {
     this.drawDetail();
   }
 
-  /** The village the player is standing in (nearest home landmark prefix in this space), else Brindlecross. */
+  /** The Morvane village nearest the player (by its people's homes), else Brindlecross. */
   private guessVillage(): string {
     const loc = Game.hasState ? Game.state.world.location : null;
     if (!loc || loc.space !== 'concordia') return 'brind';
-    return 'brind';
+    const tx = loc.x / TILE_SIZE, ty = loc.y / TILE_SIZE;
+    let best = 'brind', bestD = Infinity;
+    for (const n of Registry.all('npc')) {
+      const v = villageOf(n);
+      if (!MORVANE_VILLAGES.some((x) => x.id === `vil:${v}`)) continue;
+      const m = safeMarker(n.home);
+      if (!m || m.space !== 'concordia') continue;
+      const d = (m.at[0] - tx) ** 2 + (m.at[1] - ty) ** 2;
+      if (d < bestD) { bestD = d; best = v; }
+    }
+    return best;
   }
 
   private close(): void {
@@ -205,6 +225,8 @@ export class PeopleScene extends Phaser.Scene {
 }
 
 const villageOf = (n: NpcDef): string => n.home.replace(/^landmark:/, '').split('-')[0];
+const safeMarker = (id: string) => { try { return markerAt(id); } catch { return null; } };
+const homeSpace = (n: NpcDef): string | undefined => safeMarker(n.home)?.space;
 const titleCase = (s: string) => s.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
 const slug = (s: string) => s.toLowerCase().replace(/[’'"]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/^the-/, '');
 /** Canon names from Claude 2's MORVANE_VILLAGES (vil:<prefix>); unknown prefixes title-case. */
@@ -212,8 +234,10 @@ const villageName = (v: string): string => MORVANE_VILLAGES.find((x) => x.id ===
 function placeOf(n: NpcDef): string {
   const [vil, ...rest] = n.home.replace(/^landmark:/, '').split('-');
   const key = rest.join('-');
-  const place = MORVANE_VILLAGES.find((x) => x.id === `vil:${vil}`)?.places.find((p) => slug(p[1]) === key);
-  return place ? place[1] : titleCase(key || vil);
+  const village = MORVANE_VILLAGES.find((x) => x.id === `vil:${vil}`);
+  const place = village?.places.find((p) => slug(p[1]) === key);
+  // realm homes have no village prefix: name the whole landmark
+  return place ? place[1] : village ? titleCase(key || vil) : titleCase(n.home.replace(/^landmark:/, ''));
 }
 const roleOf = (n: NpcDef): string => n.services?.[0] ?? (n.roles?.includes('merchant') ? 'Merchant' : n.roles?.includes('trainer') ? 'Trainer' : 'Villager');
 function category(n: NpcDef): 'story' | 'trade' | 'folk' {

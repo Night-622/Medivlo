@@ -76,11 +76,12 @@ export class HudV2Scene extends Phaser.Scene {
       if (st >= Phaser.Scenes.START && st <= Phaser.Scenes.PAUSED) return;
       if (!this.scene.isActive(SceneKeys.Pause)) this.scene.launch(SceneKeys.People);
     };
-    this.input.keyboard!.on('keydown', (ev: KeyboardEvent) => { if (isAction(ev, 'people') && !(ev.target instanceof HTMLInputElement)) openPeople(); });
+    this.input.keyboard!.on('keydown', (ev: KeyboardEvent) => { if (isAction(ev, 'people') && ev.key !== 'Escape' && !(ev.target instanceof HTMLInputElement)) openPeople(); });
     bus.onScene(this, 'ui:open', ({ panel }) => { if (panel === 'people') openPeople(); });
     bus.onScene(this, 'net:kicked', ({ reason }) => {
       leaveCoop();
-      for (const k of [SceneKeys.Pause, SceneKeys.Death, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k) || this.scene.isPaused(k)) this.scene.stop(k);
+      // overlays opened from Pause (Settings, Friends, Load…) or People would otherwise stay up over the title
+      for (const k of [SceneKeys.Settings, SceneKeys.Friends, SceneKeys.Load, SceneKeys.Realms, SceneKeys.Account, SceneKeys.People, SceneKeys.Pause, SceneKeys.Death, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k) || this.scene.isPaused(k)) this.scene.stop(k);
       this.scene.start(SceneKeys.MainMenu, { notice: reason });
     });
     // escorts: tell the party when the NPC falls (revive with the interact key) or is lost

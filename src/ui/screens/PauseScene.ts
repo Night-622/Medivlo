@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { Game, SceneKeys, Services, bus } from '@/core';
 import { sim } from '@/net';
 import { coopRole, hostGame, hostInSafeZone, leaveCoop } from '@/net/coop';
-import { C, typeStyle } from '@/ui/kit/hc';
+import { C, alive, typeStyle } from '@/ui/kit/hc';
 import { SaveService } from '@/firebase/SaveService';
 import { firebase } from '@/firebase/app';
 import { accountKind } from '@/firebase/accounts';
@@ -36,6 +36,7 @@ export class PauseScene extends Phaser.Scene {
     this.add.text(W / 2, 64, 'PAUSED', { ...typeStyle('displayXL', C.text), stroke: C.ink, strokeThickness: 8, letterSpacing: 6 } as Phaser.Types.GameObjects.Text.TextStyle).setOrigin(0.5, 0);
     this.items = [];
     this.sel = 0;
+    this.code = null; // a code from an earlier session (left since) must not show; a live one comes from the session
     const role = coopRole();
     const defs: [string, () => void][] = [
       ['Resume', () => this.resume()],
@@ -131,12 +132,14 @@ export class PauseScene extends Phaser.Scene {
     try {
       // First-time joiners need the host in a safe zone (Claude 2's zoneRule, checked live at each join)
       this.code = await hostGame(hostInSafeZone);
+      if (!alive(this.card)) return; // resumed while the room was opening; the next Pause shows the code
       this.flash(`Share this code: ${this.code}`);
       this.drawCard();
     } catch (e) { this.flash(e instanceof Error ? e.message : 'Could not open your world'); }
   }
 
   private flash(text: string): void {
+    if (!alive(this.card)) return; // a save or hosting call finished after Pause closed: don't paint the next one
     const t = this.add.text(this.scale.width / 2, 134, text, { ...typeStyle('h3', C.gold), backgroundColor: C.bg, padding: { x: 12, y: 4 } }).setOrigin(0.5);
     this.time.delayedCall(2600, () => t.destroy());
   }

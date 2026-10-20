@@ -41,8 +41,22 @@ function load(): SettingsData {
     const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(KEY) : null;
     if (!raw) return structuredClone(DEFAULT_SETTINGS);
     const parsed = JSON.parse(raw) as Partial<SettingsData>;
-    return { ...structuredClone(DEFAULT_SETTINGS), ...parsed, keys: { ...DEFAULT_KEYS, ...(parsed.keys ?? {}) } };
+    return { ...structuredClone(DEFAULT_SETTINGS), ...parsed, keys: escOnlyPauses({ ...DEFAULT_KEYS, ...(parsed.keys ?? {}) }) };
   } catch { return structuredClone(DEFAULT_SETTINGS); }
+}
+
+/**
+ * Esc is the universal back key (it always closes or pauses), so no other action may sit on it: one press would
+ * do both (a Pause rebind swapped Esc onto People, and Esc opened People AND Pause). Such an action gets its default
+ * key back when that is free, else stays unbound ("—" in Settings) until rebound.
+ */
+function escOnlyPauses(keys: Record<Action, string>): Record<Action, string> {
+  for (const a of Object.keys(keys) as Action[]) {
+    if (a === 'pause' || keys[a] !== 'ESC') continue;
+    const def = DEFAULT_KEYS[a];
+    keys[a] = def !== 'ESC' && !Object.values(keys).includes(def) ? def : '';
+  }
+  return keys;
 }
 
 function persist(): void {
@@ -61,7 +75,7 @@ export const Settings = {
     const keys = { ...data.keys };
     for (const k of Object.keys(keys) as Action[]) if (keys[k] === keyName) keys[k] = data.keys[a]; // swap on conflict
     keys[a] = keyName;
-    Settings.set('keys', keys);
+    Settings.set('keys', escOnlyPauses(keys));
   },
   reset(): void { data = structuredClone(DEFAULT_SETTINGS); persist(); bus.emit('settings:changed', { key: 'all' }); },
 };
@@ -77,6 +91,7 @@ const KEY_NAMES: Record<string, string> = {
 /** The bound key for an action, as a player reads it ('Space', '1', 'E'). */
 export function keyLabel(a: Action): string {
   const k = Settings.key(a) ?? '';
+  if (!k) return '—'; // unbound (see escOnlyPauses)
   return KEY_NAMES[k] ?? (k.length === 1 ? k : k.charAt(0) + k.slice(1).toLowerCase());
 }
 

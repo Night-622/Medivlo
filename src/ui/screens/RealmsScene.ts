@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Game, SceneKeys } from '@/core';
-import { C, randomTip, typeStyle } from '@/ui/kit/hc';
+import { C, alive, randomTip, typeStyle } from '@/ui/kit/hc';
 import { browseRealms, enterRealm } from '@/net/coop';
 import type { RealmListing } from '@/net/realm/RealmNet';
 import type { RealmRule } from '@/net/types';
@@ -45,13 +45,13 @@ export class RealmsScene extends Phaser.Scene {
 
   private async refresh(): Promise<void> {
     if (this.busy) return;
-    try {
-      this.realms = await browseRealms();
-      if (this.status.text === 'Finding realms…' || this.status.text.startsWith('The realm server')) this.status.setText('');
-    } catch (e) {
-      this.realms = [];
-      this.status.setText(e instanceof Error && e.message.includes('launch') ? e.message : 'The realm server isn\'t answering. Try again soon.').setColor(C.text300);
-    }
+    let realms: RealmListing[], error: unknown = null;
+    try { realms = await browseRealms(); } catch (e) { realms = []; error = e; }
+    // closed (texts destroyed) or entering a realm while the list was on its way
+    if (!alive(this.list) || this.busy) return;
+    this.realms = realms;
+    if (error) this.status.setText(error instanceof Error && error.message.includes('launch') ? error.message : 'The realm server isn\'t answering. Try again soon.').setColor(C.text300);
+    else if (this.status.text === 'Finding realms…' || this.status.text.startsWith('The realm server')) this.status.setText('');
     this.render();
   }
 
@@ -93,7 +93,7 @@ export class RealmsScene extends Phaser.Scene {
       this.scene.start(worldKey(this), { realm: { id: r.id, space: r.space, rule: r.rule, name: r.name } });
     } catch (e) {
       this.busy = false;
-      this.status.setText(e instanceof Error ? e.message : 'Could not enter the realm').setColor(C.danger);
+      if (alive(this.status)) this.status.setText(e instanceof Error ? e.message : 'Could not enter the realm').setColor(C.danger);
     }
   }
 

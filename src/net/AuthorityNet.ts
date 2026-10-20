@@ -80,9 +80,7 @@ export abstract class AuthorityNet extends NetBase implements NetService {
     this.info.members = [...this.info.members.filter((m) => m.playerId !== member.playerId), member];
     this.remotes.set(member.playerId, { lastIds: new Set() });
     this.transportSend(member.playerId, { type: 'welcome', you: member.playerId, role: this.role === 'server' ? 'server-client' : 'guest', session: this.info, worldSeed: welcome.worldSeed });
-    const blocks: Record<string, unknown> = {};
-    for (const s of this.syncs) { try { blocks[s.name] = s.collect(); } catch (e) { console.warn('[net] sync collect failed', s.name, e); } }
-    this.transportSend(member.playerId, { type: 'state', blocks });
+    this.sendState(member.playerId);
     this.broadcastSession();
     this.emitMembers();
   }
@@ -91,6 +89,7 @@ export abstract class AuthorityNet extends NetBase implements NetService {
     if (!this.remotes.has(playerId)) return;
     this.remotes.delete(playerId);
     this.pending.delete(playerId);
+    this.stateAsked.delete(playerId);
     this.info.members = this.role === 'server'
       ? this.info.members.filter((m) => m.playerId !== playerId)
       : this.info.members.map((m) => (m.playerId === playerId ? { ...m, connected: false } : m));
@@ -111,6 +110,11 @@ export abstract class AuthorityNet extends NetBase implements NetService {
       return;
     }
     if (msg.type === 'bye') { this.removeRemote(from); return; }
+    if (msg.type === 'state:request') {
+      const now = Date.now();
+      if (from !== this.localPlayer && now - (this.stateAsked.get(from) ?? 0) >= 1000) { this.stateAsked.set(from, now); this.sendState(from); }
+      return;
+    }
     if (msg.type === 'chat' && typeof msg.text === 'string') {
       const text = this.filterChat(msg.text.slice(0, 240));
       if (!text) return;
@@ -137,6 +141,16 @@ export abstract class AuthorityNet extends NetBase implements NetService {
   close(): void { this.offs.forEach((f) => f()); this.offs = []; }
 
   // ───────── internals ─────────
+
+  private stateAsked = new Map<PlayerId, number>();
+
+  /** Every state block, to one remote player (on join, and when it asks after registering a late sync). */
+  private sendState(playerId: PlayerId): void {
+    if (!this.remotes.has(playerId)) return;
+    const blocks: Record<string, unknown> = {};
+    for (const s of this.syncs) { try { blocks[s.name] = s.collect(); } catch (e) { console.warn('[net] sync collect failed', s.name, e); } }
+    this.transportSend(playerId, { type: 'state', blocks });
+  }
 
   private castVote(from: PlayerId, voteId: string, choice: number): void {
     const v = this.votes.get(voteId);

@@ -77,6 +77,7 @@ const later = (fn) => new Promise((resolve, reject) => setTimeout(() => { try { 
 
 export function setDoc(ref, data, opts) {
   return later(() => {
+    if (fakeDb.failWrites) throw Object.assign(new Error('offline'), { code: 'unavailable' });
     const exists = docs.has(ref.path);
     if (isPeerDoc(ref.path) && exists && !opts?.merge) { fakeDb.denied.push(ref.path); throw Object.assign(new Error('Missing or insufficient permissions.'), { code: 'permission-denied' }); }
     docs.set(ref.path, opts?.merge ? { ...(docs.get(ref.path) ?? {}), ...data } : { ...data });

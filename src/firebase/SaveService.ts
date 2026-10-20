@@ -9,6 +9,7 @@ import { SAVE_VERSION } from '@/core/constants';
 import { migrateCharacter } from '@/core/hcMigrate';
 import { isFirebaseConfigured } from './config';
 import { ensureUser, firebase } from './app';
+import { fillDefaults, ownedBy, sane } from './saveShape';
 
 export const SAVE_SLOTS = 3;
 /** Hollow Crown saves live under their own keys; Medival v1 saves (medival.save.N) are never read (wiped at launch). */
@@ -30,7 +31,7 @@ const summary = (slot: number, s: GameState, where: SaveSummary['where']): SaveS
 function readLocal(slot: number): GameState | null {
   try {
     const raw = localStorage.getItem(localKey(slot));
-    return raw ? (JSON.parse(raw) as GameState) : null;
+    return raw ? sane(JSON.parse(raw)) : null;
   } catch { return null; }
 }
 
@@ -44,7 +45,7 @@ async function readCloud(slot: number): Promise<GameState | null> {
   try {
     const user = await ensureUser();
     const snap = await getDoc(doc(firebase().db, 'users', user.uid, 'saves', String(slot)));
-    return snap.exists() && snap.data().game === GAME_TAG ? (JSON.parse(snap.data().json as string) as GameState) : null;
+    return snap.exists() && snap.data().game === GAME_TAG ? sane(JSON.parse(snap.data().json as string)) : null;
   } catch (e) { console.warn('[save] cloud read failed', e); return null; }
 }
 
@@ -66,8 +67,15 @@ async function writeCloud(state: GameState): Promise<boolean> {
   } catch (e) { console.warn('[save] cloud write failed', e); return false; }
 }
 
+/** The signed-in uid if auth already knows it (sync; null before auth restores the session or offline). */
+function knownUid(): string | null {
+  if (!isFirebaseConfigured) return null;
+  try { return firebase().auth.currentUser?.uid ?? null; } catch { return null; }
+}
+
 function migrate(state: GameState): GameState {
   // Add migrations here when SAVE_VERSION increases.
+  fillDefaults(state); // keys newer builds expect (an old save missing world.foundRegions threw in the map)
   state.world.location.space ??= ''; // pre-swap saves had an optional space
   if (state.character) migrateCharacter(state.character); // deeper builds: gem → sockets (tree refund later)
   state.meta.version = SAVE_VERSION;
@@ -91,45 +99,52 @@ export const SaveService = {
   async save(state: GameState = Game.state, opts: { auto?: boolean; localOnly?: boolean } = {}): Promise<void> {
     bus.emit('game:saving', { slot: state.meta.slot, auto: opts.auto });
     state.meta.updatedAt = Date.now();
+    state.meta.ownerUid = knownUid() ?? state.meta.ownerUid;
     writeLocal(state);
     // cloud autosaves at most once a minute (local copies are always written); manual saves go straight up
     const skipCloud = opts.localOnly || (opts.auto && Date.now() - lastCloudAt < 60_000);
-    if (!skipCloud) lastCloudAt = Date.now();
     const cloud = skipCloud ? false : await writeCloud(state);
+    if (cloud) lastCloudAt = Date.now(); // a failed upload is retried by the next autosave, not a minute later
     bus.emit('game:saved', { slot: state.meta.slot, cloud, auto: opts.auto });
   },
 
   async load(slot: number): Promise<GameState | null> {
-    const [local, cloud] = await Promise.all([readLocal(slot), readCloud(slot)]);
+    const [anyLocal, cloud] = await Promise.all([readLocal(slot), readCloud(slot)]);
+    // Another account's hero in this browser's slot must not load over this account's cloud hero (its next save
+    // would overwrite it). With the cloud slot empty there is nothing to lose: the hero is adopted (a guest who
+    // signs in to an existing account keeps playing it).
+    const local = anyLocal && (ownedBy(anyLocal, knownUid()) || !cloud) ? anyLocal : null;
     const pick = !local ? cloud : !cloud ? local : cloud.meta.updatedAt > local.meta.updatedAt ? cloud : local;
-    return pick ? migrate(pick) : null;
+    try { return pick ? migrate(pick) : null; } catch (e) { console.warn('[save] unreadable save', slot, e); return null; }
   },
 
   /** Local-only summaries (fast, for menus). */
-  listLocal(): (SaveSummary | null)[] {
+  listLocal(foreign = false): (SaveSummary | null)[] {
+    const uid = knownUid();
     return Array.from({ length: SAVE_SLOTS }, (_, slot) => {
-      const s = readLocal(slot);
-      return s ? summary(slot, s, 'local') : null;
+      // one unreadable slot must not take the title menu or the Load screen down with it
+      try { const s = readLocal(slot); return s && (foreign || ownedBy(s, uid)) ? summary(slot, s, 'local') : null; } catch { return null; }
     });
   },
 
   /** Local + cloud summaries (newest copy per slot), for the Load screen. Cloud failures fall back to local. */
   async list(): Promise<(SaveSummary | null)[]> {
-    const out = SaveService.listLocal();
-    if (!isFirebaseConfigured) return out;
+    if (!isFirebaseConfigured) return SaveService.listLocal();
+    // every local copy first; another account's copy gives way to this account's cloud slot (see load())
+    const out = SaveService.listLocal(true);
     try {
       const user = await ensureUser();
       const snaps = await getDocs(collection(firebase().db, 'users', user.uid, 'saves'));
       for (const d of snaps.docs) {
         const slot = Number(d.id);
         if (!(slot >= 0 && slot < SAVE_SLOTS) || d.data().game !== GAME_TAG) continue;
-        const cur = out[slot];
+        const cur = out[slot] && ownedBy(readLocal(slot)!, user.uid) ? out[slot] : null;
         const updatedAt = Number(d.data().updatedAt ?? 0);
         if (cur && Math.abs(cur.updatedAt - updatedAt) < 1000) { cur.where = 'both'; continue; }
         if (cur && cur.updatedAt > updatedAt) continue;
-        out[slot] = summary(slot, JSON.parse(d.data().json as string) as GameState, 'cloud');
+        try { const s = sane(JSON.parse(d.data().json as string)); if (s) out[slot] = summary(slot, s, 'cloud'); } catch { /* unreadable cloud copy */ }
       }
-    } catch (e) { console.warn('[save] cloud list failed', e); }
+    } catch (e) { console.warn('[save] cloud list failed', e); return SaveService.listLocal(); }
     return out;
   },
 

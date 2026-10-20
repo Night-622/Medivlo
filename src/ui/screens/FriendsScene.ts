@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Game, SceneKeys } from '@/core';
-import { C, CodeEntry, typeStyle } from '@/ui/kit/hc';
+import { C, CodeEntry, alive, typeStyle } from '@/ui/kit/hc';
 import { isFirebaseConfigured } from '@/firebase/config';
 import { currentAccount, friendlyAuthError, type AccountInfo } from '@/firebase/accounts';
 import { addFriend, listFriends, removeFriend, startPresence, type Friend } from '@/firebase/friends';
@@ -39,14 +39,16 @@ export class FriendsScene extends Phaser.Scene {
     this.status = this.add.text(W / 2, H - 34, '', typeStyle('body', C.text300)).setOrigin(0.5);
     this.input.keyboard!.on('keydown-ESC', () => { if (!this.entryOpen) this.close(); });
     if (!isFirebaseConfigured) { this.status.setText('Friends need online accounts, which aren\'t available in this build.'); return; }
+    // closed before the account arrived: drawing now would add a second panel and refresh loop to the NEXT open
     void currentAccount().then((a) => {
+      if (!alive(this.list)) return;
       this.acct = a;
       if (!a) { this.signedOut(); return; }
       startPresence();
       this.drawMine();
       void this.refresh();
       this.time.addEvent({ delay: 15000, loop: true, callback: () => void this.refresh() });
-    }).catch((e) => this.status.setText(friendlyAuthError(e)).setColor(C.danger));
+    }).catch((e) => this.say(friendlyAuthError(e), C.danger));
   }
 
   private signedOut(): void {
@@ -71,7 +73,7 @@ export class FriendsScene extends Phaser.Scene {
     if (this.busy) return;
     try { this.friends = await listFriends(); }
     catch (e) { this.say(friendlyAuthError(e), C.danger); }
-    this.render();
+    if (alive(this.list)) this.render();
   }
 
   private render(): void {
@@ -138,7 +140,7 @@ export class FriendsScene extends Phaser.Scene {
     this.armed = null;
     try { await removeFriend(f.uid); this.friends = this.friends.filter((x) => x.uid !== f.uid); this.say(`${f.name} removed`); }
     catch (e) { this.say(friendlyAuthError(e), C.danger); }
-    this.render();
+    if (alive(this.list)) this.render();
   }
 
   private button(x: number, y: number, w: number, label: string, gold: boolean, fn: () => void,
@@ -150,7 +152,7 @@ export class FriendsScene extends Phaser.Scene {
       .on('pointerout', () => b.setTexture(gold ? 'ui:btn_gold' : 'ui:btn_slate'));
   }
 
-  private say(t: string, color: string = C.text300): void { this.status.setText(t).setColor(color); }
+  private say(t: string, color: string = C.text300): void { if (alive(this.status)) this.status.setText(t).setColor(color); }
 
   private close(): void {
     this.scene.stop();

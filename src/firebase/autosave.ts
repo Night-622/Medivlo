@@ -7,7 +7,7 @@
  * Autosaves don't toast; the HUD shows a small "Saving…" mark.
  */
 import type Phaser from 'phaser';
-import { Game, SceneKeys, bus } from '@/core';
+import { Game, SceneKeys, Services, bus } from '@/core';
 import { sim } from '@/net';
 import { SaveService } from './SaveService';
 
@@ -17,7 +17,14 @@ const PERIOD_MS = 90_000;
 export function installAutosave(game: Phaser.Game): void {
   let last = 0;
   let pending: ReturnType<typeof setTimeout> | null = null;
-  const inWorld = () => Game.hasState && !!Game.state.player.hero && game.scene.isActive(SceneKeys.World);
+  // Not while the local hero lies dead: the death's gold penalty (loot:granted) would autosave and make Death ›
+  // "Load last save" load the post-death state.
+  const heroDead = () => {
+    const me = Services.tryGet('net')?.localPlayer;
+    const hero = Services.tryGet('combat')?.players().find((p) => p.playerId === me);
+    return !!hero && hero.hp <= 0;
+  };
+  const inWorld = () => Game.hasState && !!Game.state.player.hero && game.scene.isActive(SceneKeys.World) && !heroDead();
 
   const save = (force = false) => {
     if (!inWorld()) return;

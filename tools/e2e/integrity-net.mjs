@@ -144,5 +144,37 @@ check('ensureUser signs a new player in as a guest', u.isAnonymous && fakeAuth.s
   off();
 }
 
+// ───────── 5. state syncs registered after the join (guest world clock) ─────────
+{
+  const net = await m.RealmNet.connect('http://realm.test', 'r', 'dev:x:y', { name: 'A', classId: 'warden', level: 1 });
+  const ws = FakeWS.last;
+  ws.onmessage({ data: JSON.stringify({ type: 'state', blocks: { 'world-clock': { hour: 5 } } }) });
+  const got = [];
+  ws.sent.length = 0;
+  net.addStateSync({ name: 'world-clock', collect: () => null, apply: (v) => got.push(v) });
+  net.addStateSync({ name: 'other', collect: () => null, apply: () => {} });
+  await tick(5);
+  const asks = ws.sent.filter((s) => JSON.parse(s).type === 'state:request').length;
+  check('a late state sync gets the last block at once', got[0]?.hour === 5, JSON.stringify(got));
+  check('…and asks the authority once for fresh blocks', asks === 1, `requests ${asks}`);
+  net.leave();
+
+  let onPeer;
+  const host = new m.HostNet({ host: async (_c, _h, fn) => { onPeer = fn; return () => {}; } }, 'host-local', { name: 'H', classId: 'warden', level: 5, worldSeed: 1, hostInSafeZone: () => true, hasVisited: () => true, markVisited: () => {} });
+  await host.open('SYNC01');
+  host.addStateSync({ name: 'world-clock', collect: () => ({ hour: 7 }), apply: () => {} });
+  const states = [];
+  onPeer('guest-s', { send() {}, onMessage() { return () => {}; }, close() {} });
+  const pc = pcs.at(-1);
+  const mk = (label) => ({ label, readyState: 'open', send: (s) => { const x = JSON.parse(s); if (x.type === 'state') states.push(x.blocks); } });
+  const rel = mk('rel'), fast = mk('fast');
+  pc.ondatachannel({ channel: rel }); pc.ondatachannel({ channel: fast });
+  rel.onmessage({ data: JSON.stringify({ type: 'hello', playerId: 'guest-s', name: 'S', classId: 'warden', level: 1, firstVisit: false }) });
+  rel.onmessage({ data: JSON.stringify({ type: 'state:request' }) });
+  rel.onmessage({ data: JSON.stringify({ type: 'state:request' }) });
+  check('the host answers a state request with fresh blocks, at most once a second', states.length === 2 && states[1]['world-clock']?.hour === 7, `state msgs ${states.length}`);
+  host.close();
+}
+
 console.log(fails ? `\nintegrity-net: ${fails} FAILED` : '\nintegrity-net: ALL PASS');
 process.exit(fails ? 1 : 0);

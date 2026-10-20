@@ -43,8 +43,52 @@ export function createCharacterAnims(scene: Phaser.Scene, atlas: Atlas): void {
   }
 }
 
-/** Pack canvases side by side into one spritesheet texture. */
+type Shown = Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
+
+/** Every live image/sprite in any scene that draws from texture `key` (containers searched too). */
+function usersOf(game: Phaser.Game, key: string): Shown[] {
+  const out: Shown[] = [];
+  const walk = (list: Phaser.GameObjects.GameObject[]) => {
+    for (const o of list) {
+      // structural checks: this module only imports Phaser's types
+      const c = o as Partial<Phaser.GameObjects.Container> & Partial<Shown>;
+      if (o.type === 'Container' && Array.isArray(c.list)) walk(c.list);
+      else if (typeof c.setTexture === 'function' && c.texture?.key === key) out.push(o as Shown);
+    }
+  };
+  for (const s of game.scene.getScenes(false)) if (s.sys.displayList) walk(s.sys.displayList.list);
+  return out;
+}
+
+/**
+ * Replace texture `key` (and, inside `build`, its anims) without breaking what is on screen. A sprite still showing
+ * a removed texture throws on every frame (null frame source: "reading 'glTexture'" / "'sourceSize'"), which froze
+ * the game after a hero click once. Live users are paused, then put back on the new sheet and their anim.
+ */
+export function replaceSheet(scene: Phaser.Scene, key: string, build: () => void): void {
+  const live = scene.textures.exists(key) ? usersOf(scene.game, key).map((o) => {
+    const anims = (o as Phaser.GameObjects.Sprite).anims as Phaser.Animations.AnimationState | undefined;
+    const st = { o, frame: o.frame.name, anim: anims?.currentAnim?.key, playing: !!anims?.isPlaying };
+    anims?.stop();
+    return st;
+  }) : [];
+  build();
+  for (const u of live) {
+    if (!u.o.scene) continue;
+    u.o.setTexture(key, scene.textures.get(key).has(u.frame) ? u.frame : 0);
+    // only an anim rebuilt on the NEW sheet: one that still holds the removed frames would bring the crash back
+    // (addCanvasSheet callers rebuild their anims after; they replay them themselves)
+    const anim = u.playing && u.anim ? scene.anims.get(u.anim) : undefined;
+    if (anim?.frames[0]?.frame.texture === scene.textures.get(key)) (u.o as Phaser.GameObjects.Sprite).play(anim.key, true);
+  }
+}
+
+/** Pack canvases side by side into one spritesheet texture (replacing one that may be on screen). */
 export function addCanvasSheet(scene: Phaser.Scene, key: string, frames: HTMLCanvasElement[]): void {
+  replaceSheet(scene, key, () => writeSheet(scene, key, frames));
+}
+
+function writeSheet(scene: Phaser.Scene, key: string, frames: HTMLCanvasElement[]): void {
   if (scene.textures.exists(key)) scene.textures.remove(key);
   const w = Math.max(...frames.map((f) => f.width)), h = Math.max(...frames.map((f) => f.height));
   const sheet = document.createElement('canvas');
@@ -68,14 +112,17 @@ export function bakeHero(scene: Phaser.Scene, key: string, classId: string, look
   // frames 0–5 match the exported layout [idle0, idle1, walkA, pass, walkB, pass]; 6–11 are the side view
   // (facing right; left = flipX): [idle0, idle1, contact, pass, contact, pass]
   const side = sideView(name);
-  addCanvasSheet(scene, key, [idle[0], idle[1] ?? idle[0], walk[0], walk[1], walk[2], walk[3] ?? walk[1], ...side]);
-  for (const a of ['idle', 'walk', 'idle-side', 'walk-side']) if (scene.anims.exists(`${key}:${a}`)) scene.anims.remove(`${key}:${a}`);
-  scene.anims.create({ key: `${key}:idle`, frames: scene.anims.generateFrameNumbers(key, { frames: [0, 1] }), frameRate: 2.5, repeat: -1 });
-  scene.anims.create({ key: `${key}:walk`, frames: scene.anims.generateFrameNumbers(key, { frames: [2, 3, 4, 5] }), frameRate: 8, repeat: -1 });
-  if (side.length) {
-    scene.anims.create({ key: `${key}:idle-side`, frames: scene.anims.generateFrameNumbers(key, { frames: [6, 7] }), frameRate: 2.5, repeat: -1 });
-    scene.anims.create({ key: `${key}:walk-side`, frames: scene.anims.generateFrameNumbers(key, { frames: [8, 9, 10, 11] }), frameRate: 8, repeat: -1 });
-  }
+  // sheet + anims are replaced together, so sprites on screen go straight onto the new anims
+  replaceSheet(scene, key, () => {
+    writeSheet(scene, key, [idle[0], idle[1] ?? idle[0], walk[0], walk[1], walk[2], walk[3] ?? walk[1], ...side]);
+    for (const a of ['idle', 'walk', 'idle-side', 'walk-side']) if (scene.anims.exists(`${key}:${a}`)) scene.anims.remove(`${key}:${a}`);
+    scene.anims.create({ key: `${key}:idle`, frames: scene.anims.generateFrameNumbers(key, { frames: [0, 1] }), frameRate: 2.5, repeat: -1 });
+    scene.anims.create({ key: `${key}:walk`, frames: scene.anims.generateFrameNumbers(key, { frames: [2, 3, 4, 5] }), frameRate: 8, repeat: -1 });
+    if (side.length) {
+      scene.anims.create({ key: `${key}:idle-side`, frames: scene.anims.generateFrameNumbers(key, { frames: [6, 7] }), frameRate: 2.5, repeat: -1 });
+      scene.anims.create({ key: `${key}:walk-side`, frames: scene.anims.generateFrameNumbers(key, { frames: [8, 9, 10, 11] }), frameRate: 8, repeat: -1 });
+    }
+  });
   return key;
 }
 

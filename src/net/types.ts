@@ -67,6 +67,8 @@ export type ClientMsg =
   | { type: 'chat'; text: string }
   | { type: 'hello'; playerId: PlayerId; name: string; classId: string; level: number; firstVisit: boolean }
   | { type: 'bye' }
+  /** a client registered a state sync after joining (e.g. a scene restart): send the current blocks again */
+  | { type: 'state:request' }
   /** the client owns its character; sent on join and after any equip/learn/bind change (trusted in co-op; server validates later) */
   | { type: 'loadout'; data: Record<string, unknown> }
   | { type: 'duel'; target: PlayerId; accept?: boolean }

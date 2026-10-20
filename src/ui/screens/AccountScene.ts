@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { SceneKeys } from '@/core';
-import { C, typeStyle } from '@/ui/kit/hc';
+import { C, alive, typeStyle } from '@/ui/kit/hc';
 import { isFirebaseConfigured } from '@/firebase/config';
 import {
   addEmail, currentAccount, friendlyAuthError, logOut, playAsGuest, recoverUsername, resetEmailPassword, signInEmail, signInUsername,
@@ -54,6 +54,7 @@ export class AccountScene extends Phaser.Scene {
   // ───────── views ─────────
 
   private go(v: View): void {
+    if (!alive(this.layer)) return;
     this.view = v;
     this.layer.removeAll(true);
     this.clearDom();
@@ -163,7 +164,8 @@ export class AccountScene extends Phaser.Scene {
     this.layer.add(this.add.text(PX + PW / 2, y, t, typeStyle('body', color, PW - 96)).setOrigin(0.5, 0).setAlign('center'));
   }
 
-  private say(t: string, color: string = C.text300): void { this.status?.setText(t).setColor(color); }
+  // sign-in calls and currentAccount() can finish after the screen closed: never draw into destroyed objects
+  private say(t: string, color: string = C.text300): void { if (alive(this.status)) this.status.setText(t).setColor(color); }
 
   private tabs(y: number, defs: [string, boolean, () => void][], w = 200): void {
     const total = defs.length * w + (defs.length - 1) * 8;
