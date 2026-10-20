@@ -319,6 +319,8 @@ try {
       const w0 = await ev('window.__world.where()'); await ev(`window.__world.tp(${w0.tx + 12 * (i % 2 ? -1 : 1)}, ${w0.ty + 10 * (i + 1)})`); await sleep(800);
     }
     await ev(`window.__hc.spawn('bx_${await ev(`(async () => (await import('/src/core/index.ts')).classSchool(${JSON.stringify(CLS)}))()`)}_5', 2, undefined, 60)`);
+    // strike first, as a player would: a Shade stealths when out of combat (player.ts) and creatures can't target it
+    for (let i = 0; i < 6 && !(await active('Death')); i++) { await fight(3000, 300); await page.press('Digit1'); await sleep(400); }
     await waitFor(`window.__game.scene.isActive('Death')`, 90000);
   }
   if (check('dying shows the Death screen', await active('Death'))) {
