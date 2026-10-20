@@ -249,7 +249,15 @@ const SET_PIECE_LINES: Record<string, string[]> = {
 };
 
 /** Slogs at typical gear (Claude 5's boss check: 240–400 s against a ~100 s median): −30% health. */
-const HP_TRIM: Record<string, number> = { 'cb_torvald-wallbreaker': 0.62, 'cb_dame-ilsabet': 0.7, 'cb_admiral-saltmarsh': 0.7, cb_konrad: 0.7, 'cb_ser-gallant': 0.8 };
+// lair-2 trims (2026-10-21, first evening): the low-damage classes' L8 bosses ran 3–4 min on a typical build and
+// 8–9 min on the creation kit (fight campaign / fight starter); aim ≈ 2–2.5 min typical, ≈ 5 min starter
+const HP_TRIM: Record<string, number> = {
+  'cb_torvald-wallbreaker': 0.62, 'cb_dame-ilsabet': 0.7, 'cb_admiral-saltmarsh': 0.7, cb_konrad: 0.7, 'cb_ser-gallant': 0.6,
+  'cb_hundredth-warden': 0.6, 'cb_blank-shield': 0.6, 'cb_big-mother-ox': 0.65, 'cb_beetle-king': 0.7, 'cb_saint-who-wasnt': 0.75,
+  'cb_mother-hushweb': 0.8, 'cb_ninefold-abbot': 0.85,
+  // Act III: warden's Herald sat at a 282 s median with a 376 s seed on the typical walk's gear (boss-check wall 300 s)
+  'cb_herald-of-the-wall': 0.8,
+};
 
 export const HC_CAMPAIGN_BOSSES: CampaignBoss[] = RAW
   .map((b) => (b.slot === 'nemesis' && !b.abilities.some((a) => /yields/i.test(a)) ? { ...b, abilities: [...b.abilities, 'Yields when beaten: escapes.'] } : b))
