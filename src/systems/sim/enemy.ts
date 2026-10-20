@@ -4,6 +4,7 @@
  */
 import type { CreatureAbility } from '@/data/enemies/hc/abilities';
 import type { Action, Area } from '@/systems/rules/types';
+import { hook } from '@/systems/rules/stats';
 import { motionStep, motionTick, runActions } from './actions';
 import { refreshCover } from './hazards';
 import { addBuff, basicCast, dealDamage, incapacitated, rooted } from './combat';
@@ -71,7 +72,9 @@ function pickTarget(w: SimWorld, e: EnemyEnt): Combatant | undefined {
     const c = w.combatant(id);
     if (!c || c.dead || c.space !== e.space || !w.hostile(e, c)) { e.threat.delete(id); continue; }
     if (!w.targetable(c)) continue; // smoke / stealth / downed: keep the grudge, pick someone else
-    const score = threat / (1 + dist(e, c) / 400);
+    // whoever stands in its face holds it (×2 within 120 px: co-op melee), and tanks draw more (hook threatPower)
+    const d = dist(e, c), close = d - c.r <= 120 ? 2 : 1;
+    const score = (threat * close * (1 + hook(c.stats, 'threatPower'))) / (1 + d / 400);
     if (score > bt) { bt = score; best = c; }
   }
   best ??= w.nearestHostile(e, ai.aggro * 1.5);

@@ -20,10 +20,14 @@ const DMG_SCALE: Record<string, number> = {
   monk: 1.28, brawler: 0.78, huntsman: 0.75, falconer: 1.06, corsair: 1.4, jester: 1.07, bard: 1.13, skald: 1.28,
 };
 
+const TANKS = new Set(['warden', 'knight', 'juggernaut', 'oathbound']);
+
 function kit(classId: string, weapons: WeaponType[], passive: Passive, extra: Partial<HcKit> = {}): HcKit {
   const c = HC_CLASSES.find((x) => x.id === classId)!;
   const scale = DMG_SCALE[classId] ?? 1;
   if (scale !== 1) passive = { ...passive, mods: [...(passive.mods ?? []), { stat: 'dmg', op: 'more', value: scale - 1 }] };
+  // tanks draw the boss in a party (threat ×1.5; sim/enemy.ts)
+  if (TANKS.has(classId)) passive = { ...passive, hooks: [...(passive.hooks ?? []), { id: 'threatPower', value: 0.5 }] };
   const spells = c.abilities.map((a) => HC_KIT_SPELLS.find((s) => s.name === a.name)!.id) as [string, string, string];
   return { classId, weapons, startWeapon: `w_${weapons[0]}_wood`, spells, passive, ...extra };
 }
