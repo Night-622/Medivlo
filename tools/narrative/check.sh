@@ -21,6 +21,9 @@ echo "--- solo"; CLASSES=$CLASSES SEEDS=$SEEDS node "$B" 2>/dev/null | grep -v '
 echo "--- co-op"; COOP=1 CLASSES=$CLASSES SEEDS=$((SEEDS + 2)) node "$B" 2>/dev/null | grep -v '^\[codex\]'
 A=$(node "$here/build.mjs" "$here/audit.ts" full); echo "--- audit (style guide)"; CLASSES=$CLASSES node "$A" 2>/dev/null | grep -v '^\[codex\]' | grep -v 'names:'; rm -f "$A"
 H=$(node "$here/build.mjs" "$here/build-hints-check.ts" full); echo "--- build teaching (hints, craft codex, tips)"; node "$H" 2>/dev/null | grep -v '^\[codex\]\|^\[registry\]'; rm -f "$H"
+# Claude 7's pre-deploy text gates (Claude 1, 2026-10-21): every dialogue node reachable, every key hint a real binding
+echo "--- dialogue graph"; node tools/e2e/qa-dialogue-graph.mjs 2>&1 | tail -1
+echo "--- key hints"; node tools/e2e/qa-key-hints.mjs 2>&1 | tail -1
 echo "--- realm server (loads all narrative data as the server does)"; node server/build.mjs >/dev/null 2>&1 && node tools/e2e/realm-server.mjs 2>&1 | tail -1
 rm -f "$V" "$B"
 # types: only narrative-owned files count here (other owners' work in progress is theirs to fix)

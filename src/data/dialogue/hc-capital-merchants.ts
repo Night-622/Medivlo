@@ -25,7 +25,7 @@ function talk(school: SchoolId, kind: Kind, greet: string, more: string): Dialog
     nodes: {
       start: { speaker: npc, text: greet, choices: [wares, { text: ASK[kind], to: 'more' }, ...smith, bye] },
       more: { speaker: npc, text: more, choices: [wares, ...smith, bye] },
-      eye: { speaker: npc, text: 'Pick something you like, bring it to the bench with the Embershards and a couple of Iron Ingots, and choose Upgrade. Do it once and you’ll never let good coin sit in your pack again.', choices: [wares, bye] },
+      ...(kind === 'smith' ? { eye: { speaker: npc, text: 'Pick something you like, bring it to the bench with the Embershards and a couple of Iron Ingots, and choose Upgrade. Do it once and you’ll never let good coin sit in your pack again.', choices: [wares, bye] } } : {}),
     },
   } as DialogueDef;
 }
