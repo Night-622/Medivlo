@@ -14,6 +14,8 @@ export interface CampaignBoss extends HcCreatureBase {
   slot: 'lair2' | 'nemesis' | 'herald' | 'chimera';
   body: string;
   mechanic: string;
+  /** health trim after the shape clamp (rules/creatures.ts) */
+  hpMult?: number;
 }
 
 const B = (classId: string, slot: CampaignBoss['slot'], id: string, name: string, arch: BodyArch, body: string, element: string, hp: number,
@@ -246,9 +248,13 @@ const SET_PIECE_LINES: Record<string, string[]> = {
   'cb_captain-nobody': ['Cannot be targeted until flag corsair.nobody_named.'],
 };
 
+/** Slogs at typical gear (Claude 5's boss check: 240–400 s against a ~100 s median): −30% health. */
+const HP_TRIM: Record<string, number> = { 'cb_torvald-wallbreaker': 0.7, 'cb_dame-ilsabet': 0.7, 'cb_admiral-saltmarsh': 0.7, cb_konrad: 0.7, 'cb_ser-gallant': 0.8 };
+
 export const HC_CAMPAIGN_BOSSES: CampaignBoss[] = RAW
   .map((b) => (b.slot === 'nemesis' && !b.abilities.some((a) => /yields/i.test(a)) ? { ...b, abilities: [...b.abilities, 'Yields when beaten: escapes.'] } : b))
-  .map((b) => (SET_PIECE_LINES[b.id] ? { ...b, abilities: [...b.abilities, ...SET_PIECE_LINES[b.id]] } : b));
+  .map((b) => (SET_PIECE_LINES[b.id] ? { ...b, abilities: [...b.abilities, ...SET_PIECE_LINES[b.id]] } : b))
+  .map((b) => (HP_TRIM[b.id] ? { ...b, hpMult: HP_TRIM[b.id] } : b));
 
 /** Lair 1 per class: the realm mini named for it in docs/lore/hollow-crown/02-realms.md ("Minis:" lines). */
 export const HC_LAIR1: Record<string, string> = {

@@ -152,7 +152,8 @@ function build(b: HcCreatureBase): CreatureDef {
     id: b.id, name: b.name, tier: b.tier, arch: b.arch, region: b.region, lore: b.lore,
     realm: HC_REALMS.find((r) => r.name === b.region)?.id,
     kind, elements, resist,
-    hpShape: Math.max(0.6, Math.min(1.6, b.hp / MEDIAN_HP[b.tier])),
+    // hpMult: a per-boss trim after the clamp (campaign slogs, boss-check 2026-10-21)
+    hpShape: Math.max(0.6, Math.min(1.6, b.hp / MEDIAN_HP[b.tier])) * ((b as { hpMult?: number }).hpMult ?? 1),
     radius: bodyRadius(b.id, (b as { body?: string }).body ?? b.id, b.tier, b.scale),
     scale: b.scale,
     ai: { ...base, attackMs: base.attackMs * (b.tier === 'boss' ? 1.6 : b.tier === 'mini' ? 1.2 : 1), ranged, immobile, flee: hooks.some((h) => h.id === 'flee'), attackRange: ranged ? Math.max(base.attackRange, 240) : base.attackRange, speed: immobile ? 0 : base.speed },
