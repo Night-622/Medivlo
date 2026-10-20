@@ -26,15 +26,24 @@ export class GuestNet extends RemoteClient {
       });
       link.onClose(() => { clearTimeout(timer); reject(new Error('Connection to the host closed')); });
     });
-    await link.start();
-    await Promise.race([link.opened, new Promise((_, r) => setTimeout(() => r(new Error('Could not connect to the host (network blocked?)')), timeoutMs))]);
-    link.send({ type: 'hello', ...hello } satisfies ClientMsg);
-    await welcomed;
+    welcomed.catch(() => undefined); // awaited below; an earlier failure must not leave it rejecting unhandled
+    try {
+      await link.start();
+      let openTimer: ReturnType<typeof setTimeout> | undefined;
+      await Promise.race([link.opened, new Promise((_, r) => { openTimer = setTimeout(() => r(new Error('Could not connect to the host (network blocked?)')), timeoutMs); })])
+        .finally(() => clearTimeout(openTimer));
+      link.send({ type: 'hello', ...hello } satisfies ClientMsg);
+      await welcomed;
+    } catch (e) {
+      net.leaving = true;
+      link.close(); // a half-open connection would otherwise be admitted later and hold a party seat
+      throw e;
+    }
     link.onClose(() => net.onServer({ type: 'kick', reason: 'Disconnected from the host' }));
     return net;
   }
 
   protected transportSend(msg: ClientMsg): void { this.link.send(msg); }
 
-  leave(): void { this.link.send({ type: 'bye' }); setTimeout(() => this.link.close(), 200); }
+  leave(): void { this.leaving = true; this.link.send({ type: 'bye' }); setTimeout(() => this.link.close(), 200); }
 }

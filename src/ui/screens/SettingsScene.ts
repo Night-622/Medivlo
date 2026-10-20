@@ -68,6 +68,10 @@ export class SettingsScene extends Phaser.Scene {
     this.add.text(1132, 678, 'Restore defaults', typeStyle('button', C.text)).setOrigin(0.5);
     reset.setInteractive({ useHandCursor: true }).on('pointerup', () => { Settings.reset(); this.render(); });
     this.input.keyboard!.on('keydown', (ev: KeyboardEvent) => this.onKey(ev));
+    // the scale manager is game-wide: entering fullscreen lands a moment after the click, so redraw then
+    const redraw = () => this.render();
+    this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, redraw).on(Phaser.Scale.Events.LEAVE_FULLSCREEN, redraw);
+    this.events.once('shutdown', () => { this.scale.off(Phaser.Scale.Events.ENTER_FULLSCREEN, redraw).off(Phaser.Scale.Events.LEAVE_FULLSCREEN, redraw); });
     this.render();
   }
 
@@ -103,7 +107,8 @@ export class SettingsScene extends Phaser.Scene {
       } else if ('opts' in r) {
         let x = right;
         [...r.opts.values].reverse().forEach(([label, value]) => {
-          const on = s[r.opts.key] === value;
+          // fullscreen shows the real state: Esc, F11 or a reload leave fullscreen without touching the setting
+          const on = (r.opts.key === 'fullscreen' ? this.scale.isFullscreen : s[r.opts.key]) === value;
           const t = this.add.text(0, 0, label, typeStyle('caption', on ? C.text : C.text300));
           const w = Math.max(56, t.width + 24);
           x -= w;

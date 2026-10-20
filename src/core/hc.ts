@@ -19,7 +19,30 @@ export type StatusId =
 export interface StatusApply { id: StatusId; dur?: number; chance?: number; power?: number }
 
 /** One item stack / piece of gear. `base` is a handoff id (w_*, a_*, i_*, lg_*). */
-export interface ItemInstance { uid: string; base: string; ilvl: number; qty: number; gem?: string }
+/** Handoff gear tiers (rules/types.ts Rarity mirrors this; the v1 `Rarity` in types.systems is a different set). */
+export type HcRarity = 'common' | 'fine' | 'ember' | 'runed' | 'wrought' | 'spark';
+
+/**
+ * One item. The deeper-builds fields (docs/systems/BUILDS.md) are all optional, so old saves and stackables stay
+ * valid: an item without `rarity` keeps its base's rarity, with no affixes.
+ */
+export interface ItemInstance {
+  uid: string; base: string; ilvl: number; qty: number;
+  /** legacy single gem: read-only, migrated to `sockets` on load */
+  gem?: string;
+  /** rolled per drop (absent = the base's rarity) */
+  rarity?: HcRarity;
+  /** rolled affixes: affix id + value */
+  affixes?: { id: string; v: number }[];
+  /** socketed gem ids (null = an empty socket); the count follows the rarity */
+  sockets?: (string | null)[];
+  /** Runeforge upgrade level, 0–5 */
+  upgrade?: number;
+  /** Runeforge element imbue */
+  imbue?: SchoolId;
+  /** a unique / legendary effect id carried by this item (it can be moved at the Runeforge) */
+  uniqueFx?: string;
+}
 
 /** The player's own character (saved by their client into GameState v2 `character`; sent as `loadout`). */
 export interface CharacterSave {
@@ -43,6 +66,14 @@ export interface CharacterSave {
   legendariesSeen: string[];
   /** last woken waystone id */
   waystone: string | null;
+  /** spell runes: spell id → rune item uids slotted in it (the rune items stay in the inventory) */
+  runes?: Record<string, string[]>;
+  /** the one off-school spell taught by a tome */
+  tomeSpell?: string;
+  /** one free respec (granted when the perk tree changes) */
+  freeRespec?: boolean;
+  /** build data version (2 = deeper builds: perk tree + runes); older saves are migrated on load */
+  buildVersion?: number;
 }
 
 /** Services.combat — registered by Claude 3 on the authority only. */

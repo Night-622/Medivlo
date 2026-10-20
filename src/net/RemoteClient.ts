@@ -23,6 +23,8 @@ export abstract class RemoteClient extends NetBase implements NetService {
   openVote(_v: Omit<VoteOpen, 'voteId' | 'deadlineMs'>): Promise<number> { return Promise.reject(new Error('Only the authority opens votes')); }
 
   private kicked = false;
+  /** Set by leave(): the transport closing afterwards is our own doing, not a kick (no 'net:kicked' → title). */
+  protected leaving = false;
 
   /** Feed every message from the authority through here. */
   protected onServer(m: ServerMsg): void {
@@ -38,7 +40,7 @@ export abstract class RemoteClient extends NetBase implements NetService {
       case 'state':
         for (const s of this.syncs) if (s.name in m.blocks) { try { s.apply(m.blocks[s.name]); } catch (e) { console.warn('[net] sync apply failed', s.name, e); } }
         break;
-      case 'kick': if (!this.kicked) { this.kicked = true; bus.emit('net:kicked', { reason: m.reason }); } break;
+      case 'kick': if (!this.kicked && !this.leaving) { this.kicked = true; bus.emit('net:kicked', { reason: m.reason }); } break;
       default: break;
     }
     this.emitServer(m);

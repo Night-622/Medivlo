@@ -67,6 +67,9 @@ function applyPixelPerfect(): void {
 bus.on('settings:changed', ({ key }) => { if (key === 'pixelPerfect' || key === 'all') applyPixelPerfect(); });
 window.addEventListener('resize', () => { if (Settings.get().pixelPerfect) applyPixelPerfect(); });
 game.events.once('ready', applyPixelPerfect);
+// Video › Fullscreen follows the real state (Esc or the browser can leave fullscreen without the Settings screen)
+game.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => { if (!Settings.get().fullscreen) Settings.set('fullscreen', true); });
+game.scale.on(Phaser.Scale.Events.LEAVE_FULLSCREEN, () => { if (Settings.get().fullscreen) Settings.set('fullscreen', false); });
 
 // Procedural music + SFX (src/audio); Phaser's context unlocks on the first click/key.
 // Video › Sharp rendering (default on): draw into a 2× buffer for crisp small text (src/render/hidpi.ts).

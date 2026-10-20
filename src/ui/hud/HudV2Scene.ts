@@ -10,7 +10,6 @@ import { Game, SceneKeys, Services, bus, Settings, type Action, formatKeys, Regi
 import type { EntityState, Snapshot } from '@/net';
 import { Art } from '@/art';
 import { C, HCBar, T, typeStyle } from '@/ui/kit/hc';
-import { SaveService } from '@/firebase/SaveService';
 import { heroSprite, heroTexture, defaultOutfit } from '@/scenes/create/heroChoice';
 import { installHudProbe, type HudParts } from './hudProbe';
 
@@ -44,6 +43,13 @@ export class HudV2Scene extends Phaser.Scene {
 
   create(): void {
     const { width: W, height: H } = this.scale;
+    // Phaser reuses the scene instance: state left by a stop mid-toast/banner/panel (Quit to title right after "Saved")
+    // would push every later toast 48 px lower, park banners in the queue forever, or keep Esc from pausing.
+    this.toastY = 300;
+    this.panelOpen = false;
+    this.bannerBusy = false;
+    this.bannerQueue = [];
+    this.feed = [];
     this.anchors = {
       topLeft: this.add.container(16, 112),
       topRight: this.add.container(W - 16, 16),
@@ -90,7 +96,7 @@ export class HudV2Scene extends Phaser.Scene {
       const t = this.add.text(this.scale.width - 16, 176, 'Saving…', typeStyle('caption', C.text500)).setOrigin(1, 0);
       this.time.delayedCall(1400, () => t.destroy());
     });
-    this.input.keyboard!.on('keydown-F5', () => void SaveService.save());
+    // No quick-save key: F5 is the browser's reload (and keys must be rebindable). Pause saves; autosave covers the rest.
     // The bound Pause key (and Esc, the universal back key) pauses, unless a conversation or panel owns the key.
     this.input.keyboard!.on('keydown', (ev: KeyboardEvent) => {
       if (!(ev.key === 'Escape' || isAction(ev, 'pause')) || ev.target instanceof HTMLInputElement) return;

@@ -42,7 +42,13 @@ export abstract class NetBase implements Partial<NetService> {
     return () => this.memberHandlers.delete(fn);
   }
 
-  protected emitServer(msg: ServerMsg): void { for (const fn of this.serverHandlers.get(msg.type) ?? []) fn(msg); }
-  protected emitClient(msg: ClientMsg, from: PlayerId): void { for (const fn of this.clientHandlers.get(msg.type) ?? []) fn(msg, from); }
+  // Each handler is isolated: a malformed remote message that throws in one domain's handler (world, systems,
+  // narrative all listen to 'act') must not stop the others or the transport loop that called us.
+  protected emitServer(msg: ServerMsg): void {
+    for (const fn of this.serverHandlers.get(msg.type) ?? []) { try { fn(msg); } catch (e) { console.warn(`[net] '${msg.type}' handler threw`, e); } }
+  }
+  protected emitClient(msg: ClientMsg, from: PlayerId): void {
+    for (const fn of this.clientHandlers.get(msg.type) ?? []) { try { fn(msg, from); } catch (e) { console.warn(`[net] client '${msg.type}' handler threw`, e); } }
+  }
   protected emitMembers(): void { for (const fn of this.memberHandlers) fn(this.info.members); }
 }

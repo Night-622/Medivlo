@@ -41,15 +41,18 @@ export class HostNet extends AuthorityNet {
   /** Open the room; returns the 6-char join code to show the player. */
   async open(code = newJoinCode()): Promise<string> {
     this.info.joinCode = code;
-    this.closeRoom = await this.sig.host(code, this.opts.signalId ?? this.localPlayer, (_peerId, ch) => {
+    this.closeRoom = await this.sig.host(code, this.opts.signalId ?? this.localPlayer, (peerId, ch) => {
       const link = new PeerLink(ch, 'host');
       let playerId: PlayerId | null = null;
       link.onMessage((raw) => {
         const msg = raw as ClientMsg;
-        if (msg.type === 'hello') { if (!playerId) playerId = this.admit(link, msg); return; }
+        if (!msg || typeof msg !== 'object') return;
+        if (msg.type === 'hello') { if (!playerId) playerId = this.admit(link, msg, peerId); return; }
         if (playerId) this.handleClient(playerId, msg);
       });
-      link.onClose(() => { if (playerId) { this.links.delete(playerId); this.removeRemote(playerId); } });
+      // Only the player's CURRENT link may remove them: after a rejoin the old connection dies late (ICE timeout)
+      // and must not disconnect the new one.
+      link.onClose(() => { if (playerId && this.links.get(playerId) === link) { this.links.delete(playerId); this.removeRemote(playerId); } });
       setTimeout(() => { if (!playerId) link.close(); }, 20000);
     });
     this.broadcastSession();
@@ -66,14 +69,22 @@ export class HostNet extends AuthorityNet {
     super.close();
   }
 
-  private admit(link: PeerLink, hello: Extract<ClientMsg, { type: 'hello' }>): PlayerId | null {
+  /** `peerId` is the signalling identity (Firestore rules tie it to the guest's auth uid); the hello must match it. */
+  private admit(link: PeerLink, hello: Extract<ClientMsg, { type: 'hello' }>, peerId: string): PlayerId | null {
     const reject = (reason: string) => { link.send({ type: 'kick', reason } satisfies ServerMsg); setTimeout(() => link.close(), 500); return null; };
-    if (this.info.members.filter((m) => m.connected).length >= this.info.maxPlayers) return reject('That game is full');
+    if (typeof hello.playerId !== 'string' || hello.playerId !== peerId || hello.playerId === this.localPlayer) return reject('You can\'t join that game');
+    // a rejoin replaces the player's stale seat instead of counting it
+    if (this.info.members.filter((m) => m.connected && m.playerId !== hello.playerId).length >= this.info.maxPlayers) return reject('That game is full');
     if (Social.isBlocked(hello.playerId)) return reject('You can\'t join that game');
     if (!this.opts.hasVisited(hello.playerId) && !this.opts.hostInSafeZone()) return reject('First visits can only join while the host is in a safe zone. Try again in a moment.');
     this.opts.markVisited(hello.playerId);
+    const stale = this.links.get(hello.playerId);
     this.links.set(hello.playerId, link);
-    const member: PartyMember = { playerId: hello.playerId, name: hello.name, classId: hello.classId, level: hello.level, isHost: false, connected: true, downed: false };
+    stale?.close(); // its onClose sees it is no longer current and leaves the new seat alone
+    const member: PartyMember = {
+      playerId: hello.playerId, name: String(hello.name ?? 'Wanderer').slice(0, 24), classId: String(hello.classId ?? '').slice(0, 32),
+      level: Math.max(1, Math.min(99, Math.floor(Number(hello.level)) || 1)), isHost: false, connected: true, downed: false,
+    };
     this.addRemote(member, { worldSeed: this.opts.worldSeed });
     return hello.playerId;
   }

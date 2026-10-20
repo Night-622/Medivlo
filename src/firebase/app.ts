@@ -18,13 +18,19 @@ export function firebase(): { app: FirebaseApp; auth: Auth; db: Firestore } {
   return { app, auth: auth!, db: db! };
 }
 
-/** Resolves with the signed-in user, signing in anonymously if needed. */
-export function ensureUser(): Promise<User> {
+/**
+ * Resolves with the signed-in user, signing in anonymously if needed.
+ * Waits for auth to restore the persisted session first: currentUser is null until then, and signInAnonymously
+ * replaces a restored email/username user with a brand-new anonymous one (only an anonymous one is reused).
+ */
+export async function ensureUser(): Promise<User> {
   const { auth } = firebase();
+  await auth.authStateReady();
+  if (auth.currentUser) return auth.currentUser;
   return new Promise((resolve, reject) => {
     const off = onAuthStateChanged(auth, (user) => {
       if (user) { off(); resolve(user); }
     });
-    if (!auth.currentUser) signInAnonymously(auth).catch((e) => { off(); reject(e); });
+    signInAnonymously(auth).catch((e) => { off(); reject(e); });
   });
 }

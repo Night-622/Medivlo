@@ -10,3 +10,4 @@ export { Registry } from './Registry';
 export { Rng, rng } from './rng';
 export { Settings, DEFAULT_KEYS, DEFAULT_SETTINGS, keyLabel, moveKeys, formatKeys } from './settings';
 export type { Action, SettingsData } from './settings';
+export { migrateCharacter, PERK_TREE_LIVE, BUILD_VERSION } from './hcMigrate';

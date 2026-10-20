@@ -38,5 +38,5 @@ export class RealmNet extends RemoteClient {
 
   protected transportSend(msg: ClientMsg): void { if (this.ws.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify(msg)); }
 
-  leave(): void { this.transportSend({ type: 'bye' }); this.ws.close(); }
+  leave(): void { this.leaving = true; this.transportSend({ type: 'bye' }); this.ws.close(); }
 }

@@ -17,7 +17,8 @@ export interface GameEvents {
   'game:paused': { paused: boolean };
   'flag:changed': { key: string; value: FlagValue | undefined; prev: FlagValue | undefined };
   'settings:changed': { key: string };
-  'ui:open': { panel: string };
+  /** focus: a place id to centre on (the map; e.g. the Journal's "Show on map" for the tracked objective) */
+  'ui:open': { panel: string; focus?: string };
   'ui:close': { panel: string };
 
   // ----- world (Claude 2)

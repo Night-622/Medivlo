@@ -6,6 +6,7 @@ import { collection, deleteDoc, doc, getDoc, getDocs, setDoc } from 'firebase/fi
 import { bus } from '@/core/EventBus';
 import { Game, applyReleasedContent, type GameState, type HeroChoiceState } from '@/core/GameState';
 import { SAVE_VERSION } from '@/core/constants';
+import { migrateCharacter } from '@/core/hcMigrate';
 import { isFirebaseConfigured } from './config';
 import { ensureUser, firebase } from './app';
 
@@ -68,6 +69,7 @@ async function writeCloud(state: GameState): Promise<boolean> {
 function migrate(state: GameState): GameState {
   // Add migrations here when SAVE_VERSION increases.
   state.world.location.space ??= ''; // pre-swap saves had an optional space
+  if (state.character) migrateCharacter(state.character); // deeper builds: gem → sockets (tree refund later)
   state.meta.version = SAVE_VERSION;
   return applyReleasedContent(state);
 }

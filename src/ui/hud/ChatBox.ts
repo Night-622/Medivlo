@@ -4,6 +4,7 @@ import { C, typeStyle } from '@/ui/kit/hc';
 import { Social } from '@/net/social';
 import { currentRealm } from '@/net/coop';
 import { challenge } from './DuelUi';
+import { dialogueClient } from '@/narrative/client/dialogueClient';
 
 const X = 16, TOP = 250, W = 300, LINES = 8, LINE_H = 22, FADE_MS = 10000;
 
@@ -44,7 +45,8 @@ export class ChatBox {
   }
 
   private onEnter = (): void => {
-    if (!this.enabled || this.field) return;
+    // Enter also advances an open conversation (NarrativeUiScene): never open the chat field on top of it
+    if (!this.enabled || this.field || dialogueClient.active) return;
     const el = this.scene.add.dom(X, TOP + LINES * LINE_H + 8, 'input',
       `width:${W}px;height:32px;box-sizing:border-box;padding:0 10px;font:500 14px "Pixelify Sans";color:${C.text};background:rgba(11,15,34,.92);border:2px solid #2e3a6e;outline:none;caret-color:${C.gold}`).setOrigin(0);
     const input = el.node as HTMLInputElement;
