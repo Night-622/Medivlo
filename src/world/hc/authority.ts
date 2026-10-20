@@ -168,9 +168,10 @@ export function installWorldAuthority(opts: WorldAuthorityOpts): WorldAuthority 
   let lastMs = 0, tickN = 0;
   const off = loop.add({ name: 'world', order: 100, step: (dt) => {
     const t0 = performance.now(), ps = opts.players();
-    if (lastMs < 15) prewarm(spaceRuntime, ps);
-    // place index for story markers and escorts (placePos): one space per quiet tick, after the chunk warm-up
-    else if (lastMs < 8 && tickN % 30 === 0) warmMarkers();
+    const busy = lastMs < 15 && prewarm(spaceRuntime, ps);
+    // place index for quest markers, story markers and escorts (placePos): one space per quiet tick once the chunks
+    // round the players are warm, the first player's space first (it was unreachable behind the prewarm branch)
+    if (!busy && lastMs < 8 && tickN % 30 === 0) warmMarkers(ps[0]?.space);
     tickN++;
     tracker.step(ps); director?.step(dt); bosses.step(dt);
     lastMs = performance.now() - t0;

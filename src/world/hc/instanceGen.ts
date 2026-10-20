@@ -69,6 +69,16 @@ export function lairBoss(school: string, side: 'capital' | 'frontier', n: number
   return { creature: cb?.id ?? `bx_${school}_5`, level };
 }
 
+/**
+ * The class lair a boss fights in (quest markers for kill objectives, Claude 4's objectivePlaces): `school`/`side`/
+ * `className` of the campaign whose realm side holds the lair (CAMPAIGNS), as spaces.ts builds the lairs. null: not
+ * one of that side's lair bosses (Sentinels, gate and Morvane bosses have their own places).
+ */
+export function bossLair(creature: string, school: string, side: 'capital' | 'frontier', className: string): string | null {
+  for (const n of [1, 2, 3]) if (lairBoss(school, side, n, className).creature === creature) return `inst:${school}-${side}-lair-${n}`;
+  return null;
+}
+
 interface Room { x: number; y: number; w: number; h: number; shape: 'rect' | 'ellipse' | 'cave' }
 
 /** A pack of the lair's creatures in one room: spawned once per visit (side rooms: elite; the heart room: an ambush on entry). */

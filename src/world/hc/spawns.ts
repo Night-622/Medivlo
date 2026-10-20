@@ -313,9 +313,10 @@ export const indexedInstances = (): string[] => [...markerIndex.keys()].filter((
 const indexed = new Set<string>();
 const markerPending = () => ['concordia', ...REALMS.filter((r) => r.school).map((r) => r.space)].filter((s) => !indexed.has(s));
 
-/** Index one more space's markers (call while idle, e.g. one per world tick); false once all are done. */
-export function warmMarkers(): boolean {
-  const next = markerPending()[0];
+/** Index one more space's markers (call while idle, e.g. one per world tick), `first` if it's pending; false once all are done. */
+export function warmMarkers(first?: string): boolean {
+  const pending = markerPending();
+  const next = first && pending.includes(first) ? first : pending[0];
   if (!next) return false;
   indexMarkers(next);
   return true;

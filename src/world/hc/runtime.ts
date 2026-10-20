@@ -207,7 +207,7 @@ function warmStage(r: SpaceRuntime, cx: number, cy: number): void {
  * Warm the nearest missing chunk round the players, one cache stage per call (authority stepper): generation
  * never lands on movement or spawning, and no tick pays for more than one block of it.
  */
-export function prewarm(rt: (space: string) => SpaceRuntime, players: { space: string; x: number; y: number }[], radius = 1): void {
+export function prewarm(rt: (space: string) => SpaceRuntime, players: { space: string; x: number; y: number }[], radius = 1): boolean {
   for (const p of players) {
     const r = rt(p.space);
     const cx = Math.floor(p.x / TILE_SIZE / N), cy = Math.floor(p.y / TILE_SIZE / N);
@@ -216,6 +216,7 @@ export function prewarm(rt: (space: string) => SpaceRuntime, players: { space: s
       const x = cx + dx, y = cy + dy, d = dx * dx + dy * dy;
       if (r.inBounds(x, y) && !r.chunk(x, y, false) && (!best || d < best[2])) best = [x, y, d];
     }
-    if (best) { warmStage(r, best[0], best[1]); return; } // one stage per tick in total
+    if (best) { warmStage(r, best[0], best[1]); return true; } // one stage per tick in total
   }
+  return false;
 }

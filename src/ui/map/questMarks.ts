@@ -72,7 +72,7 @@ export class QuestMarkFeed {
   /** the ones in this space; `frameMs`: the last frame's length (warming only on quiet frames) */
   here(now: number, frameMs: number): QuestMark[] {
     if (now - this.cache.at < 500) return this.cache.marks;
-    if (this.guest() && now - this.warmedAt > 4000 && frameMs < 20) { this.warmedAt = now; warmMarkers(); }
+    if (this.guest() && now - this.warmedAt > 4000 && frameMs < 20) { this.warmedAt = now; warmMarkers(this.space()); }
     const space = this.space();
     this.cache = { at: now, marks: this.all().filter((m) => m.space === space) };
     return this.cache.marks;
