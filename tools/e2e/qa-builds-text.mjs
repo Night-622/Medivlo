@@ -1,4 +1,4 @@
-// QA (Claude 7): the deeper-builds content reads cleanly. For perks (school + class signature), shared keystones,
+// QA (Claude 7): the deeper-builds content reads cleanly. For perks (school + class signature), shared keystones, hybrid sets,
 // weapon mastery, the new kit spells, school spells, runes, uniques, affixes and build materials/tomes:
 //   coverage: every mechanics id has its text overlay entry (src/data/lore/hc-builds-text.ts: flavour, or an affix label)
 //   names:    the name a player sees (overlay name ?? working name) is a proper name (capitalised, no ids, no '_')
@@ -28,7 +28,8 @@ import { HC_UNIQUES } from '@/data/items/hc/uniques';
 import { HC_AFFIXES } from '@/data/items/hc/affixes';
 import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { HC_PIECES } from '@/data/items/hc/armour.gen';
-import { PERK_TEXT, SPELL_TEXT, KEYSTONE_TEXT, MASTERY_TEXT, AFFIX_TEXT, RUNE_TEXT, ITEM_TEXT, UNIQUE_TEXT } from '@/data/lore/hc-builds-text';
+import { PERK_TEXT, SPELL_TEXT, KEYSTONE_TEXT, MASTERY_TEXT, AFFIX_TEXT, RUNE_TEXT, ITEM_TEXT, UNIQUE_TEXT, HYBRID_TEXT } from '@/data/lore/hc-builds-text';
+import { HC_HYBRIDS } from '@/data/items/hc/hybrid-sets';
 import { itemTooltip } from '@/systems/rules/describeHc';
 import { rollInstance } from '@/systems/rules/affixes';
 import { Rng } from '@/core/rng';
@@ -107,6 +108,10 @@ for (const a of HC_AFFIXES) {
   const label = o && a.kind === 'suffix' ? o.label.replace(/^of /, 'Of ') : o?.label;
   add('affixes', a.id, o ? null : 'no label (item-name word)', o ? nameProblem(label, a.id) : null, v > 1 ? '{v} appears ' + v + ' times' : null,
     ...samples.map(textProblem));
+}
+for (const h of HC_HYBRIDS) {
+  const key = h.schools[0] + '+' + h.schools[1], o = HYBRID_TEXT[key];
+  add('hybrid sets', key, o ? null : 'no text overlay entry', o ? flavourProblem(o.flavour) : null, nameProblem(o?.name ?? h.name, key), textProblem(h.text));
 }
 for (const it of HC_BUILD_ITEMS) {
   const o = ITEM_TEXT[it.id] ?? RUNE_TEXT[it.id]; // rune items share the rune's id and text
