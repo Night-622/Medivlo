@@ -212,5 +212,5 @@ Bosses roll their own tables; boss triggers carry no `loot` prop.
 | `clearance` | Bodies fit their arenas, lair corridors and story markers |
 | `merchants` | Runeforges, capital smiths and traders, and frontier pedlars stand by their waystone; every shop merchant resolves through `npcPos` |
 | `loot` | Every chest `loot` id is a known table, and every rare chest has one |
-| `reach` | A hero body (r12) reaches every quest objective place of all 24 campaigns, every NPC spot (on open ground), and every chest and search object |
+| `reach` | Walking from where a hero starts (a realm's two start waystones, Concordia's Gate Circle, an instance's entrance), a hero body (r12) reaches every quest objective place of all 24 campaigns, every NPC spot (on open ground), every chest and search object, every waystone and door; fast travel and doors land on reached open ground; every escort has a walk from a start spot of its NPC to its destination |
 | `bands-concordia` (`--full` only, ~4 min) | Every Act II/III main-quest pass is within expected +2 and −4 |

@@ -1,7 +1,8 @@
 /**
  * New-player reach check (Claude 2, for Claude 1's safety net): can a hero body actually get to everything the
  * game points at? A hero (r12) moves as a 1×1-tile box (clearance.ts), so tile reachability is the hero's.
- * Per space, one flood of walkable tiles from its waystones and village centres (an instance: from its entrance);
+ * Per space, one flood of walkable tiles from where a hero starts (a realm: its two start waystones; Concordia: the
+ * Gate Circle; an instance: its entrance);
  * Concordia twice, with the Heart gate sealed and open (Heart places may need it open, nothing else may).
  * Tested against the floods:
  *   - every quest objective place of all 24 campaigns and the shared quests (Claude 4's objectivePlaces): objects
@@ -10,6 +11,10 @@
  *   - every NPC at every spot it can stand (home and schedule, as the snapshots place it): on walkable ground and
  *     within talk-prompt range of a reached tile
  *   - every chest and search object: within prompt range (FocusPrompt's 1.9 tiles) of a reached tile
+ *   - every waystone: walked up to from the start, and its fast-travel landing on reached open ground; every door
+ *     in reach, and a door's set landing spot reached in its target space
+ *   - every escort (quest and dialogue effects): from each spot the NPC can stand to its destination, one A* walk in
+ *     one space (escort body r10 and heroes r12 are both a 1×1-tile box)
  *   ENTRY=tools/playthrough/checks.ts OUT=<file> node tools/playthrough/build.mjs && node <file> reach
  */
 import { CHUNK_TILES, Game, Registry, TILE_SIZE, createNewGameState, setFlag, type NpcDef, type QuestDef, type WorldObject } from '@/core';
@@ -19,9 +24,8 @@ import { SpaceQuery } from '@/world/hc/runtime';
 import { markerAt, warmMarkers } from '@/world/hc/spawns';
 import { morvaneRegionAt } from '@/world/hc/overview';
 import { npcsIn } from '@/world/hc/npcs';
+import { HcWorldService, standBeside } from '@/world/hc/worldService';
 import type { InstanceGen } from '@/world/hc/instanceGen';
-import type { RealmGen } from '@/world/hc/realmGen';
-import type { ConcordiaGen } from '@/world/hc/concordiaGen';
 import { CAMPAIGNS } from '@/narrative/engine/classes';
 import { objectivePlaces } from '@/narrative/client/markers';
 
@@ -40,6 +44,11 @@ const INSTANCES = AREAS.flatMap((a) => [...[1, 2, 3].map((n) => `inst:${a.school
   .filter((id) => instanceDef(id));
 const OPEN = [...REALMS.filter((r) => r.school).map((r) => r.space), 'concordia'];
 const SPACES = [...OPEN, ...ARENAS.map((a) => a.id), ...INSTANCES];
+
+const START: Record<string, string[]> = Object.fromEntries([
+  ...REALMS.filter((r) => r.school).map((r) => [r.space, [`ws:${r.school}-capital`, `ws:${r.school}-frontier`]]),
+  ['concordia', ['ws:gate-circle']],
+]);
 
 interface Flood { space: string; w: number; h: number; seen: Uint8Array; q: SpaceQuery }
 const query = (space: string) => new SpaceQuery(spaceRuntime(space), () => ({ hour: 12, phase: 'day' }) as never);
@@ -85,15 +94,14 @@ for (const space of SPACES) {
   let src: [number, number][];
   if (space.startsWith('inst:')) src = [(g as InstanceGen).entrance];
   else if (space.startsWith('arena:')) src = all.filter((o) => o.kind === 'door' || o.kind === 'waystone').map((o) => o.at);
-  else {
-    const vil = space === 'concordia' ? (g as ConcordiaGen).data.villages : (g as RealmGen).villages;
-    src = [...allWaystones().filter((w) => w.space === space).map((w) => w.at), ...vil.map((v) => v.at)];
-  }
+  // open spaces flood from where a hero starts: a realm from its two start waystones (both classes' homes),
+  // Concordia from the Gate Circle every realm gate leads to; everything else must be walkable from there
+  else src = START[space].map((id) => allWaystones().find((w) => w.id === id)!.at);
   floods.set(space, flood(space, src));
 }
 // the Heart behind the Weeping Wall: a second Concordia flood with the gate open
 setFlag('story.heart_open', true);
-const heartOpen = flood('concordia', [...allWaystones().filter((w) => w.space === 'concordia').map((w) => w.at)]);
+const heartOpen = flood('concordia', START.concordia.map((id) => allWaystones().find((w) => w.id === id)!.at));
 setFlag('story.heart_open', false);
 const inHeart = (space: string, x: number, y: number) => space === 'concordia' && morvaneRegionAt(x / 4, y / 4)?.id === 'region:heart';
 const ms = Math.round(performance.now() - t0);
@@ -131,6 +139,70 @@ for (const { space, o } of objects.values()) {
   if (!near(f, o.at[0] * TILE_SIZE, o.at[1] * TILE_SIZE, PROMPT, o)) fail(`${o.kind.toUpperCase()} ${o.id} at ${space} ${o.at}: no reachable tile within ${PROMPT} tiles`);
 }
 
+// ───────────── waystones and doors: usable, and fast travel / the way through lands on reached ground ─────────────
+let stones = 0, doors = 0;
+for (const w of allWaystones()) {
+  const f0 = floods.get(w.space);
+  if (!f0) continue;
+  stones++;
+  const f = floodFor(w.space, w.at[0], w.at[1])!;
+  const land = standBeside(f.q, w.at[0], w.at[1]), lx = Math.floor(land.x / TILE_SIZE), ly = Math.floor((land.y - 1) / TILE_SIZE);
+  if (!near(f, w.at[0] * TILE_SIZE, w.at[1] * TILE_SIZE, PROMPT, { at: w.at })) fail(`WAYSTONE ${w.id} at ${w.space} ${w.at}: can't be walked up to (woken) from the start`);
+  if (!f.q.isWalkable(lx, ly)) fail(`WAYSTONE ${w.id}: fast travel lands on blocked ground at ${lx},${ly}`);
+  else if (!reached(f, lx, ly)) fail(`WAYSTONE ${w.id}: fast travel lands at ${lx},${ly}, cut off from the start`);
+}
+for (const { space, o } of objects.values()) {
+  if (o.kind !== 'door') continue;
+  doors++;
+  const f = floodFor(space, o.at[0], o.at[1])!;
+  if (!near(f, o.at[0] * TILE_SIZE, o.at[1] * TILE_SIZE, PROMPT, o)) { fail(`DOOR ${o.id} at ${space} ${o.at}: out of reach`); continue; }
+  // a door that sets its landing spot: it must be open ground the target space's start reaches
+  const t = String(o.props?.target ?? '').replace(/^space:/, ''), tx = Number(o.props?.x), ty = Number(o.props?.y);
+  const tf = floods.get(t);
+  if (tf && Number.isFinite(tx) && Number.isFinite(ty)) {
+    const land = standBeside(tf.q, tx, ty), lx = Math.floor(land.x / TILE_SIZE), ly = Math.floor((land.y - 1) / TILE_SIZE), ff = floodFor(t, lx, ly)!;
+    if (!reached(ff, lx, ly)) fail(`DOOR ${o.id}: lands at ${t} ${lx},${ly}, cut off from the start`);
+  }
+}
+
+// ───────────── escorts: every start spot of the escorted NPC → its destination, one walk in one space ─────────────
+const escorts: { npc: string; to: string; where: string }[] = [];
+const scan = (x: unknown, where: string): void => {
+  if (!x || typeof x !== 'object') return;
+  if (Array.isArray(x)) { for (const v of x) scan(v, where); return; }
+  const r = x as Record<string, unknown>;
+  if (typeof r.escort === 'string' && typeof r.to === 'string') escorts.push({ npc: r.escort, to: r.to, where });
+  for (const v of Object.values(r)) scan(v, where);
+};
+for (const q of Registry.all('quest') as QuestDef[]) scan(q, q.id);
+for (const d of Registry.all('dialogue') as { id: string }[]) scan(d, d.id);
+const worlds = new HcWorldService(() => ({ hour: 12, phase: 'day' }) as never, () => 'concordia', () => null, () => []);
+let legs = 0, longest = 0;
+for (const e of new Map(escorts.map((x) => [`${x.npc}>${x.to}`, x])).values()) {
+  const def = npcs.find((n) => n.id === e.npc);
+  const to = worlds.placePos(e.to);
+  if (!def) { fail(`ESCORT ${e.where}: ${e.npc} is no NPC`); continue; }
+  if (!to) { fail(`ESCORT ${e.where}: destination ${e.to} unresolved`); continue; }
+  // where the NPC can stand when the escort starts: schedule spots gated on story state (`when`) are maybes, the home
+  // and ungated spots apply at some hour. The escort is walkable if one start spot has a walk; an ungated spot in the
+  // destination's space with no walk fails on its own (the escort could start there)
+  const spots = new Map<string, boolean>([[def.home, true]]);
+  for (const s of def.schedule ?? []) spots.set(s.at, (spots.get(s.at) ?? false) || !s.when);
+  let any = false;
+  const bad: string[] = [];
+  for (const [lm, sure] of spots) {
+    const from = worlds.placePos(lm);
+    legs++;
+    if (!from) { if (sure) bad.push(`start ${lm} unresolved`); continue; }
+    if (from.space !== to.space) continue;
+    const t = (p: { x: number; y: number }): [number, number] => [Math.floor(p.x / TILE_SIZE), Math.floor((p.y - 1) / TILE_SIZE)];
+    const path = worlds.query(to.space).findPath(t(from), t(to), 3_000_000);
+    if (path) { any = true; longest = Math.max(longest, path.length); } else if (sure) bad.push(`from ${lm} ${t(from)} to ${e.to} ${t(to)}: no walk`);
+  }
+  if (!any) bad.push(`no start spot in ${to.space} with a walk to ${e.to}`);
+  for (const b of bad) fail(`ESCORT ${e.where}: ${e.npc} ${b}`);
+}
+
 // ───────────── quest objective places ─────────────
 const quests = Registry.all('quest') as QuestDef[];
 const clsOf = (q: QuestDef) => CAMPAIGNS.find((c) => q.id.startsWith(`quest:${c.id}-`))?.id ?? '';
@@ -166,5 +238,5 @@ const uniq = [...new Set(problems)];
 const LIMIT = Number(process.env.REACH_ALL) ? Infinity : 80;
 for (const p of uniq.slice(0, LIMIT)) console.log(p);
 if (uniq.length > LIMIT) console.log(`… ${uniq.length - LIMIT} more (REACH_ALL=1 lists them all)`);
-console.log(`reach: ${SPACES.length} spaces flooded in ${ms} ms; ${objectives} objectives (${placeOk.size} places), ${npcSpots} NPC spots, ${usables} chests and search objects; problems ${uniq.length}`);
+console.log(`reach: ${SPACES.length} spaces flooded in ${ms} ms from the start waystones; ${objectives} objectives (${placeOk.size} places), ${npcSpots} NPC spots, ${usables} chests and search objects, ${stones} waystones, ${doors} doors, ${legs} escort legs (longest ${longest} steps); problems ${uniq.length}`);
 if (uniq.length) process.exitCode = 1;

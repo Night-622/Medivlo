@@ -141,6 +141,7 @@ Design: docs/world/HOLLOW-CROWN-WORLD.md. Pure code in src/world/hc (shared with
   - 179 NPCs stood inside the building or prop of their set-piece landmark. They now stand on the nearest walkable tile in front of it (npcs.ts onGround).
   - Skald's obj:nave-name-drum was on the drowned bell's island, out of reach (a quest blocker). It moved to the Abbeyshore boat landing.
   - The island bell is now a marker anchor, with no [F] prompt nobody can reach.
+- [x] Reach check, part 2: floods now start only where a hero starts (a realm's two start waystones, Concordia's Gate Circle), so everything must be walkable from there. Also checked: all 50 waystones can be woken and fast travel lands on reached open ground; all 260 doors are in reach and land on reached ground; all 64 escort legs (quest and dialogue effects) have an A* walk from a start spot of the NPC to the destination (longest 482 steps). 0 problems
 - [x] docs/world/HOLLOW-CROWN-WORLD.md v2: campaign-order bands, Concordia bands, class gating, quest marks, merchants and npcPos, loot tables, occlusion, and the world checks table (§10, §11)
 - [ ] Next: user world reports via Claude 1
 - Dev: `?scene=WorldV2&space=<space>&tp=tx,ty&zoom=0.5&hour=22&fly=1&hc_class=<class>`. Console: `__world.where() / tp(tx,ty) / space(id) / focus() / press() / hour(h)`
