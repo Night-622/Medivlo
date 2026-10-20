@@ -53,4 +53,4 @@ Rules:
   | corsair | 29.8 | the-queens-toll +78, the-gilded-engine +60, the-admirals-cargo +45 |
 
   Rule of thumb: ~25 Act II kills ≈ 1 level at L25–30. Huntsman, Shade and Samurai ran LOW (L24.1–24.4, fast travel);
-  Claude 2 is adding story-bound packs on their threads.
+  Claude 2 added 11 story-bound packs on their own threads (+12–16 kill slots): now L24.6 / 24.6 / 24.7 (on foot 25.0 / 26.0 / 24.7).

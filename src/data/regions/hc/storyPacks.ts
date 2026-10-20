@@ -4,6 +4,8 @@
  * spot in their own thread, alive only while that quest stage is (once per stage), at the band of the region.
  * Spots from tools/playthrough/out/sparse-spots-act2.md; each stands (dx, dy) tiles off its anchor object, so it
  * doesn't sit on the objective, an NPC or an escort.
+ * Margin is thin: with these, Act II ends at Huntsman 24.6, Shade 24.6, Samurai 24.7 (fast travel; Claude 3, 2026-10-20).
+ * Trim nothing on these three threads (packs, route camps, zones they pass) without asking Claude 3 to recheck.
  */
 export interface StoryPack { id: string; quest: string; stage: string; near: string; dx: number; dy: number; cap: number }
 
