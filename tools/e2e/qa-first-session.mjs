@@ -167,6 +167,17 @@ const nextObjective = () => ev(`(async () => {
     const mine = (m) => m.key.startsWith(def.id + '#' + o.id + '#');
     const here = marks.here.find(mine), anywhere = marks.all.find(mine);
     const base = { quest: def.id, title: def.name, stage: st.id, kind, id, text: q.objectiveText(def, o), count: q.objectiveCount(def, o), target: q.objectiveTarget(o), tracked: def.id === tracked };
+    if (here && kind === 'reach' && here.place.startsWith('landmark:')) {
+      // a reach counts inside the landmark's own area: aim for its nearest walkable tile, not just "near the mark"
+      const { landmarksAt } = await import('/src/world/hc/interact.ts');
+      const q = window.__game.scene.getScene('WorldV2').query, p = window.__hc.local(), sp = window.__world.where().space;
+      const gx = Math.floor(here.x / 32), gy = Math.floor(here.y / 32); let best = null;
+      for (let y = gy - 12; y <= gy + 12; y++) for (let x = gx - 12; x <= gx + 12; x++) {
+        if (!q.isWalkable(x, y) || !landmarksAt(sp, x * 32 + 16, y * 32 + 16).includes(here.place)) continue;
+        const d = Math.hypot(x * 32 + 16 - p.x, y * 32 + 16 - p.y); if (!best || d < best[2]) best = [x * 32 + 16, y * 32 + 16, d];
+      }
+      if (best) return { ...base, at: [best[0], best[1]] };
+    }
     if (here) return { ...base, at: [here.x, here.y] };
     first ??= anywhere ? { ...base, otherSpace: anywhere.space } : { ...base, at: null };
   }
@@ -236,7 +247,7 @@ try {
       if (next) { o.at = [next.x, next.y]; o.id = next.id; (log.used ??= []).push(next.id); }
     }
     const moved = async () => { const a = await nextObjective(); return !a || a.quest !== o.quest || a.stage !== o.stage || a.text !== o.text || (a.count ?? 0) > (o.count ?? 0); };
-    const w = await walkTo(o.at[0], o.at[1], { near: o.kind === 'kill' || o.kind === 'reach' ? 64 : 48, focusId: o.kind === 'talk' || o.kind === 'interact' ? o.id : null, until: o.kind === 'reach' ? moved : null, reachR: o.kind === 'reach' ? 3.5 : 1.5 });
+    const w = await walkTo(o.at[0], o.at[1], { near: o.kind === 'kill' ? 64 : o.kind === 'reach' ? 12 : 48, focusId: o.kind === 'talk' || o.kind === 'interact' ? o.id : null, until: o.kind === 'reach' ? moved : null, reachR: o.kind === 'reach' ? 1 : 1.5 });
     row.walkS = Math.round((Date.now() - t) / 1000); row.stuck = w.stuck;
     if (!w.ok) { row.why = w.why; if (w.why === 'died') { log.deaths++; await page.press('Enter'); await sleep(3000); } continue; }
     if (o.kind === 'talk' || o.kind === 'interact') {

@@ -116,11 +116,30 @@ async function tour(size) {
     await page.press(k); await sleep(1000);
     const sc = name === 'People' ? 'People' : name === 'Journal' ? 'NarrativeUi' : 'HudV2';
     const r = await record(size, name.toLowerCase(), sc);
-    if (size === 'normal' && r && name !== 'Map' && name !== 'Journal') keyOnly(name, r);
+    if (size === 'normal' && r && name === 'People') {
+      // People's cards move with the arrow keys (not KeyNav); only the filter tabs must be Tab stops
+      const tabs = ['Everyone', 'Story', 'Trade', 'Villagers'];
+      check('People: the filter tabs are keyboard stops', !r.mouseOnly.some((l) => tabs.includes(l)), `mouse-only: ${r.mouseOnly.join(' | ')}`);
+      const s0 = await ev(`window.__game.scene.getScene('People').sel`); await page.press('ArrowRight'); await sleep(250);
+      check('People: → moves to the next person', (await ev(`window.__game.scene.getScene('People').sel`)) !== s0);
+    } else if (size === 'normal' && r && name !== 'Map' && name !== 'Journal') keyOnly(name, r);
     await shot(`${size}-${name.toLowerCase()}`);
     await page.press('Escape'); await sleep(600);
     if (await active('Pause')) { await page.press('Escape'); await sleep(400); }
   }
+  // the smith's shop (Trade) and its Runeforge: opened the way dialogue opens it (flag shop.open = the merchant)
+  await ev(`(async () => { (await import('/src/core/flags.ts')).setFlag('shop.open', 'npc:rime-smith'); return 1; })()`); await sleep(1200);
+  const trade = await record(size, 'shop-trade', 'HudV2');
+  if (size === 'normal' && trade) {
+    keyOnly('Shop › Trade', trade);
+    for (let i = 0; i < 60; i++) { const lab = await ev(`(() => { const s = window.__game.scene.getScene('HudV2'); const l = (s.nav?.items || []).filter((x) => x.obj.scene && x.obj.visible !== false); const o = l[Math.min(s.nav?.i ?? -1, l.length - 1)]?.obj; if (!o) return ''; const b = o.getBounds(); const t = window.__a11y('HudV2').texts.find((x) => x.b.x + x.b.w / 2 > b.x && x.b.x + x.b.w / 2 < b.x + b.width && x.b.y + x.b.h / 2 > b.y && x.b.y + x.b.h / 2 < b.y + b.height); return t ? t.t : ''; })()`); if (lab === 'Runeforge') { await page.press('Enter'); await sleep(800); break; } await page.press('Tab'); await sleep(60); }
+    const forge = await record(size, 'shop-runeforge', 'HudV2');
+    check('Shop: Tab reaches the Runeforge tab and Enter opens it', !!forge && forge.texts.some((t) => /Reforge|Upgrade|Salvage/.test(t.t)));
+    if (forge) keyOnly('Shop › Runeforge', forge);
+    await shot('shop-runeforge');
+  } else await record(size, 'shop-runeforge', 'HudV2');
+  await page.press('Escape'); await sleep(600);
+  if (await active('Pause')) { await page.press('Escape'); await sleep(400); }
   // Death: Enter respawns (autofocus on Return)
   // creatures don't engage in a safe zone (the start waystone): step out into the wilds first
   for (let i = 0; i < 8 && (await ev('window.__world.where().rule')) === 'safe'; i++) { const w0 = await ev('window.__world.where()'); await ev(`window.__world.tp(${w0.tx + 12 * (i % 2 ? -1 : 1)}, ${w0.ty + 10 * (i + 1)})`); await sleep(800); }
