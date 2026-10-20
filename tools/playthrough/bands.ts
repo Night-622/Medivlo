@@ -132,6 +132,7 @@ ${sides.join('\n')}
       }
     }
   }
+  if (bad || sidesBad || stuck) process.exitCode = 1;
   console.log(stuck ? `${stuck}/${tried} zone × host pairs don't follow an other-class host` : `bands: every other-class host (${tried} zone × host pairs) steps each side up with their own Act I progress`);
 }
 

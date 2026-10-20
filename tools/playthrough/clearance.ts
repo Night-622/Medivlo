@@ -133,3 +133,4 @@ for (const space of spaces) {
 }
 console.log(`${storyKills} big-body story kills in the open; ${bosses} boss spawns (largest r${maxBoss}, lowest arena reach ${(minCover * 100).toFixed(0)}%: ${worstCover}), ${rooms} lair pack rooms (largest r${maxRoom}); problems ${problems}`);
 if (caps.length) console.log(`caps:\n  ${[...new Set(caps)].join('\n  ')}`);
+if (problems) process.exitCode = 1;

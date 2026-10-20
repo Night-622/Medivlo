@@ -30,6 +30,7 @@ const SUITES = [
   { id: 'sim-economy', what: 'quest rewards, shops, chests, Runeforge prices', cmd: sim('economy') },
   { id: 'sim-security', what: 'remote loadouts sanitised', cmd: sim('security') },
   { id: 'sim-hazards', what: 'boss arena hazards', cmd: sim('hazards') },
+  { id: 'world', what: 'world: every object placed, instances build, level bands (realms + Concordia), class objects, boss/pack clearance', cmd: [NODE, 'tools/playthrough/suite.mjs', '--full'] },
   { id: 'narrative', what: 'story gate (Jester + Shade): validator, solo + co-op bots, audit', cmd: [BASH, 'tools/narrative/check.sh', 'jester,shade', '2'],
     judge: (out) => /LOGIC problems: 0/.test(out) && /tsc: clean/.test(out) && !/\bFAIL\b/.test(out) },
   { id: 'realm-server', what: 'public realm server: join (incl. slow sign-in), snapshots, chat, systems', cmd: e2e('realm-server.mjs') },

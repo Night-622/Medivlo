@@ -14,6 +14,8 @@
  *                       level + 2 (tools/playthrough/bands.ts; regenerate the table with `bands.ts gen`)
  *   bands-concordia     the same for Concordia vs Acts II/III, plus main quests ≥ expected − 4 (concordiaBands.ts)
  *   class-objects       class story objects: usable only in their own classes' campaigns (classObjects.ts)
+ *   clearance           bodies fit their arenas, lair corridors and story markers (clearance.ts)
+ * Each check exits non-zero on failure; tools/playthrough/suite.mjs runs the fast set (pre-deploy).
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { CHUNK_TILES } from '@/core';
@@ -49,6 +51,7 @@ if (check === 'unplaced') {
     if (miss.size) { n += miss.size; console.log(f, miss.size, [...miss].slice(0, 30).join(' ')); }
   }
   console.log(n ? `${n} unplaced` : 'unplaced: none');
+  if (n) process.exitCode = 1;
 } else if (check === 'pieces') {
   const done = quiet();
   const { places, objects } = worldIds();
@@ -58,6 +61,7 @@ if (check === 'unplaced') {
   console.log(`${want.length} set pieces; missing ${miss.length} ${miss.slice(0, 20).join(', ')}`);
   console.log('retired present:', [...RETIRED].filter((r) => places.has(r) || objects.has(r)).join(', ') || 'none');
   console.log(`placement warnings ${warn.length}`, warn.slice(0, 10).join(' | '));
+  if (miss.length || warn.length || [...RETIRED].some((r) => places.has(r) || objects.has(r))) process.exitCode = 1;
 } else if (check === 'instances') {
   const ids = AREAS.flatMap((a) => [...[1, 2, 3].map((n) => `inst:${a.school}-${a.side}-lair-${n}`), `inst:${a.school}-${a.side}-cave`])
     .concat(['frost', 'gilded', 'storm', 'abbey', 'gloam', 'briar', 'ash', 'alder', 'road', 'marsh'].map((r) => `inst:${r}-cave`), ['inst:varric-barrow', 'inst:drowned-abbey', 'inst:concord-citadel'], SENTINELS.map((s) => s.inst));
@@ -79,6 +83,7 @@ if (check === 'unplaced') {
     }
   }
   console.log(`${ids.length} instances, ${sides} side rooms, ${objs} objects; problems ${bad}`);
+  if (bad) process.exitCode = 1;
 } else if (check === 'triggers') {
   const space = arg === 'concordia' ? 'concordia' : `realm:${arg ?? 'ash'}`;
   const g = spaceRuntime(space).gen as Partial<RealmGen> & RealmGen;
@@ -107,6 +112,8 @@ if (check === 'unplaced') {
   await import('./concordiaBands'); // Concordia bands vs every class's Act II/III walks (~3 min)
 } else if (check === 'class-objects') {
   await import('./classObjects'); // each class as host sees only its own story objects, and all of them
+} else if (check === 'clearance') {
+  await import('./clearance'); // bosses, minis and packs fit their arenas, corridors and markers
 } else {
   console.log('checks: exists <ids> | unplaced | pieces | instances | triggers <realm|concordia> | markers <inst> | escort <a> <b> | bands [classes]');
 }

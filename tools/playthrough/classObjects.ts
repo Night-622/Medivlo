@@ -99,5 +99,6 @@ ${rows.join('\n')}
     }
   }
   console.log(`${checked} story objects × ${CLASSES.length} hosts: ${wrong} usable by the wrong class, ${missing} hidden from their own`);
+  if (wrong || missing) process.exitCode = 1;
   console.log(wrong || missing ? 'class-objects: FAIL' : 'class-objects: every class sees only its own story objects (and all of them)');
 }

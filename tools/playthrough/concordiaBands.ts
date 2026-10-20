@@ -119,5 +119,6 @@ ${mains.join('\n')}
   const pub = zones.filter((z) => z.byClass).map((z) => zoneLevelAt(z, () => false, null)[1]);
   console.log(`the Heart (L30 floor): at most +${stats.heart.toFixed(1)} over the expected level`);
   console.log(`public realms (no host class): band tops L${Math.min(...pub)}–${Math.max(...pub)}`);
+  if (bad) process.exitCode = 1;
   console.log(bad ? `bands-concordia: ${bad} classes outside expected −4…+2` : 'bands-concordia: every Act II/III walk within expected + 2, and main quests within expected − 4');
 }
