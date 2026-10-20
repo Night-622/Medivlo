@@ -33,3 +33,24 @@ Rules:
   Walking and quest/stage buckets are near target. Combat (0.4–1.1 h) and reading (0.3–0.5 h) still need to grow.
 
 - 2026-10-20 05:45: the user takes over playthrough testing; bot playthrough runs stop. Passes continue and the user's play decides the final pacing.
+
+## XP curve and level bands (Claude 3, 2026-10-20)
+- XP curve set from the static projection (`node tools/e2e/sim/run.mjs xp-project`, Claude 2's routes, quest-only): kills
+  per level follow the hero's level (110 → 70 → 48 → 30 from L14 to L40), kills above you pay +20%/level (catch-up),
+  kills below you −25%/level (floor 10%). Medians: Act I L13.9 · II L27.5 · III L39.2 (targets 13–14 · 26–28 · 38–40).
+  Per-class table: tools/e2e/out/xp-per-class.txt (rerun after content changes).
+- Act II runs HIGH for six classes (L29.8–32.3; most reach L40 before Act III ends). Accepted for now (Claude 1): cutting
+  fights costs play time; Act III self-corrects. If the user's play says these feel like slogs, these heavy class-thread
+  quests are where to look (Act II kills each, lair rooms and quest-kill spawns included):
+
+  | Class | Act II end | Heaviest quests (kills) |
+  |---|---|---|
+  | stormlancer | 31.9 | the-cliff-charge +93, rimeheart-colossus +60, cliffstair +48 |
+  | sparkwright | 31.6 | the-news-that-never-came +93, the-gilded-engine +60, cliffstair +48 |
+  | juggernaut | 30.7 | under-the-gold +108, the-ore-road +83, the-machine-age +42 |
+  | monk | 30.6 | the-news-that-never-came +112, the-bog-forms +83 |
+  | knight | 30.5 | the-buried-forge +85, the-princes-plate +78, pawned-steel +42 |
+  | corsair | 29.8 | the-queens-toll +78, the-gilded-engine +60, the-admirals-cargo +45 |
+
+  Rule of thumb: ~25 Act II kills ≈ 1 level at L25–30. Huntsman, Shade and Samurai ran LOW (L24.1–24.4, fast travel);
+  Claude 2 is adding story-bound packs on their threads.

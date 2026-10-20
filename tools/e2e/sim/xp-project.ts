@@ -20,7 +20,7 @@ import { spawnZones, type SpawnZoneDef } from '@/world/hc/spawns';
 
 /** Claude 2's walk export (tools/playthrough/walks-export.ts): zones by id, or with the band / cap in force at that quest */
 type WalkZone = string | { id: string; level: [number, number]; elite: boolean; cap: number };
-type Walk = Record<string, { quest: string; zones?: WalkZone[]; lairs?: string[] }[]>;
+type Walk = Record<string, { quest: string; zones?: WalkZone[]; zonesWalk?: WalkZone[]; lairs?: string[] }[]>;
 
 // calibration overrides (KPL=kills per level, QT=quest tiers "a,b,c"): the same formula as curves.ts xpForKill
 const KPL = Number(process.env.KPL) || 0;
@@ -134,7 +134,8 @@ for (const cls of Object.keys(CLASS_SCHOOL)) {
     for (const q of actQuests(cls, act, mod.default, sharedQs)) {
       row.quests++;
       const w = walk.get(q.id);
-      for (const wz of w?.zones ?? []) {
+      // ZONES=walk: the on-foot route (default: Claude 2's fast-travel route)
+      for (const wz of (process.env.ZONES === 'walk' ? w?.zonesWalk ?? w?.zones : w?.zones) ?? []) {
         // (an exported zone carries its band, cap and elite flag: no lookup, so Concordia zones work too)
         const z = typeof wz === 'string' ? zoneById(wz) : { id: wz.id, space: '', at: [0, 0] as [number, number], r: 0, pool: [], level: wz.level, cap: wz.cap, elite: wz.elite };
         if (z) row.kills += clearZone(h, z as SpawnZoneDef);
