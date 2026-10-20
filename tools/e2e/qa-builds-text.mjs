@@ -33,6 +33,7 @@ import { itemTooltip } from '@/systems/rules/describeHc';
 import { rollInstance } from '@/systems/rules/affixes';
 import { Rng } from '@/core/rng';
 import { spellDef } from '@/systems/rules/spells';
+import { uniqueInstance } from '@/systems/rules/uniques';
 
 const ONLY = (process.env.QA_ONLY ?? '').split(',').filter(Boolean);
 const VERBOSE = process.env.QA_VERBOSE === '1';
@@ -138,7 +139,7 @@ for (const a of HC_AFFIXES.filter((x) => x.kind === 'prefix' && AFFIX_TEXT[x.id]
   add('wired', 'affix ' + a.id, title.includes(AFFIX_TEXT[a.id].label) ? null : 'item title "' + title + '" lacks the affix word "' + AFFIX_TEXT[a.id].label + '"');
 }
 for (const u of HC_UNIQUES.filter((x) => UNIQUE_TEXT[x.id]).slice(0, 12)) {
-  const it = { uid: 'qa-' + u.id, base: u.base, ilvl: 40, qty: 1, rarity: 'legendary', affixes: u.affixes, uniqueFx: u.id } as never;
+  const it = { uid: 'qa-' + u.id, ...uniqueInstance(u.id, 40) } as never; // built exactly as a drop is
   const lines = itemTooltip(it, [], 'ash' as never, []).map((l) => l.text);
   const want = UNIQUE_TEXT[u.id].flavour;
   add('wired', 'unique ' + u.id, lines.some((l) => l.includes(want.slice(0, 40))) ? null : 'tooltip lacks its flavour ("' + want.slice(0, 50) + '…")');
