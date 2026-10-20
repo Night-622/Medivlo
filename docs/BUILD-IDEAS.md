@@ -14,7 +14,7 @@ Every pick in them held up in testing at level 40, against the class's final bos
   bosses.
 
 **When a build comes online**
-- The two keystones need about 11 skill points, so a build's core works from about **level 12**.
+- The two keystones need 6 to 11 skill points, so every build's core works by **level 12** at the latest.
 - The full version, with a hybrid set or a tome, usually comes together in Act II, around **level 18**.
 
 ---
