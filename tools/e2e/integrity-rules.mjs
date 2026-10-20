@@ -135,7 +135,7 @@ function runRules(rulesFile, tag) {
   const resultFile = join(outDir, `rules-result-${tag}.json`);
   const inner = `node "${fileURLToPath(import.meta.url)}" --inner --out "${resultFile}"`;
   return new Promise((resolveRun) => {
-    const p = spawn('firebase', ['emulators:exec', '--only', 'firestore', '--project', PROJECT, '--config', `"${cfg}"`, `"${inner.replace(/"/g, '\\"')}"`], { cwd: root, shell: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    const p = spawn('firebase', ['emulators:exec', '--only', 'firestore', '--project', PROJECT, '--config', `"${cfg}"`, `"${inner.replace(/"/g, '\\"')}"`], { cwd: outDir, shell: true, stdio: ['ignore', 'pipe', 'pipe'] }); // emulator logs (firestore-debug.log…) land in out/
     let log = ''; p.stdout.on('data', (d) => (log += d)); p.stderr.on('data', (d) => (log += d));
     p.on('exit', async (code) => {
       const b = tag === 'b' ? 1 : 0;
@@ -162,7 +162,7 @@ async function runClient(rulesFile, tag) {
   const resultFile = join(outDir, `client-result-${tag}.json`);
   const inner = `node "${fileURLToPath(import.meta.url)}" --client-inner --bundle "${bundle}" --auth ${ports.auth} --fs ${ports.fs} --out "${resultFile}"`;
   return new Promise((done) => {
-    const p = spawn('firebase', ['emulators:exec', '--only', 'auth,firestore', '--project', PROJECT, '--config', `"${cfg}"`, `"${inner.replace(/"/g, '\\"')}"`], { cwd: root, shell: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    const p = spawn('firebase', ['emulators:exec', '--only', 'auth,firestore', '--project', PROJECT, '--config', `"${cfg}"`, `"${inner.replace(/"/g, '\\"')}"`], { cwd: outDir, shell: true, stdio: ['ignore', 'pipe', 'pipe'] }); // emulator logs (firestore-debug.log…) land in out/
     let log = ''; p.stdout.on('data', (d) => (log += d)); p.stderr.on('data', (d) => (log += d));
     p.on('exit', async () => {
       await freePorts([ports.auth, ports.fs, 4420 + (tag === 'b' ? 1 : 0), 4520 + (tag === 'b' ? 1 : 0)]);
