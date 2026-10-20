@@ -61,7 +61,7 @@ anonymous Firebase token joins and gets snapshots). The URL is in `.env.producti
 only, so dev servers and tests keep the local realm server on :8080).
 Redeploy after server changes (Windows cmd, from the project folder):
 ```
-node serverbuild.mjs
+node server\build.mjs
 gcloud run deploy hollow-crown-realms --source dist-server --region australia-southeast1 --project medivlo --set-env-vars FIREBASE_PROJECT_ID=medivlo --min-instances 0 --max-instances 2 --concurrency 64 --memory 1Gi --cpu 1 --timeout 3600 --session-affinity --allow-unauthenticated
 ```
 Mac (original):
