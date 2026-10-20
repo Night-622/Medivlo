@@ -20,6 +20,7 @@ B=$(node "$here/build.mjs" "$here/campaign-bot.ts" full)
 echo "--- solo"; CLASSES=$CLASSES SEEDS=$SEEDS node "$B" 2>/dev/null | grep -v '^\[codex\]'
 echo "--- co-op"; COOP=1 CLASSES=$CLASSES SEEDS=$((SEEDS + 2)) node "$B" 2>/dev/null | grep -v '^\[codex\]'
 A=$(node "$here/build.mjs" "$here/audit.ts" full); echo "--- audit (style guide)"; CLASSES=$CLASSES node "$A" 2>/dev/null | grep -v '^\[codex\]' | grep -v 'names:'; rm -f "$A"
+H=$(node "$here/build.mjs" "$here/build-hints-check.ts" full); echo "--- build teaching (hints, craft codex, tips)"; node "$H" 2>/dev/null | grep -v '^\[codex\]\|^\[registry\]'; rm -f "$H"
 echo "--- realm server (loads all narrative data as the server does)"; node server/build.mjs >/dev/null 2>&1 && node tools/e2e/realm-server.mjs 2>&1 | tail -1
 rm -f "$V" "$B"
 # types: only narrative-owned files count here (other owners' work in progress is theirs to fix)

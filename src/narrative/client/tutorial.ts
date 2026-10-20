@@ -12,6 +12,14 @@ import { isAuthority } from '../engine/state';
 import { dialogueClient } from './dialogueClient';
 import { formatKeys } from './keys';
 import { isAction } from '@/ui/kit/hc/keys';
+import type { LoreId } from '@/core';
+import type { CharacterSave } from '@/core/hc';
+import { BUILD_HINTS, type BuildHintId } from '@/data/tips/hc-build-hints';
+import { HC_RUNES, HC_TOMES } from '@/data/items/hc/build-items';
+import { shopByNpc } from '@/data/items/hc/shops';
+import { HC_MASTERY } from '@/data/skilltrees/hc/mastery';
+import { hybridSchools, weaponBase } from '@/systems/rules/gear';
+import { isUnlocked, unlockLore } from '../engine/codex';
 
 const me = (): string => Services.tryGet('net')?.localPlayer ?? 'local';
 const mine = (id?: string): boolean => !id || id === me();
@@ -98,4 +106,47 @@ export function installTutorial(): void {
   });
   bus.on('player:died', ({ playerId }) => { if (mine(playerId)) hint('death', HINTS.death); });
   Services.tryGet('net')?.on('vote:open', () => hint('vote', HINTS.vote));
+  installBuildHints();
+}
+
+// ---------- deeper builds: the first meeting with each system shows its hint and opens its Codex entry
+const RUNES = new Set(HC_RUNES.map((r) => r.id));
+const TOMES = new Set(HC_TOMES.map((t) => t.item));
+const myChar = (): CharacterSave | undefined => (Game.hasState ? (Game.state as { character?: CharacterSave }).character : undefined);
+
+function build(id: BuildHintId): void {
+  if (!Game.hasState) return;
+  const h = BUILD_HINTS[id];
+  // the Codex page opens even with hints off; guests read the host's codex, so only the authority writes it
+  if (isAuthority() && !isUnlocked(h.lore as LoreId)) unlockLore(h.lore as LoreId);
+  hint(id, h.text);
+}
+
+/** one hint per item: the first system on it the player hasn't met yet */
+function fromItem(item: string, inst?: { affixes?: unknown[]; sockets?: unknown[] }): void {
+  const kinds: BuildHintId[] = [];
+  if (RUNES.has(item)) kinds.push('rune');
+  if (TOMES.has(item)) kinds.push('tome');
+  if (item.startsWith('lg_') || item.startsWith('u_')) kinds.push('unique');
+  if (inst?.sockets?.length) kinds.push('socket');
+  if (inst?.affixes?.length) kinds.push('enchanted');
+  const next = kinds.find((k) => !getFlag(`hint.${k}`));
+  if (next) build(next);
+}
+
+function installBuildHints(): void {
+  bus.on('loot:granted', ({ playerId, item, instance }) => { if (mine(playerId) && item) fromItem(item, instance); });
+  bus.on('item:picked', ({ playerId, def }) => { if (mine(playerId)) fromItem(String(def)); });
+  bus.on('item:equipped', ({ playerId, slot }) => {
+    const c = myChar();
+    if (!mine(playerId) || !c) return;
+    if (hybridSchools(Object.values(c.equipment).filter((x): x is NonNullable<typeof x> => !!x))) build('hybrid');
+    const type = slot === 'main' && c.equipment.main ? weaponBase(c.equipment.main.base)?.type : undefined;
+    if (type && HC_MASTERY.some((m) => m.classId === c.classId && m.weapon === type)) build('mastery');
+  });
+  // a merchant's "Let me see your wares." sets shop.open = the merchant; the capital smiths keep the Runeforges
+  bus.on('flag:changed', ({ key, value }) => { if (key === 'shop.open' && typeof value === 'string' && shopByNpc(value)?.runeforge) build('runeforge'); });
+  // keystones: Claude 3's tree emits tree:allocated when a node is learned (ks_* = a shared keystone)
+  bus.on('tree:allocated', ({ nodeId }) => { if (nodeId.startsWith('ks_')) build('keystone'); });
+  bus.on('game:loaded', () => { const c = myChar(); if (c?.freeRespec && Object.keys(c.tree).length) build('respec'); });
 }

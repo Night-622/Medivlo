@@ -14,7 +14,7 @@ export const TIPS: Tip[] = [
   { tag: 'controls', text: 'Your spells sit on {key:cast1} to {key:cast4}. A click casts the first.' },
   { tag: 'controls', text: 'Draughts are on {key:potionQ} and {key:potionE}. Drink before you need to, not after.' },
   { tag: 'controls', text: 'Your Pack is on {key:inventory}, Skills on {key:skills}, Spells on {key:spells}.' },
-  { tag: 'controls', text: 'Open the Journal with {key:journal}, pick a quest, and press T to track it.' },
+  { tag: 'controls', text: 'Open the Journal with {key:journal}, pick a quest, and press {key:track} to track it.' },
   { tag: 'controls', text: 'The Map is on {key:map}. The People of a village are on {key:people}.' },
   { tag: 'controls', text: 'Every key can be rebound in Settings.' },
   { tag: 'controls', text: 'Hints can be switched off in Settings if you’d rather find things out the hard way.' },
