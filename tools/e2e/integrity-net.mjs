@@ -128,7 +128,12 @@ check('ensureUser signs a new player in as a guest', u.isAnonymous && fakeAuth.s
   c2.rel.onmessage({ data: JSON.stringify({ type: 'act', domain: 'world', action: 'x' }) });
   console.warn = warn;
   check('a throwing client handler does not starve the others', hit === 1);
+  sent.length = 0;
+  const cPc = c2.pc;
   host.close();
+  const closedAtOnce = cPc.connectionState === 'closed';
+  await tick(450);
+  check('ending a session sends the reason before closing the connection', sent.some((s) => s.type === 'kick') && !closedAtOnce && cPc.connectionState === 'closed', JSON.stringify({ kick: sent.some((s) => s.type === 'kick'), closedAtOnce, later: cPc.connectionState }));
 }
 
 // ───────── 4. leaving on purpose is not a kick ─────────

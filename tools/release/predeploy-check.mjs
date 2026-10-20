@@ -41,6 +41,7 @@ const SUITES = [
   { id: 'integrity-net', what: 'accounts survive start-up, co-op rejoin on the real signalling rules, seats, blocks, leave without a fake kick', cmd: e2e('integrity-net.mjs'), file: 'tools/e2e/integrity-net.mjs', owner: 'Claude 6' },
   { id: 'objective-markers', what: 'every quest objective resolves to a place a marker can point at', cmd: e2e('qa-objective-markers.mjs'), file: 'tools/e2e/qa-objective-markers.mjs', owner: 'Claude 7' },
   { id: 'integrity-save', what: 'saves: account-scoped slots, malformed slots never crash, old saves get defaults, New Game never overwrites a cloud hero', cmd: e2e('integrity-save.mjs'), file: 'tools/e2e/integrity-save.mjs', owner: 'Claude 6' },
+  { id: 'integrity-fuzz', what: 'save fuzzing: 3000 corrupted real saves through load, migrate, defaults and sanitise never throw or seat an invalid hero', cmd: e2e('integrity-fuzz.mjs'), file: 'tools/e2e/integrity-fuzz.mjs', owner: 'Claude 6' },
   { id: 'boss-marks', what: 'every class’s lair-boss kill objective is marked at its lair door', cmd: e2e('qa-boss-marks.mjs'), file: 'tools/e2e/qa-boss-marks.mjs', owner: 'Claude 7' },
   { id: 'interact-once', what: 'counted searches count distinct objects (pressing F twice on one object counts once)', cmd: e2e('qa-interact-once.mjs'), file: 'tools/e2e/qa-interact-once.mjs', owner: 'Claude 7' },
   { id: 'reachable', what: 'every class’s Act I objectives are reachable on foot from its start waystone', cmd: e2e('qa-reachable.mjs'), file: 'tools/e2e/qa-reachable.mjs', owner: 'Claude 7' },

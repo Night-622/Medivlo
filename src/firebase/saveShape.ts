@@ -20,12 +20,21 @@ export function sane(raw: unknown): GameState | null {
   return raw as unknown as GameState;
 }
 
-/** Fill keys the current build expects from a fresh state; never overwrites a saved value. Arrays are kept whole. */
+const kindOf = (v: unknown): string => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v);
+
+/**
+ * Fill keys the current build expects from a fresh state, and repair values whose type contradicts it (a corrupt
+ * or hand-edited save: `waystones: "x"`, `location.x: 1e999`): those fall back to the default. Matching values are
+ * kept; a default of null accepts anything (trackedQuest: null…); arrays are kept whole.
+ */
 export function fillDefaults(state: GameState): GameState {
   const fill = (into: Record<string, unknown>, from: Record<string, unknown>) => {
     for (const [k, v] of Object.entries(from)) {
-      if (into[k] === undefined) into[k] = structuredClone(v); // a saved null is a value (trackedQuest: null…)
-      else if (isObj(into[k]) && isObj(v)) fill(into[k] as Record<string, unknown>, v);
+      const cur = into[k], want = kindOf(v);
+      if (cur === undefined) { into[k] = structuredClone(v); continue; }
+      if (want === 'null') continue;
+      if (want === 'number' ? !(typeof cur === 'number' && Number.isFinite(cur)) : kindOf(cur) !== want) { into[k] = structuredClone(v); continue; }
+      if (want === 'object') fill(cur as Record<string, unknown>, v as Record<string, unknown>);
     }
   };
   fill(state as unknown as Record<string, unknown>, createNewGameState(state.meta.slot) as unknown as Record<string, unknown>);

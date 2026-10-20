@@ -63,8 +63,11 @@ export class HostNet extends AuthorityNet {
 
   close(): void {
     this.broadcast({ type: 'kick', reason: 'The host ended the session' });
-    for (const l of this.links.values()) l.close();
+    // closing a peer connection discards what its channels haven't sent yet: give the kick a moment to leave,
+    // or guests read "Disconnected from the host" instead of the real reason
+    const links = [...this.links.values()];
     this.links.clear();
+    setTimeout(() => { for (const l of links) l.close(); }, 300);
     this.closeRoom?.();
     super.close();
   }
