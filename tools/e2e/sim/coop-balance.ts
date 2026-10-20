@@ -9,6 +9,9 @@
  *   the party-scaled HP (efficiency > 1: the party beats the sum of its parts) · drag = a member whose damage share
  *   falls well below their solo rate's share.
  *   node tools/e2e/sim/run.mjs coop-balance      → tools/e2e/out/coop-balance.md   (FIGHTS=n seeds, default 2)
+ *   node tools/e2e/sim/run.mjs coop-balance gate  pre-deploy gate: every normal-damage party fight won, median boss
+ *     speed-up ≥ ×1.2 vs the host alone for each party size, revives land under ×HARD damage, no crash; "N/M passed",
+ *     exit code 1 on a failure (the report is written too)
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { CLASS_SCHOOL } from '@/core/constants';
@@ -18,9 +21,12 @@ import { seedOf, typicalBuild } from './builds-make';
 import { bossFor, LEVELS, type Level } from './builds-run';
 import type { Spawn } from './builds-fight';
 import { runParty, type PartyResult } from './coop-party';
+import { check, tally } from './features-harness';
 import { questsOf, runClass } from './gear-curve-walk';
 
 const FIGHTS = Number(process.env.FIGHTS) || 2;
+const GATE = process.argv.slice(3).includes('gate');
+const GATE_SPEEDUP = 1.2;
 const PARTIES: string[][] = [
   ['warden', 'cantor'], ['arcanist', 'swordsman'], ['huntsman', 'bard'], ['oathbound', 'shade'], ['knight', 'juggernaut'],
   ['knight', 'arcanist', 'cantor'], ['monk', 'ranger', 'skald'], ['warden', 'oathbound', 'corsair'],
@@ -80,7 +86,7 @@ for (const party of PARTIES) for (const L of LEVELS) for (const kind of ['boss',
   const rate = soloSecs.map((s) => (s > 0 ? 1 / s : 0)), rTot = rate.reduce((a, b) => a + b, 0) || 1;
   party.forEach((c, i) => { const got = dealt[i] / total, want = rate[i] / rTot; if (want > 0 && got < want * 0.6) flags.push(`${c} deals ${(got * 100).toFixed(0)}% of party damage (solo rate predicts ${(want * 100).toFixed(0)}%)`); });
   rows.push({ party, L, kind, target: kind !== 'pack' ? `${bossFor(host, L).name}${kind === 'hard' ? ` (×${HARD} damage)` : ''}` : `${Math.round(3 * countMult(n))} ${CLASS_SCHOOL[host]} creatures`, res, hostSolo: soloSecs[0], soloSecs, additive, flags });
-  console.log(`${party.join('+').padEnd(36)} L${String(L).padEnd(2)} ${kind.padEnd(4)} ${t.toFixed(0).padStart(4)} s (host alone ${soloSecs[0].toFixed(0)} s, additive ${additive.toFixed(0)} s) · downs ${mean(res.map((r) => r.members.reduce((a, m) => a + m.downs, 0))).toFixed(1)} · revives ${mean(res.map((r) => r.members.reduce((a, m) => a + m.revivesGiven, 0))).toFixed(1)}${flags.length ? ' · ' + flags.join('; ') : ''}`);
+  if (!GATE) console.log(`${party.join('+').padEnd(36)} L${String(L).padEnd(2)} ${kind.padEnd(4)} ${t.toFixed(0).padStart(4)} s (host alone ${soloSecs[0].toFixed(0)} s, additive ${additive.toFixed(0)} s) · downs ${mean(res.map((r) => r.members.reduce((a, m) => a + m.downs, 0))).toFixed(1)} · revives ${mean(res.map((r) => r.members.reduce((a, m) => a + m.revivesGiven, 0))).toFixed(1)}${flags.length ? ' · ' + flags.join('; ') : ''}`);
 }
 
 // ───────────── report ─────────────
@@ -112,3 +118,24 @@ for (const r of rows) {
 mkdirSync('tools/e2e/out', { recursive: true });
 writeFileSync('tools/e2e/out/coop-balance.md', md.join('\n'));
 console.log(`${flagged.length} flagged · report tools/e2e/out/coop-balance.md · run time ${((Date.now() - t0) / 1000).toFixed(1)} s`);
+
+// ───────────── gate ─────────────
+if (GATE) {
+  const all = [...rows.flatMap((r) => r.res), ...[...solo.values()].flat()];
+  const crashes = all.filter((r) => r.crash);
+  check(!crashes.length, `no crash in ${all.length} fights (party and solo)`, crashes.slice(0, 2).map((r) => r.crash).join(' || '));
+  for (const n of [2, 3, 4]) for (const kind of ['boss', 'pack'] as Kind[]) {
+    const lost = by(n, kind).filter((r) => r.res.some((x) => !x.won));
+    check(!lost.length, `${n}-player ${kind} fights at normal damage: all won`, lost.map((r) => `${r.party.join('+')} L${r.L}`).join(', '));
+  }
+  for (const n of [2, 3, 4]) {
+    const up = med(by(n, 'boss').map((r) => r.hostSolo / secs(r.res)));
+    check(up >= GATE_SPEEDUP, `${n}-player bosses: median ×${up.toFixed(2)} faster than the host alone (≥ ×${GATE_SPEEDUP})`);
+  }
+  const hardM = rows.filter((r) => r.kind === 'hard').flatMap((r) => r.res.flatMap((x) => x.members));
+  const downs = hardM.reduce((a, m) => a + m.downs, 0), revs = hardM.reduce((a, m) => a + m.revivesGiven, 0);
+  check(downs > 0 && revs >= Math.ceil(downs * 0.3), `revives land under ×${HARD} boss damage: ${revs} of ${downs} downs (≥ 30%)`);
+  const { checks, fails } = tally();
+  if (fails) process.exitCode = 1;
+  console.log(`${checks - fails}/${checks} passed`);
+}

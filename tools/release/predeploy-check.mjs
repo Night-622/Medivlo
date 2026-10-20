@@ -31,6 +31,7 @@ const SUITES = [
   { id: 'rules-props', what: 'rules invariants: trees, stat engine, gear/sets/Runeforge/paperdoll, affixes, perks, keystones, mastery', cmd: sim('rules-props'), file: 'tools/e2e/sim/rules-props.ts', owner: 'Claude 3 + Claude 5' },
   { id: 'builds', what: 'balance gate: every class, starter and typical build, beats its lair-2, nemesis and Act III bosses', cmd: sim('builds'), owner: 'Claude 3' },
   { id: 'sim-coop', what: 'co-op + PvP rules, downed/revive, loot, escorts', cmd: sim('coop') },
+  { id: 'coop-balance', what: 'co-op balance: every party fight won, parties beat solo on bosses by ×1.2+, revives land under heavy damage', cmd: sim('coop-balance', 'gate'), owner: 'Claude 5' },
   { id: 'sim-economy', what: 'quest rewards, shops, chests, Runeforge prices', cmd: sim('economy') },
   { id: 'sim-security', what: 'remote loadouts sanitised', cmd: sim('security') },
   { id: 'sim-hazards', what: 'boss arena hazards', cmd: sim('hazards') },
