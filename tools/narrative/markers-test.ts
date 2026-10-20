@@ -7,7 +7,7 @@ import { Game, Registry, bus, createNewGameState, setFlag } from '@/core';
 import type { QuestDef } from '@/core';
 import { installNarrativeAuthority } from '@/narrative/engine';
 import { CAMPAIGNS } from '@/narrative/engine/classes';
-import { bossLair, fallbackPlace, objectivePlaces, questMarkers } from '@/narrative/client/markers';
+import { bossLair, fallbackPlace, objectUsed, objectivePlaces, questMarkers } from '@/narrative/client/markers';
 
 installNarrativeAuthority();
 let bad = 0;
@@ -50,4 +50,11 @@ for (const c of CAMPAIGNS) {
   lairs += found.size; if (found.size < 3) missing.push(`${c.id} ${found.size}/3`);
 }
 ok(lairs === CAMPAIGNS.length * 3, `every class's three lair-boss kills point at their lair (${lairs}/${CAMPAIGNS.length * 3})${missing.length ? ' missing: ' + missing.join(', ') : ''}`);
+// objectUsed: a counted search object reads as used, the others don't (Claude 2's "Already searched" prompt)
+Game.set(createNewGameState());
+Game.state.player.hero = hero('rimecaller') as never;
+Game.set(Game.state);
+Game.state.narrative.quests['quest:rimecaller-the-hold-gauges' as never] = { stage: 'gauges', objectives: {} };
+bus.emit('interact', { playerId: 'p1', objectId: 'obj:hold-gauge-1', props: {} } as never);
+ok(objectUsed('obj:hold-gauge-1') && !objectUsed('obj:hold-gauge-2'), `objectUsed marks only the gauge already read (${objectUsed('obj:hold-gauge-1')}, ${objectUsed('obj:hold-gauge-2')})`);
 console.log(bad ? `${bad} FAILED` : 'ALL PASS');

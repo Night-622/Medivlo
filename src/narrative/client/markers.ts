@@ -9,7 +9,7 @@ import type { ObjectiveDef, QuestDef } from '@/core';
 import { bossLair as worldBossLair } from '@/world/hc/instanceGen';
 import { campaign } from '../engine/classes';
 import { heroClass } from '../engine/party';
-import { activeQuests, currentStage, objectiveDone, objectiveTarget, objectiveText } from '../engine/quests';
+import { activeQuests, currentStage, objectiveDone, objectiveTarget, objectiveText, progress } from '../engine/quests';
 import { mirrored, nar } from '../engine/state';
 import { hostFlags } from './mirror';
 
@@ -110,4 +110,22 @@ function rank(def: QuestDef, tracked: string | null): number {
   if (def.id === tracked) return 0;
   if (def.chapter === 'tutorial') return 3;
   return def.type === 'side' || def.type === 'bounty' ? 2 : 1;
+}
+
+/**
+ * Has an active objective already counted this object? For the world's [F] prompt (Claude 2: "Already searched",
+ * dimmed; the object stays usable). Reads the distinct-object records bump() keeps (`<stage>:<objective>@<object>`).
+ * Cheap: active quests' current stages only. On a co-op guest it is always false (the records aren't mirrored).
+ */
+export function objectUsed(objectId: string): boolean {
+  for (const def of activeQuests()) {
+    const stage = currentStage(def), p = progress(def.id);
+    if (!stage || !p) continue;
+    for (const o of stage.objectives) {
+      if (!('interact' in o)) continue;
+      const hit = o.interact.endsWith('*') ? objectId.startsWith(o.interact.slice(0, -1)) : o.interact === objectId;
+      if (hit && p.objectives[`${p.stage}:${o.id}@${objectId}`]) return true;
+    }
+  }
+  return false;
 }

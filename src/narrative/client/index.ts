@@ -9,6 +9,7 @@ import { NARRATIVE_UI_KEY, NarrativeUiScene } from '@/ui/narrative/NarrativeUiSc
 import { QuestTracker } from '@/ui/narrative/QuestTracker';
 import { setTagProvider } from '../engine/conditions';
 import { setLocalFormatter } from '../engine/state';
+import { interpolate } from '../engine/dialogue';
 import { installDebug } from './debug';
 import { dialogueClient } from './dialogueClient';
 import { formatKeys } from './keys';
@@ -16,7 +17,7 @@ import { installNarrativeMirror } from './mirror';
 import { installTutorial } from './tutorial';
 import { installHcValidationSource } from './validationSources';
 
-export { questMarkers, objectivePlaces, type QuestMarker } from './markers';
+export { questMarkers, objectivePlaces, objectUsed, type QuestMarker } from './markers';
 
 let installed = false;
 
@@ -29,8 +30,8 @@ export function installNarrativeClient(game: Phaser.Game): void {
   dialogueClient.install();
   installHcValidationSource();
   installNarrativeMirror();
-  // per-device key names in objective text, and the onboarding steps and hints
-  setLocalFormatter(formatKeys);
+  // every quest string (journal, objectives, tracker) gets the player's key names and the campaign tokens ({sibling}…)
+  setLocalFormatter((text) => interpolate(formatKeys(text)));
   installTutorial();
   game.scene.add(NARRATIVE_UI_KEY, NarrativeUiScene, false);
   // mount on whichever HUD runs (HudV2 is the handoff HUD; the v1 Hud stays until it is retired)
