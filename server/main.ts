@@ -155,6 +155,8 @@ async function onJoin(ws: WebSocket, def: RealmDef, queryToken: string): Promise
   if (ws.readyState !== ws.OPEN) return;
   let saved: { character: unknown; playtimeSec: number } | undefined;
   if (LOAD_SAVES) {
+    // clients from before trusted saves send no slot: a page still running an old build just needs a reload
+    if (hello.slot === undefined) { kick('A newer version of the game is out: reload the page, then enter the realm.'); return; }
     const r = await loadSave(PROJECT, who.uid, Number(hello.slot), token);
     if (!r.ok) { console.log(`[realm] ${def.id}: refused ${who.uid}: ${r.log}`); kick(r.reason); return; }
     if (ws.readyState !== ws.OPEN) return;
