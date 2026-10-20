@@ -74,7 +74,7 @@ const entries: LoreEntry[] = [
   },
   {
     id: 'lore:hc-rime-founders-minute', name: 'The Founders’ Minute', category: 'history', source: 'the Archive’s first minute-book, on its chain', hidden: true,
-    body: 'The first meeting of the Archive of the Spire, in C. 0, kept minutes, as every meeting since has done. Eleven were present. The twelfth had gone to Concordia to sign the treaty, and sent word to rule a line beneath the twelve names and leave room.\n\nThe meeting voted to do so, and then voted that nobody should ask who the line was for. The second motion was carried “with feeling”. It is the only entry in nine hundred years of minutes to say so.',
+    body: 'The first meeting of the Archive of the Spire, in C. 0, kept minutes, as every meeting since has done. Eleven were present. The twelfth had gone to Concordia to sign the treaty, and sent word to rule a line beneath the twelve names and leave room.\n\nThe meeting voted to do so, and then voted that nobody should ask who the line was for. The second motion was carried “with feeling”. It is the only entry in a thousand years of minutes to say so.',
   },
   {
     id: 'lore:hc-rime-capital-ruin', name: 'The Stone Reading Room', category: 'history', source: 'a lectern among fallen pillars', hidden: true,

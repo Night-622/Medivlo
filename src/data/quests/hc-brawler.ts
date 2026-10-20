@@ -361,7 +361,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'stitch', journal: 'Doc Lint has a fighter waiting in the practice ring with a cut over the eye, and her hands are not as steady as they were. She is going to talk you through it. You are going to stitch.',
-        objectives: [{ id: 'stitch', text: 'Stitch the cut under Doc Lint’s eye', interact: 'obj:brawler-doc-patient', marker: { landmark: 'landmark:lowfold-practice-ring' } }],
+        objectives: [{ id: 'stitch', text: 'Stitch the fighter’s cut, with Doc Lint watching', interact: 'obj:brawler-doc-patient', marker: { landmark: 'landmark:lowfold-practice-ring' } }],
         end: { status: 'completed' },
       },
     ],
@@ -752,7 +752,7 @@ const quests: QuestDef[] = [
     stages: [
       { id: 'tilly', journal: 'Tilly is at the Heart camp, sitting on a stock-pot so that nobody can take it off her.', objectives: [{ id: 'tilly', text: 'Find Tilly at the Heart camp', talk: 'npc:tilly-concordia', marker: { landmark: 'landmark:heart-camp' } }], next: 'embers' },
       { id: 'embers', journal: 'Tilly’s tinderbox came through the bog in her pocket. It is wet through. The bearers’ fires at the Heart camp have been burning all week.', objectives: [{ id: 'embers', text: 'Carry embers from the bearers’ fires', interact: 'obj:brawler-camp-embers', marker: { landmark: 'landmark:heart-camp' } }], next: 'pot' },
-      { id: 'pot', journal: 'Pops’s orders, on the back of a menu: set it bubbling at the foot of the Twelve Stairs, where the Legion stands, and let the wind do the rest.', objectives: [{ id: 'pot', text: 'Set Pops’s stock bubbling by the Legion camp', interact: 'obj:brawler-stock-pot', marker: { landmark: 'landmark:legion-camp' } }], end: { status: 'completed' } },
+      { id: 'pot', journal: 'Pops’s orders, on the back of a menu: set it bubbling by the Legion camp, where the lost ones stand, and let the wind do the rest.', objectives: [{ id: 'pot', text: 'Set Pops’s stock bubbling by the Legion camp', interact: 'obj:brawler-stock-pot', marker: { landmark: 'landmark:legion-camp' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 2 },
   },

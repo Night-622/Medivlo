@@ -48,7 +48,7 @@ const dialogues: DialogueDef[] = [
           { text: 'Where’s Hask?', to: 'hask' },
         ],
       },
-      sing: { speaker: BR, text: 'Then it’s the stone. My grandmother said half of the Ash stone fell on the Fields when the crown broke. Said one day it would call someone. Didn’t think it’d be my own pup.', next: 'hask' },
+      sing: { speaker: BR, text: 'Then it’s the stone. Granny Thorn always said half of the Ash stone fell on the Fields when the crown broke. Said one day it would call someone. Didn’t think it’d be my own pup.', next: 'hask' },
       hask: { speaker: BR, mood: 'afraid', text: 'He went out past the line before the attack. Alone. He does that. He always comes back. Three of ours didn’t, tonight. See to the wounded, then come up the tower with me at dawn. The Muster buries its own, and we go out for them together.', next: null },
     },
   },
@@ -223,11 +223,11 @@ const dialogues: DialogueDef[] = [
         speaker: BR, text: 'The Muster will see you to the gate.',
         choices: [
           { text: 'March with me, then.', to: 'march', when: { flag: 'reaver.muster', value: 'war' } },
-          { text: 'Keep the truce. Hold the Fields.', to: 'hold', when: { not: { flag: 'reaver.muster', value: 'war' } } },
+          { text: 'Stay. Hold the Fields.', to: 'hold', when: { not: { flag: 'reaver.muster', value: 'war' } } },
         ],
       },
       march: { speaker: BR, mood: 'happy', text: 'Axes up! The Muster marches to the gate!', next: null },
-      hold: { speaker: BR, text: 'We’ll hold the Fields. Somebody has to keep the peace you started.', next: null },
+      hold: { speaker: BR, text: 'We’ll hold the Fields. Somebody has to keep the quiet you won us.', next: null },
     },
   },
   // ---------- Brenna (general) and the mentor thread

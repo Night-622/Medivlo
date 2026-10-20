@@ -101,8 +101,32 @@ const emberScale = (v: number, L: number): number => v * (1 + 0.03 * (L - 1));
 export function weaponDamage(id: string, ilvl: number): [number, number] {
   const w = weaponBase(id);
   if (!w) return [1, 2];
-  const m = 1 + 0.05 * (MAT_INDEX.get(w.material) ?? 0) + (LEG.has(id) ? 0.15 : 0);
+  const m = (1 + 0.05 * (MAT_INDEX.get(w.material) ?? 0)) * materialLift(w.type, w.material) + (LEG.has(id) ? 0.15 : 0);
   return [Math.round(norm(w.dmg[0], w.ilvl, ilvl) * m), Math.round(norm(w.dmg[1], w.ilvl, ilvl) * m)];
+}
+
+/**
+ * The handoff's damage grows slower than 1.075 per handoff ilvl at the top materials, so at equal item level a
+ * better material could hit softer. Lift each material so it is at least 3% above the one below it (per type).
+ */
+let LIFT: Map<string, number> | null = null;
+function materialLift(type: WeaponType, material: string): number {
+  if (!LIFT) {
+    LIFT = new Map();
+    const types = new Set(HC_WEAPONS.map((x) => x.type));
+    for (const t of types) {
+      let prev = 0;
+      for (const mat of HC_MATERIALS) {
+        const x = HC_WEAPONS.find((y) => y.type === t && y.material === mat.id);
+        if (!x) continue;
+        const own = (norm((x.dmg[0] + x.dmg[1]) / 2, x.ilvl, 1)) * (1 + 0.05 * (MAT_INDEX.get(mat.id) ?? 0));
+        const want = Math.max(own, prev * 1.03);
+        LIFT.set(`${t}:${mat.id}`, want / own);
+        prev = want;
+      }
+    }
+  }
+  return LIFT.get(`${type}:${material}`) ?? 1;
 }
 
 const f = (stat: StatKey, value: number): Modifier => ({ stat, op: 'flat', value });

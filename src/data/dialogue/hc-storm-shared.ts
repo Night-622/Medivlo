@@ -43,7 +43,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:storm-clement', name: 'Clement Inchley (general)',
     entries: [{ node: 'start' }],
-    nodes: { start: { speaker: 'npc:clement-penhallow', text: 'Ledgers, stamps, the occasional explosion. The Works have been quiet a thousand years, give or take. I liked them quiet. I shall write that down too.', next: null } },
+    nodes: { start: { speaker: 'npc:clement-penhallow', text: 'Ledgers, stamps, the occasional explosion. The Works have been quiet four hundred years, give or take. I liked them quiet. I shall write that down too.', next: null } },
   },
   {
     id: 'dialogue:storm-hamlin', name: 'Hamlin Crake (general)',

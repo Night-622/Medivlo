@@ -23,7 +23,7 @@ const dialogues: DialogueDef[] = [
       sold: { speaker: CO, mood: 'hollow', text: '(The black antlers have fallen from her. She sits on the top stair, crossbow across her knees.) Every bolt I loosed for him, I loosed under your licence. The Lodge’s charter. All quite legal.', next: 'missed' },
       kept: { speaker: CO, mood: 'hollow', text: '(The black antlers have fallen from her. She sits on the top stair, crossbow across her knees.) The last honest fool in the Greywilds. You kept the old law, and it has brought you up a stair with nothing in your hands.', next: 'missed' },
       road: { speaker: CO, mood: 'hollow', text: '(The black antlers have fallen from her. She sits on the top stair, crossbow across her knees.) You put the cairns back. I watched from the trees. Nobody had to die for it. I have thought about it every night since.', next: 'missed' },
-      missed: { speaker: CO, text: 'And I missed. Just now, on the stair. Once. (She looks at the crossbow.) I always wanted to know what it felt like. It feels like nothing much.', next: 'choose' },
+      missed: { speaker: CO, text: 'And I missed. Just now, on the stair, and nobody was holding me still. (She looks at the crossbow.) I always wanted to know what it felt like. It feels like nothing much.', next: 'choose' },
       choose: {
         speaker: CO, mood: 'sad', text: 'Go on, then. One bolt, while I still know what I am. The first night is the kindest. I told you that.',
         choices: [
@@ -75,7 +75,7 @@ const dialogues: DialogueDef[] = [
         effects: [{ setFlag: 'huntsman.homeward_call', value: true }], next: null,
       },
       devoted: {
-        speaker: 'narrator', text: 'Far off, past the Weeping Wall and the Antler Gate, something answers: one deep bellow, then many. In Antlerford every antler on every wall hums one note, and at the tally stone a very large man in feast gloves stands up.',
+        speaker: 'narrator', text: 'Far off, past the Weeping Wall and the Antler Gate, something answers: one deep bellow, then many. In Antlerford every antler on every wall hums one note, and at the tally stone a very large man stands up.',
         effects: [{ setFlag: 'huntsman.homeward_call', value: true }, { trust: BN, set: 5 }], next: 'devoted2',
       },
       devoted2: { speaker: BN, mood: 'happy', text: '(Very far away, as if through the antlers, a voice you would know anywhere.) That’s the call. That’s my call. (A pause, and the scratch of a pencil.) Five. I’ll write down five, and I’ll leave it written.', next: null },

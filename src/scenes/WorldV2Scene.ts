@@ -28,6 +28,7 @@ import { isAction } from '@/ui/kit/hc/keys';
 import { Lighting } from '@/world/render/Lighting';
 import { FocusPrompt } from '@/world/render/FocusPrompt';
 import { NpcView } from '@/world/render/NpcView';
+import { QuestMarkFeed } from '@/ui/map/questMarks';
 
 interface PlayerLike {
   readonly sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
@@ -39,6 +40,9 @@ interface PlayerLike {
 
 /** spaces the scene can open: Concordia, the school realms, arenas and every buildable instance */
 const SPACES = { has: (id: string): boolean => knownSpace(id), list: (): string[] => ['concordia', ...REALMS.filter((r) => r.school).map((r) => r.space), ...ARENAS.map((a) => a.id)] };
+
+/** co-op guests' woken waystones on this host, for the session (survives the scene restarting on travel) */
+const guestWoken = new Map<string, string[]>();
 
 /** scene data: a public realm visit (Claude 1's realm browser) or a co-op guest; `space` follows the authority */
 export interface VisitData { realm?: { id: string; space: string; rule: string; name: string }; guest?: boolean; space?: string }
@@ -124,7 +128,8 @@ export class WorldV2Scene extends Phaser.Scene {
           if (!list.includes(id)) list.push(id);
         },
         known: (pid, id) => pid === me() && (id.startsWith('boss:') ? id in Game.state.world.clearedZones : Game.state.world.discoveredLandmarks.includes(id) || Game.state.world.foundRegions.includes(id)),
-        wokenOf: save ? undefined : () => [],
+        // the host's saved list is the host's alone (its last entry is the host's respawn); guests keep a session list
+        wokenOf: save ? (pid) => (pid === me() ? Game.state.world.waystones : guestWoken.get(pid) ?? guestWoken.set(pid, []).get(pid)!) : () => [],
         npcPlacements,
         questKills: () => storyKills(me()),
       });
@@ -279,6 +284,7 @@ export class WorldV2Scene extends Phaser.Scene {
         woken: () => Game.state.world.waystones,
         homeSpace: () => startAreaOf(heroClassId()).space,
         travel: (waystone) => Services.tryGet('net')?.send({ type: 'act', domain: 'world', action: 'travel', args: { waystone } }),
+        quests: () => this.quests.all(),
       });
       this.minimap = new MinimapV2(hud, hud.anchors.topRight, {
         player: () => this.pos(),
@@ -286,9 +292,13 @@ export class WorldV2Scene extends Phaser.Scene {
           const c = rt.chunk(Math.floor(tx / CHUNK_TILES), Math.floor(ty / CHUNK_TILES), false);
           return c ? c.mini[(ty - c.cy * CHUNK_TILES) * CHUNK_TILES + (tx - c.cx * CHUNK_TILES)] : null;
         },
-        dots: () => this.chunks.views().flatMap((c) => c.objects
-          .filter((o) => o.kind === 'door' || o.kind === 'waystone')
-          .map((o) => ({ x: o.at[0] * TILE_SIZE + 16, y: o.at[1] * TILE_SIZE + 16, kind: o.kind as 'door' | 'waystone' }))),
+        dots: () => [
+          ...this.chunks.views().flatMap((c) => c.objects
+            .filter((o) => o.kind === 'door' || o.kind === 'waystone')
+            .map((o) => ({ x: o.at[0] * TILE_SIZE + 16, y: o.at[1] * TILE_SIZE + 16, kind: o.kind as 'door' | 'waystone' }))),
+          // the open objectives here: the tracked quest gold (with an edge arrow when off the window), others teal
+          ...this.quests.here(this.time.now, this.game.loop.delta).map((m) => ({ x: m.x, y: m.y, kind: (m.tracked ? 'quest' : 'quest-side') as 'quest' | 'quest-side' })),
+        ],
         label: () => (this.region ? placeName(this.space, this.region).name : ''),
       });
     };
@@ -328,6 +338,13 @@ export class WorldV2Scene extends Phaser.Scene {
     this.scene.restart();
   }
 
+  /** where an NPC entity stands now, if it's in this space (quest markers follow NPCs on their schedules) */
+  /** quest markers here; NPC objectives follow the NPC entity while it's in this space */
+  private readonly quests = new QuestMarkFeed(() => this.space, () => !this.authority, (npcId) => {
+    const n = this.npcs?.view.list().find((x) => x.id === npcId);
+    return n ? { space: this.space, x: n.x, y: n.y } : null;
+  });
+
   /** DEV: window.__world = { where, tp, space, step, perf }. */
   private installDevHooks(): void {
     const api = {
@@ -352,29 +369,23 @@ export class WorldV2Scene extends Phaser.Scene {
       chunks: () => this.chunks.views().map((c) => `${c.cx},${c.cy}`),
       chunkStats: () => ({ worker: !!this.chunks.feed?.live, delivered: this.chunks.feed?.delivered ?? 0, syncBuilds: this.chunks.syncBuilds, shown: this.chunks.views().length, show: this.chunks.perf, bakes: bakeStats }),
       focus: () => this.focus?.focusId() ?? null,
+      /** quest markers: every open objective resolved (all spaces), and the ones on this space's minimap */
+      questMarks: () => ({ all: this.quests.all(), here: this.quests.here(this.time.now, 0) }),
       press: () => this.focus?.use(),
     };
     (window as unknown as { __world?: typeof api }).__world = api;
   }
 
   private teardown(): void {
-    this.authority?.uninstall();
-    this.authority = null;
-    this.minimap?.destroy();
-    this.map?.destroy();
-    this.map = null;
-    this.focus?.destroy();
-    this.focus = null;
-    this.npcs?.off();
-    this.npcs?.view.destroy();
-    this.npcs = null;
-    this.minimap = null;
+    this.authority?.uninstall(); this.authority = null;
+    this.minimap?.destroy(); this.minimap = null;
+    this.map?.destroy(); this.map = null;
+    this.focus?.destroy(); this.focus = null;
+    this.npcs?.off(); this.npcs?.view.destroy(); this.npcs = null;
     this.chunks?.destroy();
     this.light?.destroy();
-    this.player?.destroy();
-    this.player = null;
-    this.fly = null;
-    this.region = null;
+    this.player?.destroy(); this.player = null;
+    this.fly = null; this.region = null;
   }
 
   update(time: number, dt: number): void {

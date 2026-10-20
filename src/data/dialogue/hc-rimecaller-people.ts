@@ -175,7 +175,7 @@ const dialogues: DialogueDef[] = [
         choices: [offer('quest:rimecaller-mid-step', '(Ease the letter out of his fingers.)', 'take'), bye],
       },
       take: { speaker: 'narrator', text: 'It comes free with a sound like a twig. On the front, in a hand that shook: Greta Lind, Glass Birds, the Frozen Market. He was nearly there.', next: null },
-      sent: { speaker: 'npc:wendel-fross', text: '(Wendel Fross, mid-stride, his hand empty now. You could swear he looks a little lighter.)', next: null },
+      sent: { speaker: 'npc:wendel-fross', text: '(Wendel Fross, mid-stride, holding Greta’s letter out in front of him. You could swear he looks a little lighter.)', next: null },
     },
   },
   {
@@ -246,7 +246,7 @@ const dialogues: DialogueDef[] = [
           { text: 'File it under “pending”.', to: 'pending' },
         ],
       },
-      arrived: { speaker: 'npc:mabyn-frane', text: 'For someone who hadn’t… (She sits down.) Eight hundred years, and nobody ever came to sign it. That’s the saddest thing I’ve ever catalogued.', next: 'minutes' },
+      arrived: { speaker: 'npc:mabyn-frane', text: 'For someone who hadn’t… (She sits down.) A thousand years, and nobody ever came to sign it. That’s the saddest thing I’ve ever catalogued.', next: 'minutes' },
       pending: { speaker: 'npc:mabyn-frane', mood: 'happy', text: 'Pending. Pending! Oh, that’s good. That’s very good. Pending since C. 0. I can sleep tonight.', next: 'minutes' },
       minutes: { speaker: 'npc:mabyn-frane', text: 'But nobody rules a line in an archive without minuting it first. The founders’ minute-book is chained to a lectern in the old Reading Room, halfway up the Spire Stair. I have never been allowed to read it. You are an hour-walker. Nobody has ever thought to stop you.', next: 'oldest' },
       oldest: {
@@ -517,10 +517,10 @@ const dialogues: DialogueDef[] = [
     nodes: {
       env: { speaker: 'narrator', text: 'Wedged into the ice at the foot of the Rime arch: a fat envelope, fourteen pages, in Halla’s smallest hand. Most of it is footnotes.', next: 'letter' },
       letter: {
-        speaker: HV, text: '“The Archive has recorded four hundred and twelve new things since you left¹. Cornelius has gone to Concordia². The Regent’s rooms are empty, and I have not filed them³. The bread is excellent⁴.”',
+        speaker: HV, text: '“The Archive has recorded four hundred and twelve new things since you left¹. Cornelius has started a new register². The Regent’s rooms are empty, and I have not filed them³. The bread is excellent⁴.”',
         choices: [{ text: '(Read the footnotes.)', to: 'notes' }, { text: '(Skip to the end.)', to: 'end' }],
       },
-      notes: { speaker: HV, text: '“¹ Itemised overleaf. ² With the register, which is Archive property; I have let him. ³ I do not know how. ⁴ Pomfrey left me a slice before she went. I did not write it down. I ate it.”', next: 'end' },
+      notes: { speaker: HV, text: '“¹ Itemised overleaf. ² He wept on the first page; it is still drying. ³ I do not know how. ⁴ Pomfrey’s loaf came out of the oven at last. She left me a slice. I did not write it down. I ate it.”', next: 'end' },
       end: {
         speaker: HV, mood: 'sad', text: '(The last line has no footnote. It is written larger than the rest, and not very neatly.) “I am so proud of you that I have run out of ways to be accurate about it. Come home when it is done. H.”',
         choices: [{ text: '(Fold the letter away.)', to: null, quest: true, effects: [{ setFlag: 'rimecaller.halla_letter', value: true }] }],

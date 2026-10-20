@@ -539,14 +539,14 @@ const dialogues: DialogueDef[] = [
     nodes: {
       banner: { speaker: 'narrator', text: 'Halfway up the Hunt stair, on an iron arm, the Great Lodge’s Turning banner: an elk in white on green, faded to the colour of moss. Every twelve years the Master of the Lodge carried it up these steps behind the Stag. The last hand to set it in this socket was Ulric Bannock’s.', next: 'knot' },
       knot: {
-        speaker: 'narrator', text: 'Tied to the pole, under the banner, a strip of tally-cord with knots in it: one knot for every Turning the Lodge came to. Eighty-four. The last knot is tied very tight, by somebody with big hands, in a hurry, the night it all went wrong.',
+        speaker: 'narrator', text: 'Tied to the pole, under the banner, a strip of tally-cord with knots in it: one knot for every Turning the Lodge came to. Eighty-four. The last knot is tied very tight, by somebody with big hands, in a hurry, the last time the Lodge came up these stairs.',
         choices: [
           { text: '(Tie the eighty-fifth knot.)', to: 'tie', effects: [{ setFlag: 'huntsman.banner_knot', value: true }] },
           { text: '(Leave the cord as it is. That knot is his to tie.)', to: 'leave' },
         ],
       },
       tie: { speaker: 'narrator', text: 'You tie it, the Lodge way, one turn and a tuck. Eighty-five. The banner stirs on its pole, though there is no wind on the Hunt stair, and the elk on it lifts its head an inch, the way the herd lifts its head at the first note of a call.', next: null },
-      leave: { speaker: 'narrator', text: 'You leave it. When he comes up these stairs again, if he does, he can tie it himself, with his new gloves on, and swear at how fiddly it is. You find you would very much like to see that.', next: null },
+      leave: { speaker: 'narrator', text: 'You leave it. When he comes up these stairs again, if he does, he can tie it himself, and swear at how fiddly it is. You find you would very much like to see that.', next: null },
       plain: { speaker: 'narrator', text: 'The Great Lodge’s banner on the Hunt stair, an elk on green.', next: null },
     },
   },

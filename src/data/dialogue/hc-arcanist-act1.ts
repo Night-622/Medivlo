@@ -131,7 +131,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       why: { speaker: MO, text: 'Because you have no stake in the old quarrels, and because people listen to someone who has walked out of a furnace. And because I like you. Is that so strange?', next: 'archive' },
-      archive: { speaker: MO, mood: 'sad', text: 'The Glass Archive. Every record since the Concord. It breaks my heart. But a city can live without its memory. It cannot live without its fire. Walk with me. I’ll show you what she keeps warm. Meet me at the top of the Terraces.', next: null },
+      archive: { speaker: MO, mood: 'sad', text: 'The Glass Archive. Six hundred years of records. It breaks my heart. But a city can live without its memory. It cannot live without its fire. Walk with me. I’ll show you what she keeps warm. Meet me at the top of the Terraces.', next: null },
     },
   },
   // ---------- I-5 The Last Library (the faction choice; a party vote)
@@ -140,7 +140,7 @@ const dialogues: DialogueDef[] = [
     entries: [{ when: { not: { flag: 'arcanist.library' } }, node: 'hall' }, { node: 'after' }],
     nodes: {
       hall: { speaker: 'narrator', text: 'The Conclave Hall, packed and hot. Forty masters in soot-black robes. Thrane is at the back, arms folded, shaking his head at you very slightly.', next: 'motion' },
-      motion: { speaker: MO, text: 'The motion is that the Glass Archive be given to the Great Kiln, so that Kilnhold may keep its fire. I will be brief: I have kept her burning for a year with my own hands, and I can do it no longer with what we have.', next: 'debate' },
+      motion: { speaker: MO, text: 'The motion is that the Glass Archive be given to the Great Kiln, so that Kilnhold may keep its fire. I will be brief: I have kept her burning for thirty years with my own hands, and I can do it no longer with what we have.', next: 'debate' },
       debate: { speaker: 'narrator', text: 'The hall erupts. A Magister of the Row shouts that the glass trade will die without the old recipes. A Magister of the Roots shouts back that the glass trade will die faster in the cold. Somebody throws a shoe. It is, apparently, a Conclave tradition.', next: 'thrane' },
       thrane: { speaker: TH, text: '(From the back, not loudly, and the hall goes quiet to hear him.) Six hundred years of what we learned, and why. If we burn it, we will still have a fire. We will just no longer know what it is for.', next: 'reply' },
       reply: { speaker: MO, mood: 'happy', text: 'Beautifully put, as always, Coalby. Coalby taught me everything I know. Including, I think, that sentiment does not keep children warm. Our young guest will speak next.', next: 'choose' },
@@ -182,7 +182,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       why: { speaker: TH, text: 'To keep it burning. Because he promised it would never go out. Because when it does, everyone will see what he is. Go down into the Roots and find where the tincture goes in. I need to be sure.', next: null },
-      stone: { speaker: TH, mood: 'sad', text: 'The letter Dilly showed you. “A heart that never cools.” Yes. He wants the Kiln half in his own chest. He wants to be the Kiln. Go down into the Roots, and find where it goes in.', next: null },
+      stone: { speaker: TH, mood: 'sad', text: '(He goes very still.) The half-stone. Yes. A kiln that never goes out needs a heart that never cools. He wants the Kiln half in his own chest. He wants to be the Kiln. Go down into the Roots, and find where it goes in.', next: null },
     },
   },
   {
@@ -208,7 +208,7 @@ const dialogues: DialogueDef[] = [
           { text: '“Where is your other half?”', to: 'other' },
         ],
       },
-      other: { speaker: 'narrator', text: 'It hums, low and patient, and you know without knowing how that the other half is north, through the gate, waiting for someone of the other Ash school to carry it home.', next: 'morrow' },
+      other: { speaker: 'narrator', text: 'It hums, low and patient, and you know without knowing how that the other half is out on the Bleeding Fields, waiting for a Reaver to claim it.', next: 'morrow' },
       morrow: { speaker: MO, mood: 'angry', text: '(From far up the flue, his voice.) Keep it warm for me, Arcanist. I’ll be waiting at the gate. Everyone has to go through the gate.', next: null },
       cradle: { speaker: 'narrator', text: 'The empty cradle, still bright.', next: null },
     },

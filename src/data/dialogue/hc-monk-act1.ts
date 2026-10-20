@@ -139,8 +139,8 @@ const dialogues: DialogueDef[] = [
           { text: 'He’s sadder than he used to be.', to: 'sad', trust: 1 },
         ],
       },
-      funny: { speaker: ST, mood: 'sad', text: 'Then he is sadder. He was always funniest when he was frightened. You two were left on the same stair in the same winter, did you know that? I found you both in one basket. He was holding your foot.', next: 'vote' },
-      sad: { speaker: ST, mood: 'sad', text: 'Yes. He hides it in the jokes. He always did. You two were left on the same stair in the same winter. I found you both in one basket. He was holding your foot.', next: 'vote' },
+      funny: { speaker: ST, mood: 'sad', text: 'Then he is sadder. He was always funniest when he was frightened. He took you to the Foundling Stair, I suppose. He has gone back to that step every winter since he could walk.', next: 'vote' },
+      sad: { speaker: ST, mood: 'sad', text: 'Yes. He hides it in the jokes. He always did. He took you to the Foundling Stair, I suppose. He has gone back to that step every winter since he could walk.', next: 'vote' },
       vote: { speaker: ST, text: 'He has brought the King’s Climbers to the Bell Courts. They will ask the cloister to come up the mountain. Tomorrow the cloister will vote with its feet. Be there. Stand where you mean to stand.', next: null },
     },
   },
@@ -254,14 +254,14 @@ const dialogues: DialogueDef[] = [
     entries: [{ node: 'start' }],
     nodes: {
       start: {
-        speaker: ST, text: '(The Abbess is waiting at the foot of the Thousand Stairs in travelling sandals that have not been worn for thirty years. They squeak.) I am walking you down. Do not argue. I am the Abbess, and also I have never seen the gate road, and I am curious.',
+        speaker: ST, text: '(The Abbess is waiting at the foot of the Thousand Stairs in travelling sandals that have not been worn for thirty years. They squeak.) I am walking you down. Do not argue. I am the Abbess, and also I have not seen the gate road in thirty years, and I am curious.',
         choices: [
           { text: 'You haven’t left Stonecloister in thirty years.', to: 'thirty' },
           { text: '(Walk beside her, in step.)', to: 'walk', trust: 1 },
         ],
       },
       thirty: { speaker: ST, text: 'Thirty. The last time was the road to Concordia, and I came back up it at a run. Since then there was always somebody to raise, or a game to cheat at. Walk.', next: 'walk' },
-      walk: { speaker: 'narrator', text: 'You walk down the gate road together, very slowly, because she stops to look at everything: a beetle, a bad wall, a view she says she was told about once. At the last bend before the gate, she sits down on a rock.', next: 'gift' },
+      walk: { speaker: 'narrator', text: 'You walk down the gate road together, very slowly, because she stops to look at everything: a beetle, a bad wall, a view she says she ran past once without looking. At the last bend before the gate, she sits down on a rock.', next: 'gift' },
       gift: {
         speaker: ST, text: 'This is as far as I go. I have something for you.',
         choices: [

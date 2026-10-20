@@ -14,6 +14,8 @@ import { REALM_OVERVIEW_STEP, mapMarkers, morvaneRegionAt, realmOverview, zoneIn
 import { REALMS, instanceDef, placeName, realmOf } from '@/world/hc/spaces';
 import { regionBandNow } from '@/world/hc/spawns';
 import { MapLabels, capFirst } from './labels';
+import { drawMerchants, drawQuestMarks, mapTopBar } from './mapQuests';
+import { resolvePlace, type QuestMark } from './questMarks';
 
 export interface MapScreenSource {
   /** the local player's space and position (world px) */
@@ -25,6 +27,8 @@ export interface MapScreenSource {
   /** the player's own school realm (always known) */
   homeSpace(): string;
   travel(waystoneId: string): void;
+  /** the open quest objectives, resolved (src/ui/map/questMarks.ts) */
+  quests?(): QuestMark[];
 }
 
 type Level = { kind: 'realms' } | { kind: 'space'; space: string } | { kind: 'village'; space: string; id: string };
@@ -34,8 +38,6 @@ interface MvWorld { REALMS: MvRealm[]; VIL: MvVillage[]; vilLayout(v: MvVillage)
 
 // the shared top bar (Pack · Skills · Spells · Journal · Map) sits at y 20; breadcrumbs are a second row at y 84
 const MX = 48, MY = 136, MW = 864, MH = 544;
-/** [label, key action (its hint follows rebinds), panel it opens (null = this one)] */
-const TOP: [string, Action, 'inventory' | 'skills' | 'spells' | 'journal' | null][] = [['Pack', 'inventory', 'inventory'], ['Skills', 'skills', 'skills'], ['Spells', 'spells', 'spells'], ['Journal', 'journal', 'journal'], ['Map', 'map', null]];
 const PX = MX + MW + 16, PW = GAME_WIDTH - PX - 48;
 const TILE = 32;
 const world = (): MvWorld => mv().WORLD as MvWorld;
@@ -53,6 +55,11 @@ export class MapScreen {
   /** the realm or instance overview on screen (label placement keeps names off its roads) */
   private ov: { ox: number; oy: number; scale: number; w: number; h: number; road: Uint8Array } | null = null;
   open = false;
+  /** the place the map was opened on (the Journal's "Show on map"): its level opens and its mark pulses */
+  private focus: string | undefined;
+  /** bus and HUD-keyboard listeners: the HUD outlives each World scene that builds a map, so destroy() drops them */
+  private offs: (() => void)[] = [];
+  private keyHints: [Phaser.GameObjects.Text, Action][] = [];
 
   constructor(private scene: Phaser.Scene, private src: MapScreenSource) {
     const dim = scene.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, n(C.bg), 0.8).setOrigin(0).setInteractive();
@@ -63,41 +70,28 @@ export class MapScreen {
     this.crumbs = scene.add.container(MX, 84);
     const hit = scene.add.zone(MX, MY, MW, MH).setOrigin(0).setInteractive({ useHandCursor: true });
     hit.on('pointerup', (p: Phaser.Input.Pointer) => this.click(p.x - MX, p.y - MY));
-    this.root = scene.add.container(0, 0, [dim, frame, side, this.view, hit, this.side, this.crumbs, ...this.topBar()])
+    this.root = scene.add.container(0, 0, [dim, frame, side, this.view, hit, this.side, this.crumbs, ...mapTopBar(scene, this.keyHints, () => this.close())])
       .setDepth(Depth.WorldUi + 1000).setVisible(false);
-    bus.onScene(scene, 'ui:open', ({ panel: p }) => { if (p === 'map') this.toggle(); });
+    this.offs.push(bus.on('ui:open', ({ panel: p, focus }) => { if (p !== 'map') return; if (focus) this.show(focus); else this.toggle(); }));
+    // closed from elsewhere (travel): hide without announcing it again
+    this.offs.push(bus.on('ui:close', ({ panel: p }) => { if (p === 'map' && this.open) { this.open = false; this.root.setVisible(false); } }));
     // back out with the (rebindable) pause key; Esc always backs out of an open overlay too
-    scene.input.keyboard!.on('keydown', (ev: KeyboardEvent) => { if (this.open && (isAction(ev, 'pause') || ev.key === 'Escape')) this.back(); });
-  }
-
-  private keyHints: [Phaser.GameObjects.Text, Action][] = [];
-
-  /** The handoff's shared panel bar: five tabs (Map active) centred at y 20, ✕ at the right. */
-  private topBar(): Phaser.GameObjects.GameObject[] {
-    const sc = this.scene, out: Phaser.GameObjects.GameObject[] = [];
-    const tw = 150, total = TOP.length * tw + (TOP.length - 1) * 6;
-    TOP.forEach(([label, action, panel], i) => {
-      const x = (GAME_WIDTH - total) / 2 + i * (tw + 6), on = panel === null;
-      const bg = sc.add.nineslice(x, 20, on ? 'ui:tab_active' : 'ui:tab', undefined, tw, 44, 8, 8, 8, 8).setOrigin(0);
-      const t = sc.add.text(x + tw / 2 - 8, 42, label, { fontFamily: '"Jersey 10"', fontSize: '24px', color: on ? C.text : C.text300 }).setOrigin(0.5);
-      const k = sc.add.text(t.x + t.width / 2 + 8, 43, keyLabel(action), { fontFamily: '"Jersey 10"', fontSize: '15px', color: '#7884b5' }).setOrigin(0, 0.5);
-      this.keyHints.push([k, action]);
-      if (panel) bg.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.close(); bus.emit('ui:open', { panel }); });
-      out.push(bg, t, k);
-    });
-    const x = sc.add.nineslice(GAME_WIDTH - 92, 20, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0).setInteractive({ useHandCursor: true });
-    x.on('pointerup', () => this.close());
-    out.push(x, sc.add.text(GAME_WIDTH - 70, 42, '✕', { fontFamily: '"Jersey 10"', fontSize: '26px', color: C.text }).setOrigin(0.5));
-    return out;
+    const key = (ev: KeyboardEvent) => { if (this.open && (isAction(ev, 'pause') || ev.key === 'Escape')) this.back(); };
+    scene.input.keyboard!.on('keydown', key);
+    this.offs.push(() => scene.input.keyboard?.off('keydown', key));
   }
 
   toggle(): void { if (this.open) this.close(); else this.show(); }
 
-  show(): void {
+  /** Open on the player's level, or on the level holding `focus` (a quest place id) with its mark pulsing. */
+  show(focus?: string): void {
     this.open = true;
+    this.focus = focus;
     for (const [k, a] of this.keyHints) k.setText(keyLabel(a)); // rebinds since the bar was built
     this.root.setVisible(true);
-    const here = this.src.space();
+    const mark = focus ? this.src.quests?.().find((m) => m.place === focus) : undefined;
+    const at = mark ?? (focus ? resolvePlace(focus, undefined, this.src.space()) : null);
+    const here = at?.space ?? this.src.space();
     this.go(here === 'concordia' || realmOf(here) || instanceDef(here) ? { kind: 'space', space: here } : { kind: 'realms' });
   }
 
@@ -115,6 +109,7 @@ export class MapScreen {
 
   private go(level: Level): void {
     this.level = level;
+    this.scene.tweens.killTweensOf(this.view.list);
     this.view.removeAll(true);
     this.side.removeAll(true);
     this.toScreen = null;
@@ -221,7 +216,8 @@ export class MapScreen {
     return morvaneRegionAt(w.at[0] / 4, w.at[1] / 4)?.id;
   }
 
-  private drawRealm(space: string): void {
+  /** A realm's or instance's generated overview, fitted to the map frame (nearest-filtered for floor plans). */
+  private overview(space: string, nearest: boolean): { ox: number; oy: number; scale: number } {
     const ov = realmOverview(space);
     const key = `hc-map:ov:${space}`;
     if (!this.scene.textures.exists(key)) {
@@ -229,11 +225,17 @@ export class MapScreen {
       c.width = ov.w; c.height = ov.h;
       c.getContext('2d')!.putImageData(new ImageData(ov.rgba.slice(), ov.w, ov.h), 0, 0);
       this.scene.textures.addCanvas(key, c);
+      if (nearest) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
     }
     const scale = Math.min(MW / ov.w, MH / ov.h);
     const ox = MX + (MW - ov.w * scale) / 2, oy = MY + (MH - ov.h * scale) / 2;
     this.image(key, ox, oy, scale);
     this.ov = { ox, oy, scale, w: ov.w, h: ov.h, road: ov.road };
+    return { ox, oy, scale };
+  }
+
+  private drawRealm(space: string): void {
+    const { ox, oy, scale } = this.overview(space, false);
     this.toScreen = (tx, ty) => [ox + (tx / REALM_OVERVIEW_STEP) * scale, oy + (ty / REALM_OVERVIEW_STEP) * scale];
     this.drawMarkers(space);
     const r = realmOf(space)!;
@@ -245,19 +247,7 @@ export class MapScreen {
 
   /** A lair or cave: its floor plan, the way out, the boss arena, chests and finds, and you. */
   private drawInstance(space: string): void {
-    const ov = realmOverview(space);
-    const key = `hc-map:ov:${space}`;
-    if (!this.scene.textures.exists(key)) {
-      const c = document.createElement('canvas');
-      c.width = ov.w; c.height = ov.h;
-      c.getContext('2d')!.putImageData(new ImageData(ov.rgba.slice(), ov.w, ov.h), 0, 0);
-      this.scene.textures.addCanvas(key, c);
-      this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
-    }
-    const scale = Math.min(MW / ov.w, MH / ov.h);
-    const ox = MX + (MW - ov.w * scale) / 2, oy = MY + (MH - ov.h * scale) / 2;
-    this.image(key, ox, oy, scale);
-    this.ov = { ox, oy, scale, w: ov.w, h: ov.h, road: ov.road };
+    const { ox, oy, scale } = this.overview(space, true);
     this.toScreen = (tx, ty) => [ox + (tx + 0.5) * scale, oy + (ty + 0.5) * scale];
     this.drawMarkers(space);
     const d = instanceDef(space);
@@ -344,6 +334,9 @@ export class MapScreen {
         names.push(() => labels.add(x, y, seen ? m.name : '?', seen ? C.text : C.text500, true));
       }
     }
+    // merchants, then quest objectives on this level (labels keep off both); the player's dot stays on top
+    for (const [x, y] of drawMerchants(this.scene, this.view, space, this.toScreen)) labels.block(x, y, 8);
+    for (const q of drawQuestMarks(this.scene, this.view, this.src.quests?.() ?? [], space, this.toScreen, this.focus)) labels.block(q.x, q.y, 9);
     if (this.src.space() === space) {
       const p = this.src.player();
       const [x, y] = this.toScreen(p.x / TILE, p.y / TILE);
@@ -404,5 +397,5 @@ export class MapScreen {
     }
   }
 
-  destroy(): void { this.root.destroy(); }
+  destroy(): void { for (const off of this.offs.splice(0)) off(); this.scene.tweens.killTweensOf(this.view.list); this.root.destroy(); }
 }

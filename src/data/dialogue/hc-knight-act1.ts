@@ -234,7 +234,7 @@ const dialogues: DialogueDef[] = [
         speaker: KB, text: 'You found the roll. Good. I wanted you to. I am terrible at secrets: I keep wanting to show people. Look at the cradle. Thirty years it stood here. I used to sit on its foot when I was small.',
         choices: [
           { text: 'You want the Forge half for its heart.', to: 'plan' },
-          { text: 'Its head turned towards me the night of the Bell. It listens to the song, not to you.', to: 'listens', insight: 'colossus_listens', when: { any: [{ flag: 'knight.vigil_window' }, { flag: 'knight.fenna_saw' }] } },
+          { text: 'Its head turns towards me when my half-stone sings. It listens to the song, not to you.', to: 'listens', insight: 'colossus_listens', when: { any: [{ flag: 'knight.vigil_window' }, { flag: 'knight.fenna_saw' }] } },
           { text: 'Your purse was paid in Magda Ruhl’s coin, Highness. Hollow iron. The same as its plates.', to: 'coin', when: { flag: 'knight.purse_hollow' } },
         ],
       },
@@ -248,7 +248,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       off: { speaker: KB, text: 'Then I will have a very large friend to help me ask. Come with me. Bring the stone. You can carry it right up to the Citadel door. They will write songs about the squire who did.', next: 'no' },
-      hear: { speaker: KB, mood: 'sad', text: 'No. I can’t. Neither could he, they say. Neither could Casimir. Isn’t that funny? Come with me. Bring the stone. They will write songs about the squire who did.', next: 'no' },
+      hear: { speaker: KB, mood: 'sad', text: 'No. I can’t. Neither could Casimir, they say. Isn’t that funny? Come with me. Bring the stone. They will write songs about the squire who did.', next: 'no' },
       no: {
         speaker: KB, text: 'No? (He sighs, and he really does look sorry.) Then I’ll have to fetch it myself. You know where. Do come and watch. I’m going to be magnificent.',
         choices: [{ text: '(Let him go.)', to: null, quest: true }],

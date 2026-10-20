@@ -380,7 +380,7 @@ const quests: QuestDef[] = [
         next: 'unsent',
       },
       {
-        id: 'unsent', journal: 'Swithun says there is one letter left in the dead-letter bag, and it has been there thirty years.',
+        id: 'unsent', journal: 'Swithun says there is one letter left in the dead-letter bag, and it has been there twelve years.',
         objectives: [{ id: 'letter', text: 'Look at the oldest letter in the dead-letter bag', interact: 'obj:mews-dead-letter', marker: { landmark: 'landmark:mews-post-loft' } }],
         next: 'swithun',
       },

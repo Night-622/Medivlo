@@ -11,6 +11,7 @@ import { HC_PIECES } from '@/data/items/hc/armour.gen';
 import { HC_LEGENDARIES } from '@/data/items/hc/legendary.gen';
 import { currentStage, objectiveCount, objectiveDone, objectiveTarget, objectiveText, progress, questDef, stageHistory } from '@/narrative/engine/quests';
 import { markTutorial } from '@/narrative/client/tutorial';
+import { questMarkers } from '@/narrative/client/markers';
 
 export type JournalTab = 'active' | 'main' | 'side' | 'bounty' | 'done';
 
@@ -259,7 +260,9 @@ export class QuestJournal extends Phaser.GameObjects.Container {
     }
     const m = this.keep(sc.add.nineslice(done ? 496 : 706, 620, 'ui:btn_slate', undefined, 180, 52, 8, 8, 8, 8).setOrigin(0));
     this.keep(sc.add.text((done ? 496 : 706) + 90, 646, 'Show on map', { fontFamily: '"Jersey 10"', fontSize: '24px', color: C.text }).setOrigin(0.5));
-    m.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.onClose(); bus.emit('ui:open', { panel: 'map' }); });
+    // centre the map on this quest's next objective (Claude 2 reads focus; the first of its markers, tracked or not)
+    const focus = questMarkers().find((mk) => mk.quest === q.id)?.place;
+    m.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.onClose(); bus.emit('ui:open', focus ? { panel: 'map', focus } : { panel: 'map' }); });
     this.keep(sc.add.text(1208, 646, `↑ ↓ quest · ${keyLabel('track')} track · Esc close`, typeStyle('caption', '#7884b5')).setOrigin(1, 0.5));
   }
 

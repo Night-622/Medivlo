@@ -3,7 +3,7 @@
  * plus the conditional modifiers, procs, hooks and spell mods that the sim evaluates at hit time. Pure.
  */
 import { P } from './curves';
-import type { Cond, CreatureTier, Hook, HcClassBase, Modifier, Passive, Proc, SpellMod, StatKey, StatusId, WeaponType } from './types';
+import type { Aura, Cond, Convert, CreatureTier, Hook, HcClassBase, Modifier, Passive, Proc, SpellMod, StatKey, StatusId, WeaponType } from './types';
 
 export type StatTable = Record<string, number>;
 
@@ -16,6 +16,10 @@ export interface Compiled {
   procs: Proc[];
   hooks: Map<string, number>;
   spellMods: SpellMod[];
+  /** damage conversions (BUILDS.md §3), auras, "+N to <spell>" levels */
+  convert: Convert[];
+  auras: Aura[];
+  spellLevels: Map<string, number>;
 }
 
 /** Handoff BASE (sp 12, hp 180, ember 100, regen 5, armour 6, crit 5%, critd 50%) shaped by the 4-pip rating. */
@@ -48,7 +52,8 @@ const SCALED = new Set<string>(['hp', 'ember', 'stamina', 'armor', 'sp', 'emberR
 
 export function compile(sources: Passive[]): Compiled {
   const flat: StatTable = {}, inc: StatTable = {}, more: StatTable = {};
-  const conditional: Modifier[] = [], procs: Proc[] = [], spellMods: SpellMod[] = [];
+  const conditional: Modifier[] = [], procs: Proc[] = [], spellMods: SpellMod[] = [], convert: Convert[] = [], auras: Aura[] = [];
+  const spellLevels = new Map<string, number>();
   const hooks = new Map<string, number>();
   for (const s of sources) {
     for (const m of s.mods ?? []) {
@@ -60,6 +65,9 @@ export function compile(sources: Passive[]): Compiled {
     if (s.procs) procs.push(...s.procs);
     if (s.spellMods) spellMods.push(...s.spellMods);
     for (const h of s.hooks ?? []) hooks.set(h.id, (hooks.get(h.id) ?? 0) + (h.value ?? 1));
+    if (s.convert) convert.push(...s.convert);
+    if (s.aura) auras.push(...s.aura);
+    for (const l of s.spellLevels ?? []) spellLevels.set(l.spell, (spellLevels.get(l.spell) ?? 0) + l.levels);
   }
   const stats: StatTable = {};
   const keys = new Set([...Object.keys(flat), ...Object.keys(inc), ...Object.keys(more)]);
@@ -70,7 +78,7 @@ export function compile(sources: Passive[]): Compiled {
   }
   const moreOut: StatTable = {};
   for (const k of Object.keys(more)) if (!SCALED.has(k)) moreOut[k] = more[k];
-  return { stats, more: moreOut, conditional, procs, hooks, spellMods };
+  return { stats, more: moreOut, conditional, procs, hooks, spellMods, convert, auras, spellLevels };
 }
 
 export const stat = (t: StatTable, k: StatKey): number => t[k] ?? 0;
@@ -89,6 +97,11 @@ export interface CondCtx {
   behind?: boolean;
   fromStealth?: boolean;
   momentum: number;
+  /** resources (players; creatures count as full) and summons alive */
+  emberFrac?: number;
+  staminaFrac?: number;
+  moving?: boolean;
+  minions?: number;
 }
 
 export function evalCond(c: Cond, x: CondCtx): boolean {
@@ -107,6 +120,11 @@ export function evalCond(c: Cond, x: CondCtx): boolean {
     case 'behind': return !!x.behind;
     case 'fromStealth': return !!x.fromStealth;
     case 'momentum': return x.momentum >= c.min;
+    case 'emberAbove': return (x.emberFrac ?? 1) > c.pct;
+    case 'emberBelow': return (x.emberFrac ?? 1) < c.pct;
+    case 'staminaBelow': return (x.staminaFrac ?? 1) < c.pct;
+    case 'moving': return !!x.moving;
+    case 'minions': return (x.minions ?? 0) >= c.min;
   }
 }
 

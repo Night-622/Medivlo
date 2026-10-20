@@ -93,7 +93,7 @@ const entries: LoreEntry[] = [
   },
   {
     id: 'lore:hc-old-law', name: 'The Old Law of the Chase', category: 'history', source: 'the Lodge charter, in its case above the hearth',
-    body: 'Three lines, older than the Concord. Take only what the hunt gives. Take nothing in the calving moon. Count what you leave as well as what you take.\n\nWhoever holds the charter says what is legal in the Greywilds. The Lodge has held it since before there were Barons to want it.',
+    body: 'Seven lines, older than the Concord, of which Antlerford still remembers three. Take only what the hunt gives. Take nothing in the calving moon. Count what you leave as well as what you take.\n\nWhoever holds the charter says what is legal in the Greywilds. The Lodge has held it since before there were Barons to want it.',
   },
   {
     id: 'lore:hc-elkway', name: 'The Elkway', category: 'places', source: 'Grandfer Lumm, who remembers',

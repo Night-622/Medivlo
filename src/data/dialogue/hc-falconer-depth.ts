@@ -198,7 +198,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       post: { speaker: 'narrator', text: 'The Leaving Post is an old larch pole by the gate road, so thick with cut jesses that it looks feathered: thousands of them, in every colour leather comes in, knotted on by every falconer who ever left the Mews to fly somewhere else.', next: 'jess' },
       jess: {
-        speaker: 'narrator', text: 'Near the top, newer than the rest but thirty years weathered, one jess hangs by a single thread, cut and never knotted, stitched T.T. Somebody stood here meaning to leave, and could not finish it.',
+        speaker: 'narrator', text: 'Near the top, newer than the rest but twelve years weathered, one jess hangs by a single thread, cut and never knotted, stitched T.T. Somebody stood here meaning to leave, and could not finish it.',
         choices: [
           { text: '(Cut a jess of your own and tie it on with Odile’s knot.)', to: 'knot', when: { flag: 'falconer.odile_knot' }, effects: [{ unlockLore: 'lore:hc-falconer-leaving-post' }] },
           { text: '(Cut a jess and knot it on.)', to: 'tie', effects: [{ unlockLore: 'lore:hc-falconer-leaving-post' }] },
@@ -537,7 +537,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:obj-falconer-feather-count', name: 'Fledglings Grown: counting for Elias', scope: 'party',
     entries: [{ when: stage('quest:falconer-fledglings-grown', 'count'), node: 'gather' }, { node: 'plain' }],
     nodes: {
-      gather: { speaker: 'narrator', text: 'At the foot of the tent the four of them have taken, the ground is thick with moulted feathers. On the Featherfall, Elias Downe counts every one that falls, aloud, and has done for fifty years. He says a feather counted is a bird that lived.', next: 'count' },
+      gather: { speaker: 'narrator', text: 'At the foot of the tent the four of them have taken, the ground is thick with moulted feathers. On the Featherfall, Elias Downe counts every one that falls, aloud, and has done for thirty years. He says a feather counted is a bird that lived.', next: 'count' },
       count: {
         speaker: 'narrator', text: 'You gather them into your hat and count them aloud, the Featherfall way, one breath to a feather. Above you on the ridge-pole the four young hawks lean down to listen, heads on one side.',
         choices: [

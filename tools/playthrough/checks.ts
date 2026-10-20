@@ -15,6 +15,8 @@
  *   bands-concordia     the same for Concordia vs Acts II/III, plus main quests ≥ expected − 4 (concordiaBands.ts)
  *   class-objects       class story objects: usable only in their own classes' campaigns (classObjects.ts)
  *   clearance           bodies fit their arenas, lair corridors and story markers (clearance.ts)
+ *   smiths              every Runeforge within 30 tiles of a waystone; every capital and Concordia has one
+ *   merchants           smiths, plus each capital's smith + trader and each frontier's pedlar by its village waystone
  * Each check exits non-zero on failure; tools/playthrough/suite.mjs runs the fast set (pre-deploy).
  */
 import { readFileSync, readdirSync } from 'node:fs';
@@ -114,6 +116,50 @@ if (check === 'unplaced') {
   await import('./classObjects'); // each class as host sees only its own story objects, and all of them
 } else if (check === 'clearance') {
   await import('./clearance'); // bosses, minis and packs fit their arenas, corridors and markers
+} else if (check === 'smiths' || check === 'merchants') {
+  // every Runeforge (BUILDS.md §6: Odo plus one smith per realm capital) stands within reach of a waystone; and the
+  // realm merchants (Claude 1's new-player fix): a smith and a trader by each capital's waystone, a pedlar by each
+  // frontier's, each on its own spot
+  const REACH = 30;
+  const [{ HC_SHOPS }, { Game, Registry, createNewGameState }, { npcPlacements }, { whereNpc }, { allWaystones, REALMS }] = await Promise.all([
+    import('@/data/items/hc/shops'), import('@/core'), import('@/narrative/engine'), import('./places'), import('@/world/hc/spaces')]);
+  Game.set(createNewGameState());
+  Registry.load();
+  const placements = npcPlacements() as never;
+  const forges = HC_SHOPS.filter((s) => s.runeforge);
+  const capitals = REALMS.filter((r) => r.school).map((r) => r.space);
+  const covered = new Set<string>();
+  let bad = 0;
+  for (const s of forges) {
+    const at = whereNpc(s.npc, placements);
+    if (!at) { bad++; console.log(`NO SMITH ${s.id}: ${s.npc} stands nowhere`); continue; }
+    const ws = allWaystones().filter((w) => w.space === at.space).map((w) => ({ id: w.id, d: Math.hypot(w.at[0] - at.at[0], w.at[1] - at.at[1]) })).sort((a, b) => a.d - b.d)[0];
+    covered.add(at.space);
+    const ok = !!ws && ws.d <= REACH;
+    if (!ok) bad++;
+    console.log(`${ok ? 'ok  ' : 'FAR '} ${s.id.padEnd(22)} ${s.npc} in ${at.space} at ${at.at}: ${ws ? `${Math.round(ws.d)} tiles from ${ws.id}` : 'no waystone in this space'}`);
+  }
+  const missing = [...capitals, 'concordia'].filter((sp) => !covered.has(sp));
+  if (missing.length) { bad += missing.length; console.log(`no Runeforge yet in: ${missing.join(', ')}`); }
+  console.log(bad ? `smiths: ${bad} problems (${forges.length} runeforges)` : `smiths: all ${forges.length} runeforges within ${REACH} tiles of a waystone, every capital and Concordia covered`);
+  if (check === 'merchants') {
+    let mb = 0, n = 0;
+    const spots = new Map<string, string>();
+    for (const r of REALMS.filter((x) => x.school)) for (const [kind, side] of [['smith', 'capital'], ['trader', 'capital'], ['pedlar', 'frontier']] as const) {
+      n++;
+      const id = `shop:${r.school}-${kind}`, shop = HC_SHOPS.find((x) => x.id === id), wsId = `ws:${r.school}-${side}`;
+      const ws = allWaystones().find((w) => w.id === wsId);
+      const at = shop && whereNpc(shop.npc, placements);
+      const d = at && ws && at.space === ws.space ? Math.hypot(ws.at[0] - at.at[0], ws.at[1] - at.at[1]) : Infinity;
+      const key = at ? `${at.space}@${at.at}` : '', clash = key && spots.get(key);
+      if (key && !clash) spots.set(key, shop!.npc);
+      const ok = d <= REACH && !clash;
+      if (!ok) { mb++; console.log(`${!shop ? 'NO SHOP' : !at ? 'NOBODY ' : clash ? 'CLASH  ' : 'FAR    '} ${id}${shop ? ` (${shop.npc})` : ''}${at ? ` at ${at.space} ${at.at}` : ''}${Number.isFinite(d) ? `, ${Math.round(d)} tiles from ${wsId}` : ''}${clash ? ` on ${clash}'s spot` : ''}`); }
+    }
+    console.log(mb ? `merchants: ${mb}/${n} not in reach of their village waystone` : `merchants: all ${n} realm merchants within ${REACH} tiles of their village waystone, each on its own spot`);
+    bad += mb;
+  }
+  if (bad) process.exitCode = 1;
 } else {
   console.log('checks: exists <ids> | unplaced | pieces | instances | triggers <realm|concordia> | markers <inst> | escort <a> <b> | bands [classes]');
 }

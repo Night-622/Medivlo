@@ -13,7 +13,7 @@ import type { AreaDef, RealmDef, SchoolId, SetPieceDef, VillageDef, WaystoneDef 
 import { artSize } from './footprints';
 import { placeSetPieces } from './setPieces';
 import { OPT_KINDS, optionalName, type OptKind } from '@/data/regions/hc/optionalAreas';
-import { type Placement, villageOrigin, villagePlacements, villageRoad, VIL_H, VIL_W, slug } from './village';
+import { type Placement, villageDoorRects, villageOrigin, villagePlacements, villageRoad, VIL_H, VIL_W, slug } from './village';
 import { classGated } from './classGate';
 
 export const REALM_W = 384;
@@ -165,8 +165,9 @@ export class RealmGen implements SpaceGen {
     const S = this.school;
     for (const v of this.villages) {
       for (const p of villagePlacements(v)) this.put(p);
-      // place landmarks for each village building (Claude 4 hangs NPCs and services on them)
-      for (const p of v.places) this.obj({ id: `landmark:${v.id.slice(4)}-${slug(p[1])}`, kind: 'trigger', at: [v.at[0], v.at[1]], size: [1, 1], props: { label: p[1] } });
+      // a landmark at each village building's door (Claude 4 hangs NPCs and services on them; the centre if unplaced)
+      const doors = villageDoorRects(v);
+      v.places.forEach((p, i) => this.obj({ id: `landmark:${v.id.slice(4)}-${slug(p[1])}`, kind: 'trigger', at: doors[i]?.at ?? [v.at[0], v.at[1]], size: doors[i]?.size ?? [1, 1], props: { label: p[1] } }));
     }
     // keep a clearing round every waystone: arrivals and respawns stand here (no pine on top of the hero)
     for (const w of this.waystones) {

@@ -83,7 +83,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:juggernaut-stopped-golems')), firstStage: 'door',
     stages: [
       {
-        id: 'door', journal: 'Nobody has worked the old foundry on the Slag Rivers in forty years. Its chimney started smoking the night of the Bell.',
+        id: 'door', journal: 'Nobody has worked the old foundry on the Slag Rivers in twenty years. Its chimney started smoking the night of the Bell.',
         objectives: [{ id: 'enter', text: 'Break into the Warden Foundry', reach: L1, marker: { landmark: 'landmark:warden-foundry-door' } }],
         next: 'warden',
       },
@@ -203,7 +203,7 @@ const quests: QuestDef[] = [
         next: 'banner',
       },
       {
-        id: 'banner', journal: 'Under the last layer, the oldest one: the Brotherhood’s lost strike banner, wrapped round something heavy.',
+        id: 'banner', journal: 'Under the last layer: the Brotherhood’s lost strike banner, wrapped round something heavy.',
         objectives: [{ id: 'banner', text: 'Unwrap the strike banner', interact: 'obj:strike-banner' }],
         onComplete: [{ setFlag: 'juggernaut.strike_banner', value: true }, { startQuest: 'quest:juggernaut-pay-that-empties-you' }],
         end: { status: 'completed' },
@@ -227,7 +227,7 @@ const quests: QuestDef[] = [
         next: 'quiet',
       },
       {
-        id: 'quiet', journal: 'Twelve of Magda’s diggers have gone quiet. Some of them are still in Rivet Town, sitting very still. Find them before you face her.',
+        id: 'quiet', journal: 'Twelve of Magda’s diggers have gone quiet. Some of them are still above ground, sitting very still. Find them before you face her.',
         objectives: [{ id: 'quiet', text: 'Find the miners who went quiet', interact: 'obj:juggernaut-quiet-miner-*', count: 3, marker: { place: Z3 } }],
         next: 'magda',
       },
@@ -736,12 +736,12 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-stone-court')), autoStart: true, firstStage: 'shore',
     stages: [
       {
-        id: 'shore', journal: 'Three cracked buttresses in Wardenhold’s gate wall. Bram Holloway keeps the wall. You know how to build one.',
+        id: 'shore', journal: 'Three cracked buttresses in Wardenhold’s gate wall. Aled Holloway keeps the wall. You know how to build one.',
         objectives: [{ id: 'buttress', text: 'Shore up Wardenhold’s failing gate wall', interact: 'obj:juggernaut-buttress-*', count: 3, marker: { landmark: 'landmark:warden-wardens-gate' } }],
         next: 'back',
       },
       {
-        id: 'back', journal: 'The wall holds. Bram wants a word at the Stone Court, and possibly an argument.',
+        id: 'back', journal: 'The wall holds. Aled wants a word at the Stone Court, and possibly an argument.',
         objectives: [{ id: 'bram', text: 'Talk to the Warden bearer', when: { any: [{ flag: 'juggernaut.bram_thanked' }, { partyHasClass: 'warden' }] }, marker: { landmark: 'landmark:stone-court' } }],
         onComplete: [{ setFlag: 'story.bearer.warden', value: true }],
         end: { status: 'completed' },
@@ -760,7 +760,7 @@ const quests: QuestDef[] = [
         next: 'back',
       },
       {
-        id: 'back', journal: 'Fizz has been thinking about what you said. She wants to tell you at the Stone Court.',
+        id: 'back', journal: 'Fizz has been thinking about what you said, and wants to tell you at the Stone Court.',
         objectives: [{ id: 'fizz', text: 'Talk to the Sparkwright bearer', when: { any: [{ flag: 'juggernaut.fizz_thanked' }, { partyHasClass: 'sparkwright' }] }, marker: { landmark: 'landmark:stone-court' } }],
         onComplete: [{ setFlag: 'story.bearer.sparkwright', value: true }],
         end: { status: 'completed' },
@@ -785,7 +785,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'count',
     stages: [
       { id: 'count', journal: 'Before you blow anything, do what Gussie does at the end of every shift: count heads. The Deepworks folk stand in the Legion camp in their own ranks.', objectives: [{ id: 'count', text: 'Count the Deepworks heads in the Legion camp', interact: 'obj:juggernaut-legion-count', marker: { landmark: 'landmark:legion-camp' } }], next: 'whistle' },
-      { id: 'whistle', journal: 'Gussie’s crate is waiting at the foot of the Twelve Stairs, where the Legion still stands in its ranks.', objectives: [{ id: 'crate', text: 'Blow end of shift from Gussie’s crate', interact: 'obj:juggernaut-shift-crate', marker: { landmark: 'landmark:legion-camp' } }], next: 'tally' },
+      { id: 'whistle', journal: 'Gussie’s crate is waiting in the Legion camp, where the Deepworks folk still stand in their ranks.', objectives: [{ id: 'crate', text: 'Blow end of shift from Gussie’s crate', interact: 'obj:juggernaut-shift-crate', marker: { landmark: 'landmark:legion-camp' } }], next: 'tally' },
       { id: 'tally', journal: 'The whole night shift has turned for home. A foreman chalks the count when the shift is out. Somebody should chalk this one.', objectives: [{ id: 'tally', text: 'Chalk the count on the board at the Heart camp', interact: 'obj:juggernaut-shift-tally', marker: { landmark: 'landmark:heart-camp' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 2 },

@@ -223,7 +223,7 @@ const dialogues: DialogueDef[] = [
     entries: [{ node: 'start' }],
     nodes: {
       start: {
-        speaker: 'npc:juniper-gauss', mood: 'happy', text: 'Bobbin! No, that’s not Bobbin. That’s a baby. (The baby wisp on your shoulder sparks at her.) Bobbin went up with the big ones, didn’t he? It’s all right. He was always going to. This one’s chosen you.',
+        speaker: 'npc:juniper-gauss', mood: 'happy', text: 'Bobbin! No, that’s not Bobbin. That’s a baby. (The baby wisp on your shoulder sparks at her.) Bobbin’s gone off with the big ones, hasn’t he? It’s all right. He was always going to. This one’s chosen you.',
         choices: [{ text: 'I’ll keep it safe.', to: 'safe' }, { text: 'Do you want it?', to: 'want' }],
       },
       safe: { speaker: 'npc:juniper-gauss', text: 'You have to sing to it. Not well. It doesn’t mind well. Here, take my old lamp, it can ride in it when it’s tired.', next: null },
@@ -705,13 +705,13 @@ const dialogues: DialogueDef[] = [
       number: {
         speaker: 'narrator', text: 'You look over the nearest shoulder. The number is the height of Tower Fifteen. They are still trying to make it stand.',
         choices: [
-          { text: '(Take her slide rule, gently, and add one: the margin for error.)', to: 'margin', quest: true },
-          { text: 'Tower Fifteen fell. It’s all right. Things are allowed to fall down.', to: 'fall', quest: true },
+          { text: '(Take the nearest slide rule, gently, and add one: the margin for error.)', to: 'margin', quest: true },
+          { text: 'Tower Fifteen doesn’t have to stand. It’s all right. Things are allowed to fall down.', to: 'fall', quest: true },
           { text: '(Open the wisp cages.)', to: 'wisps', quest: true, when: { flag: 'sparkwright.wisps', value: 'caged' } },
         ],
       },
       margin: { speaker: 'narrator', mood: 'happy', text: 'She stares at the new number. It is wrong, wonderfully and obviously wrong. She laughs, a short surprised bark, and the black runs out of her goggles, and one by one the rank looks up from their sums.', next: null },
-      fall: { speaker: 'narrator', text: 'The nearest engineer lowers her slide rule. “Fifteen,” she says, as if somebody has finally let her say it. “Fifteen towers.” All down the rank, one by one, they put their instruments away.', next: null },
+      fall: { speaker: 'narrator', text: 'The nearest engineer lowers her slide rule. “Fifteen,” she says, as if somebody has finally let her say it. “It doesn’t have to stand.” All down the rank, one by one, they put their instruments away.', next: null },
       wisps: { speaker: 'narrator', mood: 'happy', text: 'The wisps go up out of their cages like sparks from a chimney. The engineers’ heads turn to follow them, all together, and for the first time in a long while they are looking at something that is not a number.', next: null },
       gone: { speaker: 'narrator', text: 'A neat stack of slide rules, left on the ground in the Legion camp.', next: null },
     },

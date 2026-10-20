@@ -31,7 +31,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'You climb up to the open firebox. The heat would take the eyebrows off a Rivet Golem.',
         choices: [
           { text: '(Rake the Chimera’s own slag off the stair and shovel it in, the way Rivet Town sealed the Lode.)', to: 'slag', when: WHISTLE('slag') },
-          { text: '(Blow end of shift: three short blasts, the way Gussie does it.)', to: 'whistle', when: { trust: GH, value: 'trusted' } },
+          { text: '(Blow the shift-whistle: three short blasts, the way Gussie does it.)', to: 'whistle', when: { trust: GH, value: 'trusted' } },
         ],
       },
       slag: { speaker: 'narrator', text: 'Thirty years of waste, shovel by shovel. The slag hits the fire and the fire goes grey, then dull, then cold. The coin stops pouring. In the cold firebox a broad woman in a scorched apron sits blinking at you.', next: 'done' },
@@ -52,21 +52,21 @@ const dialogues: DialogueDef[] = [
       { node: 'crate' },
     ],
     nodes: {
-      first: { speaker: 'narrator', text: 'At the foot of the Twelve Stairs, where the Legion still stands in its ranks, sits a crate in fresh Rivet Town paint: GUSSIE’S. NUMBER NINE. DO NOT SIT ON. On top is a letter, and a sock, and in the sock, the First Whistle.', next: 'first2' },
+      first: { speaker: 'narrator', text: 'In the Legion camp, where the Deepworks ranks still stand, sits a crate in fresh Rivet Town paint: GUSSIE’S. NUMBER NINE. DO NOT SIT ON. On top is a letter, and a sock, and in the sock, the First Whistle.', next: 'first2' },
       first2: { speaker: GH, text: '“I said I’d blow it at the end of my last shift. Well, I’ve thought about it, and my last shift is the one you’re on. Get up on the crate and blow it for me. Then bring it home. I want it back. G. H.”', next: 'blowfirst' },
       blowfirst: {
         speaker: 'narrator', text: 'The crate groans under you. You blow the First Whistle, and one long note, nine hundred years old, goes out over the whole Heart. In the Legion’s ranks a thousand hollowed workers lift their heads, put down what they are holding, and turn for home.',
         effects: [{ setFlag: 'juggernaut.last_shift', value: true }, { giveItem: 'i_first_whistle' }, { trust: GH, set: 5 }], next: 'count',
       },
       count: { speaker: 'narrator', mood: 'happy', text: 'Far away, in a whistle-house with a leaking roof, a very small foreman stands on a crate in the dark and counts heads. For the first time in thirty years, the count comes out right.', next: null },
-      own: { speaker: 'narrator', text: 'At the foot of the Twelve Stairs sits a crate in fresh Rivet Town paint: GUSSIE’S. NUMBER NINE. DO NOT SIT ON. On top is a letter. Round your neck, on its copper ring, is the whistle she gave you.', next: 'letter' },
-      spare: { speaker: 'narrator', text: 'At the foot of the Twelve Stairs sits a crate in fresh Rivet Town paint: GUSSIE’S. NUMBER NINE. DO NOT SIT ON. On top is a letter, and a sock, and in the sock, the whistle-house spare with the dent in it.', next: 'letter' },
+      own: { speaker: 'narrator', text: 'In the Legion camp sits a crate in fresh Rivet Town paint: GUSSIE’S. NUMBER NINE. DO NOT SIT ON. On top is a letter. Round your neck, on its copper ring, is the whistle she gave you.', next: 'letter' },
+      spare: { speaker: 'narrator', text: 'In the Legion camp sits a crate in fresh Rivet Town paint: GUSSIE’S. NUMBER NINE. DO NOT SIT ON. On top is a letter, and a sock, and in the sock, the whistle-house spare with the dent in it.', next: 'letter' },
       letter: { speaker: GH, text: '“If you’re reading this, you got to the Heart. Course you did. Who else would? There’s folk in there been on shift thirty years with nobody to blow the end of it. Get up on this crate. G. H.”', next: 'blow' },
       blow: {
         speaker: 'narrator', text: 'The crate groans under you. You blow end of shift, one long blast, and it goes out over the whole Heart. In the Legion’s ranks a thousand hollowed workers lift their heads, put down what they are holding, and turn round, as if for home.',
         effects: [{ setFlag: 'juggernaut.last_shift', value: true }], next: null,
       },
-      crate: { speaker: 'narrator', text: 'Gussie’s crate, number nine, at the foot of the Twelve Stairs. Somebody has sat on it.', next: null },
+      crate: { speaker: 'narrator', text: 'Gussie’s crate, number nine, at the edge of the Legion camp. Somebody has sat on it.', next: null },
     },
   },
   // ---------- Pay Day (the Legion camp)

@@ -56,6 +56,9 @@ export function installSystemsAuthority(opts: SystemsAuthorityOpts = {}): System
   offs.push(bus.on('quest:take-item', (e) => s.questTake(e.item as string, e.qty)));
   // world chests (Claude 2's objects): one roll per character per chest
   offs.push(bus.on('interact', (e) => { if (e.kind === 'chest' && e.playerId) s.openChest(e.playerId, e.objectId, e.props ?? {}); }));
+  // a load / new game on this page replaces the world: no creatures, shots or a dead hero carried over
+  offs.push(bus.on('game:loaded', () => s.resetForLoad()));
+  offs.push(bus.on('game:new', () => s.resetForLoad()));
   offs.push(simLoop.add({ name: 'systems', order: 200, step: (dt, tick) => s.step(dt, tick, net.inputsFor(tick)) }));
   offs.push(net.addProvider({ name: 'systems', collect: (viewer) => s.collect(viewer) }));
   offs.push(net.onClient('loadout', (msg, from) => {

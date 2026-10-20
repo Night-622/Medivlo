@@ -688,12 +688,12 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-stone-court')), autoStart: true, firstStage: 'line',
     stages: [
       {
-        id: 'line', journal: 'Bram Holloway has planted a tower shield across the pass road and is waiting for you to agree on the order of things.',
+        id: 'line', journal: 'Aled Holloway has planted a tower shield across the pass road and is waiting for you to agree on the order of things.',
         objectives: [{ id: 'line', text: 'Settle who goes first with the Warden bearer', interact: 'obj:stormlancer-pass-shield-line', marker: { region: 'region:frost' } }],
         next: 'back',
       },
       {
-        id: 'back', journal: 'It is settled. Bram wants a word at the Stone Court.',
+        id: 'back', journal: 'It is settled. Aled wants a word at the Stone Court.',
         objectives: [{ id: 'bram', text: 'Talk to the Warden bearer', when: { any: [{ flag: 'stormlancer.bram_thanked' }, { partyHasClass: 'warden' }] }, marker: { landmark: 'landmark:stone-court' } }],
         onComplete: [{ setFlag: 'story.bearer.warden', value: true }],
         end: { status: 'completed' },

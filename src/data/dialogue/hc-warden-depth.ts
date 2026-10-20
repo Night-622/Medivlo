@@ -63,7 +63,7 @@ const dialogues: DialogueDef[] = [
       },
       broke: { speaker: DO, mood: 'angry', text: 'He did. With a hammer, last winter, while I slept. And when I came down there were clan children coming through the hole, and black tears coming in behind them. I branded him and put him over. I’d do it again.', next: 'patch' },
       miss: { speaker: DO, mood: 'sad', text: '(She doesn’t answer for a while.) He taught half the Gatehouse to set a shield. He taught you. Every time you set your feet I see him do it. Yes. I miss him. Don’t tell Kettil.', next: 'patch' },
-      patch: { speaker: DO, text: 'And if your song is coming from the Breach, then it’s been singing in that patch all winter, and I’m the one who put the patch there. (A short, hard laugh.) I walled your stone in, pup. Well. One thing at a time.', next: 'fires' },
+      patch: { speaker: DO, text: 'And if your song is coming from the Breach, then it’s been singing in that patch since last winter, and I’m the one who put the patch there. (A short, hard laugh.) I walled your stone in, pup. Well. One thing at a time.', next: 'fires' },
       fires: {
         speaker: DO, text: 'First thing. The watch-fires on the Long Rampart have been going out, one a night, and nobody can tell me why. Walk the Rampart. Find out. Report to me. Speak UP.',
         choices: [
@@ -150,7 +150,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:area-warden-barrow-road', name: 'I-6 banter: down to the barrows', bark: true,
     entries: [{ when: stage('quest:warden-the-wraith-barrows', 'barrows'), node: 'b' }],
-    nodes: { b: { speaker: 'narrator', text: 'Lights in the Wraith Barrows, cold and blue, where nobody has been buried in a hundred years. Every Warden learns the barrow-song as a recruit. Nobody ever learns the second verse. Tonight you can hear somebody singing it.', next: null } },
+    nodes: { b: { speaker: 'narrator', text: 'Lights in the Wraith Barrows, cold and blue, where nobody living goes. Every Warden learns the barrow-song as a recruit. Nobody ever learns the second verse. Tonight you can hear somebody singing it.', next: null } },
   },
 
   // ======================= I-7 The Empty Banner: the fallen below the Breach
@@ -424,7 +424,7 @@ const dialogues: DialogueDef[] = [
           { text: 'Nothing about you. You cut that last line on the turning stone yourself.', to: 'stone', when: { flag: 'warden.turnback' } },
         ],
       },
-      stone: { speaker: IT, mood: 'sad', text: 'You found that. (She looks at her hands.) One letter a winter, when nobody was looking. Twenty-six years to cut four words. That’s how sorry I was.', next: 'for' },
+      stone: { speaker: IT, mood: 'sad', text: 'You found that. (She looks at her hands.) One letter a winter, when nobody was looking. Thirteen winters to cut four words. That’s how sorry I was.', next: 'for' },
       for: { speaker: IT, text: 'What a pass is for. (She looks up it.) For coming down. For Sigge to come home by, the daft lad.', next: 'sigge' },
       sigge: {
         speaker: IT, text: 'Sigge Brekke. Best drill I ever had. Word came up from the moor about a man in the Gloamwood gathering everybody who’d ever been kept out, and Sigge took his shield and went. Said he’d faced north for twelve years and wanted to see where things went.',

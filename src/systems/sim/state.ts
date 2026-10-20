@@ -68,7 +68,7 @@ export interface Combatant {
   anim: string;
   animUntil: number;
   /** forced movement (dash / leap / knockback) */
-  motion: { vx: number; vy: number; until: number; iframes: boolean; /** px still to travel: a move never overshoots its stated distance */ left?: number; path?: Action[]; pathCast?: CastCtx; hitIds?: Set<string>; land?: Action[] } | null;
+  motion: { vx: number; vy: number; until: number; iframes: boolean; /** px still to travel: a move never overshoots its stated distance */ left?: number; /** a hero dash (fires dashEnd) */ dash?: boolean; path?: Action[]; pathCast?: CastCtx; hitIds?: Set<string>; land?: Action[] } | null;
   /** cast / ability wind-up in progress */
   windup: { until: number; then: () => void; label: string } | null;
   /** bosses: no new hard control until then */
@@ -87,6 +87,9 @@ export interface PlayerEnt extends Combatant {
   spells: Map<string, HcSpell>;
   ember: number; emberMax: number;
   stamina: number; staminaMax: number;
+  /** deeper builds: Ember / stamina spent toward the next 50 (spent triggers), next aura pulse */
+  spent?: { ember: number; stamina: number };
+  auraAt?: number;
   momentum: number;
   dashCharges: number; dashReadyAt: number;
   cds: Map<string, number>;

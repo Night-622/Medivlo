@@ -152,7 +152,7 @@ const dialogues: DialogueDef[] = [
     'Konrad’s plans, pinned along the bay wall in his golden hand. The Colossus walking, the Colossus at the Citadel door, the Colossus kneeling to a small figure holding out a crown. In every drawing the small figure is Konrad. In none of them is anyone else there to see it.', 'knight.cradle_1',
     'A bay wall, with pin-holes where plans were.'),
   clue('knight-cradle-clue-2', 'I-7 the Colossus’s bay (2)', stage('quest:knight-a-king-for-the-colossus', 'forge'),
-    'A heap of delivery tags by the cradle rails, thirty years of them, every one the same: “Hollow Lode. M. Ruhl.” Under them, older, a single tag from the year the Colossus was begun: “Honest iron. Brotherhood of the Deepworks. With our compliments.”', 'knight.cradle_2',
+    'A heap of delivery tags by the cradle rails, years of them, every one the same: “Hollow Lode. M. Ruhl.” Under them, older, a single tag from the year the Colossus was begun: “Honest iron. Brotherhood of the Deepworks. With our compliments.”', 'knight.cradle_2',
     'Delivery tags swept into a heap.'),
   clue('knight-cradle-clue-3', 'I-7 the Colossus’s bay (3)', stage('quest:knight-a-king-for-the-colossus', 'forge'),
     'A mould the size of a cart, cast for a single thing: a cradle for a half-stone, ringed with the arms of Berenika. Scratched inside it, small, in a child’s hand, years old: “KONRAD WILL BE KING OF THE BIG MAN.”', 'knight.cradle_3',
@@ -271,7 +271,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:obj-knight-ilka-door', name: 'The Masons’ Marks: Ilka’s door', scope: 'party',
     entries: [{ when: stage('quest:knight-the-masons-marks', 'ilka'), node: 'door' }, { node: 'plain' }],
     nodes: {
-      door: { speaker: 'narrator', text: 'A green door on Lamp Lane, and behind it a woman of forty with flour on her apron and three children hanging off her. Ilka. You hold out her father’s rubbing: the hook, the star, and the four letters.', next: 'read' },
+      door: { speaker: 'narrator', text: 'A green door on Lamp Lane, and behind it a woman of nearly thirty with flour on her apron and three children hanging off her. Ilka. You hold out her father’s rubbing: the hook, the star, and the four letters.', next: 'read' },
       read: {
         speaker: 'narrator', text: 'She reads it. Then she reads it again. “He told me it meant ‘regret’,” she says. “When I was little and asked. He said it was Old Haldish for ‘regret’, and I cried, because I thought he regretted me.”',
         choices: [
@@ -397,7 +397,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:obj-knight-stair-vigil', name: 'Spurs on the Stair: the vigil at the foot of the Stairs', scope: 'party',
     entries: [{ when: stage(SPURS, 'vigil'), node: 'card' }, { node: 'plain' }],
     nodes: {
-      card: { speaker: 'narrator', text: 'Wrapped with the spurs is a small card, soft with handling: Gideon’s vigil-card, dated C. 990. “Kneel at the foot, with the road before you. Say what you carry.” He kept his vigil at the foot of his first long walk. This is his last.', next: 'kneel' },
+      card: { speaker: 'narrator', text: 'With the letter came a small card, soft with handling: Gideon’s vigil-card, dated C. 990. “Kneel at the foot, with the road before you. Say what you carry.” He kept his vigil at the foot of his first long walk. This is his last.', next: 'kneel' },
       kneel: {
         speaker: 'narrator', text: 'You kneel at the foot of the Twelve Stairs, with the spurs before you on the black stone. What do you carry?',
         choices: [

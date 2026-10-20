@@ -55,7 +55,11 @@ export function onCombatantZero(w: SimWorld, tgt: Combatant, src: Combatant | nu
   if (e.ownerId) return; // pets give nothing
 
   const killerPlayer = src?.kind === 'player' ? (src as PlayerEnt) : src?.kind === 'pet' ? w.players.get((src as EnemyEnt).ownerId ?? '') : undefined;
-  if (killerPlayer) fireProcs(w, killerPlayer, 'kill', e);
+  if (killerPlayer) {
+    fireProcs(w, killerPlayer, 'kill', e);
+    const sok = killerPlayer.stats.stats.staminaOnKill ?? 0;
+    if (sok) killerPlayer.stamina = Math.min(killerPlayer.staminaMax, killerPlayer.stamina + sok);
+  }
   // bloodlust: a melee hero who lands the kill catches its breath (5% max HP); melee bleeds in packs, ranged does not
   if (killerPlayer && src === killerPlayer && !killerPlayer.dead && !['bow', 'staff', 'wand'].includes(killerPlayer.weapon.type)) heal(w, killerPlayer, killerPlayer, killerPlayer.maxHp * 0.05, true);
   const killers = nearPlayers(w, e);

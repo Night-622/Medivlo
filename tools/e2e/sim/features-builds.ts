@@ -1,0 +1,196 @@
+/**
+ * Deeper builds engine (Claude 3, docs/systems/BUILDS.md §2.1): the Passive extensions perks, affixes and uniques
+ * are made of. Conversion, auras, "+N to <spell>", the new triggers, conditions and stats, each proven on the sim.
+ */
+import { kitFor } from '@/data/classes/hc/kits';
+import { newCharacter } from '@/systems/rules/character';
+import { playerPassives } from '@/systems/rules/playerStats';
+import { spellDef } from '@/systems/rules/spells';
+import { compile, evalCond, type CondCtx } from '@/systems/rules/stats';
+import type { CharacterSave, HcSpell, Passive, Trigger } from '@/systems/rules/types';
+import { Btn } from '@/net/types';
+import { spend } from '@/systems/sim/builds';
+import { applyStatus, convertShares, dealDamage } from '@/systems/sim/combat';
+import { cast, spellView } from '@/systems/sim/player';
+import type { PlayerEnt } from '@/systems/sim/state';
+import { check, dummy, hero, world, type World } from './features-harness';
+
+const save = (classId: string, level = 20): CharacterSave => ({ ...newCharacter(classId), level, tree: {} });
+
+/** Layer test passives on a hero, as a tree node / affix / unique would. */
+function give(p: PlayerEnt, ...extra: Passive[]): void {
+  p.base = compile([...playerPassives(p.save).passives, ...extra]);
+  p.stats = p.base;
+  p.statsDirty = true;
+}
+/** A proc that marks the trigger with a self buff `t:<trigger>`. */
+const marker = (on: Trigger): Passive => ({ procs: [{ on, do: [{ a: 'buff', id: `t:${on}`, dur: 60000, to: 'self' }] }] });
+const marked = (p: PlayerEnt, on: Trigger) => p.buffs.some((b) => b.id === `t:${on}`);
+const noCrit: Passive = { mods: [{ stat: 'crit', op: 'flat', value: -10 }] };
+const allCrit: Passive = { mods: [{ stat: 'crit', op: 'flat', value: 10 }] };
+
+function conversion(): void {
+  const w = world(), p = hero(w, 'a', save('warden')), d = dummy(w, 40, 0);
+  give(p, noCrit, { convert: [{ from: 'attack', to: 'rime', pct: 0.5 }] });
+  const n0 = w.events.length;
+  dealDamage(w.sim.w, p, d, 100, 'physical');
+  const hits = w.since(n0, 'combat:hit').filter((e) => e.p.sourceId === p.id && e.p.kind === 'dmg');
+  const kinds = hits.map((e) => String(e.p.type)).sort().join(',');
+  check(hits.length === 2 && kinds === 'physical,rime', 'conversion: half an attack lands as Rime, half stays physical (two hits)', kinds);
+  // a spell is not an 'attack': no conversion
+  const n1 = w.events.length;
+  dealDamage(w.sim.w, p, d, 100, 'physical', { isSpell: true });
+  const sk = w.since(n1, 'combat:hit').filter((e) => e.p.sourceId === p.id).map((e) => String(e.p.type)).join(',');
+  check(sk === 'physical', 'conversion: an attack conversion leaves spells alone', sk);
+  const capped = convertShares([{ from: 'ash', to: 'storm', pct: 0.8 }, { from: 'spell', to: 'rime', pct: 0.8 }, { from: 'ash', to: 'ash', pct: 1 }], 'ash', true);
+  const total = capped.reduce((a, [, v]) => a + v, 0);
+  check(Math.abs(total - 1) < 1e-9 && capped.length === 2, 'conversion: shares over 100% scale down to 100%; converting a kind into itself does nothing', JSON.stringify(capped));
+}
+
+function spellLevels(): void {
+  const w = world(), p = hero(w, 'a', save('arcanist'));
+  const sp = spellDef(kitFor('arcanist').spells[0])!;
+  const v0 = spellView(p, sp);
+  give(p, { spellLevels: [{ spell: sp.id, levels: 1 }, { spell: '*', levels: 1 }, { spell: 'school:rime', levels: 5 }] });
+  const v2 = spellView(p, sp);
+  check(Math.abs(v2.dmg / v0.dmg - 1.24) < 1e-9 && Math.abs(v2.area / v0.area - 1.12) < 1e-9, `+N to a spell: +2 levels on ${sp.id} (own + all) give +24% damage and +12% area; another school's levels do not count`, `dmg ×${(v2.dmg / v0.dmg).toFixed(3)}, area ×${(v2.area / v0.area).toFixed(3)}`);
+}
+
+function auras(): void {
+  const w = world({ party: 2 });
+  const p = hero(w, 'a', save('warden')), ally = hero(w, 'b', save('warden'), 120, 0), far = hero(w, 'c', save('warden'), 800, 0);
+  const foe = dummy(w, -100, 0);
+  give(p, { aura: [{ id: 'might', r: 200, mods: [{ stat: 'dmg', op: 'pct', value: 0.1 }] }, { id: 'dread', r: 200, enemies: true, mods: [{ stat: 'dmgTaken', op: 'pct', value: 0.1 }] }] });
+  w.run(1200);
+  const has = (c: { buffs: { id: string }[] }, id: string) => c.buffs.some((b) => b.id === `aura:${id}`);
+  check(has(p, 'might') && has(ally, 'might') && !has(far, 'might') && !has(foe, 'might'), 'aura: you and allies in range get it; far allies and foes do not', `self ${has(p, 'might')}, ally ${has(ally, 'might')}, far ${has(far, 'might')}, foe ${has(foe, 'might')}`);
+  check(has(foe, 'dread') && !has(ally, 'dread') && !has(p, 'dread'), 'aura (enemies): foes in range get it, allies do not', `foe ${has(foe, 'dread')}, ally ${has(ally, 'dread')}`);
+  // walking away: the 1.5 s buff runs out
+  ally.x = 900;
+  w.run(2000);
+  check(!has(ally, 'might'), 'aura: an ally who leaves the range loses it within 2 s', `ally ${has(ally, 'might')}`);
+}
+
+function triggers(): void {
+  const w = world(), p = hero(w, 'a', save('warden')), d = dummy(w, 40, 0);
+  give(p, allCrit, marker('spellCrit'), marker('attackCrit'), marker('statusApplied'), marker('emberSpent'), marker('staminaSpent'), marker('dashEnd'));
+  w.sim.w.refresh(p);
+  dealDamage(w.sim.w, p, d, 50, 'physical');
+  const atk = marked(p, 'attackCrit') && !marked(p, 'spellCrit');
+  dealDamage(w.sim.w, p, d, 50, 'physical', { isSpell: true });
+  check(atk && marked(p, 'spellCrit'), 'triggers: an attack crit fires attackCrit only; a spell crit fires spellCrit', `attack → attackCrit ${atk}, spell → spellCrit ${marked(p, 'spellCrit')}`);
+  applyStatus(w.sim.w, p, d, { id: 'bleed' });
+  check(marked(p, 'statusApplied'), 'triggers: setting a status on a foe fires statusApplied');
+  p.ember = p.emberMax = 200;
+  spend(w.sim.w, p, 'ember', 40);
+  const early = marked(p, 'emberSpent');
+  spend(w.sim.w, p, 'ember', 15);
+  check(!early && marked(p, 'emberSpent'), 'triggers: emberSpent fires once 50 Ember has been spent (40 no, 55 yes)', `40 → ${early}, 55 → ${marked(p, 'emberSpent')}`);
+  w.run(500);
+  w.press('a', Btn.DASH, { move: { x: 1, y: 0 } });
+  const mid = marked(p, 'dashEnd'), stam = marked(p, 'staminaSpent');
+  w.run(600);
+  check(!mid && marked(p, 'dashEnd'), 'triggers: dashEnd fires when the dash lands, not when it starts', `at start ${mid}, after ${marked(p, 'dashEnd')}`);
+  check(stam || p.stamina > 0, 'triggers: a dash spends stamina through the spent counter', `staminaSpent ${stam}`);
+}
+
+function conds(): void {
+  const base: CondCtx = { hpFrac: 1, inCombat: true, stationaryMs: 0, momentum: 0, emberFrac: 0.2, staminaFrac: 0.9, moving: true, minions: 2 };
+  const ok = evalCond({ c: 'emberBelow', pct: 0.3 }, base) && !evalCond({ c: 'emberAbove', pct: 0.3 }, base)
+    && !evalCond({ c: 'staminaBelow', pct: 0.5 }, base) && evalCond({ c: 'moving' }, base) && !evalCond({ c: 'moving' }, { ...base, moving: false })
+    && evalCond({ c: 'minions', min: 2 }, base) && !evalCond({ c: 'minions', min: 3 }, base);
+  check(ok, 'conditions: emberAbove / emberBelow / staminaBelow / moving / minions');
+  // the sim fills them in
+  const w = world(), p = hero(w, 'a', save('warden'));
+  w.run(300, { a: { move: { x: 1, y: 0 } } });
+  const x = w.sim.w.condCtx(p, null);
+  check(x.moving === true && x.emberFrac !== undefined && x.minions === 0, 'conditions: the sim fills in moving, Ember and minions for a hero', JSON.stringify({ moving: x.moving, ember: x.emberFrac, minions: x.minions }));
+}
+
+/** First kit spell that fires a projectile (for projCount / castSpeed). */
+function projectileSpell(): HcSpell {
+  for (const cls of ['arcanist', 'rimecaller', 'sparkwright', 'huntsman']) for (const id of kitFor(cls).spells) {
+    const s = spellDef(id);
+    if (s?.actions.some((a) => a.a === 'projectile')) return s;
+  }
+  throw new Error('no projectile kit spell');
+}
+
+function newStats(w0: () => World): void {
+  // emberOnHit / staminaOnKill
+  {
+    const w = w0(), p = hero(w, 'a', save('warden')), d = dummy(w, 40, 0);
+    give(p, noCrit, { mods: [{ stat: 'emberOnHit', op: 'flat', value: 3 }, { stat: 'staminaOnKill', op: 'flat', value: 25 }] });
+    p.ember = 10;
+    dealDamage(w.sim.w, p, d, 10, 'physical');
+    const e = p.ember;
+    const victim = dummy(w, 60, 0);
+    victim.maxHp = victim.hp = 5;
+    p.stamina = 10;
+    dealDamage(w.sim.w, p, victim, 500, 'physical');
+    check(Math.abs(e - 13) < 1e-6 && p.stamina >= 35, 'stats: emberOnHit restores Ember per hit; staminaOnKill restores stamina on a kill', `ember 10 → ${e}, stamina 10 → ${p.stamina}`);
+  }
+  // statusDmg / statusChance
+  {
+    const w = w0(), p = hero(w, 'a', save('arcanist')), d = dummy(w, 40, 0), d2 = dummy(w, 80, 0);
+    applyStatus(w.sim.w, p, d, { id: 'burn' });
+    give(p, { mods: [{ stat: 'statusDmg.burn', op: 'flat', value: 0.5 }] });
+    applyStatus(w.sim.w, p, d2, { id: 'burn' });
+    const r = (d2.statuses.get('burn')?.dps ?? 0) / Math.max(1e-9, d.statuses.get('burn')?.dps ?? 0);
+    check(Math.abs(r - 1.5) < 1e-6, 'stats: +50% burn damage makes a burn tick 1.5× as hard', `ratio ${r.toFixed(3)}`);
+    give(p, { mods: [{ stat: 'statusChance', op: 'flat', value: 1 }] });
+    let landed = 0;
+    for (let i = 0; i < 200; i++) { const t = dummy(w, 200 + i, 0); applyStatus(w.sim.w, p, t, { id: 'bleed', chance: 0.25 }); if (t.statuses.has('bleed')) landed++; }
+    check(landed > 70 && landed < 130, 'stats: +100% status chance doubles a 25% chance (~50 of 100)', `${landed}/200`);
+  }
+  // projCount / castSpeed / area
+  {
+    const w = w0(), p = hero(w, 'a', save('arcanist')), sp = projectileSpell();
+    w.run(300);
+    const count = () => [...w.sim.w.projectiles.values()].filter((x) => x.cast.caster === p).length;
+    const before = count();
+    cast(w.sim.w, p, 0, { ...sp, castMs: 0 });
+    const one = count() - before;
+    w.run(2500);
+    give(p, { mods: [{ stat: 'projCount', op: 'flat', value: 2 }, { stat: 'castSpeed', op: 'flat', value: 1 }] });
+    const b2 = count();
+    cast(w.sim.w, p, 0, { ...sp, castMs: 0 });
+    const three = count() - b2;
+    check(one >= 1 && three === one + 2, 'stats: +2 projectiles on a projectile spell', `${one} → ${three}`);
+    w.run(2500);
+    cast(w.sim.w, p, 0, { ...sp, castMs: 600 });
+    const wind = (p.windup?.until ?? 0) - w.sim.w.t;
+    check(Math.abs(wind - 300) < 1, 'stats: +100% cast speed halves a 600 ms wind-up', `wind-up ${Math.round(wind)} ms`);
+  }
+  // staminaCost / dashCd
+  {
+    const w = w0(), p = hero(w, 'a', save('warden'));
+    give(p, { mods: [{ stat: 'staminaCost', op: 'flat', value: -0.5 }, { stat: 'dashCd', op: 'flat', value: -0.5 }] });
+    w.run(500);
+    const s0 = p.stamina;
+    w.press('a', Btn.DASH, { move: { x: 1, y: 0 } });
+    const paid = s0 - p.stamina;
+    const w2 = w0(), q = hero(w2, 'a', save('warden'));
+    w2.run(500);
+    const q0 = q.stamina;
+    w2.press('a', Btn.DASH, { move: { x: 1, y: 0 } });
+    const full = q0 - q.stamina;
+    check(paid > 0 && Math.abs(paid / full - 0.5) < 0.1, 'stats: −50% stamina cost halves the dash cost', `${full.toFixed(1)} → ${paid.toFixed(1)}`);
+    let back = 0, qback = 0;
+    for (let t = 0; t < 6000 && (!back || !qback); t += 1000 / 30) {
+      w.tick(); w2.tick();
+      if (!back && p.dashCharges >= 1) back = t;
+      if (!qback && q.dashCharges >= 1) qback = t;
+    }
+    check(back > 0 && qback > 0 && back < qback * 0.7, 'stats: −50% dash cooldown brings the charge back sooner', `${Math.round(qback)} ms → ${Math.round(back)} ms`);
+  }
+}
+
+export function buildChecks(): void {
+  conversion();
+  spellLevels();
+  auras();
+  triggers();
+  conds();
+  newStats(() => world());
+}

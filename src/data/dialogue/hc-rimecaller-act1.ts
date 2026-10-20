@@ -88,7 +88,7 @@ const dialogues: DialogueDef[] = [
         speaker: HV, mood: 'sad', text: 'Frost Wraiths are people who stepped out of the hour and into the melt. Over thirty years, some of them got tired of waiting. I signed out the last one myself. Bertil. He wanted to see his sister in the Wolfrun.',
         choices: [{ text: 'I’m sorry.', to: 'down', trust: 1 }, { text: 'Where does the melt go?', to: 'down' }],
       },
-      down: { speaker: HV, text: 'Downhill. Everything in Glacierhome goes downhill eventually, except the Archive’s budget. The melt has been running into the old cisterns under the Undercrypt for a year, and the cistern-keepers went down last month to see why. Go and fetch them. Gently.', next: null },
+      down: { speaker: HV, text: 'Downhill. Everything in Glacierhome goes downhill eventually, except the Archive’s budget. The melt has run into the old cisterns under the Undercrypt for thirty years, black for the last one, and the cistern-keepers went down last month to see why. Go and fetch them. Gently.', next: null },
     },
   },
   // ---------- I-3 The Melt Cisterns
@@ -325,7 +325,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       market: { speaker: 'narrator', text: 'In the Market a sugar bowl changes hands at last. Nim Larkspur’s fingers close on Widow Tern’s purse, or on nothing, depending on what you left him. A thousand people pick up their conversations exactly where they dropped them.', next: 'wake2' },
-      stair: { speaker: 'narrator', text: 'Wendel Fross puts his foot down on the step at last, and looks at his empty hand, baffled. Down in the Market, Greta Lind looks at the letter in hers. She reads it twice. Then she starts to run.', next: 'wake2' },
+      stair: { speaker: 'narrator', text: 'Wendel Fross puts his foot down on the step at last, and looks at his hand, baffled. Down in the Market, Greta Lind looks at the letter in hers. She reads it twice. Then she starts to run.', next: 'wake2' },
       wake2: { speaker: 'narrator', text: 'Nobody in the city seems to notice anything is wrong, except that it has gone very suddenly dark, and that their tea is cold.', next: null },
     },
   },
@@ -373,7 +373,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       wound: {
-        speaker: HV, mood: 'sad', text: 'My pocket-watch. It stopped at eleven fifty-two like everything else. I wound it this morning, for the first time since C. 1012. It’s running a little fast. So are you. Bring it back when you’ve caught up.',
+        speaker: HV, mood: 'sad', text: 'My pocket-watch. It stopped at eleven fifty-two like everything else. I wound it tonight, for the first time since C. 1012. It’s running a little fast. So are you. Bring it back when you’ve caught up.',
         effects: [{ giveItem: 'i_halla_watch' }, { setFlag: 'rimecaller.halla_watch', value: true }], next: 'end',
       },
       hand: { speaker: HV, text: 'Well. Mind the glacier. Mind the Tyrant. Write things down.', effects: [{ setFlag: 'rimecaller.halla_farewell', value: 'hand' }], next: null },

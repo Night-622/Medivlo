@@ -109,7 +109,7 @@ const dialogues: DialogueDef[] = [
       see: { speaker: 'narrator', text: 'Hask is sitting on the lip of an old lava vein in the dark, with his feet in it, the way a boy sits on a riverbank. The black tears are coming up out of the vein around his ankles, and he is talking to them.', next: 'talk' },
       talk: { speaker: HK, mood: 'happy', text: '(Not to you. To the tears.) Shh. Shh, I know. I know. Soon. When the stone comes, and the gate opens, I’ll take you all through. Nobody will ever be put down again. Not ever.', next: 'turn' },
       turn: {
-        speaker: HK, text: '(He sees you. He isn’t surprised.) Sib! This is where I fell in, did Mother tell you? She burned her arm off pulling me out. I didn’t burn. I never told her I could hear them, even then.',
+        speaker: HK, text: '(He sees you. He isn’t surprised.) Sib! This is where I fell in, did Mother tell you? She burned her arm black pulling me out. I didn’t burn. I never told her I could hear them, even then.',
         choices: [
           { text: 'Hear who, Hask?', to: 'who' },
           { text: 'Come back to the camp.', to: 'back' },
@@ -216,7 +216,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       wait: { speaker: CK, mood: 'happy', text: 'He’ll wait. We’ll all wait. I’ll keep a pot on. When you bring him home I want you both at my fire, and I want you to eat until you can’t stand.', next: 'tam' },
-      bet: { speaker: JY, mood: 'sad', text: 'A long, slow supper where nobody looks at the door. Cookie says you asked her that. Two coins says you get it for her.', next: 'tam' },
+      bet: { speaker: JY, mood: 'sad', text: 'A long, slow supper where nobody looks at the door. It’s all Cookie ever wanted. Two coins says you get it for her.', next: 'tam' },
       tam: { speaker: TM, text: '(Awake after all.) The gate’s older than the war. Older than the Muster. Whatever’s on the other side, it was there before we started fighting. Remember that, when you get there.', effects: [{ setFlag: 'reaver.last_camp', value: true }], next: null },
       plain: { speaker: 'narrator', text: 'A cold fire-ring on the Cinder Road.', next: null },
     },

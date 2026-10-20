@@ -115,7 +115,9 @@ function run(w: SimWorld, a: Action, c: CastCtx): void {
       return;
     }
     case 'projectile': {
-      const n = a.count ?? 1, spread = ((a.spread ?? 0) * Math.PI) / 180;
+      // deeper builds: +projectiles (projCount) on a hero's spells
+      const extra = c.isSpell && caster.kind === 'player' && c.depth === 0 ? Math.round(caster.stats.stats.projCount ?? 0) : 0;
+      const n = (a.count ?? 1) + extra, spread = (((a.spread ?? 0) + extra * 12) * Math.PI) / 180;
       const base = Math.atan2(c.dir.y, c.dir.x);
       for (let i = 0; i < n; i++) {
         const ang = n > 1 ? base - spread / 2 + (spread * i) / (n - 1) : base;

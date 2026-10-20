@@ -22,7 +22,7 @@ const LETTER: Record<string, DialogueNode> = {
       { text: '(Nod to your Knight, whose half is ringing with yours.)', to: 'coop', when: { partyHasClass: 'knight' } },
     ],
   },
-  edda: { speaker: 'npc:bearer-knight', mood: 'sad', text: 'Juggernaut. I wanted to say… on behalf of the Order. For the Forge buying her iron, and the quotas, and the walls, and… I am sorry.', next: 'what' },
+  edda: { speaker: 'npc:bearer-knight', mood: 'sad', text: 'Juggernaut. I wanted to say… on behalf of the Order. For the Forge buying the Lode’s iron, and the quotas, and the walls, and… I am sorry.', next: 'what' },
   coop: { speaker: 'narrator', text: 'Forge and Lode, ringing together. Your Knight opens their mouth, visibly preparing an apology on behalf of the entire Order of the Anvil.', next: 'what' },
   what: {
     speaker: 'narrator', text: 'You wait. The Knight waits. Neither of you is sure what for.',
@@ -344,7 +344,7 @@ const dialogues: DialogueDef[] = [
         choices: [{ text: '(Stand with her a while.)', to: 'stand', trust: 1 }, { text: 'He’s home.', to: 'home' }],
       },
       stand: { speaker: 'npc:mother-teasdale', text: 'Thank you, love. He’d have liked you. He liked anybody who didn’t talk at a shrine.', next: null },
-      home: { speaker: 'npc:mother-teasdale', text: 'He’s home. Fourteen years in the scrap and he’s home. Thank you, love.', next: null },
+      home: { speaker: 'npc:mother-teasdale', text: 'He’s home. Eleven years in the scrap and he’s home. Thank you, love.', next: null },
     },
   },
   {
@@ -522,7 +522,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'In the yard of the Sparkwright Works: twelve iron arms, a boiler, a great many dials and a drill the size of a cart. It will do the work of forty miners, the Sparkwright bearer says, glowing. Every miner. Forever.',
         choices: [
           { text: 'Then what are we for?', to: 'for', effects: [{ setFlag: 'juggernaut.machine', value: 'asked' }] },
-          { text: '(Help her tighten the drill.) Make it dig the bad seams. The ones that kill people.', to: 'help', effects: [{ setFlag: 'juggernaut.machine', value: 'helped' }] },
+          { text: '(Help them tighten the drill.) Make it dig the bad seams. The ones that kill people.', to: 'help', effects: [{ setFlag: 'juggernaut.machine', value: 'helped' }] },
         ],
       },
       for: { speaker: 'narrator', text: 'The Sparkwright bearer opens their mouth, and shuts it, and looks at the machine, and at you. They had not, it turns out, thought about that part. They write the question on the boiler in chalk, so they will not forget it.', next: null },

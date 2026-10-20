@@ -103,6 +103,22 @@ function enterStage(def: QuestDef, stageId: string): void {
   schedule();
 }
 
+/**
+ * After a load: a stage that opened its scenes on entry and waits only on flags those scenes set (the final epilogue,
+ * some yields) would be stuck if the save was made mid-scene, since open dialogue is not saved. Reopen just its
+ * openDialogue effects. Stages that wait on a place, a fight or a talk keep their scene closed (no repeats on every
+ * load). Claude 6's trace.
+ */
+function reopenStageScenes(): void {
+  for (const def of activeQuests()) {
+    const stage = currentStage(def);
+    const scenes = (stage?.onEnter ?? []).filter((e) => 'openDialogue' in e);
+    if (!stage || !scenes.length || !stage.objectives.every((o) => 'when' in o)) continue;
+    if (stage.objectives.every((o) => objectiveDone(def, o))) continue;
+    applyEffects(scenes, { questId: def.id });
+  }
+}
+
 function completeStage(def: QuestDef, stage: QuestStageDef): void {
   applyEffects(stage.onComplete, { questId: def.id });
   if (!isActive(def.id) || progress(def.id)?.stage !== stage.id) return; // an effect moved it already
@@ -258,5 +274,5 @@ export function installQuestTriggers(): void {
   authBus.on('flag:changed', () => schedule());
   authBus.on('enemy:cleansed', () => schedule());
   authBus.on('game:new', () => { presence.clear(); schedule(); });
-  authBus.on('game:loaded', () => { presence.clear(); schedule(); });
+  authBus.on('game:loaded', () => { presence.clear(); reopenStageScenes(); schedule(); });
 }

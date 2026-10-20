@@ -127,6 +127,22 @@ export class Sim implements CombatService {
     }
   }
 
+  /**
+   * A save was loaded or a new game began on this authority (game:loaded / game:new fire before the world scene
+   * starts): the old world's creatures, shots, zones, drops, hazards and pending timers go, and the local hero is
+   * dropped so the new world's first loadout builds it fresh (alive, its own class kit, a new input stream).
+   */
+  resetForLoad(): void {
+    if (this.localPlayer) this.removePlayer(this.localPlayer);
+    this.w.enemies.clear();
+    this.w.projectiles.clear();
+    this.w.zones.clear();
+    this.w.loot.clear();
+    this.w.hazards.clear();
+    this.w.clearTimers();
+    this.w.frozen = false;
+  }
+
   /** net.onMembers: drop players who left (joiners appear with their first `loadout`). */
   syncMembers(members: PartyMember[]): void {
     const now = new Set(members.filter((m) => m.connected).map((m) => m.playerId));

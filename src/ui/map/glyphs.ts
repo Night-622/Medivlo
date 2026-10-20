@@ -13,6 +13,8 @@ export const GLYPHS = {
   unknown: { size: 12, layers: [[P['stone-600'], 'M3 1h6v1h1v3h-1v1h-2v2h-2v-3h1v-1h2v-2h-4v1h-2v-1h1zM5 9h2v2h-2z']] },
   player: { size: 12, layers: [[P['gold-200'], 'M5 0h2v2h1v2h1v2h1v3h-2v-1h-4v1h-2v-3h1v-2h1v-2h1z'], [P['blood-400'], 'M5 3h2v4h-2z']] },
   quest: { size: 8, layers: [[P['gold-400'], 'M3 0h2v1h1v1h1v1h1v2h-1v1h-1v1h-1v1h-2v-1h-1v-1h-1v-1h-1v-2h1v-1h1v-1h1z'], [P['gold-200'], 'M3 2h1v1h-1z']] },
+  // other active quests: the same gem, tinted (drawGlyph's tint; the map passes the HUD teal)
+  questSide: { size: 8, layers: [[-1, 'M3 0h2v1h1v1h1v1h1v2h-1v1h-1v1h-1v1h-2v-1h-1v-1h-1v-1h-1v-2h1v-1h1v-1h1z'], [P['highlight-100'], 'M3 2h1v1h-1z']] },
   town: { size: 8, layers: [[P['parch-700'], 'M1 3h6v5h-6z'], [P['blood-600'], 'M0 3h8v-1h-1v-1h-1v-1h-4v1h-1v1h-1z']] },
   dungeon: { size: 8, layers: [[P['stone-700'], 'M1 1h6v7h-6z'], [P['ink-900'], 'M3 4h2v4h-2z'], [P['ruin-teal-500'], 'M2 2h1v1h-1zM5 2h1v1h-1z']] },
   skull: { size: 8, layers: [[-1, 'M1 0h6v1h1v4h-1v1h-1v2h-4v-2h-1v-1h-1v-4h1z'], [P['ink-900'], 'M2 2h1v2h-1zM5 2h1v2h-1z']] },

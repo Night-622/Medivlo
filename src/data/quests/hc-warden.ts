@@ -154,7 +154,7 @@ const quests: QuestDef[] = [
         next: 'after',
       },
       {
-        id: 'after', journal: 'Whatever the moot decided, there are lights in the Wraith Barrows tonight, and nobody has been buried there in a hundred years.',
+        id: 'after', journal: 'Whatever the moot decided, there are lights in the Wraith Barrows tonight, where nobody living goes.',
         objectives: [],
         onComplete: [{ startQuest: 'quest:warden-the-wraith-barrows' }],
         end: { status: 'completed' },

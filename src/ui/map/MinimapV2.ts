@@ -12,8 +12,9 @@ export interface MinimapV2Source {
   player(): { x: number; y: number };
   /** minimap colour of a tile, or null when its chunk isn't loaded */
   colorAt(tx: number, ty: number): number | null;
-  /** enemies and points of interest (world px) */
-  dots?(): { x: number; y: number; kind: 'enemy' | 'door' | 'waystone' | 'quest' }[];
+  /** enemies and points of interest (world px); quest = the tracked quest's objectives (gold, with an edge arrow
+   * when off the window), quest-side = other active quests' (teal) */
+  dots?(): { x: number; y: number; kind: 'enemy' | 'door' | 'waystone' | 'quest' | 'quest-side' }[];
   label(): string;
 }
 
@@ -23,7 +24,9 @@ const SCALE = T.component.minimap.scale;
 const TILE_PX = TILE_SIZE * SCALE;
 const COLS = Math.ceil(MW / TILE_PX) + 2, ROWS = Math.ceil(MH / TILE_PX) + 2;
 const TEX = 'hc-minimap';
-const DOT: Record<string, number> = { enemy: n(C.danger), door: n(C.text), waystone: n(C.teal), quest: n(C.gold) };
+const DOT: Record<string, number> = { enemy: n(C.danger), door: n(C.text), waystone: n(C.teal), quest: n(C.gold), 'quest-side': n(C.teal) };
+/** the edge arrow toward an off-window tracked objective sits this far inside the window */
+const EDGE = 6;
 
 export class MinimapV2 {
   private root: Phaser.GameObjects.Container;
@@ -77,7 +80,17 @@ export class MinimapV2 {
     const g = this.marks.clear();
     for (const d of this.src.dots?.() ?? []) {
       const x = d.x * SCALE - cx, y = d.y * SCALE - cy;
-      if (x < 0 || y < 0 || x > MW || y > MH) continue;
+      const quest = d.kind === 'quest' || d.kind === 'quest-side';
+      if (x < 0 || y < 0 || x > MW || y > MH) {
+        if (d.kind === 'quest') this.arrow(g, x, y);
+        continue;
+      }
+      if (quest) { // a small diamond with an ink rim, over everything else
+        const r = 3;
+        g.fillStyle(n(C.ink), 1).fillTriangle(x, y - r - 1, x + r + 1, y, x, y + r + 1).fillTriangle(x, y - r - 1, x - r - 1, y, x, y + r + 1);
+        g.fillStyle(DOT[d.kind], 1).fillTriangle(x, y - r, x + r, y, x, y + r).fillTriangle(x, y - r, x - r, y, x, y + r);
+        continue;
+      }
       const s = d.kind === 'enemy' ? 4 : 3;
       g.fillStyle(DOT[d.kind], 1).fillRect(Math.round(x - s / 2), Math.round(y - s / 2), s, s);
     }
@@ -86,6 +99,19 @@ export class MinimapV2 {
   }
 
   private tile0: [number, number] = [0, 0];
+
+  /** A gold arrow on the window's edge pointing toward an off-window tracked objective at map-px (x, y). */
+  private arrow(g: Phaser.GameObjects.Graphics, x: number, y: number): void {
+    const dx = x - MW / 2, dy = y - MH / 2, a = Math.atan2(dy, dx);
+    // where the ray from the centre meets the inset window edge
+    const sx = (MW / 2 - EDGE) / Math.max(1e-6, Math.abs(Math.cos(a))), sy = (MH / 2 - EDGE) / Math.max(1e-6, Math.abs(Math.sin(a)));
+    const t = Math.min(sx, sy), ex = MW / 2 + Math.cos(a) * t, ey = MH / 2 + Math.sin(a) * t;
+    const tip = (r: number, da: number): [number, number] => [ex + Math.cos(a + da) * r, ey + Math.sin(a + da) * r];
+    const [ax, ay] = tip(5, 0), [bx, by] = tip(4, 2.4), [qx, qy] = tip(4, -2.4);
+    const [ax2, ay2] = tip(6.5, 0), [bx2, by2] = tip(5.5, 2.4), [qx2, qy2] = tip(5.5, -2.4);
+    g.fillStyle(n(C.ink), 1).fillTriangle(ax2, ay2, bx2, by2, qx2, qy2);
+    g.fillStyle(n(C.gold), 1).fillTriangle(ax, ay, bx, by, qx, qy);
+  }
 
   destroy(): void {
     this.root.destroy();

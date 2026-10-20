@@ -268,7 +268,7 @@ const dialogues: DialogueDef[] = [
       shoe: { speaker: 'narrator', text: 'It comes out with a crack and a puff of frost. It is very small. Somebody walked through this hole last winter in one shoe, and somebody carried them the rest of the way. You put it inside your coat.', next: 'cut' },
       listen: { speaker: 'narrator', text: 'Through the shield the stone sings the way a wall would sing if walls did: I hold, I hold. And under that, lower, so low you feel it in your boots rather than hear it: and I let through.', next: 'cut' },
       cut: { speaker: 'narrator', text: 'Your blade goes into the ice as if into snow. The stone comes out into your hand. It feels like holding someone’s hand.', next: 'fall' },
-      fall: { speaker: 'narrator', text: 'And the patch gives way. The ice that has plugged the Breach all winter slumps and slides, and the hole in the Wardwall is suddenly twice as wide, and through it, at the head of the clans, Torvald walks out into the snow.', next: 'torvald' },
+      fall: { speaker: 'narrator', text: 'And the patch gives way. The ice that has plugged the Breach since last winter slumps and slides, and the hole in the Wardwall is suddenly twice as wide, and through it, at the head of the clans, Torvald walks out into the snow.', next: 'torvald' },
       torvald: {
         speaker: TV, mood: 'hollow', text: '(Not looking back.) Keep it warm, pup. I’ll see you at the White Gate. Everyone goes through the gate in the end. Even Wardens.',
         choices: [

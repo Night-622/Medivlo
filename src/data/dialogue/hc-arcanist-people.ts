@@ -441,7 +441,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       arrive: { speaker: 'npc:pudding-mother', text: '(She has squeezed between two tents and is making the whole camp very warm. Every bearer is staring. She bows to you.)', next: 'pudding' },
       pudding: {
-        speaker: 'narrator', text: 'She has come to see her youngest off to the end of the world. She would also, it is clear, like a hot meal, and would not dream of asking.',
+        speaker: 'narrator', text: 'She has come all this way to see off the one who brought her news of her youngest. She would also, it is clear, like a hot meal, and would not dream of asking.',
         choices: [{ text: '(Bow back, and fetch her the camp’s whole stewpot.)', to: 'stew' }],
       },
       stew: { speaker: 'narrator', mood: 'happy', text: 'The bearers laugh for the first time since the Wall. It is a good sound to take up the stairs with you.', next: null },

@@ -233,7 +233,7 @@ const dialogues: DialogueDef[] = [
       },
       listen: { speaker: 'narrator', text: 'You stand still. You listen. Far down the road, at the gate, something very large is breathing. Further away, much further, past the gate, a bell is ringing that has nothing to do with closing. You walk on.', next: null },
       arrow: { speaker: 'narrator', text: 'You scratch it beside his thirty marks, deep and plain: an arrow, pointing down the road, towards the gate. Whoever comes back to walk round this stone tonight will find it. You hope they read it the right way.', next: null },
-      plain: { speaker: 'narrator', text: 'A grey boulder at a bend in the gate road, with thirty tally-marks, a word and an arrow.', next: null },
+      plain: { speaker: 'narrator', text: 'A grey boulder at a bend in the gate road, with thirty tally-marks and a word.', next: null },
     },
   },
   {
@@ -423,7 +423,7 @@ const dialogues: DialogueDef[] = [
       },
       patient: { speaker: FS, mood: 'happy', text: '(A sound comes out of Brother Faraj that the others have clearly never heard. It takes them a moment to recognise it as laughing.) Patient. Thirty years in a slime. Yes. That is him exactly.', next: 'cushion' },
       bow: { speaker: 'narrator', text: 'Six old monks look at you, and at each other, and then, one by one, they bow back, very low, the way they were taught to bow to the man they were sent ahead to welcome.', next: 'cushion' },
-      cushion: { speaker: FS, mood: 'sad', text: 'We came ahead to welcome a crowning. We swept for thirty years. And the one we were keeping the hall for was twelve steps away, in the pool, all along. (He turns over Kell’s cup, at last.) Well. Somebody can use the cushion.', next: 'kestrel' },
+      cushion: { speaker: FS, mood: 'sad', text: 'We came ahead to welcome a crowning. We swept for thirty years. And the one we should have been looking for was twelve steps away, in the pool, all along. (He turns over Kell’s cup, at last.) Well. Somebody can use the cushion.', next: 'kestrel' },
       kestrel: { speaker: FS, text: 'One more thing. A monk in grey came past the hall a week ago, walking towards the thunder. He would not stop for tea. He said he had news to give the Stormcrow. Your brother, I think.', next: null },
     },
   },

@@ -64,7 +64,7 @@ const quests: QuestDef[] = [
         next: 'chapter',
       },
       {
-        id: 'chapter', journal: 'Through the fortieth gate, with three pennies left, a dented shield and the letter still sealed.',
+        id: 'chapter', journal: 'Through the fortieth gate, with one penny left, a dented shield and the letter still sealed.',
         objectives: [{ id: 'varley', text: 'Deliver Gideon’s letter to the Chapter-Master', talk: AV, marker: { landmark: 'landmark:order-chapterhouse' } }],
         onComplete: [{ startQuest: 'quest:knight-the-barrow-vigil' }],
         end: { status: 'completed' },
@@ -769,7 +769,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:knight-the-iron-head')), autoStart: true, firstStage: 'courier',
     stages: [
       { id: 'courier', journal: 'Joss Ashlar is waiting at the Heart camp with a letter, and a parcel.', objectives: [{ id: 'joss', text: 'Meet Gideon’s courier at the Heart camp', talk: 'npc:joss-ashlar', marker: { landmark: 'landmark:heart-camp' } }], next: 'vigil' },
-      { id: 'vigil', journal: 'A knight of the Order keeps vigil before a long walk. Wrapped with the spurs is Gideon’s old vigil-card. Keep the vigil at the foot of the Stairs first.', objectives: [{ id: 'vigil', text: 'Keep a vigil at the foot of the Twelve Stairs', interact: 'obj:knight-stair-vigil', marker: { landmark: 'landmark:twelve-stairs' } }], next: 'step' },
+      { id: 'vigil', journal: 'A knight of the Order keeps vigil before a long walk. With the letter came Gideon’s old vigil-card. Keep the vigil at the foot of the Stairs first.', objectives: [{ id: 'vigil', text: 'Keep a vigil at the foot of the Twelve Stairs', interact: 'obj:knight-stair-vigil', marker: { landmark: 'landmark:twelve-stairs' } }], next: 'step' },
       { id: 'step', journal: 'Ser Gideon wants his spurs left on the top step of the Twelve Stairs, before the Citadel doors, where he carried the crown in.', objectives: [{ id: 'step', text: 'Leave Gideon’s spurs at the top of the Twelve Stairs', interact: 'obj:knight-iron-stair-step', marker: { landmark: 'landmark:twelve-stairs-top' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 2 },

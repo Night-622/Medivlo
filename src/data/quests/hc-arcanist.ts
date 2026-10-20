@@ -142,7 +142,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A1, id: 'quest:arcanist-the-last-library', name: 'The Last Library', type: 'main', region: Z3, giver: 'npc:ignace-morrow',
-    summary: 'The Great Kiln is failing. The Conclave meets tonight to vote on feeding it the Glass Archive: every record Kilnhold has kept since the Concord.',
+    summary: 'The Great Kiln is failing. The Conclave meets tonight to vote on feeding it the Glass Archive: six hundred years of Kilnhold’s records.',
     requires: req(done('quest:arcanist-the-provosts-favour')), firstStage: 'canvass',
     stages: [
       {
@@ -181,7 +181,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:arcanist-the-last-library')), firstStage: 'archive',
     stages: [
       {
-        id: 'archive', journal: 'Thirty years of burned records have become something that walks. It is in the Glass Archive.',
+        id: 'archive', journal: 'Six hundred years of burned records have become something that walks. It is in the Glass Archive.',
         objectives: [{ id: 'enter', text: 'Enter the burning Glass Archive', reach: L2, marker: { landmark: 'landmark:glass-archive' } }],
         next: 'archivists',
       },
@@ -692,7 +692,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A2, id: 'quest:arcanist-a-letter-from-thrane', name: 'A Letter from Thrane', type: 'class', region: 'vil:brind', giver: 'npc:coalby-thrane',
-    summary: 'Something warm and orange has come through the Ash arch carrying a letter in its mouth.',
+    summary: 'A letter has come through the Ash arch from Kilnhold, carried by something small and determined.',
     requires: req(done('quest:arcanist-the-gilded-engine')), autoStart: true, firstStage: 'letter',
     stages: [
       {
@@ -701,7 +701,7 @@ const quests: QuestDef[] = [
         next: 'reply',
       },
       {
-        id: 'reply', journal: 'One of Dilly Coop’s soot-pigeons came through with the letter, and it is not leaving without an answer.',
+        id: 'reply', journal: 'One of Dilly Coop’s soot-pigeons is waiting on the Ash arch, and it is not leaving without an answer.',
         objectives: [{ id: 'reply', text: 'Send a reply home by soot-pigeon', interact: 'obj:arcanist-pigeon-post', marker: { landmark: 'landmark:gate-circle' } }],
         onComplete: [{ setFlag: 'story.act2_ready', value: true }],
         end: { status: 'completed' },

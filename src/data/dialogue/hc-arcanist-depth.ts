@@ -42,7 +42,7 @@ const dialogues: DialogueDef[] = [
       in: { speaker: 'narrator', text: 'Magister Thrane’s study is three rooms of paper with a fire in the middle of them. A Lava Slime the size of a cat is asleep on a stack of Conclave minutes, gently scorching them.', next: 'pudding' },
       pudding: { speaker: TH, text: 'That is Pudding. Pudding, this is a bearer of the Ash stone. Don’t eat their permit. Sit, sit. Move the treatise. No, the other treatise.', next: 'tea' },
       tea: {
-        speaker: TH, text: '(He pours two cups of something black and fragrant, and his hands are shaking.) Forty years I’ve studied the Concord Stones. Forty years and never a whisper. And tonight one of them sings, and walks up to my gate in its nightclothes.',
+        speaker: TH, text: '(He pours two cups of something black and fragrant, and his hands are shaking.) Forty years I’ve studied the Concord Stones. Forty years and never a whisper. And tonight one of them sings, and here it is in my study, about to drink my tea.',
         choices: [
           { text: 'Why me?', to: 'why' },
           { text: 'You’re frightened.', to: 'afraid' },
@@ -193,11 +193,11 @@ const dialogues: DialogueDef[] = [
       tell: {
         speaker: 'narrator', text: 'You tell him: the night carts, the salt, the black still moving in the planks, the glove with his initials. Thrane listens to all of it with his eyes shut.',
         choices: [
-          { text: 'He’s feeding the Kiln black tears.', to: 'tears' },
-          { text: 'And the smoke carries them over the whole city.', to: 'smoke', when: { flag: 'arcanist.sweeps_settled', op: '==', value: 'dampers' } },
+          { text: 'You were right. Barrels of black tears, under his seal.', to: 'tears' },
+          { text: 'The sweeps’ chimneys have been weeping it all along.', to: 'smoke', when: { flag: 'arcanist.sweeps_settled', op: '==', value: 'dampers' } },
         ],
       },
-      tears: { speaker: TH, mood: 'afraid', text: 'And the Kiln burns them, and the smoke carries them, and they come down in every gutter in Kilnhold. Thirty years I’ve been doing the sum. I never thought to ask what he was adding.', next: 'why' },
+      tears: { speaker: TH, mood: 'afraid', text: 'So it’s true. And the Kiln burns them, and the smoke carries them, and they come down in every gutter in Kilnhold. Thirty years I’ve been doing the sum. I never thought to ask what he was adding.', next: 'why' },
       smoke: { speaker: TH, mood: 'afraid', text: 'The sweeps knew. Dora Flue knew, and I told her it was soot. Oh, Kilnhold. Every chimney in the city has been weeping his fuel.', next: 'why' },
       why: {
         speaker: TH, mood: 'sad', text: 'I taught him, you know. Ignace. A brilliant boy. Kinder than me. He used to bring me apples. When did he decide the city was worth more than the people in it?',
@@ -424,7 +424,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:obj-ash-capital-view-find', name: 'Kilnhold viewpoint: the city’s smoke', scope: 'party',
     entries: [{ node: 'find' }],
-    nodes: { find: { speaker: 'narrator', text: 'From the viewpoint the smoke of Kilnhold lies below you like a grey sea, and the Great Kiln’s chimney stands up out of it like a lighthouse. Somebody has left a brass plate on the rail: “On a clear day you can see the Cinder Gate. There has not been a clear day since C. 1012.”', effects: [{ unlockLore: 'lore:hc-ash-capital-view' }], next: null } },
+    nodes: { find: { speaker: 'narrator', text: 'From the viewpoint the smoke of Kilnhold lies below you like a grey sea, and the Great Kiln’s chimney stands up out of it like a lighthouse. Somebody has left a brass plate on the rail: “On a clear day you can see the Cinder Gate.” There has not been a clear day since C. 1012.', effects: [{ unlockLore: 'lore:hc-ash-capital-view' }], next: null } },
   },
   // ======================= ACT II, C-1 Kilnmouth: the cold kiln, the road in
   {
@@ -509,7 +509,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'You have a stub of pencil and the back of Thrane’s letter. What do you send home?',
         choices: [
           { text: '“Ashmaw is at rest. I’m coming for Ignace. Keep the kettle on.”', to: 'sent', effects: [{ setFlag: 'arcanist.reply', value: 'kettle' }] },
-          { text: '“I found him. I still don’t know if I can stop him. Tell me what fire is for.”', to: 'sent', effects: [{ setFlag: 'arcanist.reply', value: 'question' }] },
+          { text: '“I found his trail. I still don’t know if I can stop him. Tell me what fire is for.”', to: 'sent', effects: [{ setFlag: 'arcanist.reply', value: 'question' }] },
           { text: '(Draw Pudding, badly, and nothing else.)', to: 'sent', when: { flag: 'arcanist.pudding_pet' }, effects: [{ setFlag: 'arcanist.reply', value: 'pudding' }] },
         ],
       },

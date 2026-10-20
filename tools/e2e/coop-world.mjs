@@ -121,6 +121,24 @@ try {
   await endDialogue(A); await endDialogue(B);
   await A.shot(join(OUT, 'coop-host.png'));
   await B.shot(join(OUT, 'coop-guest.png'));
+  // Drop-in again (user rule: "any time if they have joined before"). On real Firestore the second knock on the same
+  // room used to be refused (peer docs are create-only); leaving on purpose used to look like a kick → title.
+  await B.ev(`(async () => { const c = await import('/src/core/index.ts'); window.__kicks = 0; c.bus.on('net:kicked', () => window.__kicks++); (await import('/src/net/coop/index.ts')).leaveCoop(); return 1; })()`);
+  const gone = await A.waitFor(`(async () => !(await import('/src/core/index.ts')).Services.get('net').session().members.find((m) => m.playerId === ${JSON.stringify(guestId)})?.connected)()`, 15000);
+  await sleep(1500);
+  const stayed = await B.ev(`({ kicks: window.__kicks, title: window.__game.scene.isActive('MainMenu') })`);
+  check('leaving on purpose is not a kick', gone && stayed.kicks === 0 && !stayed.title, JSON.stringify({ gone, ...stayed }));
+  const rejoined = await B.ev(`(async () => { const coop = await import('/src/net/coop/index.ts'); try { const g = await coop.joinGame(${JSON.stringify(code)}); return { role: g.role }; } catch (e) { return { error: String(e?.message ?? e) }; } })()`);
+  check('guest rejoins the same session by code', rejoined?.role === 'guest', JSON.stringify(rejoined));
+  const back = await A.waitFor(`(async () => !!(await import('/src/core/index.ts')).Services.get('net').session().members.find((m) => m.playerId === ${JSON.stringify(guestId)})?.connected)()`, 15000);
+  const snaps = await B.ev(`(async () => { const n = (await import('/src/core/index.ts')).Services.get('net'); let k = 0; const off = n.addConsumer({ kinds: ['player', 'enemy'], apply: () => { k++; } }); await new Promise((r) => setTimeout(r, 2500)); off(); return k; })()`);
+  check('host shows the rejoined guest and streams to them', back && snaps > 5, JSON.stringify({ back, snaps }));
+  // a guest whose world restarts (door, reload) sends a fresh input stream from seq 1: the host must still follow it
+  await B.ev(`(window.__game.scene.getScene('WorldV2').scene.restart({ guest: true }), 1)`); await sleep(6000); await endDialogue(B);
+  const r0 = (await A.ev(players)).find((p) => p.id === guestId);
+  await B.key('KeyD', 1200); await sleep(800);
+  const r1 = (await A.ev(players)).find((p) => p.id === guestId);
+  check('guest input still moves its hero after the guest world restarts', !!r0 && !!r1 && r1.x - r0.x > 20, JSON.stringify({ r0, r1 }));
   const errs = [...A.errors, ...B.errors].filter((e) => !/auth\/|firestore|Firebase/i.test(e ?? ''));
   check('no page errors', !errs.length, errs.slice(0, 3).join(' || '));
 } catch (e) { check('harness', false, String(e)); }

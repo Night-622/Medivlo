@@ -428,7 +428,7 @@ const quests: QuestDef[] = [
         next: 'snipe',
       },
       {
-        id: 'snipe', journal: 'She read it twice, and then she accepted it, and then she asked if he was eating properly.',
+        id: 'snipe', journal: 'Quentin’s notice is delivered: into Lady Corva’s hands, or onto the table of her empty Hall.',
         objectives: [{ id: 'snipe', text: 'Tell Quentin it is done', talk: 'npc:quentin-snipe', marker: { landmark: 'landmark:gamekeepers-lodge' } }],
         onComplete: [{ setFlag: 'huntsman.snipe_free', value: true }],
         next: 'basket',

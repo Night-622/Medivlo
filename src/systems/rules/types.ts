@@ -63,6 +63,10 @@ export type StatKey =
   | 'dmg' | 'spellDmg' | 'attackDmg' | 'healing' | 'healingTaken' | 'lifesteal' | 'block' | 'dmgTaken'
   | 'statusDur' | 'buffDur' | 'buffPower' | 'slowPower' | 'chains' | 'rootDur' | 'stunTaken'
   | 'xp' | 'gold' | 'itemFind' | 'bag' | 'potionHeal' | 'dashCharges' | 'lootRange' | 'maxMomentum' | 'ultCdr'
+  // deeper builds (BUILDS.md §2.1): castSpeed / area / dashCd / staminaCost are fractions; projCount, emberOnHit,
+  // staminaOnKill flat; minion* scale summons; statusChance scales status chances; statusDmg.<id> its damage
+  | 'castSpeed' | 'area' | 'projCount' | 'dashCd' | 'staminaCost' | 'emberOnHit' | 'staminaOnKill'
+  | 'minionDmg' | 'minionHp' | 'statusChance' | `statusDmg.${StatusId}`
   | `dmg.${DamageKind}` | `resist.${DamageKind}`;
 
 /**
@@ -77,7 +81,9 @@ export type Cond =
   | { c: 'targetHpAbove'; pct: number } | { c: 'targetHpBelow'; pct: number }
   | { c: 'targetHas'; status: StatusId } | { c: 'targetTier'; tiers: CreatureTier[] }
   | { c: 'targetFar'; px: number } | { c: 'alone'; px: number } | { c: 'inCombat' } | { c: 'stationary'; ms: number }
-  | { c: 'weapon'; types: WeaponType[] } | { c: 'behind' } | { c: 'fromStealth' } | { c: 'momentum'; min: number };
+  | { c: 'weapon'; types: WeaponType[] } | { c: 'behind' } | { c: 'fromStealth' } | { c: 'momentum'; min: number }
+  | { c: 'emberAbove'; pct: number } | { c: 'emberBelow'; pct: number } | { c: 'staminaBelow'; pct: number }
+  | { c: 'moving' } | { c: 'minions'; min: number };
 
 // ───────────── statuses ─────────────
 
@@ -128,7 +134,9 @@ export type BuffFlag =
 // ───────────── procs (gear sets, legendaries, tree, class mechanics) ─────────────
 export type Trigger =
   | 'attack' | 'hit' | 'crit' | 'kill' | 'dash' | 'hurt' | 'cast' | 'lowHp' | 'block' | 'healed' | 'heal'
-  | 'combo' | 'stealthHit' | 'parry' | 'ultimate' | 'potion';
+  | 'combo' | 'stealthHit' | 'parry' | 'ultimate' | 'potion'
+  // deeper builds: crit split by source, dash landing, every 50 Ember / stamina spent, a status you set, a summon
+  | 'spellCrit' | 'attackCrit' | 'dashEnd' | 'emberSpent' | 'staminaSpent' | 'statusApplied' | 'summon';
 export interface Proc {
   on: Trigger;
   /** fire on every Nth trigger */
@@ -148,7 +156,15 @@ export interface Passive {
   hooks?: Hook[];
   /** spell tweaks from the Spells tree */
   spellMods?: SpellMod[];
+  /** share of a hit dealt as another kind instead ('attack' / 'spell' = every hit of that source); Σ per hit ≤ 100% */
+  convert?: Convert[];
+  /** an aura around you: re-applied every second as a 1.5 s buff to allies (or, `enemies`, to foes) within r */
+  aura?: Aura[];
+  /** "+N to <spell>": each level +12% damage and +6% area on that spell ('*' = every spell) */
+  spellLevels?: { spell: string; levels: number }[];
 }
+export interface Convert { from: DamageKind | 'attack' | 'spell'; to: DamageKind; pct: number }
+export interface Aura { id: string; r: number; mods: Modifier[]; enemies?: boolean }
 export interface Hook { id: string; value?: number }
 
 export interface SpellMod {

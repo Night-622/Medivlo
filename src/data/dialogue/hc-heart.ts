@@ -220,7 +220,7 @@ const dialogues: DialogueDef[] = [
     entries: [{ node: 'start' }],
     nodes: {
       start: {
-        speaker: CA, mood: 'sad', text: 'You came. You all came. Twenty-four of you, with the stones singing in you, and I still cannot hear a note. I am sorry. I have been sorry for thirty years. It has not helped.',
+        speaker: CA, mood: 'sad', text: 'You came. You and every bearer who would come, with the stones singing in you, and I still cannot hear a note. I am sorry. I have been sorry for thirty years. It has not helped.',
         choices: [
           { text: 'Why did you do it?', to: 'why' },
           { text: '(Say what you came here to say.)', to: 'say' },
@@ -265,7 +265,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       turning: { speaker: 'narrator', text: 'One by one the bearers set their halves into the empty settings, and the halves find each other and become whole, and the crown begins to sing.', next: null },
-      unmaking: { speaker: 'narrator', text: 'You lift the crown out of its cage and break it across the throne. It comes apart like a held breath. Twenty-four half-stones flare, and go home.', next: null },
+      unmaking: { speaker: 'narrator', text: 'You lift the crown out of its cage and break it across the throne. It comes apart like a held breath. Every half-stone in the hall flares, and goes home.', next: null },
       crowned: { speaker: 'narrator', text: 'You set the crown on your own head. The stones in your companions’ hands leap to it, and it sings, for you, as it never sang for him.', next: null },
       first: { speaker: 'narrator', text: 'You kneel in front of Casimir, and the bearers kneel with you, and you hold the stones out to him, and you sing.', next: null },
       done: { speaker: 'narrator', text: 'It is done.', next: null },

@@ -288,7 +288,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:obj-pelt-cart-tracks', name: 'Side: the pelt cart’s tracks', scope: 'party',
     entries: [{ when: stage('quest:huntsman-the-back-room', 'cart'), node: 'ruts' }, { node: 'plain' }],
     nodes: {
-      ruts: { speaker: 'narrator', text: 'Deep cart ruts, coming and going on the old track to the Old Snares, with black drips between them. They lead to the edge of a stockade in the deep forest: the Poachers’ Camp. Beside the gate, in the mud, is a hoofprint shod with silver. Only one stable in the Greywilds shoes its horses with silver.', next: null },
+      ruts: { speaker: 'narrator', text: 'Deep cart ruts, coming and going on the old track to the Old Snares, with black drips between them. They lead to the edge of a stockade in the deep forest: the Poachers’ Camp. Beside the gate, in the mud, is a hoofprint shod with silver. Only the Barons’ stables shoe their horses with silver.', next: null },
       plain: { speaker: 'narrator', text: 'Old cart ruts in the Old Snares track.', next: null },
     },
   },
@@ -599,10 +599,10 @@ const dialogues: DialogueDef[] = [
       biscuit: { speaker: 'narrator', text: 'A goshawk with Hawkmoor jesses sits on the Hunt arch with a letter on its leg. Biscuit walks up to it, sniffs the letter all over with enormous interest, and is hissed at. She sits down, offended, and does not move for the rest of the scene.', next: 'letter' },
       hawk: { speaker: 'npc:sorrel', text: '(A goshawk with Hawkmoor jesses sits on the Hunt arch and holds out one foot, with a letter tied to it, as if it has been holding it out for some time.)', next: 'letter' },
       letter: {
-        speaker: 'npc:ulric-bannock', text: '“The herd came down the Elkway this week. Not many. Some. I counted them and didn’t cross it out. Mistress Pockle has finished my gloves and I have to wear them now. Biscuit is well, wherever she is. Take only what the hunt gives. U. B.”',
+        speaker: 'npc:ulric-bannock', text: '“The herd came down the Elkway this week. Not many. Some. I counted them and didn’t cross it out. Mistress Pockle has finished my gloves and I have to wear them now. Biscuit sends her regards, from wherever she is lying down. Take only what the hunt gives. U. B.”',
         choices: [{ text: '(Fold the letter away.)', to: 'court', quest: true, effects: [{ setFlag: 'huntsman.bannock_letter', value: true }] }],
       },
-      court: { speaker: 'narrator', text: 'The Falconer bearer comes up the moor at a run to fetch their hawk, and at the Stone Court that evening the Lodge half and the Moor half hum together under the table. The hawk and the hound do not get on. They will not be getting on. They have agreed on that much.', next: null },
+      court: { speaker: 'narrator', text: 'The Falconer bearer comes up the road at a run to fetch their hawk, and at the Stone Court that evening the Lodge half and the Moor half hum together under the table. The hawk and the hound do not get on. They will not be getting on. They have agreed on that much.', next: null },
     },
   },
   // ---------- featured bearers (hooks on the bearer NPCs)

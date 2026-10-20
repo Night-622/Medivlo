@@ -12,6 +12,7 @@ import { compile, hook } from '@/systems/rules/stats';
 import { spellDef } from '@/systems/rules/spells';
 import type { Action, Area, BasicAttack, CharacterSave, HcSpell, SpellMod, WeaponType } from '@/systems/rules/types';
 import { motionStep, motionTick, runActions } from './actions';
+import { spellLevel, spend, tickAuras } from './builds';
 import { tickKeystones } from './keystones';
 import { slash } from './slash';
 import { basicCast, consumeCharge, dealDamage, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
@@ -58,6 +59,11 @@ export function createPlayer(w: SimWorld, playerId: string, save: CharacterSave,
 /** Recompute everything derived from the save (level, gear, tree). Keeps current HP/Ember fractions. */
 export function rebuildPlayer(_w: SimWorld, p: PlayerEnt): void {
   const s = p.save;
+  // another class loaded onto the same entity (load in the same page): re-derive the class identity
+  if (p.def !== `class:${s.classId}`) {
+    const cls = HC_CLASSES.find((c) => c.id === s.classId);
+    if (cls) { p.def = `class:${s.classId}`; p.school = cls.school; p.kit = kitFor(s.classId); p.cds.clear(); p.momentum = 0; }
+  }
   p.level = s.level;
   const { passives: sources, spells: treeSpells } = playerPassives(s);
   const hpFrac = p.maxHp > 1 ? p.hp / p.maxHp : 1, emFrac = p.emberMax ? p.ember / p.emberMax : 1;
@@ -88,7 +94,9 @@ export function stepPlayer(w: SimWorld, p: PlayerEnt, frames: InputFrame[], dt: 
   for (const f of frames) {
     // defensive: AuthorityNet sanitises frames, but a malformed one must never throw inside the tick
     if (!f || typeof f.seq !== 'number' || !f.move || !f.aim || !Number.isFinite(f.aim.x) || !Number.isFinite(f.aim.y)) continue;
-    if (f.seq <= p.lastSeq) continue;
+    // a new HeroInput (world restart, guest page reload) starts its seq again: a frame far behind the last one, or an
+    // early seq after a long stream, is a fresh stream, not a stale duplicate
+    if (f.seq <= p.lastSeq && !(f.seq < p.lastSeq - 300 || (f.seq <= 30 && p.lastSeq > f.seq + 60))) continue;
     p.lastSeq = f.seq;
     const pressed = f.buttons & ~p.buttons;
     p.buttons = f.buttons;
@@ -106,7 +114,7 @@ export function stepPlayer(w: SimWorld, p: PlayerEnt, frames: InputFrame[], dt: 
     if (pressed & Btn.POTION_E) potion(w, p, 'e');
   }
   if (p.dead) return;
-  tickKeystones(w, p);
+  tickKeystones(w, p); tickAuras(w, p);
   regen(w, p, dt);
   move(w, p, dt);
   if (p.downed || w.frozen) return;
@@ -114,7 +122,7 @@ export function stepPlayer(w: SimWorld, p: PlayerEnt, frames: InputFrame[], dt: 
   autoAttack(w, p);
   // dash charges
   const maxCharges = Math.round(p.stats.stats.dashCharges ?? 1);
-  if (p.dashCharges < maxCharges && w.t >= p.dashReadyAt + DASH.recharge) { p.dashCharges++; p.dashReadyAt = w.t; }
+  if (p.dashCharges < maxCharges && w.t >= p.dashReadyAt + DASH.recharge * Math.max(0.3, 1 + (p.stats.stats.dashCd ?? 0))) { p.dashCharges++; p.dashReadyAt = w.t; }
   // Shade: stealth after a while out of combat
   const st = hook(p.stats, 'stealthOutOfCombat');
   if (st && !p.stealth && w.t > p.inCombatUntil - 5000 + st) p.stealth = true;
@@ -162,7 +170,7 @@ function move(w: SimWorld, p: PlayerEnt, dt: number): void {
     const n = w.ports.move(p.space, p.x, p.y, m.vx * s * k, m.vy * s * k, p.r);
     p.x = n.x; p.y = n.y; p.movedAt = w.t;
     motionTick(w, p, ended);
-    if (ended && p.motion === m) p.motion = null;
+    if (ended) { if (p.motion === m) p.motion = null; if (m.dash) fireProcs(w, p, 'dashEnd'); }
     return;
   }
   let dir = p.move;
@@ -185,13 +193,14 @@ function dash(w: SimWorld, p: PlayerEnt): void {
   if (incapacitated(p) || p.statuses.has('root') || p.motion || p.windup) return;
   if (p.dashCharges <= 0 || w.t < p.dashReadyAt + DASH.gap) return;
   const free = flagged(p, 'freeDash');
-  if (!free && p.stamina < DASH.cost) return;
-  if (!free) p.stamina -= DASH.cost;
+  const cost = DASH.cost * Math.max(0, 1 + (p.stats.stats.staminaCost ?? 0));
+  if (!free && p.stamina < cost) return;
+  if (!free) spend(w, p, 'stamina', cost);
   p.dashCharges--;
   p.dashReadyAt = w.t;
   const d = p.move.x || p.move.y ? norm(p.move.x, p.move.y) : norm(p.aim.x - p.x, p.aim.y - p.y);
   const v = (DASH.dist / DASH.ms) * 1000;
-  p.motion = { vx: d.x * v, vy: d.y * v, until: w.t + DASH.ms, iframes: true, left: DASH.dist };
+  p.motion = { vx: d.x * v, vy: d.y * v, until: w.t + DASH.ms, iframes: true, left: DASH.dist, dash: true };
   p.iframesUntil = w.t + DASH.ms;
   p.face = d;
   p.anim = 'dash'; p.animUntil = w.t + DASH.ms;
@@ -256,8 +265,9 @@ export function spellView(p: PlayerEnt, spell: HcSpell): SpellView {
   const mods = p.stats.spellMods.filter((m: SpellMod) => m.spell === spell.id || m.spell === '*');
   const sum = (k: keyof SpellMod) => mods.reduce((a, m) => a + (typeof m[k] === 'number' ? (m[k] as number) : 0), 0);
   const ult = spell.tags.includes('ultimate');
+  const lv = spellLevel(p, spell);
   return {
-    spell, dmg: 1 + sum('dmg'), area: 1 + sum('area'), dur: 1 + sum('dur'), echo: sum('echo'), linger: sum('linger'),
+    spell, dmg: (1 + sum('dmg')) * (1 + 0.12 * lv), area: (1 + sum('area') + (p.stats.stats.area ?? 0)) * (1 + 0.06 * lv), dur: 1 + sum('dur'), echo: sum('echo'), linger: sum('linger'),
     twin: mods.some((m) => m.twin), split: mods.some((m) => m.split),
     cost: Math.max(0, spell.cost * (1 + sum('cost') + (p.stats.stats.emberCost ?? 0))),
     cd: Math.max(0.25, spell.cd * (1 + sum('cd')) * (1 - Math.min(0.5, p.stats.stats.cdr ?? 0)) * (ult ? 1 - (p.stats.stats.ultCdr ?? 0) : 1)),
@@ -309,7 +319,7 @@ export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: Hc
   const aimPt = spell.aim === 'ground' ? clampTo(p, p.aim, spell.range) : target ? { x: target.x, y: target.y } : p.aim;
   const dir = norm(aimPt.x - p.x, aimPt.y - p.y);
   if (spell.aim !== 'self') p.face = dir;
-  if (!free) { if (hpPay) p.hp -= hpPay; else p.ember -= v.cost; consumeCharge(w, p, 'freeCasts'); }
+  if (!free) { if (hpPay) p.hp -= hpPay; else spend(w, p, 'ember', v.cost); consumeCharge(w, p, 'freeCasts'); }
   if (!spellOverride) p.cds.set(spell.id, w.t + v.cd * 1000);
   const scaling = spellScaling(p.save.classId);
   const wAvg = ((p.weapon.min + p.weapon.max) / 2) * (1 + (p.stats.stats.power ?? 0));
@@ -336,7 +346,8 @@ export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: Hc
     if (spell.tags.includes('ultimate')) fireProcs(w, p, 'ultimate');
     if (spell.tags.includes('ultimate') && hook(p.stats, 'encore')) w.later(1500, () => runActions(w, actions, { ...ctx, depth: 1 }));
   };
-  if (spell.castMs) { p.windup = { until: w.t + spell.castMs, then: go, label: spell.id }; p.anim = 'cast'; p.animUntil = w.t + spell.castMs; }
+  const castMs = spell.castMs ? spell.castMs / Math.max(0.3, 1 + (p.stats.stats.castSpeed ?? 0)) : 0;
+  if (castMs) { p.windup = { until: w.t + castMs, then: go, label: spell.id }; p.anim = 'cast'; p.animUntil = w.t + castMs; }
   else go();
   return true;
 }

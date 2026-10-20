@@ -78,7 +78,7 @@ const dialogues: DialogueDef[] = [
           { text: 'You wear one of them.', to: 'pelt', insight: 'maren_pelt' },
         ],
       },
-      pelt: { speaker: 'npc:maren', mood: 'sad', text: 'The first one that came back wrong. It walked into my fire and lay down in it. I wear it so I don’t forget what I’m hunting.', next: null },
+      pelt: { speaker: 'npc:maren', mood: 'sad', text: 'The first one that came back wrong. (She doesn’t say more, not yet.) I wear it so I don’t forget what I’m hunting.', next: null },
     },
   },
   {

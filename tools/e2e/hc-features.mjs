@@ -215,6 +215,43 @@ async function tabs() {
   }
 }
 
+/** Real W for 800 ms, then S if a wall was in the way: the farthest the hero went (px). */
+async function walkUp() {
+  let best = 0;
+  for (const key of ['KeyW', 'KeyS']) {
+    const a = await ev('window.__hc.local()');
+    await page.keyDown(key); await sleep(800); await page.keyUp(key); await sleep(300);
+    const b = await ev('window.__hc.local()');
+    best = Math.max(best, a && b ? Math.round(Math.hypot(a.x - b.x, a.y - b.y)) : 0);
+    if (best > 30) break;
+  }
+  return best;
+}
+async function heroBack() {
+  if (!(await waitFor('!!(window.__hc && window.__hc.local() && window.__game.scene.isActive("WorldV2"))', 60000))) return false;
+  await sleep(2500); await endDialogue(); return true;
+}
+
+async function restarts(cls) {
+  // a door / lair / waystone restarts the world scene with a new HeroInput (seq from 1); the sim keeps the hero
+  // entity, whose lastSeq is already far ahead: real W must still move it (Claude 6's finding)
+  const seq0 = await ev(`(async () => { const c = await import('/src/core/index.ts'); const p = c.Services.get('combat').w.players.get('p:' + c.Services.get('net').localPlayer); return p ? p.lastSeq : -1; })()`);
+  await ev(`window.__world.space(window.__world.where().space)`);
+  const back = await heroBack();
+  const up = back ? await walkUp() : 0;
+  check(back && seq0 > 60 && up > 30, `${cls}: after a world restart (door) real W / S still walks the hero`, `old lastSeq ${seq0}, moved ${up} px`);
+  // Death → Load last save: the hero comes back alive in its saved world and walks
+  await ev(`(async () => { const c = await import('/src/core/index.ts'); const { SaveService } = await import('/src/firebase/SaveService.ts'); await SaveService.save(c.Game.state); return 1; })()`);
+  await ev(`(async () => { const c = await import('/src/core/index.ts'); const id = 'p:' + c.Services.get('net').localPlayer; c.Services.get('combat').damage(id, 1e9, 'physical'); return 1; })()`);
+  const died = await waitFor(`window.__game.scene.isActive('Death')`, 15000);
+  await sleep(800);
+  await ev(`window.__game.scene.getScene('Death').loadLast()`);
+  const back2 = await heroBack();
+  const me = back2 ? await ev('window.__hc.local()') : null;
+  const up2 = back2 ? await walkUp() : 0;
+  check(died && back2 && me && !me.dead && me.hp > 0 && up2 > 30, `${cls}: Death → Load last save brings the hero back alive, and real W / S walks`, `died ${died}, ${JSON.stringify(me && { hp: me.hp, dead: me.dead })}, moved ${up2} px`);
+}
+
 async function bossBar(cls) {
   await ev(`window.__hc.spawn('bx_${SCHOOL[cls] ?? 'ash'}_5', 1, 1, 260)`); await sleep(1500);
   await page.screenshot(`${OUT}/hcf-boss-bar.png`);
@@ -230,7 +267,7 @@ try {
     await slashKey(cls);
     await telegraphs(cls);
     await skillsAndPack(cls);
-    if (k === 0) { await tabs(); await bossBar(cls); }
+    if (k === 0) { await tabs(); await bossBar(cls); await restarts(cls); }
   }
 } catch (e) { check(false, 'harness', e.message); }
 check(!errors.length, 'no page errors', errors.slice(0, 5).join(' | '));

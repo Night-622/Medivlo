@@ -10,6 +10,7 @@ import { allCreatures, creature, creatureStats, type CreatureDef } from '@/syste
 import type { SpawnRequest } from '@/systems/rules/types';
 import { newCombatantBase, type CastCtx, type EnemyEnt, type Team } from './state';
 import type { SimWorld } from './world';
+import { fireProcs } from './combat';
 
 /** Player pets: not in the bestiary, so they borrow a body + a few numbers. */
 const PETS: Record<string, { body: string; hp: number; dmg: number; speed: number; attackMs: number; range: number; flying: boolean }> = {
@@ -88,7 +89,10 @@ export function spawnSummon(w: SimWorld, c: CastCtx, what: string, count: number
         ? spawnPet(w, me.id, what, at.x, at.y, dur)
         : spawnCreature(w, { creature: what.slice(5), level: me.level, space: me.space, x: at.x, y: at.y, tier: 'enemy', ownerId: me.id, team: 'players', expiresAt: w.t + dur, power });
       if (e && pet === null) e.dmg = (c.power * power) / 2;
+      // deeper builds: minion damage / HP from the owner's passives, and the 'summon' trigger
+      if (e) { const st = me.stats.stats; e.dmg *= 1 + (st.minionDmg ?? 0); e.maxHp = Math.round(e.maxHp * (1 + (st.minionHp ?? 0))); e.hp = e.maxHp; }
     }
+    if (!c.flags.includes('noProc')) fireProcs(w, me, 'summon');
     return;
   }
   // creatures: cap live adds per summoner

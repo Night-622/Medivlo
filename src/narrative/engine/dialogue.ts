@@ -340,7 +340,7 @@ export function installDialogueNet(): void {
   net.onClient('dialogue:continue', (m, from) => { if (m.sessionId === dialogue.session) dialogue.advance(from); });
   net.onClient('act', (m, from) => {
     if (m.domain !== 'narrative') return;
-    if (m.action === 'dialogue-close' && m.args.sessionId === dialogue.session) dialogue.close(from);
+    if (m.action === 'dialogue-close' && m.args?.sessionId === dialogue.session) dialogue.close(from);
   });
   // solo picks: the client sends its vote with the local id `<sessionId>:<nodeId>`; co-op votes resolve via openVote
   net.onClient('vote', (m) => {

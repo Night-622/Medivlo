@@ -4,7 +4,7 @@
  */
 import { MAGIC_SCHOOLS } from '@/core/constants';
 import { hook, moreWith, statWith } from '@/systems/rules/stats';
-import type { Action, DamageKind, HitFlag, Proc, StatusApply, StatusId, Trigger } from '@/systems/rules/types';
+import type { Action, Convert, DamageKind, HitFlag, Proc, StatusApply, StatusId, Trigger } from '@/systems/rules/types';
 import { runActions } from './actions';
 import { spendStormCharge } from './keystones';
 import { onCombatantZero } from './death';
@@ -25,7 +25,7 @@ export const flagged = (c: Combatant, f: BuffInst['flags'][number]): boolean => 
 export const incapacitated = (c: Combatant): boolean => has(c, 'stun') || has(c, 'freeze') || has(c, 'knockdown') || has(c, 'sleep');
 export const rooted = (c: Combatant): boolean => incapacitated(c) || has(c, 'root');
 
-export interface HitOpts { cast?: CastCtx; isSpell?: boolean; flags?: HitFlag[]; noProc?: boolean; status?: StatusApply[]; dot?: boolean }
+export interface HitOpts { cast?: CastCtx; isSpell?: boolean; flags?: HitFlag[]; noProc?: boolean; status?: StatusApply[]; dot?: boolean; /** already split by conversion */ converted?: boolean }
 
 /** Deal damage; returns the amount that landed (after shields). */
 /** Melee guard (see dealDamage); bows, staves and wands fight from range. */
@@ -58,6 +58,14 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
     fireProcs(w, tgt, 'parry', src);
     if (tgt.kind === 'player') counterAttack(w, tgt as PlayerEnt, src);
     return 0;
+  }
+  // conversion (BUILDS.md §3): a share of the hit is dealt as another kind, as its own hit (no procs, no statuses)
+  if (src && !o.dot && !o.converted && src.stats.convert.length) {
+    const parts = convertShares(src.stats.convert, kind, !!o.isSpell);
+    let left = 1;
+    for (const [to, pct] of parts) { left -= pct; dealDamage(w, src, tgt, raw * pct, to, { ...o, converted: true, noProc: true, status: [] }); if (tgt.dead) return 0; }
+    raw *= left;
+    if (raw <= 0) return 0;
   }
   let amount = raw, crit = false;
   if (src) {
@@ -149,7 +157,9 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
   for (const s of o.status ?? []) applyStatus(w, src, tgt, s, o.cast);
   if (src && !o.noProc && !flags.includes('noProc') && !o.dot) {
     fireProcs(w, src, 'hit', tgt);
-    if (crit) fireProcs(w, src, 'crit', tgt);
+    if (crit) { fireProcs(w, src, 'crit', tgt); fireProcs(w, src, o.isSpell ? 'spellCrit' : 'attackCrit', tgt); }
+    const eoh = src.kind === 'player' ? src.stats.stats.emberOnHit ?? 0 : 0;
+    if (eoh) { const p = src as PlayerEnt; p.ember = Math.min(p.emberMax, p.ember + eoh); }
     if (consumeCharge(w, src, 'nextHitsChain')) runActions(w, [{ a: 'chain', coef: 0.5, kind: 'storm', jumps: 2 + (src.stats.stats.chains ?? 0), range: 130 }], o.cast ?? basicCast(w, src, tgt));
   }
   if (tgt.kind === 'player' && !o.dot) fireProcs(w, tgt, 'hurt', src ?? undefined);
@@ -178,7 +188,7 @@ export function addShield(w: SimWorld, c: Combatant, amount: number, dur: number
 }
 
 export function applyStatus(w: SimWorld, src: Combatant | null, tgt: Combatant, s: StatusApply, cast?: CastCtx): void {
-  if (tgt.dead || (s.chance !== undefined && !w.rng.chance(s.chance))) return;
+  if (tgt.dead || (s.chance !== undefined && !w.rng.chance(s.chance * (1 + (src?.stats.stats.statusChance ?? 0))))) return;
   if (hook(tgt.stats, `immune:${s.id}`)) return;
   // Sure Footed: no slow lands while you are dashing
   if ((s.id === 'slow' || s.id === 'chill') && tgt.motion && hook(tgt.stats, 'dashNoSlow')) return;
@@ -200,7 +210,7 @@ export function applyStatus(w: SimWorld, src: Combatant | null, tgt: Combatant, 
   const prev = tgt.statuses.get(s.id);
   const power = (s.power ?? defaultPower(s.id)) * (src && (s.id === 'slow' || s.id === 'chill') ? 1 + (src.stats.stats.slowPower ?? 0) : 1);
   const dotCoef = DOT[s.id] ?? 0;
-  const burnBonus = s.id === 'burn' && src ? 1 + hook(src.stats, 'burnPower') : 1;
+  const burnBonus = (s.id === 'burn' && src ? 1 + hook(src.stats, 'burnPower') : 1) * (src ? 1 + (src.stats.stats[`statusDmg.${s.id}`] ?? 0) : 1);
   const dps = dotCoef ? dotCoef * (cast?.power ?? (src ? srcPower(src) : 10)) * burnBonus : 0;
   const stacks = Math.min(s.id === 'poison' || s.id === 'chill' ? 5 : 1, (prev?.stacks ?? 0) + 1);
   const inst: StatusInst = {
@@ -217,6 +227,7 @@ export function applyStatus(w: SimWorld, src: Combatant | null, tgt: Combatant, 
   }
   if (hard) { tgt.windup = null; if (tgt.motion && !tgt.motion.iframes) tgt.motion = null; }
   w.emit('status:changed', { entityId: tgt.id, status: s.id, stacks, ms: Math.round(inst.until - w.t) });
+  if (src && src !== tgt && src.kind === 'player' && !cast?.flags.includes('noProc')) fireProcs(w, src, 'statusApplied', tgt);
 }
 
 const defaultPower = (s: StatusId): number => (s === 'slow' ? 0.3 : s === 'chill' ? 0.25 : s === 'mark' ? 0.25 : 0);
@@ -310,4 +321,19 @@ function counterAttack(w: SimWorld, p: PlayerEnt, src: Combatant): void {
   const roll = w.rng.range(p.weapon.min, p.weapon.max) * (1 + (p.stats.stats.power ?? 0));
   dealDamage(w, p, src, roll * 2, 'physical', { noProc: true });
   if (hook(p.stats, 'parryRefundsDash')) p.dashCharges = Math.max(p.dashCharges, Math.round(p.stats.stats.dashCharges ?? 1));
+}
+
+/**
+ * Conversion shares for one hit: entries matching its kind, or its source ('attack' / 'spell'), summed per target
+ * kind and scaled down so the total never passes 100%. Converting a kind into itself does nothing.
+ */
+export function convertShares(conv: readonly Convert[], kind: DamageKind, isSpell: boolean): [DamageKind, number][] {
+  const by = new Map<DamageKind, number>();
+  for (const c of conv) {
+    if (c.to === kind || !(c.from === kind || c.from === (isSpell ? 'spell' : 'attack'))) continue;
+    by.set(c.to, (by.get(c.to) ?? 0) + c.pct);
+  }
+  const total = [...by.values()].reduce((a, b) => a + b, 0);
+  const scale = total > 1 ? 1 / total : 1;
+  return [...by].map(([k, v]) => [k, v * scale] as [DamageKind, number]).filter(([, v]) => v > 0);
 }

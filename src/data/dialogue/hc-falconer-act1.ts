@@ -57,7 +57,7 @@ const dialogues: DialogueDef[] = [
       },
       song: { speaker: WR, text: 'I know. Pibb heard it. He’s sulking, because it wasn’t for him. Come here. Let me hear it from you.', next: 'chest' },
       chest: {
-        speaker: WR, text: '(She leans close, and goes quiet, and stops laughing.) Oh. Oh, my dear. That’s half a stone. The Hunt stone, or half of it. My grandmother said it fell on the Moor’s Crown when the crown broke. It’s been waiting up there thirty years for somebody, and it’s you.',
+        speaker: WR, text: '(She leans close, and goes quiet, and stops laughing.) Oh. Oh, my dear. That’s half a stone. The Hunt stone, or half of it. It fell on the Moor’s Crown when the crown broke, and it’s been waiting up there thirty years for somebody, and it’s you.',
         choices: [
           { text: 'What do I do?', to: 'do', trust: 1 },
           { text: 'Why me?', to: 'why' },

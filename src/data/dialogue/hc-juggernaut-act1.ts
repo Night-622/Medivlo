@@ -85,7 +85,7 @@ const dialogues: DialogueDef[] = [
       },
       quota: { speaker: GH, text: 'No, and I told the Regency’s man so, at a volume. He wrote it down. They always write it down. Then they never read it.', next: 'foundry' },
       rock: { speaker: GH, text: 'You and Sergeant both. He hasn’t stopped singing since the Bell.', next: 'foundry' },
-      foundry: { speaker: GH, mood: 'angry', text: 'And now the old foundry on the Slag Rivers is smoking. Nobody’s worked that foundry in forty years. Half the shift’s lost their picks and the other half’s lost their dinner-pails, and the cage-lift door went missing this morning. Go and see. Take a pail. Take a big pail.', next: null },
+      foundry: { speaker: GH, mood: 'angry', text: 'And now the old foundry on the Slag Rivers is smoking. Nobody’s worked that foundry in twenty years. Half the shift’s lost their picks and the other half’s lost their dinner-pails, and the cage-lift door went missing this morning. Go and see. Take a pail. Take a big pail.', next: null },
     },
   },
   // ---------- I-3 The Warden Foundry
@@ -219,7 +219,7 @@ const dialogues: DialogueDef[] = [
           { text: 'The Colossus. It was built of her iron, wasn’t it?', to: 'colossus' },
         ],
       },
-      colossus: { speaker: GH, text: 'Every plate. The Forge bought her iron for thirty years, half price, never asked why it was wet. Now it’s walked off to the Iron Gate on its own. Who paid for it to walk?', next: 'find' },
+      colossus: { speaker: GH, text: 'Every plate. The Forge bought Lode iron for years, half price, never asked why it was wet. Now it’s walked off to the Iron Gate on its own. Who paid for it to walk?', next: 'find' },
       find: { speaker: GH, text: 'She’s at the Lode mouth, paying the next shift. Go and ask her. Don’t take her coin. Don’t take her hand. Don’t take a cup of tea off her.', next: null },
     },
   },
@@ -231,7 +231,7 @@ const dialogues: DialogueDef[] = [
         speaker: MR, text: 'You found my strongbox. Good. I was wondering who’d hidden it. (She is paying a line of miners, one coin each, and every one of them is very quiet.) Ask, then. You’ve got the face.',
         choices: [
           { text: 'Your coin empties people.', to: 'empties' },
-          { text: 'Sergeant won’t go near it. And it weighs wrong. That coin is hollow iron.', to: 'hollow', insight: 'scrip_hollows', when: { any: [{ flag: 'juggernaut.coin_weighed' }, { insight: 'slag_seals' }] } },
+          { text: 'Sergeant won’t go near it. That coin is hollow iron.', to: 'hollow', insight: 'scrip_hollows', when: { any: [{ flag: 'juggernaut.coin_weighed' }, { insight: 'slag_seals' }] } },
         ],
       },
       hollow: { speaker: MR, text: 'Clever lump. Gussie’s bird always was too clever for its own good. Yes. Hollow iron, struck into coin. It carries the tears straight into your hand. A month of wages and you stop minding anything.', next: 'empties' },

@@ -150,7 +150,7 @@ const dialogues: DialogueDef[] = [
       mime: { speaker: BS, text: '(It grounds an invisible sword, very correctly, and looks at you. Then at its empty hands. Then, meaningfully, towards the Legion camp.)', next: null },
       order: { speaker: 'narrator', text: 'The Order’s knights are holding the Iron stair, as the Council once voted to hold a wall. As the Blank Shield climbs past them, each of them salutes it. It is not sure what to do. It salutes back, all of them, twice.', next: 'post' },
       post: {
-        speaker: 'narrator', text: 'At the top of the Iron stair the Blank Shield takes its place by the last step, sets its feet, grounds the plain sword you found for it, and stands.',
+        speaker: 'narrator', text: 'At the top of the Iron stair the Blank Shield takes its place by the last step, sets its feet, grounds the sword you found for it, and stands.',
         choices: [
           { text: 'Stand your watch, ser.', to: 'ser' },
           { text: '(Kneel beside it, and keep the first hour of its watch.)', to: 'hour', school: 'iron' },

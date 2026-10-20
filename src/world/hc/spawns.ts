@@ -300,6 +300,16 @@ export function markerAt(id: string): { space: string; at: [number, number] } | 
   return markerLookup(id);
 }
 
+/**
+ * markerAt without the cold cost, for per-frame UI (quest markers): what's indexed so far, or the place lookups
+ * once every space is indexed; null for a not-yet-indexed object (warmMarkers() fills the index while idle).
+ */
+export function markerPeek(id: string): { space: string; at: [number, number] } | null {
+  return markerIndex.get(id) ?? (markerPending().length && /^(obj|landmark|inst|area):/.test(id) ? null : markerLookup(id));
+}
+/** The instance ids whose doors are indexed so far (quest places inside them resolve to the door). */
+export const indexedInstances = (): string[] => [...markerIndex.keys()].filter((k) => k.startsWith('inst:'));
+
 const indexed = new Set<string>();
 const markerPending = () => ['concordia', ...REALMS.filter((r) => r.school).map((r) => r.space)].filter((s) => !indexed.has(s));
 
@@ -330,12 +340,20 @@ function indexMarkers(space: string): void {
 function markerLookup(id: string): { space: string; at: [number, number] } | null {
   const hit = markerIndex.get(id);
   if (hit) return hit;
-  // markers can also be places: a realm zone or area (its centre), or a Morvane region (its label point)
+  // markers can also be places: a realm zone, area or village (its centre), or a Morvane region (its label point)
   for (const r of REALMS.filter((x) => x.school)) {
     const g = spaceRuntime(r.space).gen as RealmGen;
     const z = g.zones.get(id) ?? g.zones.get(id.replace(/^area:(.*)-(capital|frontier)$/, 'zone:$1-$2-1'));
     if (z) return { space: r.space, at: z };
+    const v = id.startsWith('vil:') ? g.villages.find((x) => x.id === id) : undefined;
+    if (v) return { space: r.space, at: v.at };
   }
+  // a Morvane village: its centre
+  const mv = id.startsWith('vil:') ? (spaceRuntime('concordia').gen as ConcordiaGen).data.villages.find((x) => x.id === id) : undefined;
+  if (mv) return { space: 'concordia', at: mv.at };
+  // a realm's gate area: the sealed arch at its heart
+  const gate = /^area:([a-z]+)-gate$/.exec(id);
+  if (gate) return markerIndex.get(`obj:${gate[1]}-gate-seal`) ?? null;
   const reg = MORVANE_REGIONS.find((x) => x.id === id);
   return reg ? { space: 'concordia', at: [Math.round(reg.label[0] * MORVANE_SCALE), Math.round(reg.label[1] * MORVANE_SCALE)] } : null;
 }

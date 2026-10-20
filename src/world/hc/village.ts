@@ -71,6 +71,20 @@ export function villagePlacements(v: VillageDef): Placement[] {
   return out;
 }
 
+/**
+ * Each place's landmark rect in world tiles, in front of its building (as Concordia's villages): the building's
+ * width, from two rows above its foot to one below, so an NPC on it stands at the door. null: not laid out.
+ */
+export function villageDoorRects(v: VillageDef): ({ at: [number, number]; size: [number, number] } | null)[] {
+  const pl = villagePlacements(v);
+  return v.places.map((_, i) => {
+    const b = pl.find((x) => x.key === `${v.id}#${i}`);
+    if (!b) return null;
+    const w = artSize(b.art).w, door = Math.floor((b.y - 1) / TILE_SIZE) + 1;
+    return { at: [Math.floor((b.x - w / 2) / TILE_SIZE), door - 2], size: [Math.ceil(w / TILE_SIZE), 4] };
+  });
+}
+
 /** Stable slug for ids built from labels. */
 export function slug(s: string): string {
   return s.toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

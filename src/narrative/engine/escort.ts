@@ -50,4 +50,10 @@ export function installEscorts(): void {
     if (n) setFlag(escortFlag(n), 'lost');
     delete spawned()[id];
   });
+  // a save made mid-escort comes back with the flag 'active' and no body (the sim doesn't save them): count it as
+  // lost, so the stage's regroup branch starts it again (every escort objective accepts 'lost'). Claude 6's trace.
+  authBus.on('game:loaded', () => {
+    for (const [k, v] of Object.entries(Game.state.flags)) if (k.startsWith('escort.') && v === 'active') setFlag(k, 'lost');
+    for (const id of Object.keys(spawned())) delete spawned()[id];
+  });
 }

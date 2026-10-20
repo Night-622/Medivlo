@@ -51,6 +51,8 @@ export class SimWorld {
 
   /** run fn after ms of sim time (delays, repeats, heal-over-time) */
   later(ms: number, fn: () => void): void { this.timers.push({ at: this.t + ms, fn }); }
+  /** drop every pending later() (a save load replaces the world) */
+  clearTimers(): void { this.timers = []; }
   runTimers(): void {
     if (!this.timers.length) return;
     const due = this.timers.filter((x) => x.at <= this.t);
@@ -137,7 +139,17 @@ export class SimWorld {
       behind: target ? isBehind(c, target) : false,
       fromStealth: !!p?.stealth || c.buffs.some((b) => b.flags.includes('stealth')),
       momentum: p?.momentum ?? 0,
+      emberFrac: p ? p.ember / Math.max(1, p.emberMax) : undefined,
+      staminaFrac: p ? p.stamina / Math.max(1, p.staminaMax) : undefined,
+      moving: this.t - c.movedAt < 150,
+      minions: p ? this.minionsOf(c.id) : 0,
     };
+  }
+  /** live summons (pets) a combatant owns */
+  minionsOf(id: string): number {
+    let n = 0;
+    for (const e of this.enemies.values()) if (e.ownerId === id && !e.dead) n++;
+    return n;
   }
   evalCond = evalCond;
 }
@@ -164,7 +176,16 @@ function compileOnto(base: ReturnType<typeof compile>, extra: Passive[]): Return
     conditional: [...base.conditional, ...add.conditional],
     procs: [...base.procs, ...add.procs],
     spellMods: [...base.spellMods, ...add.spellMods],
+    convert: [...base.convert, ...add.convert],
+    auras: [...base.auras, ...add.auras],
+    spellLevels: mergeLevels(base.spellLevels, add.spellLevels),
   };
+}
+function mergeLevels(a: Map<string, number>, b: Map<string, number>): Map<string, number> {
+  if (!b.size) return a;
+  const out = new Map(a);
+  for (const [k, v] of b) out.set(k, (out.get(k) ?? 0) + v);
+  return out;
 }
 
 /**

@@ -63,10 +63,10 @@ const dialogues: DialogueDef[] = [
       { node: 'pot' },
     ],
     nodes: {
-      pot: { speaker: 'narrator', text: 'Pops’s stock-pot, bubbling at the foot of the Twelve Stairs. Somebody has left a ladle in it, and a queue of very quiet people has formed.', next: null },
-      boil: { speaker: 'narrator', text: 'You set the pot on a fire at the foot of the Twelve Stairs and let it come up to the boil. The steam goes out across the Legion camp on the wind, beef and bone and forty years of evenings.', next: 'boil2' },
+      pot: { speaker: 'narrator', text: 'Pops’s stock-pot, bubbling at the edge of the Legion camp. Somebody has left a ladle in it, and a queue of very quiet people has formed.', next: null },
+      boil: { speaker: 'narrator', text: 'You set the pot on a fire at the edge of the Legion camp and let it come up to the boil. The steam goes out across the Legion camp on the wind, beef and bone and forty years of evenings.', next: 'boil2' },
       boil2: { speaker: 'narrator', mood: 'happy', text: 'Out in the ranks, here and there, a hollow head turns. Then another. Somebody in Lowfold wraps says, quite clearly, “Number nine,” and does not know why.', next: null },
-      devoted: { speaker: 'narrator', text: 'You set the pot on a fire at the foot of the Twelve Stairs. As it comes to the boil the steam smells of rain on hot stone: Marta’s rainwort, the last thing it was missing. It goes out across the Legion camp like a hand on a shoulder.', next: 'devoted2' },
+      devoted: { speaker: 'narrator', text: 'You set the pot on a fire at the edge of the Legion camp. As it comes to the boil the steam smells of rain on hot stone: Marta’s rainwort, the last thing it was missing. It goes out across the Legion camp like a hand on a shoulder.', next: 'devoted2' },
       devoted2: {
         speaker: 'narrator', text: 'Heads turn all through the ranks. Far away in Knuckletown, an old man behind a noodle cart stops ladling, sniffs the air, says “That’s it, kid,” to nobody at all, and sits down on his stool.',
         effects: [{ trust: TK, set: 5 }], next: null,

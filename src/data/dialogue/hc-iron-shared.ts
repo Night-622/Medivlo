@@ -81,7 +81,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:obj-iron-frontier-lair-1-codex', name: 'The Warden Foundry: the last casting-order', scope: 'party',
     entries: [{ node: 'read' }],
-    nodes: { read: { speaker: 'narrator', text: 'A casting-order nailed over the moulds, the ink brown with forty years: “Sentries, for the Colossus, as many as required.” Under it, scratched into the iron of the door with something sharp, over and over, in a hand that is not a hand: “HOW MANY. HOW MANY. HOW MANY.”', effects: [{ unlockLore: 'lore:hc-iron-warden-foundry' }], next: null } },
+    nodes: { read: { speaker: 'narrator', text: 'A casting-order nailed over the moulds, the ink brown with twenty years: “Sentries, for the Colossus, as many as required.” Under it, scratched into the iron of the door with something sharp, over and over, in a hand that is not a hand: “HOW MANY. HOW MANY. HOW MANY.”', effects: [{ unlockLore: 'lore:hc-iron-warden-foundry' }], next: null } },
   },
   {
     id: 'dialogue:obj-iron-frontier-lair-2-codex', name: 'The Scrap Hive: a tin sign', scope: 'party',

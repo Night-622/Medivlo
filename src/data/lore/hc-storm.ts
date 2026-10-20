@@ -33,7 +33,7 @@ const entries: LoreEntry[] = [
   },
   {
     id: 'lore:hc-cowards-cairn', name: 'The Coward’s Cairn', category: 'culture', source: 'the cairn itself, and the man at the bottom of it',
-    body: 'A cairn of flat stones on the Thunderclap Heights, each scratched with the name of a lancer who turned back from a charge. The oldest name, at the very bottom, is ODRAN GALE. He turned back for a rider who had fallen in the storm. Her name was Maudie, and she lived another thirty years, and married him.',
+    body: 'A cairn of flat stones on the Thunderclap Heights, each scratched with the name of a lancer who turned back from a charge. The oldest name, at the very bottom, is ODRAN GALE. He turned back for a rider who had fallen in the storm. Her name was Maudie, and she lived another forty years, and married him.',
   },
   {
     id: 'lore:hc-warm-step', name: 'The Warm Step', category: 'places', source: 'Old Tally Rowe, who counts',

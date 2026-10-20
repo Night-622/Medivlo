@@ -211,7 +211,7 @@ const dialogues: DialogueDef[] = [
         speaker: SG, text: '(He is sitting on a crate at the tunnel mouth with a ledger on his knee, writing down heads as they go in.) You found my little door. Clever. Come and sit. You look like you want to shout. Shouting is cheaper sitting down.',
         choices: [
           { text: 'You’re selling them.', to: 'selling' },
-          { text: 'That purse was wet, Silas. Your coin is wet with tears.', to: 'wet', insight: 'wet_purse', when: { any: [{ flag: 'brawler.purse_taken' }, { flag: 'brawler.climber_letter' }] } },
+          { text: 'Your coin is wet, Silas. Wet with tears.', to: 'wet', insight: 'wet_purse', when: { any: [{ flag: 'brawler.purse_taken' }, { flag: 'brawler.climber_letter' }] } },
         ],
       },
       wet: { speaker: SG, mood: 'happy', text: 'You noticed. Nobody notices. It’s the Hollow Legion’s coin. They pay very well and they pay in tears. Everybody who takes it goes a little quieter. It’s much easier to promote a quiet fighter.', next: 'selling' },

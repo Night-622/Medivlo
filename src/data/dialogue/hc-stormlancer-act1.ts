@@ -300,7 +300,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       pennant: {
-        speaker: OG, text: 'My old lance-pennant. Rode under it forty years and fell off under it more. Nessa’s been at it, I see, there’s new feathers in. Fly it second. It looks better second.',
+        speaker: OG, text: 'My old lance-pennant. Rode under it forty years and fell off under it more. Fly it second. It looks better second.',
         effects: [{ giveItem: 'i_odran_pennant' }, { setFlag: 'stormlancer.odran_farewell', value: 'pennant' }],
         choices: [
           { text: 'I’ll fly it.', to: 'biddy', when: { trust: OG, value: 'trusted' } },

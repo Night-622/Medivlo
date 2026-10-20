@@ -86,7 +86,7 @@ const dialogues: DialogueDef[] = [
         speaker: OG, mood: 'sad', text: 'Somebody behind me went down. Her ram threw her in the rain. And I turned round. Rode back, against everyone, and picked her up out of the mud, and the charge went on without us. They put my name on the cairn that night.',
         choices: [{ text: 'Who was she?', to: 'maudie', trust: 1 }],
       },
-      maudie: { speaker: OG, mood: 'happy', text: 'Maudie. She lived another thirty years, and married me, and laughed at that cairn every time we rode past it. Never asked them to take my name down. I like it there. It’s the best thing I ever did, written on a stone.', next: 'tamar' },
+      maudie: { speaker: OG, mood: 'happy', text: 'Maudie. She lived another forty years, and married me, and laughed at that cairn every time we rode past it. Never asked them to take my name down. I like it there. It’s the best thing I ever did, written on a stone.', next: 'tamar' },
       tamar: { speaker: OG, text: 'Who sent you to read it? Tamar? (He laughs.) Her nan’s on the third row. Turned back to carry her own brother out of a charge. Go and tell Tamar that, pup. She spits at that cairn very carefully, and now she’ll know why.', next: null },
     },
   },

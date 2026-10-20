@@ -199,7 +199,7 @@ const npcs: NpcDef[] = [
     barks: [{ lines: ['Thirty years and nobody left to teach the old law. We hunt by guesswork now.', 'Maren’s off again. She’s always off.', 'Hollis Lodge. Last Hunt lodge this side of the arches.'] }],
     roles: ['quest'],
     look: { skin: 0xc8946e, hair: 0xd8d8d0, cloth: 0x5a4a28, accent: 0xd9b45a, build: 'average' },
-    bio: 'Maren Hollis’s great-uncle and the keeper of Hollis Lodge, the last Hunt lodge in Concordia. He came over from the Greywilds as a young man and was on this side when the arches shut.',
+    bio: 'Maren Hollis’s great-uncle and the keeper of Hollis Lodge, the last Hunt lodge in Concordia. His father first brought him over from the Greywilds as a boy, for a Turning, and he was on this side when the arches shut.',
   },
   {
     id: 'npc:joss-amblin', name: 'Joss Amblin', title: 'Pelt Trader of Hollis Lodge', school: 'hunt', origin: 'concord', trust: 1,

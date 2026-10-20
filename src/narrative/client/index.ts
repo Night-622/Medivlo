@@ -16,6 +16,8 @@ import { installNarrativeMirror } from './mirror';
 import { installTutorial } from './tutorial';
 import { installHcValidationSource } from './validationSources';
 
+export { questMarkers, objectivePlaces, type QuestMarker } from './markers';
+
 let installed = false;
 
 export function installNarrativeClient(game: Phaser.Game): void {

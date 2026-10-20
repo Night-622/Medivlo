@@ -271,7 +271,7 @@ const quests: QuestDef[] = [
         next: 'stone',
       },
       {
-        id: 'stone', journal: 'Past the rock where Shirin sat down, the gate road bends round a plain grey boulder. Bodhan Kreel told you about it once: the place on the C. 1012 road where Doran Kell stopped, and listened, and turned round.',
+        id: 'stone', journal: 'Past the rock where Shirin sat down, the gate road bends round a plain grey boulder. Shirin called it out to you as you passed: the place on the C. 1012 road where Doran Kell stopped, and listened, and turned round.',
         objectives: [{ id: 'stone', text: 'Stop at the stone where Doran Kell turned back', interact: 'obj:monk-kell-stone', marker: { landmark: 'landmark:monk-kell-stone' } }],
         next: 'road',
       },
