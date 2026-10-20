@@ -16,11 +16,11 @@ const top1 = { cost: 28, cd: 9 }, top2 = { cost: 24, cd: 11 }, ult = { cost: 80,
 export const HC_SCHOOL_SPELL_DEFS: HcSpell[] = [
   // Ash
   T('ash', 0, { ...top1, range: 360, aim: 'ground', castMs: 500, tags: ['area'], actions: [{ a: 'delay', ms: 700, then: [dmg(3.2, atAim(96), undefined, [st('burn', 4000)])] }] }),
-  T('ash', 1, { ...top2, range: 260, aim: 'ground', tags: ['area'], actions: [{ a: 'zone', kind: 'field', area: { shape: 'line', at: 'aim', len: 160, width: 24 }, dur: 5000, tick: 500, each: [dmg(0.35, { shape: 'line', at: 'aim', len: 160, width: 24 }, undefined, [st('burn', 2000)])], visual: 'flame-wall' }] }),
+  T('ash', 1, { ...top2, range: 260, aim: 'ground', tags: ['area'], actions: [{ a: 'zone', kind: 'field', area: { shape: 'line', at: 'aim', len: 160, width: 32 }, dur: 5000, tick: 500, each: [dmg(0.5, { shape: 'line', at: 'aim', len: 160, width: 32 }, undefined, [st('burn', 2000)])], visual: 'flame-wall' }] }),
   T('ash', 2, { ...ult, range: 0, aim: 'self', tags: ['area'], actions: [{ a: 'repeat', n: 8, every: 500, then: [dmg(1.6, screen, undefined, [st('burn', 3000)], { maxTargets: 3 })] }] }),
   // Rime
   T('rime', 0, { ...top1, range: 340, aim: 'ground', tags: ['area', 'control'], actions: [{ a: 'zone', kind: 'field', area: atAim(100), dur: 4000, tick: 500, each: [dmg(0.45, atAim(100), undefined, [st('chill', 1500)])], visual: 'blizzard' }] }),
-  T('rime', 1, { ...top2, range: 420, aim: 'direction', tags: ['projectile'], actions: [shot(2.2, { speed: 620, range: 420, pierce: true, visual: 'ice-lance' })] }),
+  T('rime', 1, { ...top2, cd: 8, range: 420, aim: 'direction', tags: ['projectile'], actions: [shot(3.2, { speed: 620, range: 420, pierce: true, visual: 'ice-lance' })] }),
   T('rime', 2, { ...ult, range: 0, aim: 'self', tags: ['control'], actions: [status(st('freeze', 4000), screen)] }),
   // Storm
   T('storm', 0, { ...top1, range: 360, aim: 'direction', tags: ['projectile', 'area'], actions: [shot(0.4, { speed: 120, range: 360, radius: 30, pierce: true, visual: 'ball-lightning', onHit: [{ a: 'chain', coef: 0.4, jumps: 2, range: 120 }] })] }),
@@ -40,7 +40,7 @@ export const HC_SCHOOL_SPELL_DEFS: HcSpell[] = [
   T('verdant', 2, { ...ult, range: 0, aim: 'self', tags: ['summon'], actions: [{ a: 'summon', what: 'treant', count: 3, dur: 15000, power: 1 }] }),
   // Blade
   T('blade', 0, { ...top1, range: 160, aim: 'direction', tags: ['move', 'area'], actions: [{ a: 'move', mode: 'dash', dist: 160, iframes: 400, path: [{ a: 'repeat', n: 4, every: 80, then: [dmg(0.6, self(70))] }] }] }),
-  T('blade', 1, { ...top2, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'buff', id: 'perfect-parry', dur: 2000, to: 'self', charges: 1, flags: ['parry'], procs: [{ on: 'parry', do: [dmg(3.0, single)] }] }] }),
+  T('blade', 1, { ...top2, cost: 16, cd: 6, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'buff', id: 'perfect-parry', dur: 4000, to: 'self', charges: 1, flags: ['parry'], procs: [{ on: 'parry', do: [dmg(3.0, single)] }] }] }),
   T('blade', 2, { ...ult, range: 0, aim: 'self', tags: ['area'], actions: [dmg(4.0, screen, undefined, undefined, { flags: ['alwaysCrit'] })] }),
   // Iron
   T('iron', 0, { ...top1, range: 120, aim: 'ground', tags: ['summon'], actions: [{ a: 'zone', kind: 'wall', area: { shape: 'line', at: 'aim', len: 140, width: 18 }, dur: 6000, blocksShots: true, visual: 'iron-wall' }] }),

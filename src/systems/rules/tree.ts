@@ -135,12 +135,12 @@ function keystone(school: SchoolId, i: 0 | 1): Spec {
     rime: [['+15% damage to chilled foes.', { mods: [f('dmg', 0.15, { c: 'targetHas', status: 'chill' })] }], null],
     verdant: [null, ['+8% max health.', { mods: [pct('hp', 0.08)] }]],
     radiance: [null, ['+5% Radiance damage.', { mods: [f('dmg.radiance', 0.05)] }]],
-    umbral: [null, ['Kills cloak you in shadow for 1 s.', { procs: [{ on: 'kill', icd: 3000, do: [{ a: 'buff', id: 'ks:shadowborn', dur: 1000, to: 'self', flags: ['stealth'] }] }] }]],
+    umbral: [['+10% damage; kills burst in a blood nova for 30% power around the body.', { mods: [f('dmg', 0.1)], procs: [{ on: 'kill', do: [{ a: 'damage', coef: 0.3, kind: 'umbral', area: { shape: 'circle', at: 'target', r: 64 } }] }] }], ['Kills cloak you in shadow for 1 s.', { procs: [{ on: 'kill', icd: 3000, do: [{ a: 'buff', id: 'ks:shadowborn', dur: 1000, to: 'self', flags: ['stealth'] }] }] }]],
     blade: [['+5% block; a parry gives +10% damage for 3 s.', { mods: [f('block', 0.05)], procs: [{ on: 'parry', do: [{ a: 'buff', id: 'ks:riposte', dur: 3000, to: 'self', mods: [f('dmg', 0.1)] }] }] }], null],
     iron: [['+10% max health.', { mods: [pct('hp', 0.1)] }], null],
     guile: [['+5% crit chance.', { mods: [f('crit', 0.05)] }], null],
     song: [['+10% buff strength.', { mods: [f('buffPower', 0.1)] }], null],
-    fist: [null, ['+5% attack speed.', { mods: [f('atkSpeed', 0.05)] }]],
+    fist: [null, ['+10% attack speed and +20% critical damage.', { mods: [f('atkSpeed', 0.1), f('critd', 0.2)] }]],
   };
   const extra = X[school]?.[i];
   if (!extra) return one(name, `school_${school}`, desc, P[school][i]);
