@@ -63,6 +63,7 @@ const SUITES = [
   { id: 'qa-markers', what: 'browser: quest markers on the minimap (edge arrow), map and Show on map, moving with the stage', cmd: e2e('qa-markers.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/qa-markers.mjs', owner: 'Claude 7' },
   { id: 'qa-world-feel', what: 'browser: props fade when the hero walks behind them, searched objects say so, world feel basics', cmd: e2e('qa-world-feel.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/qa-world-feel.mjs', owner: 'Claude 7' },
   { id: 'qa-rebake', what: 'browser: 72 class changes and 24 gear swaps rebuild sprites with no texture errors', cmd: e2e('qa-rebake.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/qa-rebake.mjs', owner: 'Claude 7' },
+  { id: 'soak', what: 'browser: 5 play sessions in a row (title, load, world, quit) leak no listeners, steppers, subscriptions or memory', cmd: e2e('integrity-soak.mjs', '--base', BASE, '--cycles', '5'), needs: ['web'], file: 'tools/e2e/integrity-soak.mjs', owner: 'Claude 6' },
   { id: 'coop-world', what: 'two browsers in co-op: join, input, chat, party vote', cmd: e2e('coop-world.mjs', '--base', BASE), needs: ['web'] },
   { id: 'hc-front', what: 'front end: load, pause, public realm, chat, leave', cmd: e2e('hc-front.mjs', '--base', BASE), needs: ['web', 'realm'] },
   { id: 'realm-duel', what: 'live Duels realm: challenge, accept, duel starts', cmd: e2e('realm-duel.mjs', '--base', BASE), needs: ['web', 'realm'] },

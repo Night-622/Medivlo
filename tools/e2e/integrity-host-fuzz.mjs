@@ -22,6 +22,7 @@ const root = join(here, '..', '..');
 const out = join(here, 'out', 'integrity', 'host.mjs');
 mkdirSync(dirname(out), { recursive: true });
 const fake = join(here, 'integrity', 'fake-firebase.mjs');
+const T0 = performance.now();
 await build({
   entryPoints: [join(here, 'integrity', 'host-entry.ts')], bundle: true, platform: 'node', format: 'esm', outfile: out,
   tsconfig: join(root, 'tsconfig.json'), logLevel: 'error',
@@ -44,8 +45,10 @@ const origWarn = console.warn, origErr = console.error;
 console.warn = (...a) => { const s = a.map((x) => (x instanceof Error ? `${x.message}` : String(x))).join(' '); const m = s.match(/\[net\] (?:client )?'([^']+)' handler threw/); if (m) note(caught, m[1], s.slice(0, 160)); };
 console.error = (...a) => { const s = a.map((x) => (x instanceof Error ? `${x.message} ${x.stack?.split('\n')[1]?.trim() ?? ''}` : String(x))).join(' '); const m = s.match(/stepper "([^"]+)" threw/); if (m) note(stepper, m[1], s.slice(0, 220)); else if (/\[bus\] handler/.test(s)) note(caught, `bus: ${s.match(/"([^"]+)"/)?.[1] ?? '?'}`, s.slice(0, 160)); };
 
+const T1 = performance.now();
 const m = await import(pathToFileURL(out).href);
 const { host, onPeer, hostId } = await m.makeHost();
+const T2 = performance.now();
 
 const sent = [];
 function link(peerId) {
@@ -79,11 +82,18 @@ let thrown = 0, firstThrow = '';
 // message reaches its handler (the limits themselves are tested in integrity-net)
 const realNow = Date.now; let skew = 0; Date.now = () => realNow() + skew;
 let seq = 0;
+const cost = { gen: 0, say: 0, step: 0 }; // its own pace, printed: a slow run says where the time went
 for (let i = 0; i < MSGS; i++) {
   skew += 200;
-  try { bad.say(raw()); } catch (e) { thrown++; firstThrow ||= `${e.message}`; }
-  if (i % 25 === 0) { honest.say({ type: 'input', frames: [{ seq: ++seq, t: seq * 33, move: { x: 0, y: 0 }, aim: { x: 0, y: 0 }, buttons: 0, target: null }] }); step(100); }
+  let t = performance.now();
+  const msg = raw();
+  cost.gen += performance.now() - t; t = performance.now();
+  try { bad.say(msg); } catch (e) { thrown++; firstThrow ||= `${e.message}`; }
+  cost.say += performance.now() - t;
+  if (i % 25 === 0) { t = performance.now(); honest.say({ type: 'input', frames: [{ seq: ++seq, t: seq * 33, move: { x: 0, y: 0 }, aim: { x: 0, y: 0 }, buttons: 0, target: null }] }); step(100); cost.step += performance.now() - t; }
 }
+console.log(`info: loop cost (s): ${JSON.stringify(Object.fromEntries(Object.entries(cost).map(([a, b]) => [a, +(b / 1000).toFixed(1)])))}`);
+const T3 = performance.now();
 sent.length = 0;
 step(1000);
 console.warn = origWarn; console.error = origErr;
@@ -101,5 +111,6 @@ if (caught.size) {
   console.log('\ninfo: handler throws the net layer caught (missing shape checks, by handler):');
   for (const [k, v] of [...caught].sort((a, b) => b[1].n - a[1].n)) console.log(`  ${k} ×${v.n}: ${v.msg}`);
 }
+console.log(`info: time: bundle ${((T1 - T0) / 1000).toFixed(1)} s, host setup ${((T2 - T1) / 1000).toFixed(1)} s, fuzz ${((T3 - T2) / 1000).toFixed(1)} s`);
 console.log(fails ? `\nintegrity-host-fuzz: ${fails} FAILED` : '\nintegrity-host-fuzz: ALL PASS');
 process.exit(fails ? 1 : 0);
