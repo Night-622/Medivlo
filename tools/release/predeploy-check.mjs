@@ -49,6 +49,7 @@ const SUITES = [
   { id: 'dialogue-graph', what: 'every conversation: nodes reachable, cycles exit, no soft-locks, every condition satisfiable, every effect target real', cmd: e2e('qa-dialogue-graph.mjs'), file: 'tools/e2e/qa-dialogue-graph.mjs', owner: 'Claude 7' },
   { id: 'realm-server', what: 'public realm server: join (incl. slow sign-in), snapshots, chat, systems', cmd: e2e('realm-server.mjs') },
   { id: 'realm-fuzz', what: 'realm server under 30,000 malformed and flooding messages: stays up, honest player keeps streaming, memory bounded', cmd: e2e('integrity-realm-fuzz.mjs'), file: 'tools/e2e/integrity-realm-fuzz.mjs', owner: 'Claude 6' },
+  { id: 'host-fuzz', what: 'co-op host under 6,000 hostile guest messages: no throw, the host hero, save and the honest guest untouched', cmd: e2e('integrity-host-fuzz.mjs'), file: 'tools/e2e/integrity-host-fuzz.mjs', owner: 'Claude 6' },
   { id: 'new-player', what: 'fresh player, real input: create → play → autosave', cmd: e2e('new-player.mjs', '--base', BASE), needs: ['web'] },
   { id: 'save-roundtrip', what: 'save → reload → load restores the hero', cmd: e2e('save-roundtrip.mjs', BASE), needs: ['web'] },
   { id: 'hud', what: 'HUD: frame, bars move in combat, buttons, rebinding, layout, boss bar, toasts, Pause, Death', cmd: e2e('hud.mjs', '--base', BASE), needs: ['web'] },
