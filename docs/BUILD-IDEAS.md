@@ -24,8 +24,8 @@ Every pick in them held up in testing at level 40, against the class's final bos
 **Warden**
 - **Shatter Wall:** Glacial Heart, Conduit, your Rime armour, Tome of Meteor. Chill everything that comes close,
   shatter what freezes, and drop a Meteor on the crowd while your aura burns anyone in reach. *Level 12, full at 18.*
-- **The Patient Winter:** Winter's Patience, Conduit, your Rime armour, Tome of Flame Wall. You move slower but your
-  spells hit far harder. Plant yourself behind a wall of fire and let them walk into it. *Level 12, full at 18.*
+- **The Unmoving Winter:** Glacial Heart, Unmoved, your Rime armour, Tome of Flame Wall. Nothing can stun you,
+  though you walk a little slower. Plant yourself behind a wall of fire and chill whatever gets through. *Level 12, full at 18.*
 
 **Rimecaller**
 - **Steam Engine:** Winter's Patience, Chain Reaction, the Scald hybrid (Rime + Ash). Heavy-hitting ice spells,
