@@ -486,7 +486,7 @@ game stays playable throughout.
 
 ## 11. As built (2026-10-21, Claude 5)
 
-Sections 1–10 are the plan. This section is what is in the game tonight, and which check guards each part. Run every
+Sections 1–10 are the plan. This section is what is in the game as of the end of 2026-10-21, and which check guards each part. Run every
 check from the repo root. "Gate" means it fails the pre-deploy check; "report" means it writes a file under
 tools/e2e/out/ for a person to read.
 
@@ -523,7 +523,7 @@ tools/e2e/out/ for a person to read.
   and can hold at most 2.
   - Glass Cannon, Conduit and Chain Reaction are the strongest wherever offered.
   - The jester is offered Chain Reaction instead of Hoarder, so it has a real second choice.
-- **School keystones:** 2 per school (rules/tree.ts). Each carries one plain rider so that none is dead. Tonight:
+- **School keystones:** 2 per school (rules/tree.ts). Each carries one plain rider so that none is dead. Among them:
   - Blood Pact: +10% damage and a 30% power blood nova on kill;
   - Pressure Points: +10% attack speed and +20% critical damage.
 - **Weapon mastery:** 49 entries (data/skilltrees/hc/mastery.ts), active while wielding that weapon.
@@ -540,7 +540,7 @@ tools/e2e/out/ for a person to read.
 - **27 runes** (data/items/hc/build-items.ts, Claude 3), slotted into spells.
 - **24 tomes:** each teaches one off-school school spell (never an ultimate), one at a time.
   - Meteor, Blizzard, Blade Dance and Dragon Kick are the strongest picks.
-  - Flame Wall, Ice Lance and Perfect Parry were lifted tonight as real alternatives.
+  - Flame Wall, Ice Lance and Perfect Parry were lifted (2026-10-21) as real alternatives.
   - Iron Skin stays defensive by design.
 - **Guards:** `run.mjs features` (gate, 759: every spell casts); `run.mjs hitboxes` (gate, 247: every shape hits what it
   shows); `run.mjs rules-props spells` (gate).
@@ -575,7 +575,14 @@ tools/e2e/out/ for a person to read.
 | socket | max(10, 20·s) |
 
 - **Salvage:** gives ingots, plus rune dust per affix.
-- **Respec:** costs 10 × level per branch. A save migrated from the old tree gets one free respec.
+- **Transfer:** moves a unique effect and, if the source is higher, its upgrade level (+n) onto a piece of the same slot,
+  for the same price; the source is used up (rules/runeforge.ts transferMoves). Switching armour sets while keeping +3
+  costs about 1.1–1.3 levels of income, instead of about 5 to re-upgrade.
+- **Tomes:** reading a new tome returns the replaced spell's tome to the pack, so tome swaps are free and reversible.
+  Runes come back when unslotted.
+- **Respec:** costs 10 × level per branch (200 / 400 gold at L20 / L40; a full respec is 0.5–0.7 levels of income). A
+  save migrated from the old tree gets one free respec.
+- **Guard:** `run.mjs respec-econ` (report: the cost of each kind of build change against a typical player's purse).
 - **Gold:** with the Runeforge in use, it takes about 95% of all gold a player spends, so gold never piles up
   unused. Without it, gold idles at about 11,000 by L20.
 - **Guards:** `run.mjs economy` (gate: shop, quest rewards, chests, Runeforge actions); `run.mjs gear-curve`
@@ -589,8 +596,8 @@ plays a typical player through each class campaign:
 - **Optional sites:** the hero's own realm ruin and cave, and each Morvane region's ruin and cave.
 - **Rolls:** every roll is the game's own (rollKillLoot, openChest, questReward, shopStock, Runeforge costs).
 
-Tonight:
-- drops arrive within about 0.5 levels of the hero all game (Act II gap 4.3 → 0.3);
+Final (frozen bands):
+- drops arrive within 0.4 levels of the hero all game (Act II gap was 4.3 at the start of the night);
 - every run ends with its ring and amulet slots filled;
 - kills are the top source of real upgrades, ahead of the smith.
 
@@ -603,14 +610,16 @@ outlast fresh drops. Claude 3 accepted that as power fantasy.
 `node tools/e2e/sim/run.mjs xp-pacing` (report, 4 s) runs the same walk solo and as a duo. It compares each quest's
 start level with that quest's zone band.
 - **Duo rule:** every hero near a kill gets the full XP, and packs and lair waves are 35% bigger per extra player.
-- **Quest XP:** scaled by rules/curves.ts questXpMult against Claude 2's QUEST_BANDS.
+- **Quest XP:** scaled by sim/shop.ts questXpScale: the quest's band (Claude 2's QUEST_BANDS) times the class's Act II
+  table (rules/curves.ts ACT2_QUEST_XP).
 
-Tonight, solo:
-- act ends at L14.2 / 29.8 / 40;
-- 3 of 1,177 quest starts are under-levelled and 6 over-levelled.
+Final, solo (bands frozen after Claude 2's last rebase):
+- act ends at L14.3 / 30.8 / 40;
+- Act II ends between L29.4 and L32.0, with 20 of 24 classes inside the L28.5–31.5 goal;
+- above the goal, accepted by Claude 1: corsair and knight 31.6, sparkwright and stormlancer 32.0 (kill-heavy routes);
+- 0 of 1,177 quest starts are under-levelled, 3 over-levelled.
 
-A duo runs about half a level ahead. Open item: the Sentinel bosses still keep a fixed level (Claude 3), so the storm
-classes, juggernaut and knight end Act II at L31.7–32.6.
+A duo runs about 0.7 levels ahead, and the over-level cut removes 6.8% of its quest XP.
 
 `xp-pacing attribute` → tools/e2e/out/xp-attribution.md splits Act II XP by source (zones, lairs, optional sites,
 objectives, quests). `run.mjs hero-levels` → tools/playthrough/out/hero-levels.json is the hero's level at each quest
@@ -622,21 +631,27 @@ start. Claude 2 builds bands from it, so regenerate it only together with Claude
 - **`run.mjs boss-check gate`** (gate, 13 s): every class's lair-2, nemesis and Act III boss, at the gear a typical
   player actually wears.
   - It checks: every fight won, 0 deaths, every win ≤ 300 s (or a documented allowance; none today), no crash.
-  - Tonight 10/10: median time to kill 88–110 s.
+  - Final 10/10: median time to kill 83 s (lair-2), 107 s (nemesis), 102 s (Act III).
+- **`run.mjs first-minutes`** (report, 1 s): each class's first 3 route fights at L1–3 with the starter kit and every
+  first pick. Final: 0 deaths, slowest 17 s, lowest HP left 82%, no potions.
 - **`run.mjs coop-balance gate`** (gate, 14 s): parties of 2–4 through the real party scaling and revive rules.
   - Party scaling (rules/curves.ts): boss HP +50% per extra player, creature HP +40%, pack size +35%.
   - Revives: hold F for 3 s; a hit taken pauses the channel instead of resetting it.
   - Threat (sim/enemy.ts): ×2 within 120 px, and tanks get ×1.5 (threatPower).
   - It checks: every normal party fight won, median boss speed-up ≥ ×1.2 per party size, revives land under heavy
     damage, no crash.
-  - Tonight 11/11: bosses ×1.46 / 1.50 / 1.86 faster than solo for 2 / 3 / 4 players.
+  - Final 11/11: bosses ×1.37 / 1.67 / 1.85 faster than solo for 2 / 3 / 4 players; revives land 15 times in 25 downs
+    under ×8 boss damage.
   - Companion reports: `coop-ab` (bot vs game A/B), `coop-trace` (positions over time).
 - **`run.mjs pvp-duels`** (report): 24×24 duels at L20 / L40 under the real duel rules.
-  - Tonight: median time to kill 7–9 s; 58 one-shots at L40; stun-locks up to 4.9 s; healers lead.
-  - The PvP rules are Claude 3's open item.
+  - Final rules (Claude 3): a duel clock adds fatigue from 30 s (+25% damage, −15% healing per 10 s).
+  - Final run: 1,200 duels, 0 one-shots, 0 unkillable pairs, 0 stun-locks, 0 crashes; median duel 10.7 s (L20) / 9.2 s
+    (L40).
+  - Open (the user's call): win rates stay uneven. Healers and the arcanist win 93–98%, the samurai and jester 4–7%, partly
+    because the test bots kite perfectly and play parry kits poorly.
 - **`run.mjs build-diversity`** (report, 27 s): at L40, how many choices on each axis stay within 15% of a class's
   best build (keystone pairings, armour set, tome).
-  - Tonight 6–48 viable combinations per class.
+  - Final: 6–48 viable combinations per class.
   - No school keystone, unique or hybrid that nobody would pick.
   - Open: endgame bosses barely threaten a typical player, so defensive choices rarely pay off. That's the user's
     call (power fantasy).
