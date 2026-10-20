@@ -88,7 +88,7 @@ export class BookReader extends Phaser.GameObjects.Container {
     btn(BOOK.x + BOOK.w / 2 - 110, 'left', this.spread > 0, () => this.turn(-1));
     btn(BOOK.x + BOOK.w / 2 + 66, 'right', this.spread + 2 < total, () => this.turn(1));
     this.text(BOOK.x + BOOK.w / 2, by + 10, `${Math.min(total, this.spread + 1)}–${Math.min(total, this.spread + 2)} / ${total}`, 'micro', hex(P['parch-700'])).setOrigin(0.5, 0);
-    this.text(BOOK.x + BOOK.w, by + 10, 'ESC  close   ← →  turn', 'micro', hex(P['stone-600'])).setOrigin(1, 0);
+    this.text(BOOK.x + BOOK.w, by + 10, '← → turn · Esc close', 'micro', hex(P['stone-600'])).setOrigin(1, 0);
   }
 
   /** page 0 = title page; page n = pages[n-1] */

@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Game, Registry, bus, keyLabel } from '@/core';
-import type { NpcDef, ObjectiveDef, QuestDef, QuestId } from '@/core';
+import type { Action, NpcDef, ObjectiveDef, QuestDef, QuestId } from '@/core';
 import { C, typeStyle } from '@/ui/kit/hc';
 import { npcTexture } from '@/art';
 import { itemName } from '@/narrative/client/itemNames';
@@ -11,6 +11,7 @@ import { HC_PIECES } from '@/data/items/hc/armour.gen';
 import { HC_LEGENDARIES } from '@/data/items/hc/legendary.gen';
 import { currentStage, objectiveCount, objectiveDone, objectiveTarget, objectiveText, progress, questDef, stageHistory } from '@/narrative/engine/quests';
 import { markTutorial } from '@/narrative/client/tutorial';
+import { localText } from '@/narrative/engine/state';
 import { questMarkers } from '@/narrative/client/markers';
 
 export type JournalTab = 'active' | 'main' | 'side' | 'bounty' | 'done';
@@ -18,13 +19,16 @@ export type JournalTab = 'active' | 'main' | 'side' | 'bounty' | 'done';
 // Handoff › Journal (1280×720): top tabs (Pack I · Skills K · Spells B · Journal J · Map M), ✕ at the right,
 // list panel 400×604 at (48,84) with category tabs, detail panel 760×604 at (472,84).
 const CATS: [JournalTab, string][] = [['active', 'Active'], ['main', 'Story'], ['side', 'Side'], ['bounty', 'Bounty'], ['done', 'Done']];
-const TOP: [string, string, string | null][] = [['Pack', 'I', 'inventory'], ['Skills', 'K', 'skills'], ['Spells', 'B', 'spells'], ['Journal', 'J', null], ['Map', 'M', 'map']];
+/** [label, action whose binding is shown (follows Settings › Controls), panel to open; null = this one] */
+const TOP: [string, Action, string | null][] = [['Pack', 'inventory', 'inventory'], ['Skills', 'skills', 'skills'], ['Spells', 'spells', 'spells'], ['Journal', 'journal', null], ['Map', 'map', 'map']];
 const CAT_COLOR: Record<string, string> = { main: '#ffc43d', class: '#ffc43d', side: '#7fe3ff', companion: '#c9a2ff', faction: '#c9a2ff', bounty: '#ff8a5c' };
 const CAT_LABEL: Record<string, string> = { main: 'STORY', class: 'STORY', side: 'SIDE', companion: 'COMPANION', faction: 'SIDE', bounty: 'BOUNTY' };
 const ACT_LABEL: Record<string, string> = { prologue: 'Prologue', act1: 'Act I', act2: 'Act II', act3: 'Act III' };
 const XP_LABEL: Record<number, string> = { 1: 'Minor', 2: 'Standard', 3: 'Major' };
 const ROW_H = 58;
 const LIST = { x: 64, y: 146, w: 368, h: 530 };
+/** the quest detail's left column: summary, current stage, objectives, diary (scrolls above the buttons at y 620) */
+const DETAIL = { left: 492, right: 884, top: 248, bottom: 604 };
 
 let rarityOf: Map<string, string> | null = null;
 const rarity = (id: string): string => {
@@ -42,12 +46,23 @@ export class QuestJournal extends Phaser.GameObjects.Container {
   private parts: Phaser.GameObjects.GameObject[] = [];
   private sel: string | null = null;
   private scroll = 0;
+  /** the detail column scrolls on its own; it starts at the top again for each quest */
+  private detailScroll = 0;
+  private detailMax = 0;
+  private detailFor: string | null = null;
   private quests_: QuestDef[] = [];
 
   constructor(scene: Phaser.Scene, private onClose: () => void = () => undefined) {
     super(scene, 0, 0);
     scene.input.on('wheel', (p: Phaser.Input.Pointer, _o: unknown, _dx: number, dy: number) => {
-      if (!this.visible || p.x > LIST.x + LIST.w + 16) return;
+      if (!this.visible) return;
+      if (p.x >= DETAIL.left && p.x <= DETAIL.right && p.y >= DETAIL.top && p.y <= DETAIL.bottom) {
+        if (!this.detailMax) return;
+        this.detailScroll = Math.max(0, Math.min(this.detailMax, this.detailScroll + dy * 0.6));
+        this.render();
+        return;
+      }
+      if (p.x > LIST.x + LIST.w + 16) return;
       this.scroll = Math.max(0, Math.min(this.maxScroll(), this.scroll + dy * 0.6));
       this.render();
     });
@@ -107,11 +122,11 @@ export class QuestJournal extends Phaser.GameObjects.Container {
     this.keep(sc.add.rectangle(0, 0, W, H, 0x0d1226, 0.86).setOrigin(0).setInteractive());
     // top tabs
     const tw = 150, total = TOP.length * tw + (TOP.length - 1) * 6;
-    TOP.forEach(([label, key, panel], i) => {
+    TOP.forEach(([label, action, panel], i) => {
       const x = (W - total) / 2 + i * (tw + 6), on = panel === null;
       const bg = this.keep(sc.add.nineslice(x, 20, on ? 'ui:tab_active' : 'ui:tab', undefined, tw, 44, 8, 8, 8, 8).setOrigin(0));
       const t = this.keep(sc.add.text(x + tw / 2 - 8, 42, label, { fontFamily: '"Jersey 10"', fontSize: '24px', color: on ? C.text : C.text300 }).setOrigin(0.5));
-      this.keep(sc.add.text(t.x + t.width / 2 + 8, 43, key, { fontFamily: '"Jersey 10"', fontSize: '15px', color: '#7884b5' }).setOrigin(0, 0.5));
+      this.keep(sc.add.text(t.x + t.width / 2 + 8, 43, keyLabel(action), { fontFamily: '"Jersey 10"', fontSize: '15px', color: '#7884b5' }).setOrigin(0, 0.5));
       if (panel) bg.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.onClose(); bus.emit('ui:open', { panel }); });
     });
     const x = this.keep(sc.add.nineslice(W - 92, 20, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0));
@@ -198,29 +213,56 @@ export class QuestJournal extends Phaser.GameObjects.Container {
     if (title.height > 80) title.setFontSize(34);
     this.keep(sc.add.text(624, title.y + title.height + 4, giver ? `Given by ${giver.name}` : 'The story itself', { ...typeStyle('body', color), fontStyle: '600' }));
 
-    // left column: summary + objectives
-    let y = 248;
+    // left column (scrolls with the wheel): summary, the current stage's journal paragraph, objectives, then the diary
+    // of past stages newest first. The stage journals are most of the quest prose (Claude 7: never shown before).
     const L = 496, LW = 380, R = 898, RW = 310;
-    const sum = this.keep(sc.add.text(L, y, q.summary, { ...typeStyle('body', C.text, LW), fontSize: '14px', lineSpacing: 6 }));
-    y += sum.height + 14;
-    this.keep(sc.add.text(L, y, 'Objectives', { fontFamily: '"Jersey 10"', fontSize: '24px', color: '#ffc43d' }));
-    y += 30;
-    const hist = stageHistory()[q.id] ?? [p.stage];
-    for (const sid of hist.slice(0, -1)) {
-      const s = q.stages.find((st) => st.id === sid);
-      const first = s?.objectives[0];
-      if (s && first) y += this.objective(L, y, LW, first.text, 'done');
-      if (y > 600) break;
-    }
+    if (this.detailFor !== q.id) { this.detailFor = q.id; this.detailScroll = 0; }
+    const col = this.keep(sc.add.container(0, -this.detailScroll));
+    col.setMask(sc.make.graphics({}, false).fillRect(L - 4, DETAIL.top - 4, LW + 12, DETAIL.bottom - DETAIL.top + 8).createGeometryMask());
+    let y = DETAIL.top;
+    const para = (text: string, color: string, size: string) => col.add(sc.add.text(L, y, localText(text), { ...typeStyle('body', color, LW), fontSize: size, lineSpacing: 6 })).last as Phaser.GameObjects.Text;
+    const sum = para(q.summary, C.text, '14px');
+    y += sum.height + 12;
     const cur = currentStage(q);
-    if (cur && !p.completed && !p.failed) {
+    const live = !!cur && !p.completed && !p.failed;
+    if (live && cur.journal) {
+      const now = col.add(sc.add.text(L + 12, y, localText(cur.journal), { ...typeStyle('body', C.text, LW - 12), fontSize: '14px', lineSpacing: 6 })).last as Phaser.GameObjects.Text;
+      col.add(sc.add.rectangle(L, y + 2, 3, now.height - 2, parseInt(color.slice(1), 16)).setOrigin(0));
+      y += now.height + 14;
+    }
+    col.add(sc.add.text(L, y, 'Objectives', { fontFamily: '"Jersey 10"', fontSize: '24px', color: '#ffc43d' }));
+    y += 30;
+    if (live) {
       for (const o of cur.objectives) {
         if (o.hidden && !objectiveDone(q, o)) continue;
-        if (y > 600) break;
-        y += this.objective(L, y, LW, objectiveText(q, o) + (o.optional ? ' (optional)' : ''), objectiveDone(q, o) ? 'done' : 'now', q, o);
+        y += this.objective(L, y, LW, objectiveText(q, o) + (o.optional ? ' (optional)' : ''), objectiveDone(q, o) ? 'done' : 'now', q, o, col);
       }
     } else if (p.outcome) {
-      y += this.objective(L, y, LW, `Outcome: ${p.outcome}`, 'done');
+      y += this.objective(L, y, LW, `Outcome: ${p.outcome}`, 'done', undefined, undefined, col);
+    }
+    // the diary: what has happened so far, newest first (a finished quest's last stage included)
+    const hist = stageHistory()[q.id] ?? [p.stage];
+    const past = (live ? hist.slice(0, -1) : hist).slice().reverse();
+    if (past.length) {
+      y += 8;
+      col.add(sc.add.text(L, y, 'So far', { fontFamily: '"Jersey 10"', fontSize: '20px', color: C.text300 }));
+      y += 26;
+      for (const sid of past) {
+        const s = q.stages.find((st) => st.id === sid);
+        const line = s?.journal ?? s?.objectives[0]?.text;
+        if (!line) continue;
+        col.add(sc.add.text(L, y + 1, '✓', { ...typeStyle('body', '#2de2c4'), fontStyle: '700' }));
+        const t = col.add(sc.add.text(L + 18, y, localText(line), { ...typeStyle('body', C.text500, LW - 18), fontSize: '13px', lineSpacing: 4 })).last as Phaser.GameObjects.Text;
+        y += t.height + 8;
+      }
+    }
+    this.detailMax = Math.max(0, y - DETAIL.bottom);
+    if (this.detailScroll > this.detailMax) { this.detailScroll = this.detailMax; col.y = -this.detailScroll; }
+    if (this.detailMax > 0) {
+      // a thin scroll indicator beside the column
+      const track = DETAIL.bottom - DETAIL.top, thumb = Math.max(24, (track * track) / (track + this.detailMax));
+      this.keep(sc.add.rectangle(L + LW + 6, DETAIL.top, 3, track, 0x212b52).setOrigin(0));
+      this.keep(sc.add.rectangle(L + LW + 6, DETAIL.top + ((track - thumb) * this.detailScroll) / this.detailMax, 3, thumb, 0x8b9fe0).setOrigin(0));
     }
 
     // right column: rewards + note
@@ -244,7 +286,9 @@ export class QuestJournal extends Phaser.GameObjects.Container {
       line(SLOT_BY_RARITY[rarity(it.item)] ?? 'ui:slot_empty', iconFrame(it.item), `${itemName(it.item)}${it.qty && it.qty > 1 ? ` ×${it.qty}` : ''}`, rarity(it.item).toUpperCase());
     }
     if (!r) line('ui:slot_empty', undefined, 'Unknown');
-    const note = q.portable ? 'Finishing this in a friend\'s world also finishes it in yours.' : p.completed ? 'Completed. The journal remembers.' : q.type === 'bounty' ? 'Bounties are posted again after a rest.' : 'Track it to see the next step on your screen and map.';
+    const followed = Game.state.narrative.trackedQuest === q.id;
+    const note = q.portable ? 'Finishing this in a friend’s world also finishes it in yours.' : p.completed ? 'Completed. The journal remembers.' : q.type === 'bounty' ? 'Bounties are posted again after a rest.'
+      : followed ? 'Tracked: its next step shows on your screen and map.' : 'Track it to see the next step on your screen and map.';
     const nt = this.keep(sc.add.text(R + 12, Math.max(ry + 8, 470), '', { ...typeStyle('caption', C.text300, RW - 24), lineSpacing: 4 }));
     nt.setText(`Note · ${note}`);
     this.keep(sc.add.rectangle(R, nt.y - 10, RW, nt.height + 20, 0x10162e).setOrigin(0).setStrokeStyle(2, 0x1a1230));
@@ -266,20 +310,21 @@ export class QuestJournal extends Phaser.GameObjects.Container {
     this.keep(sc.add.text(1208, 646, `↑ ↓ quest · ${keyLabel('track')} track · Esc close`, typeStyle('caption', '#7884b5')).setOrigin(1, 0.5));
   }
 
-  private objective(x: number, y: number, w: number, s: string, state: 'done' | 'now', q?: QuestDef, o?: ObjectiveDef): number {
+  private objective(x: number, y: number, w: number, s: string, state: 'done' | 'now', q?: QuestDef, o?: ObjectiveDef, into?: Phaser.GameObjects.Container): number {
     const sc = this.scene;
+    const keep = <T extends Phaser.GameObjects.GameObject>(g: T): T => { if (into) into.add(g); else this.keep(g); return g; };
     const done = state === 'done';
-    this.keep(sc.add.rectangle(x, y + 2, 14, 14, done ? 0x2de2c4 : 0x0b0f22).setOrigin(0).setStrokeStyle(2, done ? 0x1a1230 : 0x8b9fe0));
+    keep(sc.add.rectangle(x, y + 2, 14, 14, done ? 0x2de2c4 : 0x0b0f22).setOrigin(0).setStrokeStyle(2, done ? 0x1a1230 : 0x8b9fe0));
     const counted = !!(q && o && !done && objectiveTarget(o) > 1);
     const label = counted ? s.replace(/\s*\(\d+\s*\/\s*\d+\)\s*$/, '') : s; // the count sits on the right
-    const t = this.keep(sc.add.text(x + 24, y, label, { ...typeStyle('body', done ? C.text500 : C.text, w - 90), lineSpacing: 3 }));
-    if (done) this.keep(sc.add.rectangle(x + 24, y + 9, Math.min(t.width, w - 90), 1, 0x7884b5).setOrigin(0));
+    const t = keep(sc.add.text(x + 24, y, label, { ...typeStyle('body', done ? C.text500 : C.text, w - 90), lineSpacing: 3 }));
+    if (done) keep(sc.add.rectangle(x + 24, y + 9, Math.min(t.width, w - 90), 1, 0x7884b5).setOrigin(0));
     let h = Math.max(20, t.height + 6);
     if (q && o && !done && objectiveTarget(o) > 1) {
       const have = objectiveCount(q, o), need = objectiveTarget(o);
-      this.keep(sc.add.text(x + w, y, `${have}/${need}`, { ...typeStyle('body', '#ffe27a'), fontStyle: '700' }).setOrigin(1, 0));
-      this.keep(sc.add.rectangle(x + 24, y + h, w - 24, 6, 0x212b52).setOrigin(0).setStrokeStyle(2, 0x1a1230));
-      this.keep(sc.add.rectangle(x + 24, y + h, (w - 24) * Math.min(1, have / need), 6, 0xffc43d).setOrigin(0));
+      keep(sc.add.text(x + w, y, `${have}/${need}`, { ...typeStyle('body', '#ffe27a'), fontStyle: '700' }).setOrigin(1, 0));
+      keep(sc.add.rectangle(x + 24, y + h, w - 24, 6, 0x212b52).setOrigin(0).setStrokeStyle(2, 0x1a1230));
+      keep(sc.add.rectangle(x + 24, y + h, (w - 24) * Math.min(1, have / need), 6, 0xffc43d).setOrigin(0));
       h += 14;
     }
     return h + 6;
