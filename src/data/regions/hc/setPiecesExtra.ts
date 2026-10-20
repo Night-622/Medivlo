@@ -5,6 +5,7 @@
 import type { SetPieceDef } from '@/world/hc/types';
 import { CAMPAIGN_CONCORDIA, CAMPAIGN_PIECES, RETIRED, type ConcordiaExtra } from './campaignPlaces';
 import { WAVE2_CONCORDIA, WAVE2_INSTANCE } from './wave2Places';
+import type { FlagCond } from '@/core';
 
 export { RETIRED };
 
@@ -229,7 +230,7 @@ for (const [inst, ids] of Object.entries(WAVE2_INSTANCE)) INSTANCE_EXTRA[inst] =
  * at the anchor's front plus (dx, dy) tiles. `landmark:` ids become 4×3 triggers there.
  */
 export type { ConcordiaExtra };
-const c = (id: string, near: string, name: string, dx?: number, dy?: number, label?: string): ConcordiaExtra => ({ id, near, name, dx, dy, label });
+const c = (id: string, near: string, name: string, dx?: number, dy?: number, label?: string, when?: FlagCond): ConcordiaExtra => ({ id, near, name, dx, dy, label, when });
 export const CONCORDIA_EXTRA: ConcordiaExtra[] = [
   ...CAMPAIGN_CONCORDIA,
   ...WAVE2_CONCORDIA,
@@ -368,7 +369,7 @@ export const CONCORDIA_EXTRA: ConcordiaExtra[] = [
   c('landmark:falconer-supper-ledge', 'landmark:cliff-lightning-jar', 'A flat rock below the hooded ledges', 0, -19), // ~24 steps up the cliff path (Bartle's escort)
   c('area:falconer-cliff-path', 'landmark:cliff-lightning-jar+landmark:falconer-supper-ledge', 'The Stormcliff path'),
   c('landmark:falconer-gate-dovecote', 'landmark:brind-gilded-goose', 'The dovecote behind the inn', 0, -4),
-  c('obj:falconer-reply-to-wren', 'landmark:falconer-gate-dovecote', 'A note for Wren', 0, -4, 'Read'), // up at the dovecote, clear of the Goose bed's [F] focus
+  c('obj:falconer-reply-to-wren', 'landmark:falconer-gate-dovecote', 'A note for Wren', 0, -4, 'Read', { flag: 'falconer.reply_open' }), // up at the dovecote, clear of the Goose bed's [F] focus; usable only in its reply stage (Claude 4)
   c('landmark:falconer-perch-post', 'landmark:heart-camp', 'A perch-post', -5, -3),
   c('obj:falconer-jess-post', 'landmark:falconer-perch-post', 'Jesses on the post', 0, 1, 'Examine'),
   c('obj:falconer-fallen-hoods', 'landmark:legion-camp', 'Three hoods in the dust', 2, -3, 'Examine'),

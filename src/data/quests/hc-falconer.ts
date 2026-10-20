@@ -689,7 +689,9 @@ const quests: QuestDef[] = [
       {
         id: 'reply', journal: 'The bird that brought Wren’s letter has gone up onto the dovecote behind the Gate Circle inn to rest, and will not leave until it has something to carry home.',
         objectives: [{ id: 'reply', text: 'Send a reply home to Wren', interact: 'obj:falconer-reply-to-wren', marker: { landmark: 'landmark:falconer-gate-dovecote' } }],
-        onComplete: [{ setFlag: 'story.act2_ready', value: true }],
+        // falconer.reply_open gates obj:falconer-reply-to-wren in the world (Claude 2): usable only during this stage
+        onEnter: [{ setFlag: 'falconer.reply_open', value: true }],
+        onComplete: [{ setFlag: 'story.act2_ready', value: true }, { setFlag: 'falconer.reply_open', value: false }],
         end: { status: 'completed' },
       },
     ],

@@ -4,10 +4,12 @@
  *                   (way-2..4 = halfway along the road out to zone N; road = halfway up the road to the gate; a lair piece whose note says "rooms" goes one per lair room)
  *   Concordia line: `<id>[..N] @<anchor> [dx,dy | dx,dy | …] [# Name]`  (one offset per numbered piece)
  */
+import type { FlagCond } from '@/core';
 import type { SetPieceDef } from '@/world/hc/types';
 
 type Area = SetPieceDef['area'];
-export interface ConcordiaExtra { id: string; near: string; name: string; label?: string; dx?: number; dy?: number }
+/** `when`: a flag condition (replicated, so host and guests agree) that makes the object usable; always when absent */
+export interface ConcordiaExtra { id: string; near: string; name: string; label?: string; dx?: number; dy?: number; when?: FlagCond }
 
 const ids = (id: string): string[] => {
   const m = /^(.*)-(\d+)\.\.(\d+)$/.exec(id);

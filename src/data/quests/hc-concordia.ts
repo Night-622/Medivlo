@@ -190,7 +190,9 @@ const quests: QuestDef[] = [
     stages: [
       { id: 'wil', journal: 'Maren says the Gilded Goose has beds, stew and the worst gossip in Morvane.', objectives: [{ id: 'wil', text: 'Talk to Wil Crane', talk: 'npc:wil', marker: { landmark: 'landmark:brind-gilded-goose' } }], next: 'rest' },
       { id: 'rest', journal: 'Wil has a room for you upstairs. Rest here any time to restore everything.', objectives: [{ id: 'rest', text: 'Rest at the Gilded Goose', interact: 'obj:brind-goose-bed' }], next: 'letters' },
-      { id: 'letters', journal: 'The washstand drawer in your room sticks, like the window. Something inside it is wedged tight.', objectives: [{ id: 'letters', text: 'Open the stuck drawer in your room', interact: 'obj:cc-goose-letters', marker: { landmark: 'landmark:brind-gilded-goose' } }], next: 'wil-again' },
+      { id: 'letters', journal: 'The washstand drawer in your room sticks, like the window. Something inside it is wedged tight.', objectives: [{ id: 'letters', text: 'Open the stuck drawer in your room', interact: 'obj:cc-goose-letters', marker: { landmark: 'landmark:brind-gilded-goose' } }],
+        // cc.goose_letters_open gates obj:cc-goose-letters in the world (Claude 2): usable only during this stage
+        onEnter: [{ setFlag: 'cc.goose_letters_open', value: true }], onComplete: [{ setFlag: 'cc.goose_letters_open', value: false }], next: 'wil-again' },
       { id: 'wil-again', journal: 'The drawer was full of unopened letters, all in Wil’s hand, all addressed to whoever comes through the arches.', objectives: [{ id: 'wil', text: 'Ask Wil about the letters', talk: 'npc:wil', marker: { landmark: 'landmark:brind-gilded-goose' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 1, hcItems: [{ item: 'i_stew' }] },
@@ -284,7 +286,9 @@ const quests: QuestDef[] = [
         next: 'report',
       },
       { id: 'report', journal: 'Four stones are awake and humming to each other along the roads. Sela will want to hear them.', objectives: [{ id: 'sela', text: 'Tell Sela the stones are awake', talk: 'npc:sela', marker: { landmark: 'landmark:brind-waystone' } }], next: 'listen' },
-      { id: 'listen', journal: 'A fifth stone is answering the four, from somewhere no map shows: the Heart. Sela says the stones carry further at night.', objectives: [{ id: 'listen', text: 'Listen at the Brindlecross waystone after dark', when: { flag: 'cc.waystone_heart' }, marker: { landmark: 'landmark:brind-waystone' } }], onComplete: [{ trust: 'npc:sela', delta: 1 }], end: { status: 'completed' } },
+      { id: 'listen', journal: 'A fifth stone is answering the four, from somewhere no map shows: the Heart. Sela says the stones carry further at night.', objectives: [{ id: 'listen', text: 'Listen at the Brindlecross waystone after dark', when: { flag: 'cc.waystone_heart' }, marker: { landmark: 'landmark:brind-waystone' } }],
+        // cc.waystone_listen_open gates obj:cc-waystone-listen in the world (Claude 2): usable only during this stage
+        onEnter: [{ setFlag: 'cc.waystone_listen_open', value: true }], onComplete: [{ trust: 'npc:sela', delta: 1 }, { setFlag: 'cc.waystone_listen_open', value: false }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 1, hcItems: [{ item: 'i_map' }], lore: ['lore:hc-waystones'] },
   },

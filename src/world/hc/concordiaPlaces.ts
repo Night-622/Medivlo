@@ -97,7 +97,7 @@ export function placeConcordiaPlaces(host: PlacesHost): void {
     const fan = x.dx === undefined && x.dy === undefined ? (k % 2 ? -((k + 1) >> 1) : k >> 1) : 0;
     const p: P2 = [a0[0] + (x.dx ?? 0) + fan, a0[1] + (x.dy ?? 0)];
     if (x.id.startsWith('landmark:')) h.obj({ id: x.id, kind: 'trigger', at: [p[0] - 2, p[1] - 1], size: [4, 3], props: { name: x.name, label: x.name, landmark: true } });
-    else h.obj({ id: x.id, kind: 'interactable', at: p, props: { name: x.name, label: x.label ?? 'Examine' } });
+    else h.obj({ id: x.id, kind: 'interactable', at: p, props: { name: x.name, label: x.label ?? 'Examine' }, ...(x.when ? { when: x.when } : {}) });
     return true;
   }
 }
