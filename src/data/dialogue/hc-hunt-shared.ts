@@ -64,7 +64,7 @@ const dialogues: DialogueDef[] = [
           { text: 'Farewell.', to: null, tag: 'leave' },
         ],
       },
-      how: { speaker: 'npc:thaddeus-hollis', text: 'Came over in C. 1011 to sell elk-horn at the Turning fair. Then there was no Turning, and no fair, and no way home. I married. I stayed. My brother’s girl had Maren, and then she went into the Heart with her stone.', next: 'start' },
+      how: { speaker: 'npc:thaddeus-hollis', text: 'My father brought me over for a Turning when I was a boy. I came back in C. 1011 to sell elk-horn at the fair, and to see a girl. Then there was no Turning, and no fair, and no way home. I married her. I stayed. My brother’s girl had Maren, and then she went into the Heart with her stone.', next: 'start' },
       maren: { speaker: 'npc:thaddeus-hollis', mood: 'sad', text: 'Off. She’s always off. Hunting the thing that took her mother, though she won’t say it like that. Tell her to eat.', next: 'start' },
     },
   },

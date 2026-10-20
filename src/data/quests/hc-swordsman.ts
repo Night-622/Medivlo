@@ -777,7 +777,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:swordsman-percys-thousandth', name: 'Percy’s Thousandth', type: 'side', region: 'region:heart', giver: 'npc:percy-thimble-concordia',
-    summary: 'Percy Thimble came through the Heart behind you in his good coat. He would like one more bout, at the edge of the world, against the most frightening thing he can find.',
+    summary: 'Percy Thimble has followed you all the way to the Heart in his good coat. He would like one more bout, at the edge of the world, against the most frightening thing he can find.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'percy',
     stages: [
       { id: 'percy', journal: 'Percy is at the Heart camp, pinning up his sleeves.', objectives: [{ id: 'percy', text: 'Talk to Percy Thimble at the Heart camp', talk: 'npc:percy-thimble-concordia', marker: { landmark: 'landmark:heart-camp' } }], next: 'bout' },

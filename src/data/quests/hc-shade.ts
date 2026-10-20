@@ -739,7 +739,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A2, id: 'quest:shade-the-silent-thread', name: 'The Silent Thread', type: 'side', region: 'region:gloam', giver: 'npc:bearer-samurai',
-    summary: 'The Samurai bearer has to cross the Spinner’s web, and will not speak while there is anyone near who cannot hide. You cannot cast a shadow. She says that is a start.',
+    summary: 'The Samurai bearer has to cross the Spinner’s web, and will not speak while there is anyone near who can hide. You cannot cast a shadow. She says that is a start.',
     requires: req(done('quest:cc-stone-court')), autoStart: true, firstStage: 'web',
     stages: [
       {
@@ -748,7 +748,7 @@ const quests: QuestDef[] = [
         next: 'back',
       },
       {
-        id: 'back', journal: 'On the far side Aiko sat down on a root and, for the first time, spoke.',
+        id: 'back', journal: 'On the far side Aiko sat down on a root and, for the first time since the web, spoke.',
         objectives: [{ id: 'aiko', text: 'Talk to the Samurai bearer', when: { any: [{ flag: 'shade.aiko_thanked' }, { partyHasClass: 'samurai' }] }, marker: { landmark: 'landmark:stone-court' } }],
         onComplete: [{ setFlag: 'story.bearer.samurai', value: true }],
         end: { status: 'completed' },

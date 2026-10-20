@@ -101,7 +101,7 @@ const entries: LoreEntry[] = [
   // ---------- lair codexes
   {
     id: 'lore:hc-umbral-lantern-tithe', name: 'The Lantern-Tithe', category: 'culture', source: 'a stone in the Stalker’s Den', hidden: true,
-    body: 'The Moon Stalker hunts by shadow, and for longer than the Veil has kept a ledger the moor folds paid it in lanterns: one left lit at the den mouth each moonless night, so it would take the lantern’s shadow and leave the flock’s. The tithe lapsed in the hungry years after the crown fell, when nobody had oil to spare. For years it did not seem to matter. Then the bell rang, and the Stalker came up out of its den hollow and hungry, and there was no lantern lit.',
+    body: 'The Moon Stalker hunts by shadow, and for longer than the Veil has kept a ledger the moor folds paid it in lanterns: one left lit at the den mouth each moonless night, so it would take the lantern’s shadow and leave the flock’s. The tithe lapsed in the hungry years after the crown fell, when nobody had oil to spare. For years it did not seem to matter. Then the Bell rang, and the Stalker came up out of its den hollow and hungry, and there was no lantern lit.',
   },
   {
     id: 'lore:hc-umbral-rule-slate', name: 'The Cutters’ Four Rules', category: 'culture', source: 'a slate in the Brood Spire', hidden: true,

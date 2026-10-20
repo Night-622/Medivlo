@@ -174,7 +174,7 @@ const npcs: NpcDef[] = [
     bio: 'An old Edgewater duellist, once of rung 61, who came through to Concordia for a bout in C. 1012 and was shut out when the arches closed. He drinks with the Blade folk of Brindlecross at Rook’s Watch House.',
   },
   {
-    id: 'npc:percy-thimble-concordia', name: 'Percy Thimble', title: 'Tailor, rung 4,011, far from home', school: 'blade', origin: 'blade', trust: 3,
+    id: 'npc:percy-thimble-concordia', name: 'Percy Thimble', title: 'Tailor of the Ladder, far from home', school: 'blade', origin: 'blade', trust: 3,
     region: 'region:alder', home: 'landmark:gate-circle',
     presentWhen: { all: [SW, ACT2, { any: [{ questActive: 'quest:swordsman-a-letter-from-ferro' }, { questCompleted: 'quest:swordsman-a-letter-from-ferro' }] }] },
     // C-6: escorted across the moor to the Watch House, where he stays with the Blade folk;

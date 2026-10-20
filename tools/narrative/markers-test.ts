@@ -7,7 +7,7 @@ import { Game, Registry, bus, createNewGameState, setFlag } from '@/core';
 import type { QuestDef } from '@/core';
 import { installNarrativeAuthority } from '@/narrative/engine';
 import { CAMPAIGNS } from '@/narrative/engine/classes';
-import { fallbackPlace, objectivePlaces, questMarkers } from '@/narrative/client/markers';
+import { bossLair, fallbackPlace, objectivePlaces, questMarkers } from '@/narrative/client/markers';
 
 installNarrativeAuthority();
 let bad = 0;
@@ -40,4 +40,14 @@ for (const q of Registry.all('quest') as QuestDef[]) for (const s of q.stages) f
 }
 for (const [k, [n, has]] of Object.entries(kinds)) console.log(`     ${k.padEnd(8)} ${has}/${n} have a place (own or fallback)`);
 ok(kinds.talk[1] === kinds.talk[0] && kinds.reach[1] === kinds.reach[0] && kinds.interact[1] === kinds.interact[0], 'every talk, reach and interact objective points somewhere');
+// lair bosses point at their own lair (Claude 7: the stage fallback sent 65 of 72 to a zone far away)
+let lairs = 0; const missing: string[] = [];
+for (const c of CAMPAIGNS) {
+  const found = new Set<string>();
+  for (const q of (Registry.all('quest') as QuestDef[]).filter((x) => x.campaign === c.id)) for (const s of q.stages) for (const o of s.objectives) {
+    if ('kill' in o && typeof o.kill === 'string') { const l = bossLair(o.kill, c.id); if (l && objectivePlaces(o, c.id)[0] === l) found.add(l); }
+  }
+  lairs += found.size; if (found.size < 3) missing.push(`${c.id} ${found.size}/3`);
+}
+ok(lairs === CAMPAIGNS.length * 3, `every class's three lair-boss kills point at their lair (${lairs}/${CAMPAIGNS.length * 3})${missing.length ? ' missing: ' + missing.join(', ') : ''}`);
 console.log(bad ? `${bad} FAILED` : 'ALL PASS');

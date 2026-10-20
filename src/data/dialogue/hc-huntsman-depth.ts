@@ -403,7 +403,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:obj-hunt-capital-ruin-find', name: 'Antlerford ruin: the first Lodge hearth', scope: 'party',
     entries: [{ node: 'find' }],
-    nodes: { find: { speaker: 'narrator', text: 'Under a roof long gone stands the hearth of the first Lodge-house, and over it a feast-board cut with notches, one for every Turning the Lodge ran beside the Great Hunt. Eighty-five notches. An eighty-sixth has been begun and not finished: a single cut, half as deep as the rest.', effects: [{ unlockLore: 'lore:hc-hunt-capital-ruin' }], next: null } },
+    nodes: { find: { speaker: 'narrator', text: 'Under a roof long gone stands the hearth of the first Lodge-house, and over it a feast-board cut with notches, one for every Turning the Lodge ran beside the Great Hunt. Eighty-four notches. An eighty-fifth has been begun and not finished: a single cut, half as deep as the rest, from the year the runners didn’t come home.', effects: [{ unlockLore: 'lore:hc-hunt-capital-ruin' }], next: null } },
   },
   {
     id: 'dialogue:obj-hunt-capital-cave-find', name: 'Antlerford cave: the shed antlers', scope: 'party',

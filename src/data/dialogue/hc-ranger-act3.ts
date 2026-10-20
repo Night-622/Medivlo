@@ -55,7 +55,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       devoted: {
-        speaker: 'narrator', mood: 'happy', text: 'You laugh out loud at the top of the world, and the bearers turn to look. Far away at the Wayfarers’ fire, an old man who smells of pine looks up from his whetstone and, for no reason anyone there can see, he grins.',
+        speaker: 'narrator', mood: 'happy', text: 'You laugh out loud at the top of the world, and the bearers turn to look. Far away at the Wayfarers’ fire, an old man who smells of pine looks up from his whetstone and, for no reason anyone there can see, grins.',
         effects: [{ trust: HB, set: 5 }], next: null,
       },
       plain: { speaker: 'narrator', text: 'You laugh out loud at the top of the world, until the other bearers turn to look. Then you fold the bark away somewhere safe. Whoever climbs this stair now will know a Wayfarer walked this far.', next: null },

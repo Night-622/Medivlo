@@ -159,7 +159,7 @@ const npcs: NpcDef[] = [
     barks: [{ lines: ['Moss says you’ve got no shadow.', 'Moss says is the moon bigger.'] }],
     roles: ['quest'],
     look: { skin: 0xd8b8a0, hair: 0x3a2a3a, cloth: 0x4a5a3a, accent: 0xb0c080, build: 'short' },
-    bio: 'Two small identical children of the Moonwell, one who talks and one who does not, who have only ever seen the moon from the bottom of the shaft.',
+    bio: 'Twins of the Moonwell, a boy and a girl, one who talks and one who does not, who have only ever seen the moon from the bottom of the shaft.',
   },
   {
     id: 'npc:tibbet-crumb', name: 'Tibbet Crumb', title: 'Bounty-keeper of the Veil', school: 'umbral', origin: 'umbral', trust: 2,

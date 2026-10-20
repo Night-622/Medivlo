@@ -373,7 +373,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       apologies: { speaker: 'narrator', text: '“Apologies: from the twelfth member, who has gone to Concordia to sign, and sends word: Rule it straight. Leave room. Somebody may yet come.”', next: 'close' },
-      close: { speaker: 'narrator', text: 'You close the minute-book. Mabyn will want every word of it, and then she will want to lie down.', effects: [{ setFlag: 'rimecaller.minute_read', value: true }, { unlockLore: 'lore:hc-rime-founders-minute' }], next: null },
+      close: { speaker: 'narrator', text: 'You close the minute-book. Maudlin will want every word of it, and then she will want to lie down.', effects: [{ setFlag: 'rimecaller.minute_read', value: true }, { unlockLore: 'lore:hc-rime-founders-minute' }], next: null },
       plain: { speaker: 'narrator', text: 'The founders’ minute-book, on its chain.', next: null },
     },
   },

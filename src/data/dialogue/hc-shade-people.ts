@@ -310,7 +310,7 @@ const dialogues: DialogueDef[] = [
     entries: [{ when: stage('quest:shade-seen-from-below', 'twins'), node: 'home' }, { node: 'start' }],
     nodes: {
       start: {
-        speaker: 'npc:twig-and-moss', text: '(Two small identical children, one talking, one checking behind you for your shadow.) I’m Twig. That’s Moss. Moss doesn’t talk. Moss says you’ve got no shadow. Moss says that’s the best thing she’s ever seen.',
+        speaker: 'npc:twig-and-moss', text: '(Two small children, as alike as two buttons, one talking, one checking behind you for your shadow.) I’m Twig. That’s Moss. Moss doesn’t talk. Moss says you’ve got no shadow. Moss says that’s the best thing she’s ever seen.',
         choices: [
           offer('quest:shade-seen-from-below', 'Have you two ever been up on the moors?', 'moors', done('quest:shade-nothing-to-hunt')),
           bye,
@@ -428,7 +428,7 @@ const dialogues: DialogueDef[] = [
     entries: [{ when: stage('quest:shade-the-drowned-rat', 'hobb'), node: 'start' }],
     nodes: {
       start: {
-        speaker: 'npc:hobb', text: 'A Veil thief at my lych-gate, and no shadow on her. (He leans on his spade.) I keep the names of the dead, not the living, and I don’t show my books to thieves. Give me a reason.',
+        speaker: 'npc:hobb', text: 'A Veil thief at my lych-gate, with no shadow. (He leans on his spade.) I keep the names of the dead and the living, and I don’t show my books to thieves. Give me a reason.',
         choices: [
           { text: 'My shadow’s one of the missing.', to: 'mine', quest: true },
           { text: '(Stand in the lamplight and let him look at the wall behind you.)', to: 'wall', school: 'umbral', quest: true },
@@ -647,7 +647,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       rank: { speaker: 'narrator', text: 'A rank at the back of the Legion, grey and wet and weeping, and not one of them casts a thing on the ground. Shadows, filled in with tears, as yours was. They turn their heads towards you all at once: the only other thing in the Heart with nobody behind it.', next: 'pipe' },
       pipe: {
-        speaker: 'narrator', mood: 'sad', text: 'One of them, a big man’s shape with a pipe, lifts its hat to you. You cut it out of the Spinner’s web once, and it ran for Brindlecross. The Bell called it here instead.',
+        speaker: 'narrator', mood: 'sad', text: 'One of them, a big man’s shape with a pipe, lifts its hat to you. You cut it out of the Spinner’s web once, and it ran home to Brindlecross. The Bell called it here all the same.',
         choices: [
           { text: '(Tug the Spinner’s thread: short, short, long. Come home.)', to: 'come', quest: true },
           { text: '(Turn your back on them and walk away from the light, the way a person does.)', to: 'walk', school: 'umbral', quest: true },
@@ -690,7 +690,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       walk: { speaker: BTH, text: 'Followed the droppings. That’s a shepherd’s whole education, that is. (He puffs his pipe.) Three realms and a gate, and not one inn would take the dog. I haven’t got a dog. They still wouldn’t.', next: 'find' },
-      find: { speaker: BTH, text: 'They lost their shadows the night of the Bell, same as me, same as you. Sheep don’t mind much. But a sheep with no shadow, in the dark, is a sheep you walk straight past, and I’ve walked past every one.', next: 'ask' },
+      find: { speaker: BTH, text: 'Their shadows went when the Bell rang, same as yours did, and mine before that. Sheep don’t mind much. But a sheep with no shadow, in the dark, is a sheep you walk straight past, and I’ve walked past every one.', next: 'ask' },
       ask: {
         speaker: BTH, text: 'You, though. You’re the same as them. They won’t see you coming, so they won’t run. Round them up for an old man?',
         choices: [{ text: '(Take the crook.)', to: 'crook', quest: true }],

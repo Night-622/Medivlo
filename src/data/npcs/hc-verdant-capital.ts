@@ -100,7 +100,7 @@ const npcs: NpcDef[] = [
     barks: [{ lines: ['(It is holding a lantern it found inside the bark. It will not put it down.)', 'I woke up in a street. The street was asleep.'] }],
     roles: ['ambient'],
     look: { skin: 0xd85a7a, hair: 0x6a8a3a, cloth: 0x4a6a2a, build: 'short' },
-    bio: 'A ragged-robin Bloomkin, pink and frayed at the edges, who woke this spring in the new growth over Lantern Row and has stood guard on it ever since, holding a lantern it found inside the bark.',
+    bio: 'A ragged-robin Bloomkin, pink and frayed at the edges, who woke in the new growth over Lantern Row on the night it was swallowed, and has stood guard on it ever since, holding a lantern it found inside the bark.',
   },
   {
     id: 'npc:hepzibah-marl', name: 'Hepzibah Marl', title: 'of the Compost Bough', school: 'verdant', origin: 'verdant', trust: 2,
@@ -124,7 +124,7 @@ const npcs: NpcDef[] = [
     bio: 'Hepzibah Marl’s neighbour and opponent of forty years. He is deaf in the ear that faces her, and old enough to remember the tree asleep in winter.',
   },
   {
-    id: 'npc:thaddeus-wort', name: 'Beadle Thaddeus Wort', title: 'of the Circle’s notice-bough', school: 'verdant', origin: 'verdant', trust: 1,
+    id: 'npc:thaddeus-wort', name: 'Beadle Obadiah Wort', title: 'of the Circle’s notice-bough', school: 'verdant', origin: 'verdant', trust: 1,
     region: Z1, home: 'landmark:circle-notice-bough', presentWhen: HW,
     dialogue: [
       { when: at('quest:hedgewitch-too-many-cats', 'register'), dialogue: 'dialogue:hedgewitch-thaddeus-register' },

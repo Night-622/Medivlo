@@ -169,7 +169,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       which: { speaker: WF, text: 'I don’t get a vote. I’m a scaffolder. But if anyone asks me, I’ll tell them what I told you. Ask me.', choices: more(offer('quest:sparkwright-the-spire-jumpers', 'Is that race still on?', 'race', RODS_DONE)) },
-      lads: { speaker: WF, mood: 'sad', text: 'Lemmy and Hob. Good jumpers. Rubbish at listening. (He puts his cap back on.) I still teach landing first. Every apprentice. Nobody ever wants to learn it.', choices: more(offer('quest:sparkwright-the-spire-jumpers', 'Is that race still on?', 'race', RODS_DONE)) },
+      lads: { speaker: WF, mood: 'sad', text: 'Lemmy and Dob. Good jumpers. Rubbish at listening. (He puts his cap back on.) I still teach landing first. Every apprentice. Nobody ever wants to learn it.', choices: more(offer('quest:sparkwright-the-spire-jumpers', 'Is that race still on?', 'race', RODS_DONE)) },
       race: { speaker: WF, text: 'Splendid! Borrow a cloak. Arms out, knees soft, don’t think about the ground. The ground is thinking about you enough for both of you.', next: null },
     },
   },

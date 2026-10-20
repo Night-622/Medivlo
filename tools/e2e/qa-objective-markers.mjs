@@ -13,7 +13,7 @@ const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ?
 const dir = mkdtempSync(join(tmpdir(), 'qa-obj-markers-'));
 const entry = join(dir, 'entry.ts');
 writeFileSync(entry, String.raw`
-import { Registry } from '@/core';
+import { Game, Registry, createNewGameState } from '@/core';
 import type { QuestDef, NpcDef } from '@/core';
 import { CAMPAIGNS } from '@/narrative/engine/classes';
 import { warmMarkers } from '@/world/hc/spawns';
@@ -23,6 +23,8 @@ const ONLY = (process.env.QA_CLASS ?? '').split(',').filter(Boolean);
 const ACT = process.env.QA_ACT || 'act1';
 const VERBOSE = process.env.QA_VERBOSE === '1';
 const quests = Registry.all('quest') as QuestDef[];
+// questMarkers() reads the campaign class from the game state, as in the game: one hero per row
+const setHero = (cls: string) => { const s = createNewGameState(); s.player.hero = { classId: cls, look: { skin: 0, hair: 0, hc: 0, eyes: 0, brows: 0, ec: 0, mouth: 0, mark: 0, body: 0 }, outfit: { dye: 0, headw: 0, cape: 0, neck: 0, face: 0, extra: 0 } } as never; Game.set(s); };
 while (warmMarkers()); // index every space first (questPlace peeks the index)
 const where = (id: string | undefined) => (id ? questPlace(id) : null);
 const npcHome = (id: string) => (Registry.tryGet('npc', id) as NpcDef | undefined)?.home;
@@ -32,6 +34,7 @@ for (const c of rows) {
   if (ONLY.length && !ONLY.includes(c.id) && !(c === shared && ONLY.includes('shared'))) continue;
   const mine = quests.filter((q) => c.match(q) && !q.id.endsWith('-first-steps') && (ACT === 'all' || q.act === ACT)); // First Steps teaches keys, not places
   if (!mine.length) continue;
+  setHero(c === shared ? CAMPAIGNS[0].id : c.id);
   let n = 0; const miss: string[] = []; const byKind: Record<string, number> = {};
   for (const q of mine) for (const s of q.stages) for (const o of s.objectives) {
     if (o.hidden) continue;

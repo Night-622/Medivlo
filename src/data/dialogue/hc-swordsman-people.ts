@@ -575,7 +575,7 @@ const dialogues: DialogueDef[] = [
       { node: 'later' },
     ],
     nodes: {
-      start: { speaker: 'npc:percy-thimble-concordia', mood: 'happy', text: 'There you are! I came through the gate! Me! Rung 4,011! The Maestra gave me this for you, and said if I read it she’d have my thumbs. I didn’t read it. I held it up to the light once. Only once.', next: 'letter' },
+      start: { speaker: 'npc:percy-thimble-concordia', mood: 'happy', text: 'There you are! I came through the gate! Me! Percy Thimble, of the Ladder! The Maestra gave me this for you, and said if I read it she’d have my thumbs. I didn’t read it. I held it up to the light once. Only once.', next: 'letter' },
       letter: {
         speaker: LF, text: '(Two words, in her sharp hand, in the middle of a whole clean sheet.) “End it.”',
         choices: [

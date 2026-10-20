@@ -119,7 +119,7 @@ const dialogues: DialogueDef[] = [
         choices: [{ text: 'Can I help?', to: 'help', trust: 1 }, { text: 'I’ll leave you to it.', to: 'vane' }],
       },
       help: { speaker: MT, text: 'You can hold the lantern. That’s helping. Gardeners don’t need help, mostly. They need someone to talk at.', next: 'vane' },
-      vane: { speaker: MT, text: 'And there’s a Keeper’s pigeon been round for you twice. The Mnemosarch wants to meet you. Gave me a cup of tea once, when my husband passed. Very kind man. Very tidy.', next: null },
+      vane: { speaker: MT, text: 'And there’s a Keeper’s pigeon been round for you twice. The Mnemosarch wants to meet you. Gave me a cup of tea once, when I lost my husband. Very kind man. Very tidy.', next: null },
     },
   },
   // ---------- I-4 The Mnemosarch's Queue
@@ -291,7 +291,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Ask Vane what he would have kept.)', to: 'ask' },
         ],
       },
-      ask: { speaker: OV, mood: 'sad', text: 'Everything. Every face. My mother’s, which I lost when I was six, and found years later in a phial in this queue, and kept the original, because I could not bear to give it back. (He holds the model closer.) Everything, {player.name}.', next: 'take' },
+      ask: { speaker: OV, mood: 'sad', text: 'Everything. Every face. My mother’s, which I lost when I was six, and found years later in a phial in the queue, and kept the original, because I could not bear to give it back. (He holds the model closer.) Everything, {player.name}.', next: 'take' },
       weave: { speaker: 'narrator', text: 'You wind a thread of dusk round your fingers the way Nyx taught you, a little loose, so things can slip through. Then you take the stone.', next: 'take' },
       take: { speaker: 'narrator', text: 'It comes up into your hand cool and light, and for a moment you remember everything you ever forgot, all at once: a song, a smell of rain, a room you lived in when you were two. Then you let most of it go again. It feels like holding someone’s hand.', next: 'keep' },
       keep: {

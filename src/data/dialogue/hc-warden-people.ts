@@ -132,7 +132,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:clemmie-briggs', text: 'You’ve got to help. Nobody asks the Captain to say it again. Nobody. Not for twenty years. And there’s a squad behind the stables digging a moat.',
         choices: [offer('quest:warden-the-misheard-orders', 'Why are they digging a moat?', 'moat'), bye],
       },
-      moat: { speaker: 'npc:clemmie-briggs', mood: 'afraid', text: 'Because she asked for a boat! For the ice-fishing! And Ulf’s lot are baking a cake shaped like the cook, because she said “wake the cook”. And somebody’s polishing the hedge. I don’t even know what she said for that one.', next: null },
+      moat: { speaker: 'npc:clemmie-briggs', mood: 'afraid', text: 'Because she asked for a boat! For the ice-fishing! And Olaf’s lot are baking a cake shaped like the cook, because she said “wake the cook”. And somebody’s polishing the hedge. I don’t even know what she said for that one.', next: null },
       sorted: {
         speaker: 'npc:clemmie-briggs', mood: 'happy', text: 'A boat! A woken cook! And it was “polish the horns”, not the thorns, which makes so much more sense now I hear it. She didn’t notice. She didn’t notice any of it!',
         choices: [{ text: 'Next time, ask her to say it again.', to: 'again' }, { text: 'Our secret.', to: 'first' }],

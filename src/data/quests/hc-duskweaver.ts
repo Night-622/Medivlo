@@ -494,7 +494,7 @@ const quests: QuestDef[] = [
         next: 'moll',
       },
       {
-        id: 'moll', journal: 'A name is scratched round the saucer’s rim. Under-Keeper Moll has kept the Archive for forty years. He will know whose cat it was.',
+        id: 'moll', journal: 'A name is scratched round the saucer’s rim. Under-Keeper Moll has worked in the Archive for forty years. He will know whose cat it was.',
         objectives: [{ id: 'moll', text: 'Ask Under-Keeper Moll whose cat it was', talk: 'npc:peregrine-moll', marker: { landmark: 'landmark:archive-stacks' } }],
         next: 'cat',
       },

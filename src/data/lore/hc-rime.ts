@@ -78,7 +78,7 @@ const entries: LoreEntry[] = [
   },
   {
     id: 'lore:hc-rime-capital-ruin', name: 'The Stone Reading Room', category: 'history', source: 'a lectern among fallen pillars', hidden: true,
-    body: 'Before the Archive was cut into the glacier it kept its books in a stone hall on the slope below, and chained every one to its lectern, because Rimecallers lend nothing. The hall fell in a hard winter four centuries ago. The books were carried up into the ice, all but one, whose chain was found cut. Mabyn Frane has an index card for the missing book. The title on it reads: “Unknown. Overdue.”',
+    body: 'Before the Archive was cut into the glacier it kept its books in a stone hall on the slope below, and chained every one to its lectern, because Rimecallers lend nothing. The hall fell in a hard winter four centuries ago. The books were carried up into the ice, all but one, whose chain was found cut. Maudlin Frane has an index card for the missing book. The title on it reads: “Unknown. Overdue.”',
   },
   {
     id: 'lore:hc-rime-capital-cave', name: 'The Year-Ice', category: 'places', source: 'the banded wall of a cave below Glacierhome', hidden: true,

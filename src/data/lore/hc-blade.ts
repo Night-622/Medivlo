@@ -17,7 +17,7 @@ const entries: LoreEntry[] = [
   },
   {
     id: 'lore:hc-blade-capital-ruin', name: 'The Old Lists', category: 'history', source: 'a carved board in a ruined square', hidden: true,
-    body: 'Before the Ladder there were the Lists: a sunken square of sand where Edgewater settled its quarrels in public, under a board with two columns, BEGUN and ENDED. A quarrel was not allowed off the board until it had a mark in both.\n\nThe Ladder replaced the Lists in C. 702, because it was tidier. It kept only one column.',
+    body: 'Before the Ladder there were the Lists: a sunken square of sand where Edgewater settled its quarrels in public, under a board with two columns, BEGUN and ENDED. A quarrel was not allowed off the board until it had a mark in both.\n\nThe Ladder replaced the Lists in the first years of the Concord, because it was tidier. It kept only one column.',
   },
   {
     id: 'lore:hc-blade-capital-cave', name: 'The Duel Cellars', category: 'places', source: 'seconds’ marks on a cellar wall', hidden: true,

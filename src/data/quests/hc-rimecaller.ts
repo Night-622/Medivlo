@@ -377,7 +377,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A1, id: 'quest:rimecaller-the-thirteenth-line', name: 'The Thirteenth Line', type: 'side', region: Z2, giver: 'npc:mabyn-frane',
-    summary: 'Under-Archivist Mabyn Frane has re-catalogued the treaty stacks four times in thirty years, and has finally found the one thing she can’t file.',
+    summary: 'Under-Archivist Maudlin Frane has re-catalogued the treaty stacks four times in thirty years, and has finally found the one thing she can’t file.',
     requires: req(done('quest:rimecaller-the-hold-gauges')), firstStage: 'treaty',
     stages: [
       {
@@ -387,7 +387,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'mabyn', journal: 'Twelve signatures, and a thirteenth line, ruled, and left blank.',
-        objectives: [{ id: 'mabyn', text: 'Tell Mabyn what you found', talk: 'npc:mabyn-frane', marker: { landmark: 'landmark:hall-of-held-hours' } }],
+        objectives: [{ id: 'mabyn', text: 'Tell Maudlin what you found', talk: 'npc:mabyn-frane', marker: { landmark: 'landmark:hall-of-held-hours' } }],
         onComplete: [{ setFlag: 'rimecaller.treaty_seen', value: true }],
         next: 'minute',
       },

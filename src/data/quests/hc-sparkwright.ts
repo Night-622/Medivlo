@@ -340,7 +340,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A1, id: 'quest:sparkwright-tower-seven-leans', name: 'Tower Seven Leans', type: 'side', region: Z2, giver: 'npc:ada-henry',
-    summary: 'Old Bert and Ada Henry live at the top of Tower Seven, which leans a little further every day. They refuse to leave. Tea is at four.',
+    summary: 'Old Bert and Effie Henry live at the top of Tower Seven, which leans a little further every day. They refuse to leave. Tea is at four.',
     requires: req(done('quest:sparkwright-rod-duty')), firstStage: 'scrap',
     stages: [
       {
@@ -355,7 +355,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'tea', journal: 'Tower Seven has stopped leaning. Nearly. It is four o’clock.',
-        objectives: [{ id: 'ada', text: 'Have tea with Ada and Bert', talk: 'npc:ada-henry', marker: { landmark: 'landmark:tower-seven' } }],
+        objectives: [{ id: 'ada', text: 'Have tea with Effie and Bert', talk: 'npc:ada-henry', marker: { landmark: 'landmark:tower-seven' } }],
         onComplete: [{ setFlag: 'sparkwright.tower_seven', value: true }],
         end: { status: 'completed' },
       },

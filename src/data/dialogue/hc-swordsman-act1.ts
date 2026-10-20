@@ -227,7 +227,7 @@ const dialogues: DialogueDef[] = [
       },
       ferro: { speaker: LF, text: '(From the back, without unfolding her arms.) Retired. Because a ladder you can never climb down from is not a ladder. It is a well. That is all. Carry on.', next: 'choose' },
       auguste: { speaker: AV, mood: 'happy', text: '(Standing, to applause.) Close the Ladder? And then what would any of us be for? Every one of you is a bout I haven’t had yet. I love you all. Again! (He sits. Somebody at the back is crying, and it is not clear why.)', next: 'choose' },
-      percy: { speaker: 'npc:percy-thimble', text: '(Very pink, standing on a bench.) I’ve been on the bottom rung for nine hundred and ninety-nine bouts. And I’d just like to say I’ve had a lovely time. Mostly. (He sits down, then stands up again.) Thank you. That’s all.', next: 'choose' },
+      percy: { speaker: 'npc:percy-thimble', text: '(Very pink, standing on a bench.) I’ve spent nearly a thousand bouts on the bottom rung. And I’d just like to say I’ve had a lovely time. Mostly. (He sits down, then stands up again.) Thank you. That’s all.', next: 'choose' },
       choose: {
         speaker: CB, text: 'Well, duellist? Does the Ladder stand?',
         choices: [

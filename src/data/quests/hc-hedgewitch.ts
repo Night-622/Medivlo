@@ -98,7 +98,7 @@ const quests: QuestDef[] = [
         next: 'report',
       },
       {
-        id: 'report', journal: 'Up on Spindle Street, people are waking and finishing their soup. Its spores were black. Yarrow has come down from the bower with a pot of fresh soup and a ladle.',
+        id: 'report', journal: 'Up on Spindle Street, people are waking and finishing their soup. The Puffcap’s spores were black. Yarrow has come down from the bower with a pot of fresh soup and a ladle.',
         objectives: [{ id: 'yarrow', text: 'Tell Mother Yarrow about the black spores, on Spindle Street', talk: YA, marker: { landmark: 'landmark:spindle-street' } }],
         onComplete: [{ setFlag: 'hedgewitch.puffcap_down', value: true }, { startQuest: 'quest:hedgewitch-the-bramblewifes-garden' }],
         end: { status: 'completed' },
@@ -441,7 +441,7 @@ const quests: QuestDef[] = [
         next: 'agnes',
       },
       {
-        id: 'agnes', journal: 'Seven Mudlarks at the sister’s door, and one missing. Agnes has gone back down into the root-tunnels with a bread knife, for the family’s doorframe.',
+        id: 'agnes', journal: 'Seven young Mudlarks at their aunt’s door, and one missing. Agnes has gone back down into the root-tunnels with a bread knife, for the family’s doorframe.',
         objectives: [{ id: 'frame', text: 'Find Agnes Mudlark in the root-tunnels', interact: 'obj:hedgewitch-mudlark-frame', marker: { landmark: 'landmark:hedgewitch-mudlark-tunnels' } }],
         next: 'frame',
       },
@@ -654,7 +654,7 @@ const quests: QuestDef[] = [
         next: 'tell',
       },
       {
-        id: 'tell', journal: 'The Willow has let its leaves fall at last. Nan Briar planted its mother’s cutting with her own hands. She should hear it from you.',
+        id: 'tell', journal: 'The Willow has let its leaves fall at last. Nan Briar planted a cutting of its mother with her own hands. She should hear it from you.',
         objectives: [{ id: 'nan', text: 'Tell Nan Briar the Willow is at rest', talk: 'npc:nanbriar', marker: { landmark: 'landmark:thorn-briar-cottage' } }],
         onComplete: [{ startQuest: 'quest:hedgewitch-the-bramblewifes-graft' }],
         end: { status: 'completed' },
@@ -749,7 +749,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A2, id: 'quest:hedgewitch-the-abbot-in-the-ooze', name: 'The Abbot in the Ooze', type: 'side', region: 'vil:thorn', giver: 'npc:bearer-monk',
-    summary: 'The Monk bearer has come to Thornhollow to bring the Stone Abbot out of the Ooze Sovereign whole. They are building him a cairn first, so he has somewhere to come home to.',
+    summary: 'The Monk bearer has come to Thornhollow to bring the Stone Abbot out of the Ooze Sovereign whole. Brother Sefu is building the Abbot a cairn first, so there is somewhere for him to come home to.',
     requires: req(done('quest:cc-stone-court')), autoStart: true, firstStage: 'cairn',
     stages: [
       {

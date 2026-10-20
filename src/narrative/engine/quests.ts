@@ -193,12 +193,22 @@ export function schedule(): void {
 }
 
 /** Add progress to every active objective matching `match`. */
-export function bump(match: (o: ObjectiveDef) => boolean, amount = 1): void {
+/**
+ * Count toward matching objectives of active quests. `once`: an object id that may count only once per objective
+ * (searches: pressing F twice on the same clue is still one clue; Claude 7's QA). It is recorded beside the count as
+ * `<stage>:<objective>@<object>`, which objectiveCount never reads.
+ */
+export function bump(match: (o: ObjectiveDef) => boolean, amount = 1, once?: string): void {
   for (const def of activeQuests()) {
     const stage = currentStage(def);
     const p = progress(def.id)!;
     for (const o of stage?.objectives ?? []) {
       if (!match(o) || objectiveDone(def, o)) continue;
+      if (once) {
+        const seen = `${p.stage}:${o.id}@${once}`;
+        if (p.objectives[seen]) continue;
+        p.objectives[seen] = 1;
+      }
       p.objectives[o.id] = (p.objectives[o.id] ?? 0) + amount;
       bus.emit('quest:objective', { questId: def.id, objectiveId: o.id, count: objectiveCount(def, o), target: objectiveTarget(o) });
     }
@@ -228,7 +238,7 @@ export function installQuestTriggers(): void {
     && (!o.hollowed || variant === 'hollowed')));
   authBus.on('loot:granted', ({ item, qty }) => { if (item && !isV1Item(item)) bump((o) => 'collect' in o && o.collect === item, qty ?? 1); });
   // resting at a rest point counts as using it (e.g. interact: 'obj:brind-goose-bed' for A Warm Bed)
-  authBus.on('world:rest', ({ pointId }) => bump((o) => 'interact' in o && matchesId(o.interact, pointId)));
+  authBus.on('world:rest', ({ pointId }) => bump((o) => 'interact' in o && matchesId(o.interact, pointId), 1, pointId));
   // bounties are repeatable once per rest (docs/PACING.md): a rest clears every finished bounty, so its board offers it
   // again. Bounties carry no stage effects, only a reward. ext.bountyRuns counts each one's completions.
   authBus.on('world:rest', () => {
@@ -243,7 +253,7 @@ export function installQuestTriggers(): void {
     }
     if (reposted) toast(reposted === 1 ? 'A bounty has been posted again.' : 'The bounty boards have new postings.', 'quest');
   });
-  authBus.on('interact', ({ objectId }) => bump((o) => 'interact' in o && matchesId(o.interact, objectId)));
+  authBus.on('interact', ({ objectId }) => bump((o) => 'interact' in o && matchesId(o.interact, objectId), 1, objectId));
   // record progress before marking presence: bump skips objectives that already count as done, and transient
   // places (areas, waystones) are removed from presence right after
   const reach = (id: string) => { bump((o) => 'reach' in o && o.reach === id); presence.add(id); };

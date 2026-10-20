@@ -359,7 +359,7 @@ const dialogues: DialogueDef[] = [
           { text: 'Thank you. For all of it. For the lessons.', to: 'gift', trust: 1 },
         ],
       },
-      stay: { speaker: GM, text: 'Somebody’s got to run the Veil while its best worst apprentice is off chasing her own outline. No.', next: 'gift' },
+      stay: { speaker: GM, text: 'Somebody’s got to run the Veil while its best worst apprentice is off chasing their own outline. No.', next: 'gift' },
       gift: {
         speaker: GM, text: 'Last lesson. Hold out your hand.',
         choices: [

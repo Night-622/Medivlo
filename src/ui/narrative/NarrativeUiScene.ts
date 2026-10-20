@@ -27,6 +27,9 @@ export class NarrativeUiScene extends Phaser.Scene {
   constructor() { super(NARRATIVE_UI_KEY); }
 
   create(): void {
+    // Phaser reuses the scene instance: a panel open when the last session ended (a guest kicked mid-Journal) must not
+    // carry over, or the first J / HUD Journal button only "closes" it (Claude 6)
+    this.open = null;
     this.box = new DialogueBox(this, (i) => dialogue.choose(i), () => dialogue.advance());
     this.journal = new QuestJournal(this, () => this.closePanel());
     this.codex = new CodexPanel(this, (id) => this.show('book', id));

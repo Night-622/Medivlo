@@ -28,7 +28,7 @@ const dialogues: DialogueDef[] = [
   // ======================= I-1 The Bell on the Fields: the wounded, the dawn watch
   ...[
     'Gorse Ironside, a shield-wall veteran with a hound bite to the bone, refusing a stretcher. “Did you see? Every axe on the line went down at once, like we’d been told. Who told us?”',
-    'A young Reaver called Rook, white as ash, holding his own arm. “I dropped my axe with a hound on me. I didn’t decide to. My hands just did it. My nan’s hands would have done the same.”',
+    'A young Reaver called Robin, white as ash, holding his own arm. “I dropped my axe with a hound on me. I didn’t decide to. My hands just did it. My nan’s hands would have done the same.”',
     'Cookie Mallow, ladling broth into the wounded whether they want it or not. “Hask went out past the line before the attack. I gave him a heel of bread. He didn’t eat it. He never doesn’t eat it.”',
   ].map((text, i): DialogueDef => beat(`reaver-wounded-${i + 1}`, `I-1 the wounded (${i + 1})`, stage('quest:reaver-the-bell-on-the-fields', 'wounded'),
     text, `reaver.wounded_${i + 1}`, 'A bloodied blanket by the cookfire, folded now.')),

@@ -17,7 +17,7 @@ const entries: LoreEntry[] = [
   },
   {
     id: 'lore:hc-hunt-capital-ruin', name: 'The First Lodge', category: 'history', source: 'a feast-board over a roofless hearth', hidden: true,
-    body: 'Before the Great Lodge hall there was a single long house of turf and oak in the forest, and its hearth is still standing. Every twelve years the Lodge ran beside the Great Hunt to the Turning, and when the runners came home they walked out to the old hearth, roof or no roof, and cut a notch over it.\n\nThere are eighty-five. Somebody began the eighty-sixth in C. 1024, out of habit, and stopped halfway through the cut.',
+    body: 'Before the Great Lodge hall there was a single long house of turf and oak in the forest, and its hearth is still standing. Every twelve years the Lodge ran beside the Great Hunt to the Turning, and when the runners came home they walked out to the old hearth, roof or no roof, and cut a notch over it.\n\nThere are eighty-four. Somebody began the eighty-fifth in C. 1012, the night the runners were due home, and stopped halfway through the cut.',
   },
   {
     id: 'lore:hc-hunt-capital-cave', name: 'The Shedding Cave', category: 'places', source: 'a cave floor of shed antler', hidden: true,

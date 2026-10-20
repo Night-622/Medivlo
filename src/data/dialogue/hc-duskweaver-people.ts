@@ -425,7 +425,7 @@ const dialogues: DialogueDef[] = [
         speaker: 'npc:peregrine-moll', mood: 'sad', text: 'Twelve? In a ring? From C. 0? Those would be the champions at the signing of the Concord, then. One for each school. (He takes his spectacles off.) And one of them holding the others’ hands? Which one?',
         choices: [
           { text: 'I couldn’t tell. A shadow doesn’t wear a school.', to: 'tell' },
-          { text: 'The one in the middle. There was a space in the middle.', to: 'middle', insight: 'champions_middle' },
+          { text: 'One on the far side, reaching across. There was a space in the middle.', to: 'middle', insight: 'champions_middle' },
         ],
       },
       tell: { speaker: 'npc:peregrine-moll', text: 'No. No, it doesn’t, does it. That’s the nicest thing about shadows. I’ll put it back very carefully, and put a new label on it.', next: null },
@@ -611,16 +611,16 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:duskweaver-tansy', name: 'C-6 the Keeper-courier', scope: 'party',
     entries: [{ when: stage('quest:duskweaver-a-letter-from-nyx', 'letter'), node: 'start' }, { node: 'after' }],
     nodes: {
-      start: { speaker: 'npc:tansy-fogg', text: 'Tansy Fogg, Keeper-courier. I’m so sorry. The Loremistress addressed it to “Ondine”, and I’ve been asking for an Ondine all down the long dusk road. Then she ran after me to the Lodge gate and wrote over it. Here.', next: 'envelope' },
+      start: { speaker: 'npc:tansy-fogg', text: 'Tansy Fogg, Keeper-courier. I’m so sorry. The Loremistress addressed it to “Ondine”, then ran after me to the Lodge gate and wrote over it, and I’ve still been asking for an Ondine all down the long dusk road. Here.', next: 'envelope' },
       envelope: { speaker: 'narrator', text: 'The envelope says ONDINE in Nyx’s lovely sloping hand, crossed out, and under it, in a shakier hand, pressing hard, your own name, spelled right.', next: 'letter' },
       letter: {
-        speaker: NX, text: '“My dear. The Obelisk has stopped leaking quite so much, and Marigold says the Rest has flowers in it now, grey ones, and people sit by them. I am writing your name on everything. I wrote it on the cat. There is no cat. Come home and tell me if I have it right.”',
+        speaker: NX, text: '“My dear. The Obelisk has stopped leaking quite so much, and Marigold says the beds the Cult cut are flowering again, and people sit by them. I am writing your name on everything. I wrote it on the cat. There is no cat. Come home and tell me if I have it right.”',
         choices: [
           { text: '(Read the signature.)', to: 'kept', when: KNOWS },
           { text: '(Fold the letter away.)', to: 'end', quest: true, when: { not: KNOWS }, effects: [{ setFlag: 'duskweaver.nyx_letter_read', value: true }] },
         ],
       },
-      kept: { speaker: 'narrator', text: 'She has signed it Halcyon. Her kept name, in ink, on paper, for the first time since her mother died, so that it is somewhere. Under it, very small: “P.S. I have written to my sister. I have not sent it. I have written to her again.”', next: 'fold' },
+      kept: { speaker: 'narrator', text: 'She has signed it Halcyon. Her kept name, in ink, where anyone might read it, so that it is somewhere. Under it, very small: “P.S. I have written to my sister. I have not sent it. I have written to her again.”', next: 'fold' },
       fold: {
         speaker: 'narrator', text: 'It is the greatest trust there is, in Nocturne.',
         choices: [{ text: '(Fold the letter away, very carefully.)', to: 'end', quest: true, effects: [{ setFlag: 'duskweaver.nyx_letter_read', value: true }] }],

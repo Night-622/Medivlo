@@ -87,7 +87,7 @@ const dialogues: DialogueDef[] = [
       day: { speaker: 'narrator', text: 'Kanemori stands by the bell in the daylight and shakes his head. Not now. He looks east. Come back at night, and wait for dawn.', next: null },
       night: { speaker: 'narrator', text: 'You sit with him beside the bell through the whole of the night, in the cold above the clouds. Neither of you sleeps. When the first grey light comes up the sky, he stands, and lays one hand on the bell, and says a word he has kept for thirty years.', next: 'word' },
       word: { speaker: HK, mood: 'sad', text: 'Shun.', effects: [WORD, { setFlag: 'samurai.word_spoken', value: true }], next: 'after' },
-      after: { speaker: 'narrator', text: 'His student’s name. It rings out across the cloud, and somewhere far down the mountain, very faintly, the bell answers it, though nobody touched the bell.', next: null },
+      after: { speaker: 'narrator', text: 'His student’s name. It rings out across the cloud, and somewhere far down the mountain, very faintly, a bell answers it, though nobody is there to ring it.', next: null },
     },
   },
   {

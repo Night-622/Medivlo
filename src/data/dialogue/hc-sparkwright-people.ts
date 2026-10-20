@@ -246,7 +246,7 @@ const dialogues: DialogueDef[] = [
       sentries: { speaker: 'npc:bunty-pyle', text: 'Six Coil Sentries in the Dynamo Halls have started arresting the wheels for going round. The wheels are pressing charges. Sort it out.', next: null },
     },
   },
-  // ---------- the Copper Spires: Wilf, Ada and Bert
+  // ---------- the Copper Spires: Wilf, Effie and Bert
   {
     id: 'dialogue:sparkwright-wilf', name: 'Wilf Farraday (the Spire-Jumpers)',
     entries: [{ node: 'start' }],
@@ -290,7 +290,7 @@ const dialogues: DialogueDef[] = [
     },
   },
   {
-    id: 'dialogue:sparkwright-ada', name: 'Ada Henry (Tower Seven Leans)',
+    id: 'dialogue:sparkwright-ada', name: 'Effie Henry (Tower Seven Leans)',
     entries: [{ when: stage('quest:sparkwright-tower-seven-leans', 'tea'), node: 'tea' }, { node: 'start' }],
     nodes: {
       start: {

@@ -218,7 +218,7 @@ const dialogues: DialogueDef[] = [
           { text: 'Let the Bloomkin speak first. I counted them.', to: 'count', when: { all: [{ flag: 'ranger.census_counted' }, { not: { flag: 'ranger.cattail_spoke' } }] }, effects: [{ setFlag: 'ranger.cattail_spoke', value: true }] },
         ],
       },
-      count: { speaker: 'npc:old-cattail', text: 'Four hundred… and twelve. Four hundred and twelve of us. We have been counted, so we are a people. A people has a say. (He bends, very slowly, in the wind.) Our say is: please do not set us on fire. Thank you.', next: 'choose' },
+      count: { speaker: 'npc:old-cattail', text: 'Four hundred… and twelve. Four hundred and twelve of us. We have been counted, so we are a people. A people has a say. (It bends, very slowly, in the wind.) Our say is: please do not set us on fire. Thank you.', next: 'choose' },
       burn: { speaker: PV, text: 'Thank you. The Circle thanks you. (The torches go in. The fen goes up gold and roaring, and the Bloomkin run, or don’t. Holt watches it burn, and says nothing, and goes on saying nothing for a whole day.)', next: null },
       hold: { speaker: HB, text: 'Right. (He unslings his bow.) Tree by tree, then. Wayfarers! On the line! (Out of the reeds, slowly, the Bloomkin come and stand beside you.)', next: 'hold2' },
       hold2: { speaker: PV, mood: 'angry', text: 'The Circle will hear of this. The Circle will hear of it at length.', next: null },

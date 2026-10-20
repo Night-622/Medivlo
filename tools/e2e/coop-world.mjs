@@ -133,12 +133,37 @@ try {
   const back = await A.waitFor(`(async () => !!(await import('/src/core/index.ts')).Services.get('net').session().members.find((m) => m.playerId === ${JSON.stringify(guestId)})?.connected)()`, 15000);
   const snaps = await B.ev(`(async () => { const n = (await import('/src/core/index.ts')).Services.get('net'); let k = 0; const off = n.addConsumer({ kinds: ['player', 'enemy'], apply: () => { k++; } }); await new Promise((r) => setTimeout(r, 2500)); off(); return k; })()`);
   check('host shows the rejoined guest and streams to them', back && snaps > 5, JSON.stringify({ back, snaps }));
+  // the host stops sending (stalled browser, lost network): the guest says so, then clears when snapshots return
+  await A.ev(`(async () => { const n = (await import('/src/core/index.ts')).Services.get('net').current; n.__flush = n.flush; n.flush = () => {}; return 1; })()`);
+  const waitText = `(window.__game.scene.getScene('HudV2').children.list.find((o) => o.text === 'Waiting for the host…')?.visible ?? false)`;
+  const shown = await B.waitFor(waitText, 8000);
+  await A.ev(`(async () => { const n = (await import('/src/core/index.ts')).Services.get('net').current; n.flush = n.__flush; return 1; })()`);
+  const cleared = await B.waitFor(`!${waitText}`, 5000);
+  check('a guest sees "Waiting for the host…" while no snapshots arrive, and it clears', shown && cleared, JSON.stringify({ shown, cleared }));
   // a guest whose world restarts (door, reload) sends a fresh input stream from seq 1: the host must still follow it
   await B.ev(`(window.__game.scene.getScene('WorldV2').scene.restart({ guest: true }), 1)`); await sleep(6000); await endDialogue(B);
   const r0 = (await A.ev(players)).find((p) => p.id === guestId);
   await B.key('KeyD', 1200); await sleep(800);
   const r1 = (await A.ev(players)).find((p) => p.id === guestId);
   check('guest input still moves its hero after the guest world restarts', !!r0 && !!r1 && r1.x - r0.x > 20, JSON.stringify({ r0, r1 }));
+  // The host minimises its window: rAF stops and Phaser pauses its loop (emulated with the visibility API, which is
+  // what Phaser listens to). The sim used to stop with it and every guest froze.
+  const setHidden = (h) => `(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => ${h} }); Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => '${h ? 'hidden' : 'visible'}' }); document.dispatchEvent(new Event('visibilitychange')); if (${h}) window.__game.loop.sleep(); else window.__game.loop.wake(); return 1; })()`; // hidden tabs get no rAF: Phaser's loop stops
+  const simTick = `(async () => (await import('/src/net/index.ts')).sim.tick)()`;
+  await A.ev(setHidden(true));
+  await sleep(300);
+  const t0 = await A.ev(simTick);
+  const gBefore = (await A.ev(players)).find((p) => p.id === guestId);
+  const hiddenSnaps = B.ev(`(async () => { const n = (await import('/src/core/index.ts')).Services.get('net'); let k = 0; const off = n.addConsumer({ kinds: ['player', 'enemy'], apply: () => { k++; } }); await new Promise((r) => setTimeout(r, 2500)); off(); return k; })()`);
+  await B.key('KeyA', 1200);
+  const hs = await hiddenSnaps;
+  const t1 = await A.ev(simTick);
+  const gAfter = (await A.ev(players)).find((p) => p.id === guestId);
+  check('a hidden host keeps the world running for guests (at 30 Hz, not doubled)', t1 - t0 > 40 && t1 - t0 < 115 && hs > 10 && !!gBefore && !!gAfter && gBefore.x - gAfter.x > 20, JSON.stringify({ ticks: t1 - t0, guestSnaps: hs, moved: gBefore && gAfter ? gBefore.x - gAfter.x : null}));
+  await A.ev(setHidden(false));
+  await sleep(800);
+  await sleep(1500); const t2 = await A.ev(simTick); await sleep(2000); const t3 = await A.ev(simTick);
+  check('…and runs on Phaser again once shown (worker stopped, not doubled)', t3 - t2 > 20 && t3 - t2 < 70, `ticks in 2 s: ${t3 - t2}`);
   const errs = [...A.errors, ...B.errors].filter((e) => !/auth\/|firestore|Firebase/i.test(e ?? ''));
   check('no page errors', !errs.length, errs.slice(0, 3).join(' || '));
 } catch (e) { check('harness', false, String(e)); }

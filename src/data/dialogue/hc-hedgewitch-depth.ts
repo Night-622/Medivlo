@@ -151,7 +151,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       start: { speaker: CA, text: '(A Bloomkin the height of a child, pink and ragged at the edges like a ragged-robin, standing on the new bark over Lantern Row. It is holding a lantern, lit, that it has clearly pulled out of the wood.) Hello. Are you the witch with the stone? I am Campion. I am guarding the street.', next: 'guard' },
       guard: {
-        speaker: CA, text: 'I woke up here in the spring. Right here, on top of everyone. I could hear them under me, all night, the cats and the people. I thought they were dreaming. So I stayed, to keep watch, in case they woke up and were frightened.',
+        speaker: CA, text: 'I woke up here the night the street went under. Right here, on top of everyone. I could hear them under me, all night, the cats and the people. I thought they were dreaming. So I stayed, to keep watch, in case they woke up and were frightened.',
         choices: [
           { text: 'If the ring votes to prune, you go back to seed.', to: 'seed' },
           { text: 'Where did you find the lantern?', to: 'lantern' },

@@ -137,7 +137,7 @@ const npcs: NpcDef[] = [
     bio: 'The Archive’s weather clerk, an hour-walker who has written “cold; still” in the temperature register for ten thousand nine hundred and fifty days running. He has never once complained, and he would like, very much, to write something else.',
   },
   {
-    id: 'npc:mabyn-frane', name: 'Under-Archivist Mabyn Frane', title: 'of the Treaty Stacks', school: 'rime', origin: 'rime', trust: 2,
+    id: 'npc:mabyn-frane', name: 'Under-Archivist Maudlin Frane', title: 'of the Treaty Stacks', school: 'rime', origin: 'rime', trust: 2,
     region: Z2, home: 'landmark:hall-of-held-hours', presentWhen: ACT1,
     dialogue: [{ dialogue: 'dialogue:rimecaller-mabyn' }],
     barks: [{ lines: ['Gloves. Gloves! It’s eight hundred years old.', 'Everything here is in order. The order is just very cold.'] }],

@@ -236,7 +236,7 @@ const dialogues: DialogueDef[] = [
     'The Market heap, enormous, three years of cabbage. Not a bit of it has turned. The whole heap smells faintly of black sap.',
   ], 'A compost heap. Nothing in it is rotting.'),
   {
-    id: 'dialogue:hedgewitch-thaddeus', name: 'Beadle Thaddeus Wort (bounties)',
+    id: 'dialogue:hedgewitch-thaddeus', name: 'Beadle Obadiah Wort (bounties)',
     entries: [{ node: 'start' }],
     nodes: {
       start: {
@@ -504,7 +504,7 @@ const dialogues: DialogueDef[] = [
       girl: { speaker: 'npc:nanbriar', text: 'She was a slip of a thing when I last saw her, up a ladder in the Elder Tree, telling it a story about a goose. Ancient. Well. I’m older, and don’t you dare ask by how much.', next: 'pruned' },
       tree: { speaker: 'npc:nanbriar', mood: 'happy', text: 'Still? Good girl. Somebody ought to. It used to answer me, you know. In my day. Now then.', next: 'pruned' },
       pruned: {
-        speaker: 'npc:nanbriar', text: 'The Willow. I planted its mother’s cutting with my own hands, three Turnings back, for the Concordant. It’s weeping because it can’t stop. Same as yours at home, I shouldn’t wonder. What did your Circle do about it?',
+        speaker: 'npc:nanbriar', text: 'The Willow. I planted a cutting of its mother with my own hands, three Turnings back, for the Concordant. It’s weeping because it can’t stop. Same as yours at home, I shouldn’t wonder. What did your Circle do about it?',
         choices: [
           { text: 'We pruned it back.', to: 'cut', when: { flag: 'hedgewitch.pruning', value: 'prune' }, effects: [{ trust: 'npc:nanbriar', set: 2 }] },
           { text: 'We let it grow.', to: 'grew', when: { flag: 'hedgewitch.pruning', value: 'grow' } },
@@ -592,7 +592,7 @@ const dialogues: DialogueDef[] = [
     entries: [{ when: { flag: 'hedgewitch.pruning', value: 'grow' }, node: 'bloomkin' }, { node: 'bog' }],
     nodes: {
       bog: { speaker: 'narrator', text: 'The deepest part of Briar Hollow, where the bog is warm and the bubbles are slow. The Ooze Sovereign rises out of it, enormous and calm, and inside its body, like a fly in jelly, a stone figure sits cross-legged. It settles into a fighting stance. It is very good at it.', next: null },
-      bloomkin: { speaker: 'narrator', text: 'Behind you, rustling, a band of Bloomkin come up out of the bramble: the ones who woke in the growth you let them keep, with Thistledown at the front holding a twig like a sword. They have walked all the way from Rootholme. They have come to help.', next: 'bog' },
+      bloomkin: { speaker: 'narrator', text: 'Behind you, rustling, a band of Bloomkin come up out of the bramble: the ones who woke in the growth you let them keep, with Campion at the front, its lantern in one hand and a twig in the other like a sword. They have walked all the way from Rootholme. They have come to help.', next: 'bog' },
     },
   },
   // ---------- featured bearers (hooks on the bearer NPCs)
@@ -660,7 +660,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       leaf: { speaker: 'narrator', text: 'A leaf of the Elder Tree the size of a dinner plate, caught against the foot of the Verdant arch. It is covered on both sides in Mother Yarrow’s handwriting, the hedge-in-a-high-wind kind. The tree must have carried it.', next: 'letter' },
       letter: {
-        speaker: YA, text: '“Dear, the tree is sulking, because you have gone. I have told it you will be back. The Circle is arguing, the cats are well, and Tibbs is a cat. Whatever you find at the Heart, remember: everything needs a winter. Even the crown. Eat something green. Y.”',
+        speaker: YA, text: '“Dear, the tree is sulking, because you have gone. I have told it you will be back. The Circle is arguing, and the cats are well. Whatever you find at the Heart, remember: everything needs a winter. Even the crown. Eat something green. Y.”',
         choices: [
           { text: '(Fold the leaf away.)', to: null, quest: true, effects: [{ setFlag: 'hedgewitch.yarrow_letter', value: true }] },
           { text: '(Read the postscript, in the very smallest writing.)', to: 'ps', when: { flag: 'hedgewitch.yarrow_devotable' } },

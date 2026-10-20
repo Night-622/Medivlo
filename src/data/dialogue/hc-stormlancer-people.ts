@@ -268,7 +268,7 @@ const dialogues: DialogueDef[] = [
       },
       face: { speaker: 'npc:rory-gust', text: 'Lovely. Line up at the mouth with the others. When you hear the crack, go. Or don’t, and be second, and nobody ever remembers second.', next: null },
       rode: { speaker: 'npc:rory-gust', mood: 'happy', text: 'First through! You were first through! (He is jumping up and down.) Nobody’s ever been first through with that face on. Like you were bored. Teach me the face.', next: 'back' },
-      talked: { speaker: 'npc:rory-gust', text: 'You stopped them. All of them. (He looks at the rocks still coming down.) Nell would’ve gone under that last one. She’s faster than me. (A long pause.) Second’s not so bad, I suppose.', next: 'back' },
+      talked: { speaker: 'npc:rory-gust', text: 'You stopped them. All of them. (He looks at the rocks still coming down.) Gwil would’ve gone under that last one. She’s faster than me. (A long pause.) Second’s not so bad, I suppose.', next: 'back' },
       back: { speaker: 'npc:rory-gust', text: 'There’s a wager-post at the top of the gorge path, with every first-through carved on the front. Nobody reads the back. I read the back once. Go and read it. Then tell me first is the only thing worth being.', next: null },
     },
   },

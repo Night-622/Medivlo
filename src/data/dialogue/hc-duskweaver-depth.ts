@@ -398,7 +398,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       go: { speaker: 'narrator', text: 'You say them to the stair, softly, one after another, and the dusk takes them the way the Echo-Well does, and gives nothing back but quiet. What is left is the one name you came up here to say. It is very clear now.', next: null },
-      keep: { speaker: 'narrator', text: 'You keep them, all five, in the drawer at the back of your head where you keep the smell of the Lodge kitchen. A Keeper is allowed a few things that are wrong and dear. Nyx would say so. Nyx would say it to someone else, by mistake.', next: null },
+      keep: { speaker: 'narrator', text: 'You keep them, every one, in the drawer at the back of your head where you keep the smell of the Lodge kitchen. A Keeper is allowed a few things that are wrong and dear. Nyx would say so. Nyx would say it to someone else, by mistake.', next: null },
       plain: { speaker: 'narrator', text: 'A sheltered landing halfway up the Umbral stair.', next: null },
     },
   },
@@ -411,7 +411,7 @@ const dialogues: DialogueDef[] = [
     ],
     nodes: {
       road: { speaker: 'narrator', text: 'You still have it: the paper lantern from the last lamp-shadow on the long dusk road, a little crushed, carried through three realms. You hang it from a tent-pole at the edge of the Heart camp, facing home, and light it.', next: 'write' },
-      camp: { speaker: 'narrator', text: 'The camp quartermaster gives you a paper lantern from the stores, the kind the Concordant use for vigils. You hang it from a tent-pole at the edge of the Heart camp, facing home, the way the street did for you on the long dusk road, and light it.', next: 'write' },
+      camp: { speaker: 'narrator', text: 'The camp quartermaster gives you a paper lantern from the stores, the kind Concordia folk use for vigils. You hang it from a tent-pole at the edge of the Heart camp, facing home, the way the street did for you on the long dusk road, and light it.', next: 'write' },
       write: {
         speaker: 'narrator', text: 'On a leaving-lantern, Duskmere folk write the name of whoever is to find their way back by it.',
         choices: [
@@ -467,7 +467,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:obj-duskweaver-heart-saucer', name: 'The Cat Comes Too: a saucer for the shadow', scope: 'party',
     entries: [{ when: stage('quest:duskweaver-the-cat-comes-too', 'saucer'), node: 'saucer' }, { node: 'plain' }],
     nodes: {
-      saucer: { speaker: 'narrator', text: 'A chipped saucer from the camp cook, set down by the cook-fire in the last of the warmth, the way Thessaly Quillon set one on the Archive step every evening. You have a pin. A saucer for a cat ought to have a name round the rim.', next: 'name' },
+      saucer: { speaker: 'narrator', text: 'A chipped saucer from the camp cook, set down by the cook-fire in the last of the warmth, the way Thessaly Quillon filled one for Inkpot every evening. You have a pin. A saucer for a cat ought to have a name round the rim.', next: 'name' },
       name: {
         speaker: 'narrator', text: 'What do you scratch on it?',
         choices: [

@@ -108,7 +108,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       choose: { speaker: TD, text: 'It is you. I walked from Thornhollow. It took a long time, because I am mostly fluff and the wind kept disagreeing. You said I was for whatever I chose. I have chosen.', next: 'list' },
       spread: { speaker: TD, text: 'It is you. I walked from Thornhollow. It took a long time, because I am mostly fluff and the wind kept disagreeing. You said thistledown goes where nothing grows yet. I have found the place.', next: 'list' },
-      unknown: { speaker: TD, text: 'It is you. I walked from Thornhollow, because I am mostly fluff and the wind kept disagreeing. You said you did not know what you were for. I have found mine. I am sorry I have not found yours yet.', next: 'list' },
+      unknown: { speaker: TD, text: 'It is you. I walked from Thornhollow. It took a long time, because I am mostly fluff and the wind kept disagreeing. You said you did not know what you were for. I have found mine. I am sorry I have not found yours yet.', next: 'list' },
       list: { speaker: TD, mood: 'happy', text: 'I am for growing where nothing has. (It looks out at the black ground of the Heart with enormous satisfaction.) There is a great deal of nothing here. But it must be the right nothing. Will you help me look? I have brought my list.', next: null },
       busy: { speaker: TD, text: 'I am still looking. Nothing comes in a great many kinds. Please keep inspecting.', next: null },
       found: { speaker: TD, mood: 'happy', text: '(It is standing in the exact middle of its chosen patch, very straight.) This one. Nothing has ever grown here. Not once. I am going to be very busy.', next: 'roots' },

@@ -22,7 +22,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       name: { speaker: 'narrator', text: 'You find it at the bottom of Nocturne’s oldest memory of the moon, where she left it: a short, plain name, the kind somebody calls up the stairs. She hears it, and her face clears, and she says it once, aloud, wonderingly, and then she sleeps.', next: 'dus_open' },
-      sleep: { speaker: 'narrator', text: 'She does. With the moon back in the sky she has nothing left to swallow, and she curls up on the gate-step like a cat on a warm hearth, and sleeps, and for the first time in thirty years Nocturne’s moon does not ripple.', next: 'dus_open' },
+      sleep: { speaker: 'narrator', text: 'She does. With the moon back in the sky she has nothing left to swallow, and she curls up on the gate-step like a cat on a warm hearth, and sleeps, and for the first time since the Bell, Nocturne’s moon does not ripple.', next: 'dus_open' },
       dus_open: { speaker: 'narrator', text: 'You hold up the Obelisk half. It sings, and the violet stone of the gate answers. As it swings open, a slim figure in a Keeper’s coat steps past you out of nowhere with a dolls’ house under one arm, and goes through first, and holds the gate for you, politely, before he walks on.', next: 'through' },
       sha: {
         speaker: 'narrator', text: 'The moon has slid back up out of the Eclipse Queen into the sky, and there is light enough in Nocturne, for the first time in thirty years, for every stone and post and blade of grass to cast a shadow. Everything on the road has one. Except you.',
@@ -81,7 +81,7 @@ const dialogues: DialogueDef[] = [
   {
     id: 'dialogue:obj-umbral-capital-lair-2-codex', name: 'The Hall of Lost Names: the paper-hangers’ rota', scope: 'party',
     entries: [{ node: 'read' }],
-    nodes: { read: { speaker: 'narrator', text: 'A rota pinned by the Hall door: which Keeper reads which wall of names aloud, each evening, so every name is said once a year. For thirty years half the slots are empty. Against the east wall, every slot says the same: O. V. In the margin, very small: “I read them all. Every one. Twice.”', effects: [{ unlockLore: 'lore:hc-umbral-paper-rota' }], next: null } },
+    nodes: { read: { speaker: 'narrator', text: 'A rota pinned by the Hall door: which Keeper reads which wall of names aloud, each evening, so every name is said once a year. For thirty years half the slots have been empty. Against the east wall, every slot says the same: O. V. In the margin, very small: “I read them all. Every one. Twice.”', effects: [{ unlockLore: 'lore:hc-umbral-paper-rota' }], next: null } },
   },
   {
     id: 'dialogue:obj-umbral-capital-lair-3-codex', name: 'The Obelisk’s Shadow: the first phial', scope: 'party',

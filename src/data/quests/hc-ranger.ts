@@ -152,7 +152,7 @@ const quests: QuestDef[] = [
         next: 'cattail',
       },
       {
-        id: 'cattail', journal: 'The line runs straight through the fen. Old Cattail, the Bloomkin counter, is at his stone, and he would like a word before anyone lights anything.',
+        id: 'cattail', journal: 'The line runs straight through the fen. Old Cattail, the Bloomkin counter, is at its stone, and it would like a word before anyone lights anything.',
         objectives: [{ id: 'cattail', text: 'Hear Old Cattail before the line is decided', talk: 'npc:old-cattail', marker: { landmark: 'landmark:bloomkin-census-stone' } }],
         next: 'vote',
       },
@@ -333,7 +333,7 @@ const quests: QuestDef[] = [
         next: 'way',
       },
       {
-        id: 'way', journal: 'Beside the bow, a fresh-cut blaze, months old, pointing on into the bramble. Kit was not lost when she dropped her bow. She was marking a way.',
+        id: 'way', journal: 'Beside the bow, a blaze, months old, pointing on into the bramble. Kit was not lost when she dropped her bow. She was marking a way.',
         objectives: [{ id: 'way', text: 'Follow Kit’s last blazes', interact: 'obj:ranger-kit-last-blaze', marker: { place: Z2 } }],
         next: 'carve',
       },
@@ -591,7 +591,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A2, id: 'quest:ranger-stags-rest', name: 'Stag’s Rest', type: 'class', region: 'region:gloam', giver: 'npc:teasel-gammon',
-    summary: 'The old Wayfarer ways into the Gloamwood are still blazed, three Turnings faded. They lead to Stag’s Rest, where the Weeping Willow has rotted the glade.',
+    summary: 'The old Wayfarer ways into the Gloamwood are still blazed, a hundred years faded. They lead to Stag’s Rest, where the Weeping Willow has rotted the glade.',
     requires: req(done('quest:ranger-the-hedge-house')), firstStage: 'ways',
     stages: [
       {

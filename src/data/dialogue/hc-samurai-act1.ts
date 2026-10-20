@@ -302,7 +302,7 @@ const dialogues: DialogueDef[] = [
         speaker: HK, text: 'A sword serves whoever it protects. Go and protect someone.',
         effects: [{ addFlag: 'samurai.kanemori_words', amount: 10 }, { setFlag: 'samurai.kanemori_sentence', value: true }], next: 'after',
       },
-      after: { speaker: 'narrator', text: 'Ten words. More than he has spoken in a year, all at once, to you. He looks surprised at himself, and then, for the first time you can remember, he smiles all the way.', next: 'end' },
+      after: { speaker: 'narrator', text: 'Ten words, all at once, to you: more than he has said in one breath in all the years you have known him. He looks surprised at himself, and then, for the first time you can remember, he smiles all the way.', next: 'end' },
       bow: { speaker: 'narrator', text: 'He returns the bow, exactly as deep. Then he looks down the road, and so do you.', next: null },
       end: { speaker: 'narrator', text: 'He nods at the road. You go down it. When you look back from the first bend, he is still there, and he raises one hand.', next: null },
     },

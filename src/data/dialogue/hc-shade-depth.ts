@@ -462,7 +462,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:obj-shade-reply-to-mab', name: 'C-6 a reply for Mab', scope: 'party',
     entries: [{ when: stage('quest:shade-a-parcel-from-mab', 'reply'), node: 'bridge' }, { node: 'plain' }],
     nodes: {
-      bridge: { speaker: 'narrator', text: 'Nettle is sitting in the middle of the toll-free bridge with a slate on her knees, charging nobody, very loudly. She has written NETTLE on the slate, and TOLL, and FEN DOYLE OWES ME 6, and she holds it out to you with the chalk. “Go on. Mab’s answer. I’ll carry it. One copper.”', next: 'write' },
+      bridge: { speaker: 'narrator', text: 'Nettle is sitting in the middle of the toll-free bridge with a slate on her knees, charging nobody, very loudly. She has drawn a toll-box on the slate, and a bridge, and a very cross face, and she holds it out to you with the chalk. “Go on. Mab’s answer. I’ll carry it. One copper.”', next: 'write' },
       write: {
         speaker: 'narrator', text: 'There is room on the slate for about six words.',
         choices: [
@@ -472,7 +472,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Draw the Veil’s mark, a hood and a key, and nothing else.)', to: 'mark', school: 'umbral', effects: [{ setFlag: 'shade.reply', value: 'mark' }] },
         ],
       },
-      mark: { speaker: 'narrator', text: 'Nettle looks at it with the deep respect of somebody who has just learned to read and finds that the best message has no letters in it at all. “She’ll know that,” she says. “That’s the safe-house sign. That means somebody’s holding the door.”', next: 'sent' },
+      mark: { speaker: 'narrator', text: 'Nettle looks at it with deep respect: the best message, it turns out, has no letters in it at all. “She’ll know that,” she says. “That’s the safe-house sign. That means somebody’s holding the door.”', next: 'sent' },
       sent: { speaker: 'npc:nettle-crook-gate', mood: 'happy', text: '(She wraps the slate in her shawl and tucks it under her arm.) No charge. That was a good one. (She stands up on the bridge.) I’m going home in the morning. Don’t you dare get killed in that Heart. I’ve only just learned your name, and it took ages.', next: null },
       plain: { speaker: 'narrator', text: 'The toll-free bridge, with a chalked complaint on its rail.', next: null },
     },
@@ -532,10 +532,10 @@ const dialogues: DialogueDef[] = [
         speaker: 'narrator', text: 'Moss, who never talks. This is the shadow that did her talking for her, the way a shadow does on a wall when a child is too shy: waving, pointing, pulling faces. The Bell called it all the way here. It has nobody to talk for.',
         choices: [
           { text: '(Tug the Spinner’s thread: short, short, long. Home.)', to: 'home' },
-          { text: '(Sit beside it, and tell it about the green door, and the candle, and Mam.)', to: 'tell', effects: [{ setFlag: 'shade.moss_shadow', value: true }] },
+          { text: '(Sit beside it, and tell it about the green door, and the pebble, and Mam.)', to: 'tell', effects: [{ setFlag: 'shade.moss_shadow', value: true }] },
         ],
       },
-      tell: { speaker: 'narrator', text: 'You tell it: the moonrise, the pebble, the green door at the bottom of the shaft, the little moon on it at first bell. The shadow listens with its head on one side. Then it stands up, puts its pebble carefully on the ground by your boot, and goes.', next: 'gone' },
+      tell: { speaker: 'narrator', text: 'You tell it: the moonrise, the pebble, the green door at the bottom of the shaft, and Mam coming home to it at first bell. The shadow listens with its head on one side. Then it stands up, puts its pebble carefully on the ground by your boot, and goes.', next: 'gone' },
       home: { speaker: 'narrator', text: 'Short, short, long. It looks up at once, the way Moss looks up when her name is called and she pretends it wasn’t. Then it stands, tucks its pebble under its arm, and goes off along the ground, home, at a run.', next: 'gone' },
       gone: { speaker: 'narrator', mood: 'happy', text: 'Far away, at the bottom of the Moonwell, a small girl in bed is going to sit up and wave at the wall, and the wall is going to wave back, and Twig will say she is making it up, and she will not answer, and she will not need to.', next: null },
       small: { speaker: 'narrator', text: 'A small shadow sitting by the supply crates at the edge of the lantern-light, a child of seven or so, holding the shadow of a pebble in both hands as if it were the moon. When you crouch down it does not run. It holds the pebble out to you to look at.', next: 'small2' },

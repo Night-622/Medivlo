@@ -4,9 +4,29 @@
  * Reads the engine's nar(): on a co-op guest that is the host's mirror, so the markers follow the host's story.
  * Recompute on quest:started / advanced / objective / completed / failed, flag:changed and ui:close.
  */
+import { Game } from '@/core';
 import type { ObjectiveDef, QuestDef } from '@/core';
+import { bossLair as worldBossLair } from '@/world/hc/instanceGen';
+import { campaign } from '../engine/classes';
+import { heroClass } from '../engine/party';
 import { activeQuests, currentStage, objectiveDone, objectiveTarget, objectiveText } from '../engine/quests';
-import { nar } from '../engine/state';
+import { mirrored, nar } from '../engine/state';
+import { hostFlags } from './mirror';
+
+/** the campaign's class: the host's on a co-op guest (the engine-derived campaign.class flag, mirrored) */
+function campaignClass(): string {
+  if (mirrored()) return String(hostFlags['campaign.class'] ?? '');
+  return Game.hasState ? heroClass() : ''; // no game (tools, title screen): skip the lair lookup rather than throw
+}
+
+/**
+ * A lair boss lives in its class's lair (Claude 2's bossLair over lairBoss: lair 1 the realm mini, 2 the lair-2 boss, 3 the nemesis),
+ * so its kill points at that lair: 'inst:<school>-<side>-lair-<n>' (the door from outside, the arena inside).
+ */
+export function bossLair(creature: string, cls: string): string | null {
+  const c = campaign(cls);
+  return c ? worldBossLair(creature, c.school, c.side, c.id) : null;
+}
 
 export interface QuestMarker {
   quest: string;
@@ -24,9 +44,19 @@ export interface QuestMarker {
 }
 
 const AREA = /^(region|zone|area|vil):/;
+const markerIsArea = (o: ObjectiveDef): boolean => {
+  const m = o.marker as { landmark?: string; region?: string; place?: string } | undefined;
+  return !!m && (!!m.region || AREA.test(m.place ?? ''));
+};
 
-/** Where an objective points, as place ids (several for a prefix object objective), or none. */
-export function objectivePlaces(o: ObjectiveDef): string[] {
+/** Where an objective points, as place ids (several for a prefix object objective), or none. `cls`: the campaign's class. */
+export function objectivePlaces(o: ObjectiveDef, cls: string = campaignClass()): string[] {
+  if ('kill' in o && typeof o.kill === 'string') { const lair = bossLair(o.kill, cls); if (lair) return [lair]; }
+  // a talk or a single object is pointed at directly, even when the data gives an area marker (it was drawn on the
+  // zone centre, ten tiles off). Area markers stay for `reach` finds and multi-clue searches, where the vagueness is
+  // the point (style guide §8 "find").
+  if ('talk' in o) return [o.talk];
+  if ('interact' in o && !o.interact.endsWith('*') && (!o.marker || markerIsArea(o))) return [o.interact];
   if (o.marker) {
     const m = o.marker as { landmark?: string; region?: string; place?: string };
     const id = m.landmark ?? m.region ?? m.place;
@@ -38,7 +68,6 @@ export function objectivePlaces(o: ObjectiveDef): string[] {
     const base = o.interact.slice(0, -1), n = objectiveTarget(o);
     return Array.from({ length: n }, (_, i) => `${base}${i + 1}`);
   }
-  if ('talk' in o) return [o.talk];
   return [];
 }
 

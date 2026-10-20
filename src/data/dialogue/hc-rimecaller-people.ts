@@ -194,7 +194,7 @@ const dialogues: DialogueDef[] = [
       wraiths: { speaker: 'npc:osgar-rusk', text: 'Come up out of the cisterns since the melt went black. Six of them. The Archive pays in silver, after an inquiry. The inquiry is me.', next: null },
     },
   },
-  // ---------- the Hall of Held Hours: Cornelius, Mabyn
+  // ---------- the Hall of Held Hours: Cornelius, Maudlin
   {
     id: 'dialogue:rimecaller-cornelius', name: 'Cornelius Teal (the Weather Clerk)',
     entries: [{ when: stage('quest:rimecaller-the-weather-clerk', 'teal'), node: 'reading' }, { node: 'start' }],
@@ -231,7 +231,7 @@ const dialogues: DialogueDef[] = [
     },
   },
   {
-    id: 'dialogue:rimecaller-mabyn', name: 'Mabyn Frane (the Thirteenth Line)',
+    id: 'dialogue:rimecaller-mabyn', name: 'Maudlin Frane (the Thirteenth Line)',
     entries: [{ when: stage('quest:rimecaller-the-thirteenth-line', 'mabyn'), node: 'line' }, { node: 'start' }],
     nodes: {
       start: {

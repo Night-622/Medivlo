@@ -140,7 +140,7 @@ const dialogues: DialogueDef[] = [
       mean: {
         speaker: PT, text: 'It means I’m on it. Do you see? I’m a tailor. Nobody in Edgewater looks at a tailor. But I’m on the Ladder, same as Ser Auguste, just a bit further down. If they close it, I’m just a tailor again.',
         choices: [
-          { text: 'You’ve lost nine hundred and ninety-nine bouts on it, Percy.', to: 'lost' },
+          { text: 'You’ve lost nearly a thousand bouts on it, Percy.', to: 'lost' },
           { text: 'You’d still be Percy.', to: 'percy', trust: 1, trustNpc: PT },
         ],
       },
@@ -198,7 +198,7 @@ const dialogues: DialogueDef[] = [
 
   // ======================= I-7 The Unended: walking the gallery
   clue('swordsman-unended-face-1', 'I-7 the Unended Gallery (1)', stage('quest:swordsman-the-unended', 'faces'),
-    'A Revenant in the colours of the Salle Orsi, fencing the empty air with great care: the founder whose challenge you struck off the board, a hundred years dead. Vellacourt beat him in C. 1014, the plaque at his feet says, and kept him.', 'swordsman.face_1',
+    'A Revenant in the colours of the Salle Orsi, fencing the empty air with great care: the last master of the salle whose old challenge you struck off the board. Vellacourt beat him in C. 1014, the plaque at his feet says, and kept him.', 'swordsman.face_1',
     'A Revenant of the Salle Orsi, fencing nobody.'),
   clue('swordsman-unended-face-2', 'I-7 the Unended Gallery (2)', stage('quest:swordsman-the-unended', 'faces'),
     'A young Revenant in a watchman’s coat, still fencing, still getting better: you can see it, a little sharper with every lunge. Thirty years of practice against nobody. He is the finest swordsman in the gallery. He will never know.', 'swordsman.face_2',
@@ -222,7 +222,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       give: { speaker: 'narrator', text: 'Point in the hollow, blade to face, and down. Below you, too far away to be sure, something flashes on the Duelling Bridges: a blade, raised and lowered, answering. Then another. You walk on up the road with your sword sheathed.', next: null },
-      hand: { speaker: 'narrator', text: 'Hand to brow, and down: the salute without a sword, the one Rosa Sarto gave you back. The wind comes up the road off the river and turns all the silver grass the same way at once, like a crowd bowing.', next: null },
+      hand: { speaker: 'narrator', text: 'Hand to brow, and down: the closing salute, without a sword. The wind comes up the road off the river and turns all the silver grass the same way at once, like a crowd bowing.', next: null },
       plain: { speaker: 'narrator', text: 'The Salute Stone, with a sword-point’s hollow in its top.', next: null },
     },
   },
@@ -245,7 +245,7 @@ const dialogues: DialogueDef[] = [
           { text: '“Fence her. Win or lose, then shake hands and stop.”', to: 'fence', effects: [{ setFlag: 'swordsman.percy_rematch', value: 'fenced' }] },
         ],
       },
-      keep: { speaker: 'narrator', text: 'Percy takes a deep breath. “No, thank you,” he says, very politely. “I’d like to keep this one. But I’ll take you to lunch.” Orsola stares. Nobody in Edgewater has refused a rematch in thirty years. Then, slowly, she puts her sword down and says she would like soup.', next: null },
+      keep: { speaker: 'narrator', text: 'Percy takes a deep breath. “No, thank you,” he says, very politely. “I’d like to keep this one. But I’ll take you to lunch.” Orsola stares. Nobody in Edgewater but Ferro has refused a rematch in thirty years. Then, slowly, she puts her sword down and says she would like soup.', next: null },
       fence: { speaker: 'narrator', text: 'They fence. Orsola wins, three touches to nil, with ease. Then Percy holds out his hand, and she looks at it as if it were a strange fish, and shakes it. “Ended?” she says. “Ended,” says Percy. They go and have soup.', next: null },
       plain: { speaker: 'narrator', text: 'Orsola Nappi’s tailoring shop, with a sign in the window: SOUP WEDNESDAYS.', next: null },
     },
