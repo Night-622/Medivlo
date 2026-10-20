@@ -47,6 +47,8 @@ export interface SessionInfo {
 /** Button bitmask (handoff controls). */
 export const Btn = {
   ATTACK: 1, DASH: 2, CAST1: 4, CAST2: 8, CAST3: 16, CAST4: 32, POTION_Q: 64, POTION_E: 128, INTERACT: 256,
+  /** martial classes: a quick weapon slash (bows: a quick shot) toward aim, cooldown by weapon weight */
+  SLASH: 512,
 } as const;
 
 export interface InputFrame {

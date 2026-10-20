@@ -83,7 +83,7 @@ other with `ListAgents`. Each agent's first message to Claude 1 says "I'm Claude
 | **Claude 2** (world) | `src/world`, `src/scenes/World*`, `src/ui/map`, `src/data/regions`, `tools/playthrough` | Places Claude 4's story objects in the world (the "placement lists"). Pacing world passes, map, world polish |
 | **Claude 3** (systems) | `src/systems`, `src/ui/character`, `src/data/{classes,traits,items,spells,skilltrees,enemies}`, `tools/e2e/sim` | Combat, classes, gear, bestiary, trees, co-op rules, balance. Tunes from the user's play reports |
 | **Claude 4** (narrative) | `src/narrative`, `src/ui/narrative`, `src/data/{quests,dialogue,lore,npcs,factions,tips}`, `tools/narrative`, docs/lore | All 24 campaigns. Running the depth pass with up to 3 helper agents |
-| **Claude 5** (narrative helper, added on the PC) | Only the files Claude 4 assigns (wave 2 Iron + Fist, done; Morvane codex lengthening, done; now shared Concordia Act II depth in the hc-concordia quest, depth and npc files) | Writes and gates depth for its classes and hands them to Claude 4. Claude 4 records its work in STATUS.md. On this PC the helper cap is 4 including Claude 5 |
+| **Claude 5** (helper, added on the PC) | Files Claude 1 or Claude 4 assigns. Now: `src/art/side/` (side-view hero sprites, for Claude 1). Done: wave 2 Iron + Fist, Morvane codex, Concordia Act II depth, narrative-features test, browser + key + Large-text sweeps | Writes and gates depth for its classes and hands them to Claude 4. Claude 4 records its work in STATUS.md. On this PC the helper cap is 4 including Claude 5 |
 
 ---
 

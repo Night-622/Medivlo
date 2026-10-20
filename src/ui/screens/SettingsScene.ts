@@ -10,7 +10,7 @@ type Row =
   | { label: string; hint: string; action: Action };
 
 const ACTION_LABEL: Record<Action, string> = {
-  up: 'Move up', down: 'Move down', left: 'Move left', right: 'Move right', dash: 'Dash', cast1: 'Spell 1', cast2: 'Spell 2',
+  up: 'Move up', down: 'Move down', left: 'Move left', right: 'Move right', dash: 'Dash', slash: 'Slash / quick shot (martial)', cast1: 'Spell 1', cast2: 'Spell 2',
   cast3: 'Spell 3', cast4: 'Spell 4', potionQ: 'Health potion', potionE: 'Ember potion', interact: 'Talk / interact',
   inventory: 'Inventory', skills: 'Skill tree', spells: 'Spellbook', journal: 'Journal', track: 'Track quest (Journal)', codex: 'Codex', map: 'World map', people: 'People', pause: 'Pause',
 };
