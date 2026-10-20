@@ -193,10 +193,19 @@ class DialogueRunner {
     if (this.def) this.finish();
   }
 
-  /** Force-close (Esc on a line without choices, or the scene shuts down). */
+  /**
+   * Esc. On a line: skip the text, not the consequences. The remaining lines run (with their effects) up to the next
+   * choice, which stays on screen because it is a decision, or to the end. With choices showing: leave the
+   * conversation (critical scenes are reopenable). Claude 7's QA: closing outright dropped 330 lines' flags, items
+   * and trust.
+   */
   close(from?: string): void {
     if (from !== undefined && from !== this.initiator) return;
-    this.goto(null);
+    const def = this.def;
+    if (!def) return;
+    if (this.visible.length) return this.goto(null);
+    for (let i = 0; i < 64 && this.def === def && this.nodeId && !this.visible.length; i++) this.goto(def.nodes[this.nodeId].next ?? null);
+    if (this.def === def && !this.visible.length) this.finish(); // a line loop (never in data): stop anyway
   }
 
   private goto(nodeId: string | null): void {

@@ -33,6 +33,7 @@ const SUITES = [
   { id: 'world', what: 'world: every object placed, instances build, level bands (realms + Concordia), class objects, boss/pack clearance', cmd: [NODE, 'tools/playthrough/suite.mjs', '--full'] },
   { id: 'narrative', what: 'story gate (Jester + Shade): validator, solo + co-op bots, audit', cmd: [BASH, 'tools/narrative/check.sh', 'jester,shade', '2'],
     judge: (out) => /LOGIC problems: 0/.test(out) && /tsc: clean/.test(out) && !/\bFAIL\b/.test(out) },
+  { id: 'dialogue-esc', what: 'closing a conversation early (Esc) still applies every skipped line's effects', cmd: e2e('qa-dialogue-esc.mjs'), file: 'tools/e2e/qa-dialogue-esc.mjs', owner: 'Claude 7' },
   { id: 'realm-server', what: 'public realm server: join (incl. slow sign-in), snapshots, chat, systems', cmd: e2e('realm-server.mjs') },
   { id: 'new-player', what: 'fresh player, real input: create → play → autosave', cmd: e2e('new-player.mjs', '--base', BASE), needs: ['web'] },
   { id: 'save-roundtrip', what: 'save → reload → load restores the hero', cmd: e2e('save-roundtrip.mjs', BASE), needs: ['web'] },
