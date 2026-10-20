@@ -83,7 +83,7 @@ export const CONCORDIA_BANDS: Record<string, Record<string, ZoneTier[]>> = {
     'region:abbey': [{ floor: 16 }, { floor: 21, step: 7 }],
     'region:alder': [{ floor: 14 }, { floor: 15, step: 1 }, { floor: 16, step: 2 }, { floor: 17, step: 3 }, { floor: 19, step: 5 }, { floor: 20, step: 6 }, { floor: 21, step: 7 }, { floor: 22, step: 8 }, { floor: 23, step: 9 }, { floor: 28, step: 12 }, { floor: 30, step: 14 }, { floor: 32, step: 15 }],
     'region:briar': [{ floor: 16 }, { floor: 17, step: 3 }, { floor: 18, step: 4 }],
-    'region:gloam': [{ floor: 14 }, { floor: 16, step: 2 }, { floor: 17, step: 3 }, { floor: 21, step: 7 }, { floor: 23, step: 9 }, { floor: 25, step: 11 }, { floor: 28, step: 12 }, { floor: 30, step: 14 }, { floor: 32, step: 15 }, { floor: 34, step: 17 }, { floor: 36, step: 18 }],
+    'region:gloam': [{ floor: 14 }, { floor: 16, step: 2 }, { floor: 17, step: 3 }, { floor: 20, step: 6 }, { floor: 21, step: 7 }, { floor: 23, step: 9 }, { floor: 25, step: 11 }, { floor: 28, step: 12 }, { floor: 30, step: 14 }, { floor: 32, step: 15 }, { floor: 34, step: 17 }, { floor: 36, step: 18 }],
     'region:heart': [{ floor: 30 }, { floor: 32, step: 15 }, { floor: 34, step: 17 }, { floor: 36, step: 18 }],
     'region:road': [{ floor: 16 }],
   },

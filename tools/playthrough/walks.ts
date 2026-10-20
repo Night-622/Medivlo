@@ -89,13 +89,18 @@ function walkQuests(space: string, start: [number, number], order: QuestDef[], c
   const stones = allWaystones().filter((w) => w.space === space);
   const woken = new Set(stones.filter((w) => w.startsLit).map((w) => w.id));
   let pos = start, ftPos = start;
+  let current = '';
   const pass = (path: [number, number][], hit: Set<string>) => {
     for (const p of path) for (const z of zones) {
+      // a story-bound pack is there only during its own quest
+      const sq = (z.when as { questStage?: string } | undefined)?.questStage;
+      if (sq && sq !== current) continue;
       if (hit.has(z.id) || Math.abs(p[0] - z.at[0]) > z.r + AGGRO_TILES + 200 || Math.abs(p[1] - z.at[1]) > z.r + AGGRO_TILES + 200) continue;
       if (reach(z, p) <= z.r + AGGRO_TILES) hit.add(z.id);
     }
   };
   return order.map((qd) => {
+    current = String(qd.id);
     const hit = new Set<string>(), ftHit = new Set<string>(), lairs = new Set<string>(), trail: [number, number][] = [], ftTrail: [number, number][] = [];
     for (const st of qd.stages) for (const o of st.objectives as Record<string, any>[]) {
       if (o.optional) continue;

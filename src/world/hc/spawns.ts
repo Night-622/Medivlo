@@ -4,9 +4,10 @@
  * creatures and level band. The director keeps zones near players stocked through Services.combat.spawn,
  * scaled by party size, and restocks after enemy:killed with a cooldown. Lairs and bosses live in instances.
  */
-import { CHUNK_TILES, Services, TILE_SIZE, bus, evalCondition, getFlag, heroClassId, type WorldObject } from '@/core';
+import { CHUNK_TILES, Services, TILE_SIZE, bus, evalCondition, getFlag, heroClassId, type Condition, type WorldObject } from '@/core';
 import { MORVANE_REGIONS, MORVANE_ROADS, MORVANE_SCALE } from '@/data/regions/hc/morvane';
 import { ROUTE_CAMPS } from '@/data/regions/hc/routeCamps.gen';
+import { STORY_PACKS } from '@/data/regions/hc/storyPacks';
 import { morvaneRegionAt } from './overview';
 import { allCreatures, bestiaryFor } from '@/systems/rules/creatures';
 import { spawnCountMult } from '@/systems/rules/curves';
@@ -45,6 +46,8 @@ export interface SpawnZoneDef {
   waves?: EncounterSpawn[][];
   /** realm bands by campaign order (bands.ts): later level bands, each once its Act I main step is done */
   tiers?: LevelTier[];
+  /** story-bound packs: alive only while this holds (a quest stage; authority state, so the host's) */
+  when?: Condition;
   /** the class whose campaign this side belongs to (tiers also step with the host's own Act I progress) */
   cls?: string;
   /** which main-quest list a tier's step counts in, and (Concordia) the band per host class: see bands.ts */
@@ -225,6 +228,16 @@ function concordiaZones(): SpawnZoneDef[] {
     const pool = regionPool(r.name), [lo] = regionLevels(r);
     if (pool.length) out.push({ id: c.id, space: 'concordia', at: c.at, r: 4, ...concordiaBanded(r.id, lo, 'camp'), pool, cap: ROUTE_CAMP_CAP });
   }
+  // story-bound packs in the sparse class threads (storyPacks.ts): once per quest stage, at the band underfoot
+  for (const s of STORY_PACKS) {
+    const o = findObject('concordia', s.near);
+    if (!o) { console.warn(`[world] story pack ${s.id}: no ${s.near}`); continue; }
+    const at: [number, number] = [o.at[0] + s.dx, o.at[1] + s.dy];
+    const r = morvaneRegionAt(at[0] / MORVANE_SCALE, at[1] / MORVANE_SCALE);
+    if (!r) continue;
+    const pool = regionPool(r.name), [lo] = regionLevels(r);
+    if (pool.length) out.push({ id: s.id, space: 'concordia', at, r: 4, ...concordiaBanded(r.id, lo, 'camp'), pool, cap: s.cap, once: true, when: { questStage: s.quest, stage: s.stage } });
+  }
   // optional caves and lookouts: a pack on the approach, 14 tiles towards the nearest road (elite-led to caves)
   for (const [id, o] of (gen as ConcordiaGen).optional) {
     if (o.kind === 'ruin' || !roadPts.length) continue;
@@ -392,6 +405,7 @@ export class SpawnDirector {
           st.spawned = 0; // a lair fills again on the next visit
           continue;
         }
+        if (z.when && !evalCondition(z.when)) continue; // a story pack outside its quest stage
         if (z.once && st.spawned >= Math.round(z.cap * mult)) continue;
         if (z.rect && !here.some((p) => { const tx = p.x / TILE_SIZE, ty = p.y / TILE_SIZE; return tx >= z.rect![0] && ty >= z.rect![1] && tx < z.rect![0] + z.rect![2] && ty < z.rect![1] + z.rect![3]; })) continue;
         if (z.waves) { this.wave(z, st, here, mult); continue; }

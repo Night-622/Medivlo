@@ -15083,6 +15083,15 @@
      ],
      "elite": false,
      "cap": 6
+    },
+    {
+     "id": "story:shade-silk-web",
+     "level": [
+      20,
+      21
+     ],
+     "elite": false,
+     "cap": 4
     }
    ],
    "lairs": [
@@ -15097,6 +15106,15 @@
      ],
      "elite": false,
      "cap": 6
+    },
+    {
+     "id": "story:shade-silk-web",
+     "level": [
+      20,
+      21
+     ],
+     "elite": false,
+     "cap": 4
     },
     {
      "id": "camp:morvane-2-5",
@@ -15392,6 +15410,24 @@
      ],
      "elite": false,
      "cap": 6
+    },
+    {
+     "id": "story:shade-thread-knot",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
+     "id": "story:shade-shadow-camp",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
     }
    ],
    "lairs": [],
@@ -15404,6 +15440,24 @@
      ],
      "elite": false,
      "cap": 6
+    },
+    {
+     "id": "story:shade-thread-knot",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
+     "id": "story:shade-shadow-camp",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
     }
    ]
   },
@@ -20728,6 +20782,24 @@
      "cap": 6
     },
     {
+     "id": "story:samurai-web-crossing-b",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
+     "id": "story:samurai-web-crossing-a",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
      "id": "camp:morvane-0-1",
      "level": [
       23,
@@ -20739,6 +20811,15 @@
    ],
    "lairs": [],
    "zonesWalk": [
+    {
+     "id": "story:samurai-web-crossing-a",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
+    },
     {
      "id": "region:gloam#2",
      "level": [
@@ -20765,6 +20846,24 @@
      ],
      "elite": false,
      "cap": 6
+    },
+    {
+     "id": "story:samurai-cut-thread-b",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
+     "id": "story:samurai-cut-thread-a",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
     }
    ],
    "lairs": [],
@@ -20777,6 +20876,15 @@
      ],
      "elite": false,
      "cap": 6
+    },
+    {
+     "id": "story:samurai-cut-thread-a",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
     }
    ]
   },
@@ -28399,6 +28507,24 @@
      ],
      "elite": false,
      "cap": 3
+    },
+    {
+     "id": "story:huntsman-stag-offering",
+     "level": [
+      20,
+      21
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
+     "id": "story:huntsman-stag-trail",
+     "level": [
+      20,
+      21
+     ],
+     "elite": false,
+     "cap": 4
     }
    ],
    "lairs": [
@@ -28413,6 +28539,24 @@
      ],
      "elite": false,
      "cap": 3
+    },
+    {
+     "id": "story:huntsman-stag-trail",
+     "level": [
+      20,
+      21
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
+     "id": "story:huntsman-stag-offering",
+     "level": [
+      20,
+      21
+     ],
+     "elite": false,
+     "cap": 4
     }
    ]
   },
@@ -28638,6 +28782,15 @@
      "cap": 3
     },
     {
+     "id": "story:huntsman-corva-sign",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
      "id": "region:gloam#2",
      "level": [
       23,
@@ -28645,6 +28798,15 @@
      ],
      "elite": false,
      "cap": 6
+    },
+    {
+     "id": "story:huntsman-corva-camp",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
     }
    ],
    "lairs": [],
@@ -28659,6 +28821,15 @@
      "cap": 3
     },
     {
+     "id": "story:huntsman-corva-sign",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
      "id": "region:gloam#2",
      "level": [
       23,
@@ -28666,6 +28837,15 @@
      ],
      "elite": false,
      "cap": 6
+    },
+    {
+     "id": "story:huntsman-corva-camp",
+     "level": [
+      23,
+      24
+     ],
+     "elite": false,
+     "cap": 4
     }
    ]
   },
