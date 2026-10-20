@@ -24,6 +24,7 @@ const e2e = (file, ...args) => [NODE, `tools/e2e/${file}`, ...args];
 const SUITES = [
   { id: 'typecheck', what: 'TypeScript strict, 0 errors', cmd: tsc },
   { id: 'typecheck-server', what: 'TypeScript strict for the realm server (server/), 0 errors', cmd: [...tsc, '-p', 'tsconfig.server.json'] },
+  { id: 'build-server', what: 'realm server build (dist-server), so every realm suite tests this exact code', cmd: [NODE, 'server/build.mjs'] },
   { id: 'build', what: 'production build', cmd: [NODE, 'node_modules/vite/bin/vite.js', 'build'] },
   { id: 'sim-validate', what: 'content: spells, kits, trees, creatures, drops', cmd: sim('validate') },
   { id: 'sim-hitboxes', what: 'enemy + player hitboxes: hits inside reach/shape, misses outside, bodies match sprites', cmd: sim('hitboxes'), file: 'tools/e2e/sim/hitboxes.ts', owner: 'Claude 3' },
