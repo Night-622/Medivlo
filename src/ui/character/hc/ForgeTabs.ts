@@ -176,4 +176,5 @@ export function drawForge(ctx: ForgeCtx): void {
 }
 
 /** A carried source of a unique effect, for the Transfer tab. */
-export const uniqueSources = (ch: CharacterSave, target: ItemInstance): ItemInstance[] => ch.inventory.filter((x) => x.uid !== target.uid && !!uniqueOf(x));
+/** Pack pieces that could give `target` something: a unique effect, or a higher upgrade level, of the same slot. */
+export const transferSources = (ch: CharacterSave, target: ItemInstance): ItemInstance[] => ch.inventory.filter((x) => x.uid !== target.uid && (!!uniqueOf(x) || (x.upgrade ?? 0) > 0));

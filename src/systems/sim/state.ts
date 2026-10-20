@@ -92,6 +92,12 @@ export interface PlayerEnt extends Combatant {
   auraAt?: number;
   /** last time this hero lost health to a hit (a revive channel pauses on it) */
   hurtAt?: number;
+  /** until when this hero counts as in PvP combat (PvP healing reduction) */
+  pvpUntil?: number;
+  /** player damage taken in the current 2 s window (PvP burst guard) */
+  pvpBurst?: { at: number; dmg: number };
+  /** when the current duel began (duel fatigue) */
+  duelSince?: { with: string; at: number };
   momentum: number;
   dashCharges: number; dashReadyAt: number;
   cds: Map<string, number>;

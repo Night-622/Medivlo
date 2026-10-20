@@ -30,6 +30,8 @@ export interface HitOpts { cast?: CastCtx; isSpell?: boolean; flags?: HitFlag[];
 /** Deal damage; returns the amount that landed (after shields). */
 /** Melee guard (see dealDamage); bows, staves and wands fight from range. */
 const MELEE_GUARD = 0.12;
+/** player-vs-player tuning (PvE untouched) */
+const PVP_DAMAGE = 0.35, PVP_HIT_CAP = 0.3, PVP_HEALING = 0.5, PVP_CC_IMMUNE_MS = 3000, DUEL_STEALTH_MS = 5000;
 const RANGED_WEAPONS = new Set(['bow', 'staff', 'wand']);
 
 export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, raw: number, kind: DamageKind, o: HitOpts = {}): number {
@@ -100,7 +102,22 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
   // melee guard: heroes who fight in the pack (melee weapon) take 12% less from creatures (gauntlet: melee ran dry first)
   if (tgt.kind === 'player' && src && src.kind !== 'player' && MELEE_GUARD && !RANGED_WEAPONS.has((tgt as PlayerEnt).weapon.type)) taken -= MELEE_GUARD;
   amount *= Math.max(0.1, taken);
-  if (src?.kind === 'player' && tgt.kind === 'player') amount *= 0.5; // PvP normalisation
+  // PvP (pvp-duels 2026-10-21): player-vs-player hits are ×0.35 (no one-shots from full), and both sides are "in PvP"
+  // for 5 s (healing on them is −40%, so heal mirrors can end)
+  if (src?.kind === 'player' && tgt.kind === 'player') {
+    // and no single hit takes more than 30% of the target's health: bursts can't one-shot from full
+    amount = Math.min(amount * PVP_DAMAGE, tgt.maxHp * PVP_HIT_CAP);
+    // burst guard: past 60% of max health from players inside 2 s, the rest of the burst lands at a quarter
+    const tp = tgt as PlayerEnt;
+    if (!tp.pvpBurst || w.t - tp.pvpBurst.at > 2000) tp.pvpBurst = { at: w.t, dmg: 0 };
+    if (tp.pvpBurst.dmg > tgt.maxHp * 0.6) amount *= 0.25;
+    tp.pvpBurst.dmg += amount;
+    // duel fatigue (see duelFatigue): long duels hit harder and heal less, so even tank or heal mirrors end
+    const sp = src as PlayerEnt;
+    if (tp.duelWith === sp.id && sp.duelWith === tp.id && tp.duelSince?.with !== sp.id) tp.duelSince = { with: sp.id, at: w.t };
+    amount *= duelFatigue(w, tp).dmg;
+    sp.pvpUntil = (tgt as PlayerEnt).pvpUntil = w.t + 5000;
+  }
   // arena set pieces: light-only bosses in the dark, shielded / pay-back bosses while pillars stand
   if (w.hazards.size && tgt.kind === 'enemy') {
     const hm = hazardDamageMult(w, tgt, src, amount);
@@ -177,7 +194,8 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
 
 export function heal(w: SimWorld, src: Combatant, tgt: Combatant, amount: number, silent = false): number {
   if (tgt.dead || amount <= 0) return 0;
-  const mult = (1 + (src.stats.stats.healing ?? 0)) * (1 + (tgt.stats.stats.healingTaken ?? 0));
+  const pvp = tgt.kind === 'player' && w.t < ((tgt as PlayerEnt).pvpUntil ?? 0) ? PVP_HEALING * duelFatigue(w, tgt as PlayerEnt).heal : 1;
+  const mult = (1 + (src.stats.stats.healing ?? 0)) * (1 + (tgt.stats.stats.healingTaken ?? 0)) * pvp;
   const want = amount * mult, room = tgt.maxHp - tgt.hp, got = Math.min(room, want);
   tgt.hp += got;
   if (want > room && hook(src.stats, 'overheal')) addShield(w, tgt, want - room, 6000);
@@ -190,7 +208,9 @@ export function heal(w: SimWorld, src: Combatant, tgt: Combatant, amount: number
 }
 
 export function addShield(w: SimWorld, c: Combatant, amount: number, dur: number): void {
-  c.shield = (w.t < c.shieldUntil ? c.shield : 0) + amount;
+  // shields count as healing for the PvP reduction (heal-and-shield mirrors could not end)
+  const pvp = c.kind === 'player' && w.t < ((c as PlayerEnt).pvpUntil ?? 0) ? PVP_HEALING : 1;
+  c.shield = (w.t < c.shieldUntil ? c.shield : 0) + amount * pvp;
   c.shieldUntil = w.t + dur;
 }
 
@@ -212,7 +232,8 @@ export function applyStatus(w: SimWorld, src: Combatant | null, tgt: Combatant, 
   if (src && s.id === 'root') dur += hook(src.stats, 'rootDurMs');
   if (src && s.id === 'burn') dur += hook(src.stats, 'burnDurMs');
   if (hard && tgt.kind === 'player') dur *= Math.max(0.2, 1 + (tgt.stats.stats.stunTaken ?? 0));
-  if (hard && src?.kind === 'player' && tgt.kind === 'player') dur *= 0.5;
+  // PvP hard CC: half as long, then 3 s immune to more (no stun-locks between players)
+  if (hard && src?.kind === 'player' && tgt.kind === 'player') { dur *= 0.5; tgt.ccImmuneUntil = w.t + dur + PVP_CC_IMMUNE_MS; }
   if (hard && boss) { dur *= 0.5; tgt.ccImmuneUntil = w.t + dur + 4000; }
   const prev = tgt.statuses.get(s.id);
   const power = (s.power ?? defaultPower(s.id)) * (src && (s.id === 'slow' || s.id === 'chill') ? 1 + (src.stats.stats.slowPower ?? 0) : 1);
@@ -267,7 +288,9 @@ export function addBuff(w: SimWorld, src: Combatant, tgt: Combatant, a: Extract<
   const existing = tgt.buffs.filter((b) => b.id === a.id);
   if (existing.length && existing.length >= Math.max(1, stacks)) tgt.buffs = tgt.buffs.filter((b) => b !== existing[0]);
   const ally = tgt !== src;
-  const dur = a.dur * durMult * (1 + (src.stats.stats.buffDur ?? 0));
+  let dur = a.dur * durMult * (1 + (src.stats.stats.buffDur ?? 0));
+  // in a duel stealth lasts at most 5 s (two stealthed duellists could not find each other)
+  if (a.flags?.includes('stealth') && tgt.kind === 'player' && (tgt as PlayerEnt).duelWith) dur = Math.min(dur, DUEL_STEALTH_MS);
   const power = 1 + (ally || a.to !== 'self' ? src.stats.stats.buffPower ?? 0 : 0);
   tgt.buffs.push({
     id: a.id, until: w.t + dur, sourceId: src.id, charges: a.charges,
@@ -343,4 +366,15 @@ export function convertShares(conv: readonly Convert[], kind: DamageKind, isSpel
   const total = [...by.values()].reduce((a, b) => a + b, 0);
   const scale = total > 1 ? 1 / total : 1;
   return [...by].map(([k, v]) => [k, v * scale] as [DamageKind, number]).filter(([, v]) => v > 0);
+}
+
+/**
+ * Duel fatigue: from 30 s into a duel, +25% damage taken per further 10 s and −15% healing (regen included) per
+ * 10 s (floor 0). The clock starts at the pair's first hit; outside a duel it is ×1 / ×1.
+ */
+export function duelFatigue(w: SimWorld, p: PlayerEnt): { dmg: number; heal: number } {
+  const other = p.duelWith ? w.players.get(p.duelWith) : undefined;
+  if (!other || other.duelWith !== p.id || p.duelSince?.with !== other.id) return { dmg: 1, heal: 1 };
+  const steps = w.t - p.duelSince.at > 30_000 ? Math.floor((w.t - p.duelSince.at - 30_000) / 10_000) + 1 : 0;
+  return { dmg: 1 + 0.25 * steps, heal: Math.max(0, 1 - 0.15 * steps) };
 }

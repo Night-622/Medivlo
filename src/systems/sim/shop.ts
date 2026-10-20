@@ -7,8 +7,8 @@ import { Rng } from '@/core/rng';
 import { HC_PIECES } from '@/data/items/hc/armour.gen';
 import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { shopByNpc, type HcShopDef } from '@/data/items/hc/shops';
-import { P, questXpMult, unlockLevel, xpToNext } from '@/systems/rules/curves';
-import { QUEST_BANDS } from '@/data/regions/hc/questBands';
+import { actQuestXpMult, P, questXpMult, unlockLevel, xpToNext } from '@/systems/rules/curves';
+import { QUEST_ACT, QUEST_BANDS } from '@/data/regions/hc/questBands';
 import { itemInfo, materialIndex, sellValue, styleIndex } from '@/systems/rules/gear';
 import type { ItemInstance } from '@/systems/rules/types';
 import { hook } from '@/systems/rules/stats';
@@ -108,7 +108,7 @@ export function questReward(w: SimWorld, e: QuestRewardEv): void {
   const who = e.playerId ? [w.players.get(`p:${e.playerId}`)].filter((x): x is PlayerEnt => !!x) : [...w.players.values()];
   for (const p of who) {
     if (e.gold) { p.save.gold += e.gold; w.emit('loot:granted', { playerId: p.playerId, gold: e.gold }); }
-    if (e.xpTier) grantXp(w, p, QUEST_XP_TIER[e.xpTier] * xpToNext(p.save.level) * questXpMult(p.save.level, questBand(e.questId)), 'quest');
+    if (e.xpTier) grantXp(w, p, QUEST_XP_TIER[e.xpTier] * xpToNext(p.save.level) * questXpScale(p.save.classId, p.save.level, e.questId), 'quest');
     if (e.skillPoints) p.save.bonusPoints += e.skillPoints;
     for (const it of e.hcItems ?? []) {
       const info = itemInfo(it.item);
@@ -136,3 +136,7 @@ export function questTake(w: SimWorld, item: string, qty: number): void {
 
 /** A quest's level band (Claude 2's src/data/regions/hc/questBands.ts, generated from the walks); null = no scaling. */
 export const questBand = (questId: string | undefined): [number, number] | null => (questId ? QUEST_BANDS[questId] ?? null : null);
+
+/** Every quest-XP multiplier on one reward: the quest's level band, then the class's Act II factor. Walk tools call this too. */
+export const questXpScale = (classId: string, level: number, questId: string | undefined): number =>
+  questXpMult(level, questBand(questId)) * actQuestXpMult(classId, questId ? QUEST_ACT[questId] : undefined);

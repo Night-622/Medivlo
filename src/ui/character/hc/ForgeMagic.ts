@@ -10,10 +10,10 @@ import { essenceOf, HC_RUNES } from '@/data/items/hc/build-items';
 import { itemInfo } from '@/systems/rules/gear';
 import { affixDef, itemRarity } from '@/systems/rules/affixes';
 import { affixLines, itemTooltip, type TipLine } from '@/systems/rules/describeHc';
-import { imbueCost, rerollCost, transferCost, uniqueOf } from '@/systems/rules/runeforge';
+import { imbueCost, rerollCost, transferCost, transferMoves, uniqueOf } from '@/systems/rules/runeforge';
 import type { ItemInstance } from '@/systems/rules/types';
 import { flavourOf } from '@/systems/rules/buildText';
-import { cell, have, LEFT, STEP, uniqueSources, type ForgeCtx } from './ForgeTabs';
+import { cell, have, LEFT, STEP, transferSources, type ForgeCtx } from './ForgeTabs';
 import { runeName } from './RunePanel';
 
 const SCHOOLS = [...MAGIC_SCHOOLS, ...MARTIAL_SCHOOLS];
@@ -54,13 +54,10 @@ const effectText = (it: ItemInstance): string => { const fx = uniqueOf(it); retu
 export function bodyTransfer(ctx: ForgeCtx, it: ItemInstance): void {
   const { hud, root, ch, shop, st } = ctx;
   const info = itemInfo(it.base)!;
-  if (info.kind === 'legendary') {
-    root.add(hud.add.text(LEFT, 372, 'A unique keeps its own effect. Select the plain piece that should receive it; this one is the source.', typeStyle('body', C.text300, 512)));
-    return;
-  }
-  const sources = uniqueSources(ch, it);
-  root.add(hud.add.text(LEFT, 372, 'Take the effect from (the source is destroyed):', typeStyle('body', C.text)));
-  if (!sources.length) { root.add(hud.add.text(LEFT, 400, `Carry a unique or legendary ${info.slot} to move its effect onto this piece.`, typeStyle('caption', C.text500, 512))); return; }
+  const legend = info.kind === 'legendary';
+  const sources = transferSources(ch, it);
+  root.add(hud.add.text(LEFT, 372, legend ? 'A unique keeps its own effect, but it can take an upgrade level from (the source is destroyed):' : 'Take the effect and upgrade from (the source is destroyed):', typeStyle('body', C.text, 512)));
+  if (!sources.length) { root.add(hud.add.text(LEFT, 400, legend ? `Carry an upgraded ${info.slot} to move its +n onto this piece.` : `Carry a unique, legendary or upgraded ${info.slot} to move its effect or +n onto this piece.`, typeStyle('caption', C.text500, 512))); return; }
   sources.slice(0, 8).forEach((s, i) => {
     const cost = transferCost(s, it);
     cell(ctx, LEFT + i * STEP, 396, s.base, {
@@ -71,10 +68,11 @@ export function bodyTransfer(ctx: ForgeCtx, it: ItemInstance): void {
   });
   const src = sources.find((s) => s.uid === st.src && transferCost(s, it) !== null);
   if (!src) { root.add(hud.add.text(LEFT, 470, 'Pick a source above.', typeStyle('caption', C.text500))); return; }
-  const cost = transferCost(src, it)!;
-  root.add(hud.add.text(LEFT, 468, `${itemInfo(src.base)?.name}: ${effectText(src)}`, typeStyle('body', C.gold, 512)));
-  if (it.uniqueFx) root.add(hud.add.text(LEFT, 530, 'Its current bound effect is replaced.', typeStyle('caption', C.danger)));
-  root.add(new HCButton(hud, 226, 590, `Bind it onto the ${info.slot}`, () => { st.src = null; ctx.act('transfer', { shop, uid: it.uid, from: src.uid }); },
+  const cost = transferCost(src, it)!, moves = transferMoves(src, it)!;
+  const what = [moves.fx ? effectText(src) : '', moves.upgrade ? `upgrade +${moves.upgrade} (this piece is +${it.upgrade ?? 0})` : ''].filter(Boolean).join(' · ');
+  root.add(hud.add.text(LEFT, 468, `${itemInfo(src.base)?.name}: ${what}`, typeStyle('body', C.gold, 512)));
+  if (moves.fx && it.uniqueFx) root.add(hud.add.text(LEFT, 530, 'Its current bound effect is replaced.', typeStyle('caption', C.danger)));
+  root.add(new HCButton(hud, 226, 590, `Move it onto the ${info.slot}`, () => { st.src = null; ctx.act('transfer', { shop, uid: it.uid, from: src.uid }); },
     { w: 300, disabled: ch.gold < cost, sub: `${cost} Embershards · ${itemInfo(src.base)?.name} is destroyed` }));
 }
 

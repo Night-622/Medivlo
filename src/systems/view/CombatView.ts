@@ -246,10 +246,26 @@ export class CombatView implements SnapshotConsumer {
     r.bar.clear();
     if (r.data.cos) return; // cosmetic story pets show no health bar
     const tier = String(r.data.tier ?? '');
-    if (r.maxHp <= 0 || (r.hp >= r.maxHp && tier !== 'mini' && !r.data.elite && !r.data.esc && r.kind !== 'player') || tier === 'boss' || r.anim === 'die') return;
     const w = tier === 'mini' ? 40 : 28, y = r.y - o.displayHeight - 6, x = r.x - w / 2;
+    if (tier !== 'boss' && !down) this.drawStatusMark(r.bar, st, x - 6, y + 2);
+    if (r.maxHp <= 0 || (r.hp >= r.maxHp && tier !== 'mini' && !r.data.elite && !r.data.esc && r.kind !== 'player') || tier === 'boss' || r.anim === 'die') return;
     r.bar.fillStyle(0x1a1230, 1).fillRect(x - 1, y - 1, w + 2, 6);
-    r.bar.fillStyle(r.kind === 'enemy' ? 0xff4d5e : 0x5fe06a, 1).fillRect(x, y, Math.max(0, (w * r.hp) / r.maxHp), 4);
+    // colour-blind safe (Claude 6's audit): allies cyan-blue rather than green, and enemy bars carry a dark notch every
+    // 25% so hostile vs friendly reads by shape as well as colour
+    r.bar.fillStyle(r.kind === 'enemy' ? 0xff4d5e : 0x4fb6ff, 1).fillRect(x, y, Math.max(0, (w * r.hp) / r.maxHp), 4);
+    if (r.kind === 'enemy') { r.bar.fillStyle(0x1a1230, 1); for (let k = 1; k < 4; k++) r.bar.fillRect(Math.round(x + (w * k) / 4), y, 1, 4); }
+  }
+
+  /** A shape per status beside the bar (the sprite tint alone is invisible to colour-blind players and in bright scenes). */
+  private drawStatusMark(g: Phaser.GameObjects.Graphics, st: string, cx: number, cy: number): void {
+    const mark = st.includes('freeze') ? 'diamond' : st.includes('burn') ? 'up' : st.includes('stun') || st.includes('sleep') ? 'dot' : st.includes('chill') || st.includes('slow') ? 'down' : '';
+    if (!mark) return;
+    const fill = { diamond: 0x9fe6ff, up: 0xff9a3c, dot: 0xffe066, down: 0xc8f0ff }[mark];
+    g.lineStyle(1, 0x1a1230, 1).fillStyle(fill, 1);
+    if (mark === 'dot') { g.fillCircle(cx, cy, 3).strokeCircle(cx, cy, 3); return; }
+    const pts = mark === 'diamond' ? [cx, cy - 4, cx + 3, cy, cx, cy + 4, cx - 3, cy] : mark === 'up' ? [cx, cy - 4, cx + 3.5, cy + 3, cx - 3.5, cy + 3] : [cx - 3.5, cy - 3, cx + 3.5, cy - 3, cx, cy + 4];
+    const poly = Array.from({ length: pts.length / 2 }, (_, i) => new Phaser.Math.Vector2(pts[2 * i], pts[2 * i + 1]));
+    g.fillPoints(poly, true).strokePoints(poly, true);
   }
 
   /** Elite plate above the bar; glyphs above the name. Bars always show for elites. */

@@ -95,6 +95,10 @@ for (const [rule, zone, expect] of [['peaceful', 'wild', false], ['duels', 'wild
 {
   const w = world('ffa', 2);
   w.a.spawnProtectUntil = 0; w.b!.spawnProtectUntil = 0;
+  // PvP hit cap (sim/combat.ts): no single player hit takes more than 30% of max health, so no one-shot from full
+  w.sim.damage(w.b!.id, 99999, 'physical', w.a.id);
+  check(!w.b!.dead && w.b!.hp >= w.b!.maxHp * 0.69, `PvP hit cap: a huge hit from full leaves ≥ 70% (${Math.round(w.b!.hp)}/${w.b!.maxHp})`);
+  w.b!.hp = 5;
   w.sim.damage(w.b!.id, 99999, 'physical', w.a.id);
   const pile = [...w.sim.w.loot.values()].find((l) => l.gold);
   check(w.b!.dead && !w.b!.downed, 'free-for-all PvP death: no downed state');

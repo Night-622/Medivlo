@@ -5,7 +5,7 @@
  * gems and salvaged pieces as item:used.
  */
 import { shopByNpc } from '@/data/items/hc/shops';
-import { dustYield, imbueCost, INGOT, reforgeCost, rerollCost, salvageYield, socketCost, transferCost, uniqueOf, upgradeCost } from '@/systems/rules/runeforge';
+import { dustYield, imbueCost, INGOT, reforgeCost, rerollCost, salvageYield, socketCost, transferCost, transferMoves, upgradeCost } from '@/systems/rules/runeforge';
 import { affixDef, rollAffixes } from '@/systems/rules/affixes';
 import { essenceOf, HC_RUNES, RUNE_DUST } from '@/data/items/hc/build-items';
 import { MAGIC_SCHOOLS, MARTIAL_SCHOOLS } from '@/core/constants';
@@ -130,11 +130,12 @@ export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Recor
     const src = owned(p, String(args.from ?? ''));
     if (!src) return 'You don’t have that.';
     if (src.worn) return 'Take it off first.';
-    const cost = transferCost(src.it, it);
-    if (cost === null) return 'That effect can’t move there.';
+    const cost = transferCost(src.it, it), moves = transferMoves(src.it, it);
+    if (cost === null || !moves) return 'Nothing on that piece can move there.';
     if (p.save.gold < cost) return 'Not enough Embershards.';
     pay(w, p, cost);
-    it.uniqueFx = uniqueOf(src.it);
+    if (moves.fx) it.uniqueFx = moves.fx;
+    if (moves.upgrade) it.upgrade = moves.upgrade;
     p.save.inventory.splice(p.save.inventory.indexOf(src.it), 1);
     w.emit('item:used', { playerId: p.playerId, uid: src.it.uid, def: src.it.base as never });
     changed(w, p, it, worn);

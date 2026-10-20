@@ -67,6 +67,20 @@ export const unlockLevel = (index: number): number => 1 + 5 * index;
 export const resetCost = (level: number): number => 10 * level;
 
 /**
+ * Act II quest XP per class (approved by Claude 1, 2026-10-21; bands pinned while tuning): the class threads' Act II
+ * quests reach different levels, so solo heroes ended Act II at L27.6–32.7 against a goal of L28.5–31.5. Factor =
+ * 1 + (30 − measured solo Act II end) / 6.2, clamped 0.6–1.4, rounded to 0.05 (tools/e2e/out/xp-pacing.md, 03:44).
+ * One iteration: Claude 5 re-measures with xp-pacing. Unlisted classes and other acts: ×1.
+ */
+export const ACT2_QUEST_XP: Readonly<Record<string, number>> = {
+  oathbound: 1.4, shade: 1.3, samurai: 1.3, huntsman: 1.3, ranger: 1.25, warden: 1.2, hedgewitch: 1.2,
+  reaver: 1.15, duskweaver: 1.15, skald: 1.15, brawler: 1.1, bard: 1.1, rimecaller: 1.05, cantor: 1.05,
+  swordsman: 1, arcanist: 0.95, falconer: 0.9, jester: 0.9, monk: 0.8, corsair: 0.8, knight: 0.7,
+  juggernaut: 0.6, stormlancer: 0.6, sparkwright: 0.6,
+};
+export const actQuestXpMult = (classId: string, act: number | undefined): number => (act === 2 ? ACT2_QUEST_XP[classId] ?? 1 : 1);
+
+/**
  * Quest XP follows the quest's own level band (Act II spread, 2026-10-21): +25% per level the hero is below its low
  * end (at most ×2), −15% per level beyond one past its high end (at least ×0.6), ×1 inside. Every class then converges on the
  * band whatever its thread's kill count was. No band known → ×1.

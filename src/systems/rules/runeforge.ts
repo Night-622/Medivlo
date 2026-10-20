@@ -8,7 +8,7 @@
  */
 import { campaignItem } from '@/data/items/hc/campaign-items';
 import { P } from './curves';
-import { gemsOf, GEMS, itemInfo, rarityIndex } from './gear';
+import { gemsOf, GEMS, itemInfo, rarityIndex, upgradeOf } from './gear';
 import { itemRarity, socketCount } from './affixes';
 import type { ItemInstance } from './types';
 
@@ -72,12 +72,22 @@ export function imbueCost(it: ItemInstance): number | null {
 /** The unique effect a piece carries: moved onto it (uniqueFx), or its own if it is a legendary. */
 export const uniqueOf = (it: ItemInstance): string | undefined => it.uniqueFx ?? (itemInfo(it.base)?.kind === 'legendary' ? it.base : undefined);
 
-/** Cost to move `from`'s unique effect onto `to` (same slot family; `from` is destroyed); null if not possible. */
-export function transferCost(from: ItemInstance, to: ItemInstance): number | null {
+/**
+ * What a transfer from `from` onto `to` carries (same slot; `from` is used up): its unique effect (not onto a legendary,
+ * which keeps its own) and its upgrade level when higher than the target's (respec-econ 2026-10-21: a set swap keeps
+ * its +n, so trying a new build stays cheap). null if nothing would move.
+ */
+export function transferMoves(from: ItemInstance, to: ItemInstance): { fx?: string; upgrade?: number } | null {
   const a = itemInfo(from.base), b = itemInfo(to.base);
-  if (!a?.slot || !b?.slot || from.uid === to.uid || !uniqueOf(from) || b.questItem) return null;
-  if (a.slot !== b.slot || b.kind === 'legendary') return null;
-  return Math.round(120 * scale(Math.max(from.ilvl, to.ilvl)));
+  if (!a?.slot || !b?.slot || from.uid === to.uid || b.questItem || a.slot !== b.slot) return null;
+  const fx = b.kind === 'legendary' ? undefined : uniqueOf(from);
+  const upgrade = upgradeOf(from) > upgradeOf(to) ? upgradeOf(from) : undefined;
+  return fx || upgrade ? { ...(fx ? { fx } : {}), ...(upgrade ? { upgrade } : {}) } : null;
+}
+
+/** Cost of a transfer (see transferMoves); null if nothing would move. */
+export function transferCost(from: ItemInstance, to: ItemInstance): number | null {
+  return transferMoves(from, to) ? Math.round(120 * scale(Math.max(from.ilvl, to.ilvl))) : null;
 }
 
 /** Rune dust from salvaging: one per affix on the piece. */

@@ -17,7 +17,7 @@ import { flatParts, selfSide, shapeActions, spellView, targetBound } from './spe
 export { spellView };
 import { tickKeystones } from './keystones';
 import { slash } from './slash';
-import { addShield, basicCast, consumeCharge, dealDamage, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
+import { addShield, basicCast, consumeCharge, dealDamage, duelFatigue, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
 import { newCombatantBase, type CastCtx, type Combatant, type PlayerEnt } from './state';
 import { dist, dist2, HERO_RADIUS, isBehind, norm, type SimWorld } from './world';
 export { HERO_RADIUS };
@@ -127,7 +127,8 @@ export function stepPlayer(w: SimWorld, p: PlayerEnt, frames: InputFrame[], dt: 
   if (p.dashCharges < maxCharges && w.t >= p.dashReadyAt + DASH.recharge * Math.max(0.3, 1 + (p.stats.stats.dashCd ?? 0))) { p.dashCharges++; p.dashReadyAt = w.t; }
   // Shade: stealth after a while out of combat
   const st = hook(p.stats, 'stealthOutOfCombat');
-  if (st && !p.stealth && w.t > p.inCombatUntil - 5000 + st) p.stealth = true;
+  // (not in a duel: two shades would vanish from each other for good)
+  if (st && !p.stealth && !p.duelWith && w.t > p.inCombatUntil - 5000 + st) p.stealth = true;
 }
 
 const clampMove = (m: { x: number; y: number }) => {
@@ -148,7 +149,7 @@ function regen(w: SimWorld, p: PlayerEnt, dt: number): void {
   const inCombat = w.t < p.inCombatUntil;
   // in combat: gear/tree regen (incl. "in combat" bonuses); out of combat: +2% max HP per second
   const hpRegen = (st.hpRegen ?? 0) + (inCombat ? condFlat(p, 'hpRegen') : p.maxHp * 0.02);
-  p.hp = Math.min(p.maxHp, p.hp + hpRegen * s);
+  p.hp = Math.min(p.maxHp, p.hp + hpRegen * s * duelFatigue(w, p).heal);
   p.ember = Math.min(p.emberMax, p.ember + (st.emberRegen ?? 5) * s);
   if (!p.motion) p.stamina = Math.min(p.staminaMax, p.stamina + (st.staminaRegen ?? 20) * s);
 }

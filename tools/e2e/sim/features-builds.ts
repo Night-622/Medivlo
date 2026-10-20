@@ -2,7 +2,9 @@
  * Deeper builds engine (Claude 3, docs/systems/BUILDS.md §2.1): the Passive extensions perks, affixes and uniques
  * are made of. Conversion, auras, "+N to <spell>", the new triggers, conditions and stats, each proven on the sim.
  */
-import { questXpMult } from '@/systems/rules/curves';
+import { ACT2_QUEST_XP, actQuestXpMult, questXpMult } from '@/systems/rules/curves';
+import { QUEST_ACT } from '@/data/regions/hc/questBands';
+import { questBand, questXpScale } from '@/systems/sim/shop';
 import { kitFor } from '@/data/classes/hc/kits';
 import { newCharacter } from '@/systems/rules/character';
 import { playerPassives } from '@/systems/rules/playerStats';
@@ -297,6 +299,10 @@ function questBandXp(): void {
   const b: [number, number] = [28, 30];
   const r = [questXpMult(26, b), questXpMult(20, b), questXpMult(29, b), questXpMult(33, b), questXpMult(40, b), questXpMult(26, null), questXpMult(31, b)];
   check(r[0] === 1.5 && r[1] === 2 && r[2] === 1 && Math.abs(r[3] - 0.7) < 1e-9 && r[4] === 0.6 && r[5] === 1 && r[6] === 1, 'quest XP by band: 2 under ×1.5, far under ×2 (cap), inside and one over ×1, 3 over ×0.7, far over ×0.6 (floor), no band ×1', r.join(', '));
+  // Act II per-class factor, on top of the band (shop.ts questXpScale is what questReward pays)
+  const a2 = Object.keys(QUEST_ACT).find((q) => QUEST_ACT[q] === 2 && !questBand(q))!, a1 = Object.keys(QUEST_ACT).find((q) => QUEST_ACT[q] === 1 && !questBand(q))!;
+  const s = [actQuestXpMult('stormlancer', 2), actQuestXpMult('oathbound', 2), actQuestXpMult('stormlancer', 1), actQuestXpMult('nobody', 2), a2 ? questXpScale('juggernaut', 25, a2) : 0.6, a1 ? questXpScale('juggernaut', 5, a1) : 1];
+  check(s[0] === 0.6 && s[1] === 1.4 && s[2] === 1 && s[3] === 1 && s[4] === 0.6 && s[5] === 1 && Object.values(ACT2_QUEST_XP).every((f) => f >= 0.6 && f <= 1.4), 'Act II quest XP per class: stormlancer ×0.6, oathbound ×1.4, Act I ×1, unknown class ×1, all within 0.6–1.4', s.join(', '));
 }
 
 export function buildChecks(): void {

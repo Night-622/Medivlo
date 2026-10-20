@@ -105,7 +105,8 @@ function antiMint(): void {
 
 function tomes(): void {
   const t = HC_TOMES.find((x) => x.school !== 'ash')!, own = HC_TOMES.find((x) => x.school === 'ash')!;
-  const { w, p } = rig(t.item, own.item);
+  const t2 = HC_TOMES.find((x) => x.school !== 'ash' && x.spell !== t.spell)!;
+  const { w, p } = rig(t.item, own.item, t2.item);
   const uid = (id: string) => p.save.inventory.find((x) => x.base === id)!.uid;
   let n0 = w.events.length;
   act(w, 'useItem', { uid: uid(own.item) });
@@ -113,6 +114,11 @@ function tomes(): void {
   n0 = w.events.length;
   act(w, 'useItem', { uid: uid(t.item) });
   check(p.save.tomeSpell === t.spell && p.spells.has(t.spell) && qty(p.save, t.item) === 0 && runeSlots(p.save, t.spell) === 1, `reading ${t.item} teaches ${spellDef(t.spell)?.name} (one rune slot) and uses the tome`, String(p.save.tomeSpell));
+  // respec-econ: a second tome replaces the spell and the first tome comes back, so swapping back costs nothing
+  act(w, 'useItem', { uid: uid(t2.item) });
+  check(p.save.tomeSpell === t2.spell && qty(p.save, t2.item) === 0 && qty(p.save, t.item) === 1, `reading ${t2.item} replaces the spell and returns ${t.item} to the pack`, String(p.save.tomeSpell));
+  act(w, 'useItem', { uid: uid(t.item) });
+  check(p.save.tomeSpell === t.spell && qty(p.save, t2.item) === 1 && qty(p.save, t.item) === 0, 'swapping back: the first spell again, the second tome returned');
 }
 
 /** Runeforge v3 at a capital smith: upgrade, reroll, imbue, move a unique effect, craft a rune, dust from salvage. */
@@ -134,6 +140,11 @@ function forge(): void {
   check(smith('imbue', { uid: sword.uid, school: 'rime' }).some((t) => /Essence/.test(t)), 'imbue: refused without an Essence');
   const gone = smith('transfer', { uid: sword.uid, from: 'lg' });
   check(!gone.length && sword.uniqueFx === 'lg_stag' && !p.save.inventory.some((x) => x.uid === 'lg'), 'transfer: the Stag’s Blade effect moves onto the sword; the legendary is used up', gone.join());
+  // respec-econ: an old piece's +n moves too, so a set swap keeps its upgrades; a lower +n has nothing to give
+  p.save.inventory.push({ uid: 'old4', base: sword.base, ilvl: 20, qty: 1, upgrade: 4 }, { uid: 'old1', base: sword.base, ilvl: 20, qty: 1, upgrade: 1 });
+  check(smith('transfer', { uid: sword.uid, from: 'old1' }).length > 0 && p.save.inventory.some((x) => x.uid === 'old1'), 'transfer: a lower upgrade with no effect is refused (and kept)');
+  const up = smith('transfer', { uid: sword.uid, from: 'old4' });
+  check(!up.length && sword.upgrade === 4 && sword.uniqueFx === 'lg_stag' && !p.save.inventory.some((x) => x.uid === 'old4'), `transfer: a +4 piece moves its upgrade onto the +2 sword (now +${sword.upgrade}), the effect stays`, up.join());
   check(!smith('craft', { rune: 'rn_pierce' }).length && qty(p.save, 'rn_pierce') === 1 && qty(p.save, 'i_runedust') === 2, 'craft: a Rune of Piercing from 3 rune dust and gold');
   const d0 = qty(p.save, 'i_runedust');
   smith('salvage', { uid: 'junk' });

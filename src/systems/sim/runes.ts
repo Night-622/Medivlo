@@ -6,6 +6,7 @@
 import { CLASS_SCHOOL } from '@/core/constants';
 import { HC_TOMES } from '@/data/items/hc/build-items';
 import { runeDef, runeFits, runeSlots } from '@/systems/rules/runes';
+import { itemInfo } from '@/systems/rules/gear';
 import { spellDef } from '@/systems/rules/spells';
 import { grantItem, grantOrDrop } from './loot';
 import { consumeItem, rebuildPlayer } from './player';
@@ -62,7 +63,10 @@ export function readTome(w: SimWorld, p: PlayerEnt, uid: string): boolean {
   p.save.tomeSpell = tome.spell;
   p.save.hotbar = p.save.hotbar.map((h) => (h === old ? null : h)) as typeof p.save.hotbar;
   consumeItem(w, p, uid);
+  // the replaced spell's tome comes back to the pack (respec-econ 2026-10-21): tome swaps are reversible and free
+  const back = old ? HC_TOMES.find((t) => t.spell === old) : undefined;
+  if (back) grantOrDrop(w, p, { base: back.item, ilvl: 1, qty: 1 });
   changed(w, p);
-  w.emit('systems:notice', { playerId: p.playerId, text: `You learn ${spellDef(tome.spell)?.name ?? 'a new spell'}.`, kind: 'info' });
+  w.emit('systems:notice', { playerId: p.playerId, text: `You learn ${spellDef(tome.spell)?.name ?? 'a new spell'}.${back ? ` The ${itemInfo(back.item)?.name ?? 'old tome'} returns to your pack.` : ''}`, kind: 'info' });
   return true;
 }
