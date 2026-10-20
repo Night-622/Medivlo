@@ -59,7 +59,8 @@ export interface GameEvents {
   'player:respawned': Record<string, never>;
   'player:levelup': { playerId?: string; level: number };
   'xp:gained': { amount: number; source: string };
-  'item:picked': { playerId?: string; uid: string; def: ItemId; qty: number };
+  /** def: HC item ids are plain strings ('i_ruby'); v1 'item:…' ids still type-check */
+  'item:picked': { playerId?: string; uid: string; def: ItemId | string; qty: number };
   'item:equipped': { playerId?: string; uid: string; slot: string };
   'item:unequipped': { playerId?: string; uid: string; slot: string };
   'item:used': { playerId?: string; uid: string; def: ItemId | string };
