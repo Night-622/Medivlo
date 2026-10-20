@@ -83,7 +83,6 @@ export function compile(sources: Passive[]): Compiled {
   return { stats, more: moreOut, conditional, procs, hooks, spellMods, convert, auras, spellLevels };
 }
 
-export const stat = (t: StatTable, k: StatKey): number => t[k] ?? 0;
 
 // ───────────── conditions ─────────────
 export interface CondCtx {

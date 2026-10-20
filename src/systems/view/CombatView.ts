@@ -49,7 +49,6 @@ const shadowless = (r: { def: string }): boolean =>
   r.def === 'class:shade' && !!getFlag('shade.shadowless') && getFlag('shade.nemesis_fate') !== 'spared';
 
 const PET_BODY: Record<string, string> = { 'pet:hawk': 'bx_crow', 'pet:treant': 'bx_verdant_0' };
-const RARITY_GLOW: Record<string, number> = { common: 0xb7c0e3, fine: 0x5fe06a, ember: 0xff9a3c, runed: 0x38b6ff, wrought: 0xb766ff, spark: 0xffd23f };
 
 export class CombatView implements SnapshotConsumer {
   readonly kinds: EntityKind[] = ['player', 'enemy', 'pet', 'projectile', 'object', 'loot'];
@@ -322,4 +321,3 @@ export class CombatView implements SnapshotConsumer {
   }
 }
 
-export { RARITY_GLOW };

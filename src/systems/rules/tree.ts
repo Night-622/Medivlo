@@ -19,7 +19,6 @@ const PREFIX: Record<TreeBranch, string> = { spells: 'sp_', skills: 'sk_', upgra
 const X = [200, 410, 620];
 const f = (stat: StatKey, value: number, when?: Modifier['when']): Modifier => ({ stat, op: 'flat', value, when });
 const pct = (stat: StatKey, value: number): Modifier => ({ stat, op: 'pct', value });
-const pc = (v: number) => `${Math.round(v * 100)}%`;
 
 /** A node spec: per-rank text + passive builders. */
 interface Spec { name: string; icon: string; max?: number; text: (r: number) => string; fx: (r: number) => Passive; spell?: string; free?: boolean; label?: string; shared?: boolean; flavour?: string }
@@ -313,4 +312,3 @@ export function resetBranch(T: TreeRanks, branch: TreeBranch): TreeRanks {
   const p = PREFIX[branch];
   return Object.fromEntries(Object.entries(T).filter(([id]) => !id.startsWith(p)));
 }
-export { pc };

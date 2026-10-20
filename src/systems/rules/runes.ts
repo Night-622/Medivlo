@@ -17,7 +17,6 @@ import type { CharacterSave, HcSpell, SpellMod } from './types';
 
 const BY_ID = new Map(HC_RUNES.map((r) => [r.id, r]));
 export const runeDef = (id: string): RuneDef | undefined => BY_ID.get(id);
-export const MAX_RUNE_SLOTS = 2;
 
 /** How many runes `spellId` can hold for this character (0 if it does not know the spell). */
 export function runeSlots(s: Pick<CharacterSave, 'classId' | 'tree' | 'tomeSpell'>, spellId: string): number {

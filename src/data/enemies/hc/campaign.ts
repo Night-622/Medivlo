@@ -266,9 +266,3 @@ export const HC_LAIR1: Record<string, string> = {
   corsair: 'bx_guile_3', jester: 'bx_guile_4', skald: 'bx_song_3', bard: 'bx_song_4',
 };
 
-/** The eight boss fights of a class campaign, in order (creature ids). */
-export function campaignBosses(classId: string, school: string, sentinels: [string, string]): string[] {
-  const own = HC_CAMPAIGN_BOSSES.filter((b) => b.classId === classId);
-  return [HC_LAIR1[classId], own.find((b) => b.slot === 'lair2')!.id, own.find((b) => b.slot === 'nemesis')!.id, `bx_${school}_5`,
-    sentinels[0], sentinels[1], own.find((b) => b.slot === 'herald' || b.slot === 'chimera')!.id, 'bx_concord_5', 'bx_hollowking'];
-}
