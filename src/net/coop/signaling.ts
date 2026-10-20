@@ -23,46 +23,52 @@ export interface Signaling {
   join(code: string, peerId: string): Promise<SignalChannel>;
 }
 
-type Wire = { room: string; peer: string; from: 'host' | 'guest'; msg?: SignalMsg; knock?: true; hostHere?: true };
+/** `attempt`: one per join() call. A guest who comes back (same peer id) is a NEW knock; its repeats within one attempt aren't. */
+type Wire = { room: string; peer: string; attempt: string; from: 'host' | 'guest'; msg?: SignalMsg; knock?: true; hostHere?: true };
 
 /** Same-browser signalling over BroadcastChannel (tests, local dev). */
 export class LocalSignaling implements Signaling {
   private bc = new BroadcastChannel('hollowcrown-signal');
 
   async host(code: string, _hostId: string, onPeer: (peerId: string, ch: SignalChannel) => void): Promise<() => void> {
-    const peers = new Map<string, Set<(m: SignalMsg) => void>>();
+    const peers = new Map<string, { attempt: string; handlers: Set<(m: SignalMsg) => void> }>();
     const onMsg = (ev: MessageEvent<Wire>) => {
       const w = ev.data;
       if (w.room !== code || w.from !== 'guest') return;
+      const cur = peers.get(w.peer);
       if (w.knock) {
-        if (peers.has(w.peer)) return;
-        const handlers = new Set<(m: SignalMsg) => void>();
-        peers.set(w.peer, handlers);
-        this.bc.postMessage({ room: code, peer: w.peer, from: 'host', hostHere: true } satisfies Wire);
+        const here = () => this.bc.postMessage({ room: code, peer: w.peer, attempt: w.attempt, from: 'host', hostHere: true } satisfies Wire);
+        if (cur?.attempt === w.attempt) { here(); return; } // a repeat knock (the first answer may have been missed)
+        // a new attempt, possibly from a guest who left or dropped: it replaces the old channel (rejoin by code)
+        const entry = { attempt: w.attempt, handlers: new Set<(m: SignalMsg) => void>() };
+        peers.set(w.peer, entry);
+        here();
         onPeer(w.peer, {
-          send: (msg) => this.bc.postMessage({ room: code, peer: w.peer, from: 'host', msg } satisfies Wire),
-          onMessage: (fn) => { handlers.add(fn); return () => handlers.delete(fn); },
-          close: () => peers.delete(w.peer),
+          send: (msg) => this.bc.postMessage({ room: code, peer: w.peer, attempt: entry.attempt, from: 'host', msg } satisfies Wire),
+          onMessage: (fn) => { entry.handlers.add(fn); return () => entry.handlers.delete(fn); },
+          close: () => { if (peers.get(w.peer) === entry) peers.delete(w.peer); },
         });
         return;
       }
-      if (w.msg) for (const fn of peers.get(w.peer) ?? []) fn(w.msg);
+      if (w.msg && cur?.attempt === w.attempt) for (const fn of cur.handlers) fn(w.msg); // stale attempts are ignored
     };
     this.bc.addEventListener('message', onMsg);
     return () => this.bc.removeEventListener('message', onMsg);
   }
 
   join(code: string, peerId: string): Promise<SignalChannel> {
+    const attempt = crypto.randomUUID().slice(0, 8);
     return new Promise((resolve, reject) => {
       const handlers = new Set<(m: SignalMsg) => void>();
       let welcomed = false;
       const onMsg = (ev: MessageEvent<Wire>) => {
         const w = ev.data;
-        if (w.room !== code || w.peer !== peerId || w.from !== 'host') return;
-        if (w.hostHere && !welcomed) {
+        if (w.room !== code || w.peer !== peerId || w.attempt !== attempt || w.from !== 'host') return;
+        if (w.hostHere) {
+          if (welcomed) return;
           welcomed = true;
           resolve({
-            send: (msg) => this.bc.postMessage({ room: code, peer: peerId, from: 'guest', msg } satisfies Wire),
+            send: (msg) => this.bc.postMessage({ room: code, peer: peerId, attempt, from: 'guest', msg } satisfies Wire),
             onMessage: (fn) => { handlers.add(fn); return () => handlers.delete(fn); },
             close: () => this.bc.removeEventListener('message', onMsg),
           });
@@ -72,7 +78,7 @@ export class LocalSignaling implements Signaling {
       };
       this.bc.addEventListener('message', onMsg);
       // knock every second (a busy host tab may miss one), give up after 10 s
-      const knock = () => this.bc.postMessage({ room: code, peer: peerId, from: 'guest', knock: true } satisfies Wire);
+      const knock = () => this.bc.postMessage({ room: code, peer: peerId, attempt, from: 'guest', knock: true } satisfies Wire);
       knock();
       const again = setInterval(() => { if (welcomed) clearInterval(again); else knock(); }, 1000);
       setTimeout(() => { clearInterval(again); if (!welcomed) { this.bc.removeEventListener('message', onMsg); reject(new Error('No game found with that code')); } }, 10000);

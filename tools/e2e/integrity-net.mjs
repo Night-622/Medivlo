@@ -89,6 +89,27 @@ check('ensureUser signs a new player in as a guest', u.isAnonymous && fakeAuth.s
   check('the new guest channel gets no stale answer', !g2got.some((x) => x.sdp === 'stale-answer'));
 }
 
+// ───────── 2b. local signalling (dev + every e2e run): the same rejoin by code ─────────
+{
+  const hostSig = new m.LocalSignaling(), guestSig = new m.LocalSignaling();
+  const peers = [];
+  const close = await hostSig.host('LOCAL1', 'h', (id, ch) => { const got = []; ch.onMessage((x) => got.push(x)); peers.push({ id, ch, got }); });
+  const g1 = await guestSig.join('LOCAL1', 'guest-l');
+  await tick(1300); // the guest knocks again every second until welcomed: repeats must not open more channels
+  g1.send({ t: 'offer', sdp: 'one' });
+  await tick(30);
+  check('local: first knock reaches the host once', peers.length === 1 && peers[0].got.some((x) => x.sdp === 'one'), `peers ${peers.length}`);
+  let err = null, g2 = null;
+  try { g2 = await guestSig.join('LOCAL1', 'guest-l'); } catch (e) { err = e; }
+  await tick(30);
+  check('local: the same guest can knock again (rejoin by code)', !err && peers.length === 2, err?.message ?? `peers ${peers.length}`);
+  g1.send({ t: 'offer', sdp: 'stale' });
+  g2?.send({ t: 'offer', sdp: 'two' });
+  await tick(30);
+  check('local: only the new attempt reaches the new channel', !!peers[1]?.got.some((x) => x.sdp === 'two') && !peers[1]?.got.some((x) => x.sdp === 'stale'));
+  g1.close(); g2?.close(); close();
+}
+
 // ───────── 3. HostNet: rejoin, stale links, identity, isolation ─────────
 {
   let onPeer;

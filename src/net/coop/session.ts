@@ -20,6 +20,13 @@ import { ensureUser, firebase } from '@/firebase/app';
 import { hostedCodeOf, setHosting } from '@/firebase/friends';
 import { SaveService } from '@/firebase/SaveService';
 
+/**
+ * Without Firebase (dev, and every e2e run since tests went Firebase-free) this page's co-op identity. It must stay
+ * the same for the page's life like a Firebase uid does: a fresh one per join made a guest who left and rejoined
+ * come back as a stranger (a second seat, a "first visit", their hero lost on the host).
+ */
+let localUid: string | null = null;
+
 async function signalingAndUid(): Promise<{ sig: Signaling; uid: string }> {
   if (isFirebaseConfigured) {
     try {
@@ -27,7 +34,7 @@ async function signalingAndUid(): Promise<{ sig: Signaling; uid: string }> {
       return { sig: new FirestoreSignaling(firebase().db), uid: user.uid };
     } catch (e) { console.warn('[coop] Firebase unavailable, using local signalling', e); }
   }
-  return { sig: new LocalSignaling(), uid: `local-${crypto.randomUUID().slice(0, 8)}` };
+  return { sig: new LocalSignaling(), uid: localUid ??= `local-${crypto.randomUUID().slice(0, 8)}` };
 }
 
 export function me(): { name: string; classId: string; level: number } {
