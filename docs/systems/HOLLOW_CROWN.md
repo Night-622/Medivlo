@@ -100,9 +100,10 @@ Each class kit (`src/data/classes/hc/kits.ts`) contains:
 ### 2.2 Curves (level cap 40)
 
 - Health and spell power: `P(L) = 1.075^(L-1)`. Enemy damage: `D(L) = 1.05^(L-1) × 1.25`.
-- XP: `xpToNext(L) = round(80·L^1.7 + 120)`. A kill gives `xpKill(enemyLevel, tier) = base(tier) × P(enemyLevel)^0.5`, where base(tier) is 1 for an enemy, 6 for a mini-boss and 25 for a boss. That is about 20 same-level kills per level.
-  - When the enemy is 5 or more levels below the player, the kill gives 10% XP.
-  - When the enemy is above the player's level, the bonus stops at +5 levels.
+- XP: `xpToNext(L) = round(80·L^1.7 + 120)`. A kill gives `xpToNext(min(enemyLevel, L + 5)) / killsPerLevel(L) × tier × levelDiff` (rules/curves.ts), with tier 1 for an enemy, 6 for a mini-boss and 25 for a boss (elites ×ELITE.xp on top).
+  - killsPerLevel follows the hero's level: 110 through L14, 70 at L16, 48 at L28, 30 at L40 (linear between). Set 2026-10-20 from the static projection on Claude 2's walks (tools/e2e/sim/xp-project.ts), after the pacing passes made kills over half a campaign's XP.
+  - levelDiff: +20% per level the enemy is above you (catch-up, up to +5), −25% per level below, never under 10%.
+  - Projected act ends (quest-only + walks, min/median/max): I L13.7/14.2/15.1, II 24.7/27.7/32.3, III 38.1/39.2/40. Main quests only: medians 13.0 / 25.2 / 36.2.
 - Level bands per class campaign, following Claude 4's act shape:
   - Act I (home realm): L1–14, 3 bosses.
   - Act II (Morvane/Concordia): L14–28, 3 bosses.
