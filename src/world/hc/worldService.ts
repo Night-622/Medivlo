@@ -34,6 +34,8 @@ export class HcWorldService implements WorldService {
   confine: string | null = null;
   /** co-op: the host (the authority's own player) and who is placed already; guests play in the host's world */
   party: { host: () => { id: string; space: string; x: number; y: number } | null; placed: (playerId: string) => boolean } | null = null;
+  /** where an NPC stands now (the authority sets it from its NPC placements; WorldService contract) */
+  npcPos?: (npcId: string) => { space: string; x: number; y: number } | null;
 
   /**
    * @param spaceOfPlayer where each player is (solo/host: the local GameState; the server: its sessions)

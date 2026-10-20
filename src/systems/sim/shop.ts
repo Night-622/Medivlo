@@ -13,7 +13,7 @@ import { hook } from '@/systems/rules/stats';
 import { grantXp } from './death';
 import { grantItem, grantOrDrop } from './loot';
 import type { PlayerEnt } from './state';
-import type { SimWorld } from './world';
+import { nearNpc, type SimWorld } from './world';
 
 /** share of the current level's XP per quest tier; with kills (~45% of XP) ≈ 12.5 levels an act (Act I ends L13–14) */
 export const QUEST_XP_TIER = { 1: 0.16, 2: 0.3, 3: 0.53 } as const;
@@ -71,6 +71,7 @@ export interface ShopEnv { flag: (k: string) => unknown; priceMult: (npc: string
 export function buy(w: SimWorld, p: PlayerEnt, shopId: string, item: string, env: ShopEnv): string | null {
   const shop = shopByNpc(shopId);
   if (!shop) return 'No such merchant.';
+  if (!nearNpc(w, p, shop.npc)) return 'Walk over to the merchant first.';
   const mult = env.priceMult(shop.npc) * (1 - hook(p.stats, 'shopDiscount'));
   const line = shopStock(shop, playerShopView(p), env.flag, mult).find((l) => l.item === item);
   if (!line) return 'Not for sale.';
@@ -85,6 +86,7 @@ export function sell(w: SimWorld, p: PlayerEnt, shopId: string, uid: string): st
   const shop = shopByNpc(shopId);
   const it = p.save.inventory.find((x) => x.uid === uid);
   if (!shop || !it) return 'Nothing to sell.';
+  if (!nearNpc(w, p, shop.npc)) return 'Walk over to the merchant first.';
   if (!buysItem(shop, it.base)) return `${shop.name} doesn’t buy that.`;
   const price = sellPrice(it.base, it.ilvl) * it.qty;
   p.save.inventory.splice(p.save.inventory.indexOf(it), 1);

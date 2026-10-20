@@ -21,7 +21,7 @@ export interface HcShopDef {
 
 export const HC_SHOPS: HcShopDef[] = [
   {
-    id: 'shop:nan-briar', npc: 'npc:nan-briar', name: 'Nan Briar’s Cottage',
+    id: 'shop:nan-briar', npc: 'npc:nanbriar', name: 'Nan Briar’s Cottage',
     stock: ['i_hp_s', 'i_hp_l', 'i_em_s', 'i_em_l', 'i_st', 'i_anti', 'i_herb', 'i_glowcap', 'i_moon'].map((item) => ({ item })),
     buys: ['material', 'potion', 'food'],
   },

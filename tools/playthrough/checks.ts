@@ -17,7 +17,8 @@
  *   clearance           bodies fit their arenas, lair corridors and story markers (clearance.ts)
  *   smiths              every Runeforge within 30 tiles of a waystone; every capital and Concordia has one
  *   loot                chests' Claude 3 loot tables resolve; every rare chest has one
- *   merchants           smiths, plus each capital's smith + trader and each frontier's pedlar by its village waystone
+ *   merchants           smiths, plus each capital's smith + trader and each frontier's pedlar by its village waystone,
+ *                       and every shop's merchant resolves through WorldService.npcPos
  * Each check exits non-zero on failure; tools/playthrough/suite.mjs runs the fast set (pre-deploy).
  */
 import { readFileSync, readdirSync } from 'node:fs';
@@ -187,6 +188,13 @@ if (check === 'unplaced') {
     }
     console.log(mb ? `merchants: ${mb}/${n} not in reach of their village waystone` : `merchants: all ${n} realm merchants within ${REACH} tiles of their village waystone, each on its own spot`);
     bad += mb;
+    // every shop's merchant resolves through WorldService.npcPos (the authority's npcWhere; Claude 3's shop acts)
+    const { npcWhere } = await import('@/world/hc/npcs');
+    const { markerAt } = await import('@/world/hc/spawns');
+    const lost = HC_SHOPS.filter((s) => !npcWhere(s.npc, placements, (lm) => markerAt(lm)?.space ?? null));
+    for (const s of lost) console.log(`NO NPCPOS ${s.id} (${s.npc}) at a new game`);
+    console.log(lost.length ? `npcPos: ${lost.length}/${HC_SHOPS.length} merchants don't resolve` : `npcPos: all ${HC_SHOPS.length} shop merchants resolve`);
+    bad += lost.length;
   }
   if (bad) process.exitCode = 1;
 } else {

@@ -6,8 +6,8 @@
 import { CHUNK_TILES, Services, TILE_SIZE, bus, type NpcDef, type TimePhase } from '@/core';
 import { sim as defaultSim, type SimLoop } from '@/net';
 import { handleWorldAct, landmarksAt } from './interact';
-import { NpcProvider, npcsIn } from './npcs';
-import { BossWatch, SpawnDirector, warmMarkers, zoneTopNow, type QuestKill } from './spawns';
+import { NpcProvider, npcWhere, npcsIn } from './npcs';
+import { BossWatch, SpawnDirector, markerAt, warmMarkers, zoneTopNow, type QuestKill } from './spawns';
 import { allWaystones, placeName, spaceRuntime } from './spaces';
 import { optionalName } from '@/data/regions/hc/optionalAreas';
 import { prewarm } from './runtime';
@@ -145,6 +145,7 @@ export function installWorldAuthority(opts: WorldAuthorityOpts): WorldAuthority 
     (pid) => opts.players().find((p) => p.id === pid)?.space ?? opts.space,
     opts.classOf ?? (() => null), opts.wokenOf);
   if (opts.confine) worlds.confine = opts.space;
+  if (opts.npcPlacements) worlds.npcPos = (id) => npcWhere(id, opts.npcPlacements!(), (lm) => markerAt(lm)?.space ?? null, opts.players().map((p) => p.space));
   // co-op: the host is the authority's own player (solo/host); guests join and respawn with the host
   worlds.party = {
     host: () => { const id = Services.tryGet('net')?.localPlayer; return opts.players().find((p) => p.id === id) ?? null; },

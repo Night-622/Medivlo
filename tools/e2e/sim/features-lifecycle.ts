@@ -2,6 +2,8 @@
  * Hero lifecycle across world restarts and loads (Claude 3; Claude 6's integrity findings): a new input stream after
  * a door / reload is accepted; a load drops the old world and a dead hero; loading another class re-derives the kit.
  */
+import { plausible } from '@/systems/rules/plausible';
+import type { CharacterSave } from '@/systems/rules/types';
 import { kitFor } from '@/data/classes/hc/kits';
 import { newCharacter } from '@/systems/rules/character';
 import { check, DT, hero, world } from './features-harness';
@@ -102,7 +104,42 @@ function audit(): void {
   }
 }
 
+/** Trade reach (audit #9b): with the world's npcPos, buying needs the merchant within 96 px in the same space. */
+function tradeReach(): void {
+  const w = world(), p = hero(w, 'a', { ...newCharacter('warden'), gold: 500 });
+  let at = { space: 't', x: 400, y: 0 };
+  w.sim.w.ports.npcPos = () => at;
+  const buy = () => { const g = p.save.gold; w.sim.receive({ type: 'act', domain: 'systems', action: 'buy', args: { shop: 'npc:nan-briar', item: 'i_hp_s' } } as never, 'a'); return p.save.gold < g; };
+  const far = buy();
+  at = { space: 't', x: 60, y: 0 };
+  const near = buy();
+  at = { space: 'elsewhere', x: 0, y: 0 };
+  const other = buy();
+  w.sim.w.ports.npcPos = () => null;
+  const unknown = buy();
+  check(!far && near && !other && unknown, 'trade reach: refused 400 px away or in another space, allowed within 96 px, allowed when the position is unknown', JSON.stringify({ far, near, other, unknown }));
+}
+
+/** Public-realm plausibility (rules/plausible.ts): honest saves pass, tampered ones fail with a reason. */
+function plausibility(): void {
+  const honest = { ...newCharacter('warden'), level: 14, gold: 3000, tree: { sk_p1a: 3 } };
+  const fresh = newCharacter('arcanist');
+  const ok = plausible(honest, { playtimeSec: 4 * 3600 }).ok && plausible(fresh, { playtimeSec: 30 }).ok;
+  const bad: [string, CharacterSave, number][] = [
+    ['L40 after 3 minutes', { ...honest, level: 40 }, 180],
+    ['a million gold at L3', { ...fresh, level: 3, gold: 1e6 }, 3600],
+    ['an L40 sword at L5', { ...fresh, level: 5, inventory: [{ uid: 'x', base: 'w_sword_spark', ilvl: 40, qty: 1 }] }, 3600],
+    ['more tree ranks than points', { ...fresh, level: 3, tree: { sk_p1a: 5, up_p0a: 5 } }, 3600],
+    ['a forged affix', { ...honest, inventory: [{ uid: 'y', base: 'w_sword_iron', ilvl: 14, qty: 1, rarity: 'spark', affixes: [{ id: 'pre_honed', v: 9 }] }] }, 4 * 3600],
+    ['an unknown item', { ...honest, inventory: [{ uid: 'z', base: 'i_mint', ilvl: 1, qty: 1 }] }, 4 * 3600],
+  ];
+  const caught = bad.filter(([, c, t]) => { const r = plausible(c, { playtimeSec: t }); return !r.ok && /verified/.test(r.reason); }).map(([n]) => n);
+  check(ok && caught.length === bad.length, `plausible: honest saves pass; ${caught.length}/${bad.length} tampered ones refused`, bad.filter(([n]) => !caught.includes(n)).map(([n]) => n).join(', '));
+}
+
 export function lifecycleChecks(): void {
+  plausibility();
+  tradeReach();
   audit();
   freeRespec();
   inputRestart();

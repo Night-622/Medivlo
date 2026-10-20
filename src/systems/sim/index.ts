@@ -40,6 +40,7 @@ export function installSystemsAuthority(opts: SystemsAuthorityOpts = {}): System
     respawnPoint: (pid) => worlds().respawnPoint(pid),
     emit: (name, payload) => bus.emit(name, payload),
     partySize: () => net.partySize(),
+    npcPos: (id) => worlds().npcPos?.(id) ?? null,
     realmRule: () => opts.realmRule ?? net.session().realmRule,
     path: (space, x0, y0, x1, y1) => {
       const T = TILE_SIZE, p = worlds().query(space).findPath([Math.floor(x0 / T), Math.floor(y0 / T)], [Math.floor(x1 / T), Math.floor(y1 / T)], 3000);

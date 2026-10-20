@@ -14,7 +14,7 @@ import type { ItemInstance, SchoolId } from '@/systems/rules/types';
 import { grantItem, grantOrDrop } from './loot';
 import { rebuildPlayer } from './player';
 import type { PlayerEnt } from './state';
-import type { SimWorld } from './world';
+import { nearNpc, type SimWorld } from './world';
 
 /** A piece the player owns, worn or carried. */
 function owned(p: PlayerEnt, uid: string): { it: ItemInstance; worn: boolean } | null {
@@ -55,6 +55,7 @@ export const RUNEFORGE_ACTIONS = ['reforge', 'socket', 'salvage', 'upgrade', 're
 export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Record<string, unknown>): string | null {
   const shop = shopByNpc(String(args.shop ?? ''));
   if (!shop?.runeforge) return 'There is no runeforge here.';
+  if (!nearNpc(w, p, shop.npc)) return 'Walk over to the smith first.';
   if (action === 'craft') return craft(w, p, String(args.rune ?? ''));
   const o = owned(p, String(args.uid ?? ''));
   if (!o) return 'You don’t have that.';

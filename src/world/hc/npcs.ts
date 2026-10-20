@@ -48,6 +48,22 @@ export function npcsIn(space: string, placements: ReadonlyMap<string, readonly N
   return out;
 }
 
+/**
+ * Where an NPC stands now (WorldService.npcPos; Claude 3's shop and Runeforge acts need the hero beside the merchant):
+ * the space of the landmark it is placed on (`spaceOf`, the marker index), else any of `also` (the players' spaces:
+ * NPCs placed inside an instance). World px, as the snapshots draw it; null when it isn't present anywhere.
+ */
+export function npcWhere(npcId: string, placements: ReadonlyMap<string, readonly NpcDef[]>, spaceOf: (landmark: string) => string | null, also: string[] = []): { space: string; x: number; y: number } | null {
+  const spaces = new Set<string>();
+  for (const [landmark, npcs] of placements) if (npcs.some((n) => n.id === npcId)) { const s = spaceOf(landmark); if (s) spaces.add(s); }
+  for (const s of also) spaces.add(s);
+  for (const space of spaces) {
+    const n = npcsIn(space, placements).find((x) => x.npc.id === npcId);
+    if (n) return { space, x: n.x, y: n.y };
+  }
+  return null;
+}
+
 function entity(n: NpcDef, space: string, x: number, y: number): EntityState {
   const data: Record<string, string | number | boolean> = { name: n.name, skin: n.look.skin, cloth: n.look.cloth };
   if (n.look.hair !== undefined) data.hair = n.look.hair;

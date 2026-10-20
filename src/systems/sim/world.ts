@@ -27,6 +27,8 @@ export interface SimPorts {
   realmRule(): RealmRule;
   /** world A* between two points (px waypoints, tile centres), null when unreachable; absent in headless tests */
   path?(space: string, x0: number, y0: number, x1: number, y1: number): Vec[] | null;
+  /** where an NPC stands now (WorldService.npcPos); absent or null = unknown (public realms, tests): trade allowed */
+  npcPos?(npcId: string): { space: string; x: number; y: number } | null;
 }
 
 export class SimWorld {
@@ -227,4 +229,12 @@ export function facing4Sticky(v: Vec, prev: 'n' | 'e' | 's' | 'w' | undefined): 
   const ax = Math.abs(v.x), ay = Math.abs(v.y);
   const side = prev === 'e' || prev === 'w' ? ay <= ax * 1.25 : prev === 'n' || prev === 's' ? ax > ay * 1.25 : ax > ay;
   return side ? (v.x > 0 ? 'e' : v.x < 0 ? 'w' : prev === 'w' ? 'w' : 'e') : v.y > 0 ? 's' : v.y < 0 ? 'n' : prev === 'n' ? 'n' : 's';
+}
+
+/** Within reach of a merchant / smith to trade (BUILDS audit #9): same space, ≤ 96 px; unknown positions allow it. */
+export const TRADE_REACH = 96;
+export function nearNpc(w: SimWorld, p: { space: string; x: number; y: number }, npcId: string): boolean {
+  const at = w.ports.npcPos?.(npcId);
+  if (!at) return true;
+  return at.space === p.space && (at.x - p.x) ** 2 + (at.y - p.y) ** 2 <= TRADE_REACH * TRADE_REACH;
 }
