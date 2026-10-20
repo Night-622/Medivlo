@@ -80,8 +80,10 @@ export function deadLines(d: ClassDead): string[] {
   for (const i of d.items.filter((x) => x.verdict === 'utility')) out.push(itemLine('util', i));
   const live = d.items.filter((x) => x.verdict === 'live').sort((a, b) => Math.max(Math.abs(b.dDps), Math.abs(b.dSurv)) - Math.max(Math.abs(a.dDps), Math.abs(a.dSurv)));
   out.push(`# ${d.cls}: ${d.items.filter((x) => x.verdict === 'dead').length} dead, ${d.items.filter((x) => x.verdict === 'utility').length} utility-only, ${live.length} live of ${d.items.length}; strongest: ${live.slice(0, 4).map((i) => `${i.id} ${pc(i.dDps)}dps/${pc(i.dSurv)}surv`).join(', ')}`);
-  // harmful: costs over 5% of DPS or survival without paying 2% back in the other (or in EHP)
-  const harm = (x: Item): boolean => (x.dDps < -DEAD_NEG && x.dSurv < DEAD_PCT && x.dEhp < DEAD_PCT) || (x.dSurv < -DEAD_NEG && x.dDps < DEAD_PCT && x.dEhp < DEAD_PCT);
+  // harmful: costs over 5% of DPS or survival — and over 1.5× the class's own seed noise on that axis (Claude 5: survival
+  // noise reaches ±13% for some classes, so a fixed 5% flagged noise as harm) — without paying 2% back elsewhere
+  const negD = Math.max(DEAD_NEG, 1.5 * Math.abs(d.noise.dDps)), negS = Math.max(DEAD_NEG, 1.5 * Math.abs(d.noise.dSurv));
+  const harm = (x: Item): boolean => (x.dDps < -negD && x.dSurv < DEAD_PCT && x.dEhp < DEAD_PCT) || (x.dSurv < -negS && x.dDps < DEAD_PCT && x.dEhp < DEAD_PCT);
   for (const i of live.filter(harm)) out.push(itemLine('harm', i));
   return out;
 }

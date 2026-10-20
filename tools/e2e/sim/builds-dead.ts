@@ -42,10 +42,10 @@ const clone = (s: CharacterSave): CharacterSave => structuredClone(s);
 const rel = (b: number, a: number): number => (a === 0 ? (b === 0 ? 0 : 1) : (b - a) / Math.abs(a));
 
 /** Survival delta: how much of the reference's NET drain (taken − healed) B cancels. Normalised by net drain, floored at
- *  10% of gross damage taken (Claude 5, agreed with Claude 3): dividing by gross damage made a once-a-minute 25% shield
+ *  25% of gross damage taken (Claude 5, agreed with Claude 3; 10% amplified seed noise up to 10×): dividing by gross damage made a once-a-minute 25% shield
  *  read ~0.3% on heal-heavy classes whose gross intake is huge, though it adds 20%+ to time-to-die. The floor keeps it
  *  bounded where sustain nearly matches the incoming damage. */
-export const survDelta = (test: Probe, ref: Probe): number => (ref.drain - test.drain) / Math.max(ref.drain, 0.1 * Math.max(ref.taken, test.taken), ref.maxHp / 200);
+export const survDelta = (test: Probe, ref: Probe): number => (ref.drain - test.drain) / Math.max(ref.drain, 0.25 * Math.max(ref.taken, test.taken), ref.maxHp / 200);
 
 function item(cls: string, id: string, name: string, mode: Item['mode'], points: number, test: Probe, ref: Probe, util: string[]): Item {
   const dDps = rel(test.dps, ref.dps), dSurv = survDelta(test, ref), dEhp = rel(test.ehp, ref.ehp);

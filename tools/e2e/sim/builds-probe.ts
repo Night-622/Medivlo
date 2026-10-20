@@ -67,28 +67,34 @@ export function probeOnce(save: CharacterSave, seed: number, dmgMult: number, se
   // where each pinned creature belongs: knockback and pulls must not carry an immobile hitter out of its reach (it
   // would never come back) or the bag out of the hero's (Claude 5)
   const spot = new Map<EnemyEnt, { x: number; y: number }>([[bag, { x: bx, y: 0 }]]);
-  // Hitter slots: the first pair in front (front blocks count), beside the line to the bag; more pairs (behind, then at
-  // the flanks) only when one pair can't deliver the calibrated damage. A hit stays ≤ 5% of the hero's health (4% once
-  // there are extra pairs); damage the cap would cut off comes first as faster attacks (a basic attack's 280 ms wind-up
-  // limits that to ~3×), then as extra staggered pairs, so heavy-sustain builds (lifesteal, regen) still get worn down
-  // and their survival perks get a window (Claude 5).
-  const SLOTS: [number, number][] = [[0.45, -0.9], [0.45, 0.9], [-0.45, -0.9], [-0.45, 0.9], [0, -1.1], [0, 1.1]];
-  let pairs = 1;
-  const hitter = (slot: number): EnemyEnt => {
+  // Incoming damage is continuous in the multiplier (Claude 5): the target rate D = the two base hitters' damage per second
+  // × dmgMult. A hit stays ≤ 5% of the hero's health; the fewest hitters that can deliver D (a basic attack's 280 ms
+  // wind-up caps one hitter at ~2.4 hits/s) are placed (front pair first, then wider in the frontal arc so front blocks count for every one; up
+  // to 6), and each one's attack interval is set so the total is exactly D, staggered so blows rarely share
+  // a tick. Stepwise pairs and saturating attack speed made survival jump across the calibration window before.
+  // all in the frontal arc (x > 0, the hero faces the bag): a hitter behind bypasses front blocks, which made the drain jump
+  // ×13 for the Oathbound the moment a third hitter appeared
+  const SLOTS: [number, number][] = [[0.45, -0.9], [0.45, 0.9], [0.8, -0.6], [0.8, 0.6], [0.2, -1.05], [0.2, 1.05]];
+  const WINDUP = 280, MIN_MS = 140;
+  const probeHit = spawnAt(a, `bx_${school}_0`, L, -600, 600);
+  const baseHit = probeHit.dmg, baseMs = probeHit.cdef.ai.attackMs;
+  probeHit.dead = true; a.sim.w.enemies.delete(probeHit.id);
+  const D = (2 * baseHit * dmgMult * 1000) / (baseMs + WINDUP);
+  const hit = Math.min(baseHit * dmgMult, p.maxHp * 0.05);
+  const n = Math.max(2, Math.min(SLOTS.length, Math.ceil(D / (hit * (1000 / (MIN_MS + WINDUP))))));
+  const perMs = Math.max(MIN_MS, (n * hit * 1000) / D - WINDUP);
+  const hitter = (slot: number, replacement = false): EnemyEnt => {
     const h = spawnAt(a, `bx_${school}_0`, L, -300, (slot % 2 ? 1 : -1) * 300);
     const d = p.r + h.r + 4, [fx, fy] = SLOTS[slot];
     pin(h, d * fx, d * fy, false);
     spot.set(h, { x: d * fx, y: d * fy });
-    const cap = p.maxHp * (pairs > 1 ? 0.04 : 0.05), raw = (h.dmg * dmgMult) / pairs;
-    h.dmg = Math.min(raw, cap);
-    if (raw > cap) h.cdef = { ...h.cdef, ai: { ...h.cdef.ai, attackMs: Math.max(140, h.cdef.ai.attackMs / Math.min(8, raw / cap)) } };
-    h.attackReadyAt = a.sim.w.t + slot * 110; // staggered, so the pairs' blows rarely land in one tick
+    h.dmg = hit;
+    h.cdef = { ...h.cdef, ai: { ...h.cdef.ai, attackMs: perMs } };
+    // staggered at the start; a replacement waits a full interval, so killing hitters faster doesn't bring blows sooner
+    h.attackReadyAt = a.sim.w.t + (replacement ? perMs : (slot * (perMs + WINDUP)) / n);
     return h;
   };
-  const probeHit = spawnAt(a, `bx_${school}_0`, L, -600, 600);
-  pairs = Math.max(1, Math.min(3, Math.ceil((probeHit.dmg * dmgMult) / (p.maxHp * 0.05) / 3)));
-  probeHit.dead = true; a.sim.w.enemies.delete(probeHit.id);
-  const hitters = Array.from({ length: pairs * 2 }, (_, i) => hitter(i));
+  const hitters = Array.from({ length: n }, (_, i) => hitter(i));
   const fodderKind = `bx_${school}_1`;
   let fodder = spawnAt(a, fodderKind, L, bx, 60);
   pin(fodder, bx + 10, bag.r + 30, true);
@@ -103,7 +109,7 @@ export function probeOnce(save: CharacterSave, seed: number, dmgMult: number, se
     // the hero is kept in the fight (topped up at 12%: not a heal event, so the drain still counts every hit) so every
     // build is measured over the same window — a build that dies early would otherwise skip its Ember-starved minute
     if (p.hp < p.maxHp * 0.12) p.hp = p.maxHp;
-    hitters.forEach((h, i) => { if (h.dead) hitters[i] = hitter(i); });
+    hitters.forEach((h, i) => { if (h.dead) hitters[i] = hitter(i, true); });
     for (const e of [bag, ...hitters]) { const at = spot.get(e); if (at && !e.dead) { e.x = at.x; e.y = at.y; e.motion = null; } }
     if (fodder.dead) {
       if (fodderDied < 0) fodderDied = a.sim.w.t;
@@ -138,22 +144,27 @@ export function probe(save: CharacterSave, dmgMult: number, seeds: readonly numb
   if (hit) return hit;
   const rs = seeds.map((sd) => probeOnce(save, sd, dmgMult));
   const mean = (f: (x: Probe) => number): number => rs.reduce((acc, r) => acc + f(r), 0) / rs.length;
-  const out: Probe = { dps: mean((r) => r.dps), taken: mean((r) => r.taken), drain: mean((r) => r.drain), surv: mean((r) => r.surv), ehp: mean((r) => r.ehp), maxHp: rs[0].maxHp };
+  // survival from the MEAN drain, not the mean of capped seconds-to-die: near the heal/damage balance one seed with ~0 net
+  // drain hits the 1000 s cap and swamped the average (Claude 5)
+  const drain = mean((r) => r.drain), maxHp = rs[0].maxHp;
+  const out: Probe = { dps: mean((r) => r.dps), taken: mean((r) => r.taken), drain, surv: Math.min(SURV_CAP, maxHp / Math.max(drain, maxHp / SURV_CAP)), ehp: mean((r) => r.ehp), maxHp };
   cache.set(key, out);
   return out;
 }
 
 /** Hitter damage multiplier for a class's probe: the base build should lose its health in about a minute. */
 export function calibrate(save: CharacterSave): number {
-  // bisection on log(mult): with healing counted, survival is steep in the multiplier (sustain out-heals it, then it
-  // doesn't), so a proportional step overshoots (Claude 5)
-  const ok = (r: Probe) => r.surv > 45 && r.surv < 90;
-  let lo = 0.05, hi = 200, mult = 1;
-  for (let i = 0; i < 12; i++) {
-    const r = probeOnce(save, PROBE_SEEDS[0], mult);
-    if (ok(r)) return mult;
-    if (r.surv >= 90) lo = mult; else hi = mult;
+  // bisection on log(mult) over the mean drain of all probe seeds; incoming damage is
+  // continuous in mult (see probeOnce), so the 45–90 s window is reachable for heal-heavy classes too (Claude 5)
+  // over all the probe seeds, as the report measures: for heal-heavy kits the seeds' drains differ a lot
+  const surv = (m: number) => probe(save, m).surv;
+  let lo = 0.05, hi = 400, mult = 1;
+  for (let i = 0; i < 14; i++) {
+    const v = surv(mult);
+    if (v > 45 && v < 90) return mult;
+    if (v >= 90) lo = mult; else hi = mult;
     mult = Math.sqrt(lo * hi);
   }
   return mult;
 }
+

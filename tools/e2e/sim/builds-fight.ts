@@ -7,7 +7,7 @@ import { Btn, type InputFrame } from '@/net/types';
 import { MAGIC_SCHOOLS } from '@/core/constants';
 import { hasSlash } from '@/systems/rules/slash';
 import { lairWaves } from '@/systems/rules/encounters';
-import type { CharacterSave, SchoolId } from '@/systems/rules/types';
+import type { Action, CharacterSave, SchoolId } from '@/systems/rules/types';
 import { Sim } from '@/systems/sim/Sim';
 import { spellView } from '@/systems/sim/player';
 import type { EnemyEnt, PlayerEnt } from '@/systems/sim/state';
@@ -77,8 +77,41 @@ export function chooseSlot(sim: Sim, p: PlayerEnt): number | undefined {
     if (sp.aim === 'enemy' && sp.range > 0 && tgt && Math.hypot(tgt.x - p.x, tgt.y - p.y) - tgt.r > sp.range) return false;
     return !!sp.hpCost || (p.stats.hooks.get('spellsCostHp') ?? 0) > 0 || p.ember >= spellView(p, sp).cost;
   };
-  const ult = [0, 1, 2, 3].find((i) => ready(i) && !!p.spells.get(p.save.hotbar[i]!)?.tags.includes('ultimate'));
-  return ult ?? [0, 1, 2, 3].find(ready);
+  // heal priority (Claude 5): below 60% health a ready heal, shield or defensive self-buff comes before any damage spell
+  // (the ultimate included), whatever its slot; above 90% heals are not wasted. Without this a cooldown cut made the bot
+  // reach its damage slots more often and its heals less, so cooldown reduction read as a survival loss.
+  const frac = p.hp / Math.max(1, p.maxHp);
+  const kind = (i: number): 'heal' | 'defend' | 'other' => {
+    const sp = p.spells.get(p.save.hotbar[i] ?? '');
+    if (!sp) return 'other';
+    const acts = flatActions(sp.actions);
+    if (sp.tags.includes('heal') || acts.some((a) => a.a === 'heal')) return 'heal';
+    if (acts.some((a) => a.a === 'shield') || (sp.tags.includes('buff') && acts.some((a) => a.a === 'buff' && (a.to === 'self' || a.to === 'allies')))) return 'defend';
+    return 'other';
+  };
+  // below 80% health, keep Ember for the cheapest heal / defence: a damage spell may not dip under its cost
+  const costOf = (i: number): number => { const sp = p.spells.get(p.save.hotbar[i] ?? ''); return sp ? spellView(p, sp).cost : 0; };
+  const saves = [0, 1, 2, 3].filter((i) => p.save.hotbar[i] && kind(i) !== 'other');
+  const reserve = frac < 0.8 && saves.length ? Math.min(...saves.map(costOf)) : 0;
+  const usable = (i: number): boolean => ready(i) && !(frac > 0.9 && kind(i) === 'heal') && !(kind(i) === 'other' && p.ember - costOf(i) < reserve);
+  if (frac < 0.6) {
+    const save = [0, 1, 2, 3].find((i) => usable(i) && kind(i) !== 'other');
+    if (save !== undefined) return save;
+  }
+  const ult = [0, 1, 2, 3].find((i) => usable(i) && !!p.spells.get(p.save.hotbar[i]!)?.tags.includes('ultimate'));
+  return ult ?? [0, 1, 2, 3].find(usable);
+}
+
+/** a spell's actions, flattened through delays, repeats, moves, zones and projectile hits */
+function flatActions(acts: Action[] | undefined, out: Action[] = []): Action[] {
+  for (const a of acts ?? []) {
+    out.push(a);
+    if (a.a === 'delay' || a.a === 'repeat') flatActions(a.then, out);
+    if (a.a === 'move') { flatActions(a.path, out); flatActions(a.land, out); }
+    if (a.a === 'zone') { flatActions(a.each, out); flatActions(a.trigger, out); }
+    if (a.a === 'projectile') flatActions(a.onHit, out);
+  }
+  return out;
 }
 
 export const foesOf = (sim: Sim): EnemyEnt[] => [...sim.w.enemies.values()].filter((e) => !e.dead && !e.yielded && e.team === 'enemies');
