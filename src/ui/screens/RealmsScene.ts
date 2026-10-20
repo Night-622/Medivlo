@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Game, SceneKeys } from '@/core';
-import { C, alive, randomTip, typeStyle } from '@/ui/kit/hc';
+import { C, KeyNav, alive, randomTip, typeStyle } from '@/ui/kit/hc';
 import { browseRealms, enterRealm } from '@/net/coop';
 import type { RealmListing } from '@/net/realm/RealmNet';
 import type { RealmRule } from '@/net/types';
@@ -23,6 +23,7 @@ export class RealmsScene extends Phaser.Scene {
   private list!: Phaser.GameObjects.Container;
   private status!: Phaser.GameObjects.Text;
   private realms: RealmListing[] = [];
+  private nav!: KeyNav;
   private busy = false;
 
   constructor() { super(SceneKeys.Realms); }
@@ -36,6 +37,7 @@ export class RealmsScene extends Phaser.Scene {
     const x = this.add.nineslice(W - 92, 28, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0);
     this.add.text(W - 70, 50, '✕', typeStyle('button', C.text)).setOrigin(0.5);
     x.setInteractive({ useHandCursor: true }).on('pointerup', () => this.close());
+    this.nav = new KeyNav(this); // keyboard: arrows / Tab between the realms' Enter buttons, Enter goes in
     this.list = this.add.container(0, 0);
     this.status = this.add.text(W / 2, H - 40, 'Finding realms…', typeStyle('body', C.text300)).setOrigin(0.5);
     this.input.keyboard!.on('keydown-ESC', () => { if (!this.busy) this.close(); });
@@ -73,7 +75,7 @@ export class RealmsScene extends Phaser.Scene {
       add(this.add.text(x + 24 + r.max * 18 + 6, y + 176, `${r.players}/${r.max}`, typeStyle('h3', C.text)).setOrigin(0, 0.5));
       const b = add(this.add.nineslice(x + 584 - 200, y + 152, full ? 'ui:btn_off' : 'ui:btn_gold', undefined, 176, 52, 8, 8, 8, 8).setOrigin(0));
       add(this.add.text(x + 584 - 112, y + 178, full ? 'Full' : 'Enter', typeStyle('button', full ? C.text500 : C.ink)).setOrigin(0.5));
-      if (!full) b.setInteractive({ useHandCursor: true }).on('pointerup', () => void this.enter(r));
+      if (!full) { b.setInteractive({ useHandCursor: true }).on('pointerup', () => void this.enter(r)); this.nav.add(b, () => void this.enter(r)); }
     });
   }
 

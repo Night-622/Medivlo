@@ -6,7 +6,7 @@
  */
 import Phaser from 'phaser';
 import { C, n } from '@/ui/kit/hc';
-import { GAME_WIDTH, bus, keyLabel, type Action } from '@/core';
+import { GAME_WIDTH, Settings, bus, keyLabel, type Action } from '@/core';
 import { drawGlyph } from './glyphs';
 import { merchantsIn, type QuestMark } from './questMarks';
 import { spaceRuntime } from '@/world/hc/spaces';
@@ -34,7 +34,8 @@ export function drawQuestMarks(
     out.unshift({ mark: m, x, y });
   }
   view.add([...rings, g]);
-  if (rings.length) scene.tweens.add({ targets: rings, scale: 2, alpha: 0, duration: 1100, repeat: -1, ease: 'Sine.easeOut' });
+  // reduce motion: the ring stays, still (it marks the tracked quest either way)
+  if (rings.length && !Settings.get().reduceMotion) scene.tweens.add({ targets: rings, scale: 2, alpha: 0, duration: 1100, repeat: -1, ease: 'Sine.easeOut' });
   return out;
 }
 

@@ -106,7 +106,7 @@ export class HudV2Scene extends Phaser.Scene {
     // The bound Pause key (and Esc, the universal back key) pauses, unless a conversation or panel owns the key.
     this.input.keyboard!.on('keydown', (ev: KeyboardEvent) => {
       if (!(ev.key === 'Escape' || isAction(ev, 'pause')) || ev.target instanceof HTMLInputElement) return;
-      if (dialogueClient.active || this.panelOpen) return;
+      if (dialogueClient.active || this.panelOpen || DuelUi.promptOpen) return;
       if (!this.scene.isActive(SceneKeys.Pause) && !this.scene.isActive(SceneKeys.Death)) this.scene.launch(SceneKeys.Pause);
     });
     // Team rule: an open panel closes itself on Esc, so Esc never pauses while any panel is up.

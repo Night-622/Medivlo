@@ -5,6 +5,7 @@
  */
 import Phaser from 'phaser';
 import { Depth } from '@/core/constants';
+import { Settings } from '@/core/settings';
 import { Art, bakeBeast, bakeHero, hasSideView } from '@/art';
 import type { EntityId, EntityKind, EntityState, Snapshot, SnapshotConsumer } from '@/net/types';
 import { kindColor } from './fx';
@@ -133,7 +134,7 @@ export class CombatView implements SnapshotConsumer {
         const f = Art.tryFrame(e.def === 'gold' ? 'icon_coin' : e.def);
         obj = f ? this.scene.add.image(e.x, e.y, f.key, f.frame) : this.scene.add.circle(e.x, e.y, 5, 0xffd23f);
         obj.setDepth(Depth.Actors + e.y - 8);
-        this.scene.tweens.add({ targets: obj, y: e.y - 4, yoyo: true, repeat: -1, duration: 700, ease: 'Sine.inOut' });
+        if (!Settings.get().reduceMotion) this.scene.tweens.add({ targets: obj, y: e.y - 4, yoyo: true, repeat: -1, duration: 700, ease: 'Sine.inOut' });
         break;
       }
       default: return undefined;
@@ -201,7 +202,7 @@ export class CombatView implements SnapshotConsumer {
     const pick = `${key}:${walk ? 'walk' : 'idle'}${side}`;
     const want = this.scene.anims.exists(pick) ? pick : this.scene.anims.exists(`${key}:${walk ? 'walk' : 'idle'}`) ? `${key}:${walk ? 'walk' : 'idle'}` : `${key}:idle`;
     if (this.scene.anims.exists(want) && (force || r.obj.anims.currentAnim?.key !== want)) r.obj.play(want, true);
-    if (anim === 'attack' || anim === 'cast') this.scene.tweens.add({ targets: r.obj, scaleY: 0.9, duration: 70, yoyo: true });
+    if ((anim === 'attack' || anim === 'cast') && !Settings.get().reduceMotion) this.scene.tweens.add({ targets: r.obj, scaleY: 0.9, duration: 70, yoyo: true });
   }
 
   private tick(_t: number, dtMs: number): void {
@@ -287,7 +288,7 @@ export class CombatView implements SnapshotConsumer {
     const top = r.y - o.displayHeight - (r.bar ? 10 : 4);
     r.plate!.setPosition(Math.round(r.x), Math.round(top)).setVisible(r.anim !== 'dead');
     r.downMark!.setVisible(down);
-    if (down) r.downMark!.setPosition(Math.round(r.x), Math.round(top - 14 - 3 * Math.abs(Math.sin(this.scene.time.now / 220))));
+    if (down) r.downMark!.setPosition(Math.round(r.x), Math.round(top - 14 - (Settings.get().reduceMotion ? 0 : 3 * Math.abs(Math.sin(this.scene.time.now / 220)))));
   }
 
   private drawZone(r: Rec): void {

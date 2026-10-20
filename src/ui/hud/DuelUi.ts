@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import { Services, bus } from '@/core';
-import { C, typeStyle } from '@/ui/kit/hc';
+import { Services, bus, keyLabel } from '@/core';
+import { C, isAction, typeStyle } from '@/ui/kit/hc';
 
 /**
  * Duels realm UI (Claude 1). Incoming challenge → a prompt under the banner area with Accept / Decline and a 20 s
@@ -13,7 +13,10 @@ export function challenge(target: string): void {
 }
 
 export class DuelUi {
+  /** a challenge is on screen: the HUD's Esc answers it (Decline) instead of opening Pause */
+  static promptOpen = false;
   private prompt: Phaser.GameObjects.Container | null = null;
+  private offKeys: (() => void) | null = null;
 
   constructor(private scene: Phaser.Scene, private banner: (title: string, sub?: string) => void) {
     const name = (id: string, given?: string) => given ?? Services.get('net').session().members.find((m) => m.playerId === id)?.name ?? 'A challenger';
@@ -43,15 +46,25 @@ export class DuelUi {
     c.add(sc.add.text(x, y + 22, `${who} challenges you to a duel`, typeStyle('h3', C.text)).setOrigin(0.5));
     const left = sc.add.text(x + 206, y + 10, '20', typeStyle('caption', C.text500)).setOrigin(1, 0);
     c.add(left);
+    const answer = (accept: boolean) => {
+      if (accept) Services.get('net').send({ type: 'duel', target: from, accept: true });
+      this.close();
+    };
     const btn = (bx: number, label: string, gold: boolean, accept: boolean) => {
       const b = sc.add.nineslice(bx, y + 46, gold ? 'ui:btn_gold' : 'ui:btn_slate', undefined, 150, 40, 8, 8, 8, 8).setOrigin(0);
       const t = sc.add.text(bx + 75, y + 66, label, typeStyle('h3', gold ? C.ink : C.text)).setOrigin(0.5);
-      b.setInteractive({ useHandCursor: true }).on('pointerup', () => {
-        if (accept) Services.get('net').send({ type: 'duel', target: from, accept: true });
-        this.close();
-      });
+      b.setInteractive({ useHandCursor: true }).on('pointerup', () => answer(accept));
       c.add([b, t]);
     };
+    // keyboard (accessibility): the bound Interact key accepts, Esc declines
+    const onKey = (ev: KeyboardEvent) => {
+      if (ev.target instanceof HTMLInputElement) return;
+      if (isAction(ev, 'interact')) answer(true); else if (ev.key === 'Escape') answer(false);
+    };
+    sc.input.keyboard?.on('keydown', onKey);
+    this.offKeys = () => sc.input.keyboard?.off('keydown', onKey);
+    DuelUi.promptOpen = true;
+    c.add(sc.add.text(x - 206, y + 10, `${keyLabel('interact')} accept · Esc decline`, typeStyle('caption', C.text500)).setOrigin(0, 0));
     btn(x - 160, 'Accept', true, true);
     btn(x + 10, 'Decline', false, false);
     this.prompt = c;
@@ -70,5 +83,5 @@ export class DuelUi {
   }
 
   private timer = 0;
-  private close(): void { window.clearInterval(this.timer); this.prompt?.destroy(); this.prompt = null; }
+  private close(): void { window.clearInterval(this.timer); this.prompt?.destroy(); this.prompt = null; this.offKeys?.(); this.offKeys = null; DuelUi.promptOpen = false; }
 }

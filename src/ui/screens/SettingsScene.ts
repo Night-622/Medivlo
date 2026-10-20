@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { DEFAULT_KEYS, SceneKeys, Settings, keyLabel, type Action, type SettingsData } from '@/core';
-import { C, typeStyle } from '@/ui/kit/hc';
+import { C, KeyNav, typeStyle } from '@/ui/kit/hc';
 import { keyName } from '@/ui/kit/hc/keys';
 
 type Tab = 'video' | 'audio' | 'controls' | 'gameplay' | 'accessibility';
@@ -37,6 +37,7 @@ const ROWS: Record<Tab, Row[]> = {
   accessibility: [
     { label: 'Text size', hint: 'Bigger interface text', opts: { key: 'textSize', values: [['Normal', 'normal'], ['Large', 'large']] } },
     { label: 'Reduce flashing', hint: 'Softer hit flashes and lightning', opts: { key: 'reduceFlashing', values: [['Off', false], ['On', true]] } },
+    { label: 'Reduce motion', hint: 'No screen shake, bobbing, pulsing or flicker', opts: { key: 'reduceMotion', values: [['Off', false], ['On', true]] } },
     { label: 'Rarity glyphs', hint: 'Show a shape on items as well as a colour', opts: { key: 'rarityGlyphs', values: [['Off', false], ['On', true]] } },
   ],
 };
@@ -48,6 +49,9 @@ export class SettingsScene extends Phaser.Scene {
   private tabs!: Phaser.GameObjects.Container;
   private from: string = SceneKeys.MainMenu;
   private rebinding: Action | null = null;
+  /** keyboard: arrows / Tab between every tab, option, slider and Rebind; Enter presses (sliders step +10) */
+  private nav!: KeyNav;
+  private resetBtn!: Phaser.GameObjects.NineSlice;
 
   constructor() { super(SceneKeys.Settings); }
 
@@ -67,6 +71,9 @@ export class SettingsScene extends Phaser.Scene {
     const reset = this.add.nineslice(1032, 652, 'ui:btn_slate', undefined, 200, 52, 8, 8, 8, 8).setOrigin(0);
     this.add.text(1132, 678, 'Restore defaults', typeStyle('button', C.text)).setOrigin(0.5);
     reset.setInteractive({ useHandCursor: true }).on('pointerup', () => { Settings.reset(); this.render(); });
+    // before onKey: while a rebind waits for its key, navigation stands aside
+    this.nav = new KeyNav(this, { skip: () => this.rebinding !== null });
+    this.resetBtn = reset;
     this.input.keyboard!.on('keydown', (ev: KeyboardEvent) => this.onKey(ev));
     // the scale manager is game-wide: entering fullscreen lands a moment after the click, so redraw then
     const redraw = () => this.render();
@@ -76,12 +83,15 @@ export class SettingsScene extends Phaser.Scene {
   }
 
   private render(): void {
+    this.nav.clear(); // tabs, then this tab's rows, then Restore defaults
     this.tabs.removeAll(true);
     (['video', 'audio', 'controls', 'gameplay', 'accessibility'] as Tab[]).forEach((t, i) => {
       const on = t === this.tab;
       const bg = this.add.nineslice(0, i * 54, on ? 'ui:tab_active' : 'ui:tab', undefined, 220, 48, 8, 8, 8, 8).setOrigin(0);
       this.tabs.add([bg, this.add.text(12, i * 54 + 24, t[0].toUpperCase() + t.slice(1), typeStyle('h2', on ? C.text : C.text300)).setOrigin(0, 0.5)]);
-      bg.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.tab = t; this.rebinding = null; this.render(); });
+      const pick = () => { this.tab = t; this.rebinding = null; this.render(); };
+      bg.setInteractive({ useHandCursor: true }).on('pointerup', pick);
+      this.nav.add(bg, pick);
     });
     this.body.removeAll(true);
     const s = Settings.get();
@@ -99,6 +109,7 @@ export class SettingsScene extends Phaser.Scene {
         const track = this.add.rectangle(right - 380, y + h / 2 - 8, 380, 16, 0x0b0f22).setOrigin(0).setStrokeStyle(2, 0x1a1230);
         const fill = this.add.rectangle(right - 380, y + h / 2 - 8, 3.8 * v, 16, parseInt(C.gold.slice(1), 16)).setOrigin(0);
         const val = this.add.text(right - 390, y + h / 2, String(v), typeStyle('h3', C.gold300)).setOrigin(1, 0.5);
+        this.nav.add(track, () => { const nv = s[r.slider] >= 100 ? 0 : Math.min(100, s[r.slider] + 10); Settings.set(r.slider, nv); this.render(); });
         track.setInteractive({ useHandCursor: true }).on('pointerdown', (p: Phaser.Input.Pointer) => {
           const nv = Math.round(Math.max(0, Math.min(1, (p.x - (right - 380)) / 380)) * 20) * 5;
           Settings.set(r.slider, nv); fill.width = 3.8 * nv; val.setText(String(nv));
@@ -114,11 +125,13 @@ export class SettingsScene extends Phaser.Scene {
           x -= w;
           const bg = this.add.nineslice(x, y + h / 2 - 18, on ? 'ui:tab_active' : 'ui:tab', undefined, w, 36, 8, 8, 8, 8).setOrigin(0);
           t.setPosition(x + w / 2, y + h / 2).setOrigin(0.5);
-          bg.setInteractive({ useHandCursor: true }).on('pointerup', () => {
+          const choose = () => {
             Settings.set(r.opts.key, value as never);
             if (r.opts.key === 'fullscreen') { if (value) this.scale.startFullscreen(); else this.scale.stopFullscreen(); }
             this.render();
-          });
+          };
+          bg.setInteractive({ useHandCursor: true }).on('pointerup', choose);
+          this.nav.add(bg, choose);
           this.body.add([bg, t]);
           x -= 6;
         });
@@ -128,10 +141,13 @@ export class SettingsScene extends Phaser.Scene {
         const key = this.add.text(right - 80, y + h / 2 - 2, waiting ? 'press a key…' : keyLabel(r.action), typeStyle('h3', waiting ? C.gold : C.text)).setOrigin(1, 0.5);
         const box = this.add.rectangle(right - 70, y + h / 2, key.width + 20, Math.min(h - 2, 24), parseInt(C.panel600.slice(1), 16)).setOrigin(1, 0.5);
         const rebind = this.add.text(right, y + h / 2, 'Rebind', typeStyle('badge', C.teal)).setOrigin(1, 0.5).setInteractive({ useHandCursor: true });
-        rebind.on('pointerup', () => { this.rebinding = r.action; this.render(); });
+        const start = () => { this.rebinding = r.action; this.render(); };
+        rebind.on('pointerup', start);
+        this.nav.add(rebind, start);
         this.body.add([box, key, rebind]);
       }
     });
+    this.nav.add(this.resetBtn, () => { Settings.reset(); this.render(); });
   }
 
   private onKey(ev: KeyboardEvent): void {

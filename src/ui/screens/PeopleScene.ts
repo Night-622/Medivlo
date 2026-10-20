@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Game, Registry, SceneKeys, bus, type NpcDef, type SchoolId } from '@/core';
-import { C, isAction, typeStyle } from '@/ui/kit/hc';
+import { C, KeyNav, isAction, typeStyle } from '@/ui/kit/hc';
 import { getTrust } from '@/narrative/engine/trust';
 import { isPresent, npcMet, npcQuestInfo } from '@/narrative/engine';
 import { TILE_SIZE } from '@/core/constants';
@@ -34,6 +34,7 @@ export class PeopleScene extends Phaser.Scene {
   private grid!: Phaser.GameObjects.Container;
   private detail!: Phaser.GameObjects.Container;
   private tabs!: Phaser.GameObjects.Container;
+  private nav!: KeyNav;
   private scroll = 0;
 
   constructor() { super(SceneKeys.People); }
@@ -60,6 +61,7 @@ export class PeopleScene extends Phaser.Scene {
       .sort((a, b) => Number(b.roles?.includes('quest') ?? false) - Number(a.roles?.includes('quest') ?? false) || a.name.localeCompare(b.name));
     this.add.text(48 + 16 + head.width, 62, `${vil} · ${this.people.filter((n) => npcMet(n.id)).length} met`, typeStyle('body', C.text300)).setOrigin(0, 1);
     this.tabs = this.add.container(0, 0);
+    this.nav = new KeyNav(this, { tabOnly: true });
     this.grid = this.add.container(0, 0);
     this.detail = this.add.container(0, 0);
     this.add.nineslice(792, 96, 'ui:panel', undefined, 440, 592, 8, 8, 8, 8).setOrigin(0).setDepth(-1);
@@ -67,11 +69,13 @@ export class PeopleScene extends Phaser.Scene {
     const kb = this.input.keyboard!;
     kb.on('keydown-ESC', () => this.close());
     kb.on('keydown', (ev: KeyboardEvent) => { if (isAction(ev, 'people') && ev.key !== 'Escape') this.close(); });
-    kb.on('keydown-LEFT', () => this.pick(this.sel - 1));
-    kb.on('keydown-RIGHT', () => this.pick(this.sel + 1));
-    kb.on('keydown-UP', () => this.pick(this.sel - 4));
-    kb.on('keydown-DOWN', () => this.pick(this.sel + 4));
-    kb.on('keydown-ENTER', () => { this.line++; this.drawDetail(); });
+    // keyboard: the arrows move between cards; Tab reaches the filter tabs (Enter picks the focused one)
+    const card = (d: number) => { this.nav.blur(); this.pick(this.sel + d); };
+    kb.on('keydown-LEFT', () => card(-1));
+    kb.on('keydown-RIGHT', () => card(1));
+    kb.on('keydown-UP', () => card(-4));
+    kb.on('keydown-DOWN', () => card(4));
+    kb.on('keydown-ENTER', () => { if (this.nav.focused) return; this.line++; this.drawDetail(); });
     this.input.on('wheel', (_p: unknown, _o: unknown, _dx: number, dy: number) => { this.scroll = Math.max(0, Math.min(this.maxScroll(), this.scroll + dy)); this.drawGrid(); });
     this.render();
   }
@@ -82,10 +86,13 @@ export class PeopleScene extends Phaser.Scene {
 
   private drawTabs(): void {
     this.tabs.removeAll(true);
+    this.nav.clear();
     ([['all', 'Everyone'], ['story', 'Story'], ['trade', 'Trade'], ['folk', 'Villagers']] as [Tab, string][]).forEach(([k, label], i) => {
       const on = this.tab === k;
       const bg = this.add.nineslice(48 + i * 146, 92, on ? 'ui:tab_active' : 'ui:tab', undefined, 140, 36, 8, 8, 8, 8).setOrigin(0);
-      bg.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.tab = k; this.sel = 0; this.scroll = 0; this.render(); });
+      const pickTab = () => { this.tab = k; this.sel = 0; this.scroll = 0; this.render(); };
+      bg.setInteractive({ useHandCursor: true }).on('pointerup', pickTab);
+      this.nav.add(bg, pickTab);
       this.tabs.add([bg, this.add.text(48 + i * 146 + 70, 110, label, { fontFamily: '"Jersey 10"', fontSize: '20px', color: on ? C.text : C.text300 }).setOrigin(0.5)]);
     });
   }

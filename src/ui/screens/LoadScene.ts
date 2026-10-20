@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Game, SceneKeys, bus } from '@/core';
-import { C, alive, typeStyle } from '@/ui/kit/hc';
+import { C, KeyNav, alive, typeStyle } from '@/ui/kit/hc';
 import { SAVE_SLOTS, SaveService, type SaveSummary } from '@/firebase/SaveService';
 import { classDisplay, SCHOOL_NAME } from '@/data/classes/hc';
 import { realmOf } from '@/world/hc/spaces';
@@ -15,6 +15,8 @@ import { sim } from '@/net';
  */
 export class LoadScene extends Phaser.Scene {
   private cards!: Phaser.GameObjects.Container;
+  /** keyboard: arrows / Tab move between the buttons, Enter presses (accessibility) */
+  private nav!: KeyNav;
   private status!: Phaser.GameObjects.Text;
   private armed: number | null = null;
   private saves: (SaveSummary | null)[] = [];
@@ -34,6 +36,7 @@ export class LoadScene extends Phaser.Scene {
     const x = this.add.nineslice(W - 92, 28, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0);
     this.add.text(W - 70, 50, '✕', typeStyle('button', C.text)).setOrigin(0.5);
     x.setInteractive({ useHandCursor: true }).on('pointerup', () => this.close());
+    this.nav = new KeyNav(this);
     this.cards = this.add.container(0, 0);
     this.status = this.add.text(W / 2, H - 40, this.notice, typeStyle('body', this.notice ? C.gold : C.text300)).setOrigin(0.5);
     this.input.keyboard!.on('keydown-ESC', () => this.close());
@@ -55,6 +58,7 @@ export class LoadScene extends Phaser.Scene {
 
   private render(): void {
     this.cards.removeAll(true);
+    this.nav.clear();
     const add = <T extends Phaser.GameObjects.GameObject>(o: T): T => { this.cards.add(o); return o; };
     for (let slot = 0; slot < SAVE_SLOTS; slot++) {
       const s = this.saves[slot];
@@ -90,6 +94,7 @@ export class LoadScene extends Phaser.Scene {
   private button(add: <T extends Phaser.GameObjects.GameObject>(o: T) => T, x: number, y: number, w: number, label: string, gold: boolean, fn: () => void, danger = false): void {
     const b = add(this.add.nineslice(x, y, gold ? 'ui:btn_gold' : 'ui:btn_slate', undefined, w, 48, 8, 8, 8, 8).setOrigin(0));
     add(this.add.text(x + w / 2, y + 24, label, typeStyle('button', gold ? C.ink : danger ? C.danger : C.text)).setOrigin(0.5));
+    this.nav.add(b, fn);
     b.setInteractive({ useHandCursor: true }).on('pointerup', fn)
       .on('pointerover', () => b.setTexture(gold ? 'ui:btn_gold_hover' : 'ui:btn_slate_hover'))
       .on('pointerout', () => b.setTexture(gold ? 'ui:btn_gold' : 'ui:btn_slate'));

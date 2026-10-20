@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { worldKey } from '@/scenes/worldKey';
 import { Game, SceneKeys, Services, bus } from '@/core';
 import { bakeBeast } from '@/art';
-import { C, randomTip, typeStyle } from '@/ui/kit/hc';
+import { C, randomTip, typeStyle, KeyNav } from '@/ui/kit/hc';
 import { SaveService } from '@/firebase/SaveService';
 import { defaultOutfit, heroSprite, heroTexture } from '@/scenes/create/heroChoice';
 
@@ -55,17 +55,21 @@ export class DeathScene extends Phaser.Scene {
       this.add.text(x + sw / 2, 444, v, typeStyle('h1', C.gold300)).setOrigin(0.5, 0);
       this.add.text(x + sw / 2, 480, k, typeStyle('badge', C.text500)).setOrigin(0.5, 0);
     });
+    // keyboard: focus starts on Return (Enter respawns, as before); arrows reach Load last save and Quit
+    this.nav = new KeyNav(this, { autofocus: true });
     this.button(390, 524, 500, `Return to the ${this.info.waystone ?? 'waystone'}`, true, () => this.respawn());
     this.button(390, 584, 246, 'Load last save', false, () => void this.loadLast());
     this.button(644, 584, 246, 'Quit to title', false, () => this.quit());
     this.add.text(W / 2, H - 34, this.info.penalty ?? 'You keep your gear. You lose a tenth of the Embershards you carry.', typeStyle('caption', C.text500)).setOrigin(0.5, 0);
     this.add.text(W / 2, 220, `Tip · ${randomTip('combat')}`, typeStyle('body', C.text300, 720)).setOrigin(0.5, 0).setAlign('center');
-    this.input.keyboard!.on('keydown-ENTER', () => this.respawn());
   }
+
+  private nav!: KeyNav;
 
   private button(x: number, y: number, w: number, label: string, gold: boolean, fn: () => void): void {
     const b = this.add.nineslice(x, y, gold ? 'ui:btn_gold' : 'ui:btn_slate', undefined, w, 52, 8, 8, 8, 8).setOrigin(0);
     this.add.text(x + w / 2, y + 26, label, typeStyle('button', gold ? C.ink : C.text)).setOrigin(0.5);
+    this.nav.add(b, fn);
     b.setInteractive({ useHandCursor: true }).on('pointerup', fn)
       .on('pointerover', () => b.setTexture(gold ? 'ui:btn_gold_hover' : 'ui:btn_slate_hover'))
       .on('pointerout', () => b.setTexture(gold ? 'ui:btn_gold' : 'ui:btn_slate'));

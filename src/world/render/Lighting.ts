@@ -3,7 +3,7 @@
  * the art's light points. Lamps flicker. Strength follows the world clock's darkness (0 day … 1 night).
  */
 import Phaser from 'phaser';
-import { Depth } from '@/core';
+import { Depth, Settings } from '@/core';
 import type { Light } from './artCache';
 
 const GLOW_KEY = 'hc-glow';
@@ -87,8 +87,10 @@ export class Lighting {
     if (lit !== this.strength || lit > 0) {
       this.strength = lit;
       const t = timeMs / 1000;
+      // Settings › Accessibility › reduce motion: lamps burn steady
+      const calm = Settings.get().reduceMotion;
       for (const g of this.glows) {
-        const flick = g.lamp ? 1 + Math.sin(9 * t + g.seed) * 0.04 + Math.sin(23 * t + g.seed) * 0.03 : 1;
+        const flick = g.lamp && !calm ? 1 + Math.sin(9 * t + g.seed) * 0.04 + Math.sin(23 * t + g.seed) * 0.03 : 1;
         g.img.setAlpha(Math.min(1, g.base * lit * (1 + 0.45 * lit) * flick)).setVisible(lit > 0.01);
       }
     }

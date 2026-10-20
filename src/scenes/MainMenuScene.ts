@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { worldKey } from '@/scenes/worldKey';
 import { Game, SceneKeys, bus } from '@/core';
 import { Art, wordmarkTexture } from '@/art';
-import { C, CodeEntry, T, typeStyle } from '@/ui/kit/hc';
+import { C, CodeEntry, KeyNav, T, typeStyle } from '@/ui/kit/hc';
 import { joinGame } from '@/net/coop';
 import { SaveService } from '@/firebase/SaveService';
 import { isFirebaseConfigured } from '@/firebase/config';
@@ -28,6 +28,8 @@ export class MainMenuScene extends Phaser.Scene {
   create(): void {
     this.items = [];
     this.sel = 0;
+    // keyboard: ↑/↓ drive the menu; Tab reaches Credits, Friends and the account chip (Enter presses the focused one)
+    this.nav = new KeyNav(this, { tabOnly: true });
     // the scene instance is reused: a successful join leaves without CodeEntry's cancel, which is what cleared this
     this.joinOpen = false;
     this.drawBackdrop();
@@ -40,12 +42,13 @@ export class MainMenuScene extends Phaser.Scene {
       this.time.delayedCall(5000, () => t.destroy());
     }
     const kb = this.input.keyboard!;
-    kb.on('keydown-UP', () => { if (!this.joinOpen) this.move(-1); });
-    kb.on('keydown-DOWN', () => { if (!this.joinOpen) this.move(1); });
-    kb.on('keydown-W', () => { if (!this.joinOpen) this.move(-1); });
-    kb.on('keydown-S', () => { if (!this.joinOpen) this.move(1); });
-    kb.on('keydown-ENTER', () => { if (!this.joinOpen) this.activate(this.sel); });
-    kb.on('keydown-SPACE', () => { if (!this.joinOpen) this.activate(this.sel); });
+    const step = (d: number) => { if (this.joinOpen) return; this.nav.blur(); this.move(d); };
+    kb.on('keydown-UP', () => step(-1));
+    kb.on('keydown-DOWN', () => step(1));
+    kb.on('keydown-W', () => step(-1));
+    kb.on('keydown-S', () => step(1));
+    kb.on('keydown-ENTER', () => { if (!this.joinOpen && !this.nav.focused) this.activate(this.sel); });
+    kb.on('keydown-SPACE', () => { if (!this.joinOpen && !this.nav.focused) this.activate(this.sel); });
   }
 
   /** A small Brindlecross diorama from the handoff tiles and buildings, dimmed by the title gradient. */
@@ -122,7 +125,9 @@ export class MainMenuScene extends Phaser.Scene {
     const H = this.scale.height;
     const ver = this.add.text(24, H - 30, `${__BUILD__} · The Hollow Crown ·`, typeStyle('caption', C.text500)).setDepth(20);
     const credits = this.add.text(ver.x + ver.width + 6, H - 30, 'Credits', typeStyle('caption', C.teal)).setDepth(20).setInteractive({ useHandCursor: true });
-    credits.on('pointerup', () => { this.scene.launch(SceneKeys.Credits); this.scene.pause(); });
+    const openCredits = () => { this.scene.launch(SceneKeys.Credits); this.scene.pause(); };
+    credits.on('pointerup', openCredits);
+    this.nav.add(credits, openCredits);
     const chip = (x: number, key: string, label: string) => {
       const t = this.add.text(x, H - 34, key, { fontFamily: '"Jersey 10"', fontSize: '18px', color: C.text, backgroundColor: C.panel600, padding: { x: 6, y: 2 } }).setDepth(20);
       this.add.text(t.x + t.width + 6, H - 31, label, typeStyle('body', C.text300)).setDepth(20);
@@ -141,7 +146,9 @@ export class MainMenuScene extends Phaser.Scene {
     // Friends sits left of the account chip on the same row (the wordmark owns the band below).
     const fr = this.add.nineslice(W - 24 - 240 - 8, 24, 'ui:btn_slate', undefined, 120, 52, 8, 8, 8, 8).setOrigin(1, 0).setDepth(20);
     const frT = this.add.text(fr.x - 60, 50, 'Friends', typeStyle('h3', C.text)).setOrigin(0.5).setDepth(21);
-    fr.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.scene.launch(SceneKeys.Friends, { from: SceneKeys.MainMenu }); this.scene.pause(); });
+    const openFriends = () => { this.scene.launch(SceneKeys.Friends, { from: SceneKeys.MainMenu }); this.scene.pause(); };
+    fr.setInteractive({ useHandCursor: true }).on('pointerup', openFriends);
+    this.nav.add(fr, openFriends);
     const paint = (a: AccountInfo | null) => {
       if (!name.scene) return; // the account lookup can resolve after the title has already closed
       name.setText(a ? a.name : 'Sign in');
@@ -150,13 +157,16 @@ export class MainMenuScene extends Phaser.Scene {
       fr.setX(W - 24 - bg.width - 8);
       frT.setX(fr.x - 60);
     };
-    bg.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.scene.launch(SceneKeys.Account, { from: SceneKeys.MainMenu }); this.scene.pause(); });
+    const openAccount = () => { this.scene.launch(SceneKeys.Account, { from: SceneKeys.MainMenu }); this.scene.pause(); };
+    bg.setInteractive({ useHandCursor: true }).on('pointerup', openAccount);
+    this.nav.add(bg, openAccount);
     this.events.on('account:changed', paint);
     this.events.once('shutdown', () => this.events.off('account:changed', paint));
     void currentAccount().then((a) => { paint(a); if (a) startPresence(); }).catch(() => paint(null));
   }
 
   private joinOpen = false;
+  private nav!: KeyNav;
   /** Code entry → GuestNet → the host's world. Character must exist first (guests bring their own hero). */
   private openJoin(): void {
     if (this.joinOpen) return;

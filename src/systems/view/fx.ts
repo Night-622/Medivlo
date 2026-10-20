@@ -33,19 +33,20 @@ export class CombatFx {
   /**
    * Hit feedback, honouring Settings: a short flash on the struck sprite (reduceFlashing: a soft tint instead of a
    * white fill) and camera shake when the local hero is hurt or lands a crit (screenShake: off / low ×0.4 / full).
+   * reduceMotion: no shake and the soft tint, as reduceFlashing.
    */
   private impact(e: { amount: number; crit: boolean; kind?: string; targetId: string; sourceId: string }): void {
     if (e.kind !== 'dmg' || e.amount <= 0) return;
-    const st = Settings.get();
+    const st = Settings.get(), calm = st.reduceMotion, soft = st.reduceFlashing || calm;
     const rec = this.targets?.entity(e.targetId);
     const obj = rec?.obj as (Phaser.GameObjects.Sprite & { isTinted?: boolean }) | undefined;
     if (rec && obj && 'setTintFill' in obj) {
-      const ms = st.reduceFlashing ? 90 : 60;
+      const ms = soft ? 90 : 60;
       rec.flashUntil = this.scene.time.now + ms;
-      if (st.reduceFlashing) obj.setTint(0xffc8c8);
+      if (soft) obj.setTint(0xffc8c8);
       else obj.setTintFill(0xffffff);
     }
-    const mult = SHAKE[st.screenShake] ?? 1;
+    const mult = calm ? 0 : SHAKE[st.screenShake] ?? 1;
     if (!mult) return;
     const me = this.localEntity();
     if (e.targetId === me) {
@@ -71,8 +72,8 @@ export class CombatFx {
     if (e.kind === 'dmg' && e.amount <= 0) return;
     const t = this.scene.add.text(e.x + Phaser.Math.Between(-6, 6), e.y - 24, text, {
       fontFamily: '"Jersey 10"', fontSize: `${size}px`, color, stroke: INK, strokeThickness: 2,
-    }).setOrigin(0.5, 1).setDepth(Depth.WorldUi).setScale(1.7);
-    this.scene.tweens.add({ targets: t, scale: 1, duration: 120 });
+    }).setOrigin(0.5, 1).setDepth(Depth.WorldUi).setScale(Settings.get().reduceMotion ? 1 : 1.7);
+    if (t.scale !== 1) this.scene.tweens.add({ targets: t, scale: 1, duration: 120 });
     this.scene.tweens.add({ targets: t, y: t.y - 34 * 0.9, duration: 900 });
     this.scene.tweens.add({ targets: t, alpha: 0, delay: 600, duration: 300, onComplete: () => t.destroy() });
   }

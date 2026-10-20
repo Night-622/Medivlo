@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Game, SceneKeys } from '@/core';
-import { C, CodeEntry, alive, typeStyle } from '@/ui/kit/hc';
+import { C, CodeEntry, KeyNav, alive, typeStyle } from '@/ui/kit/hc';
 import { isFirebaseConfigured } from '@/firebase/config';
 import { currentAccount, friendlyAuthError, type AccountInfo } from '@/firebase/accounts';
 import { addFriend, listFriends, removeFriend, startPresence, type Friend } from '@/firebase/friends';
@@ -23,6 +23,8 @@ export class FriendsScene extends Phaser.Scene {
   private armed: string | null = null;
   private busy = false;
   private entryOpen = false;
+  /** keyboard: arrows / Tab between the buttons, Enter presses (not while the code entry takes the keys) */
+  private nav!: KeyNav;
 
   constructor() { super(SceneKeys.Friends); }
 
@@ -35,6 +37,7 @@ export class FriendsScene extends Phaser.Scene {
     const x = this.add.nineslice(W - 92, 28, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0);
     this.add.text(W - 70, 50, '✕', typeStyle('button', C.text)).setOrigin(0.5);
     x.setInteractive({ useHandCursor: true }).on('pointerup', () => this.close());
+    this.nav = new KeyNav(this, { skip: () => this.entryOpen });
     this.list = this.add.container(0, 0);
     this.status = this.add.text(W / 2, H - 34, '', typeStyle('body', C.text300)).setOrigin(0.5);
     this.input.keyboard!.on('keydown-ESC', () => { if (!this.entryOpen) this.close(); });
@@ -147,6 +150,7 @@ export class FriendsScene extends Phaser.Scene {
     add: <T extends Phaser.GameObjects.GameObject>(o: T) => T = (o) => o, h = 48, danger = false): void {
     const b = add(this.add.nineslice(x, y, gold ? 'ui:btn_gold' : 'ui:btn_slate', undefined, w, h, 8, 8, 8, 8).setOrigin(0));
     add(this.add.text(x + w / 2, y + h / 2, label, typeStyle(h < 48 ? 'h3' : 'button', gold ? C.ink : danger ? C.danger : C.text)).setOrigin(0.5));
+    this.nav.add(b, () => { if (!this.busy) fn(); });
     b.setInteractive({ useHandCursor: true }).on('pointerup', () => { if (!this.busy) fn(); })
       .on('pointerover', () => b.setTexture(gold ? 'ui:btn_gold_hover' : 'ui:btn_slate_hover'))
       .on('pointerout', () => b.setTexture(gold ? 'ui:btn_gold' : 'ui:btn_slate'));

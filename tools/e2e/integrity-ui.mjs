@@ -93,6 +93,36 @@ try {
   const discarded = await ev(`window.__game.scene.isActive('MainMenu')`);
   check('character creation asks before discarding an edited hero', untouched && asked && kept && discarded, JSON.stringify({ untouched, asked, kept, discarded }));
 
+  // 3c. keyboard only: Settings (tabs, a rebind that doesn't bind the Enter that started it) and Load
+  await ev(`(window.__game.scene.getScene('MainMenu').scene.launch('Settings', { from: 'MainMenu' }), 1)`);
+  await waitFor(`window.__game.scene.isActive('Settings')`, 10000); await sleep(400);
+  await page.press('ArrowDown'); await sleep(150); await page.press('ArrowDown'); await sleep(150); await page.press('Enter'); await sleep(400);
+  const tabAudio = await ev(`window.__game.scene.getScene('Settings').tab`);
+  await page.press('ArrowDown'); await sleep(150); await page.press('Enter'); await sleep(400); // → Controls
+  // to the first Rebind (the Controls tab may open with option rows): count the stops from the focus to it
+  const steps = await ev(`(() => { const n = window.__game.scene.getScene('Settings').nav; const live = n.items.filter((x) => x.obj.scene && x.obj.visible !== false); const at = live.findIndex((x) => x.obj.text === 'Rebind'); return at - n.i; })()`);
+  for (let i = 0; i < steps; i++) { await page.press('ArrowDown'); await sleep(100); }
+  await page.press('Enter'); await sleep(300);
+  const waiting = await ev(`window.__game.scene.getScene('Settings').rebinding`);
+  await page.press('KeyZ'); await sleep(300);
+  const bound = await ev(`(async () => { const { Settings } = await import('/src/core/index.ts'); const s = window.__game.scene.getScene('Settings'); const a = ${JSON.stringify(waiting ?? null)}; return { rebinding: s.rebinding, key: a ? Settings.key(a) : null }; })()`);
+  await ev(`(async () => { (await import('/src/core/index.ts')).Settings.reset(); return 1; })()`);
+  await page.press('Escape'); await sleep(400);
+  const closed = await ev(`!window.__game.scene.isActive('Settings')`);
+  check('keyboard only: Settings tabs, a rebind (Enter starts it, the next key binds), Esc closes', tabAudio === 'audio' && !!waiting && bound.rebinding === null && bound.key === 'Z' && closed, JSON.stringify({ tabAudio, waiting, bound, closed }));
+  await ev(`(async () => {
+    const core = await import('/src/core/index.ts'); const { SaveService } = await import('/src/firebase/SaveService.ts');
+    const { defaultLook } = await import('/src/data/classes/hc/index.ts');
+    const st = core.createNewGameState(0); st.player.name = 'Keys'; st.player.hero = { classId: 'warden', look: defaultLook('warden', 0), outfit: { dye: 0, headw: 0, cape: 0, neck: 0, face: 0, extra: 0 } };
+    st.world.location.space = 'realm:rime'; await SaveService.save(st, { localOnly: true });
+    window.__game.scene.getScene('MainMenu').scene.launch('Load', { from: 'MainMenu' }); return 1;
+  })()`);
+  await waitFor(`window.__game.scene.isActive('Load')`, 10000); await sleep(500);
+  await page.press('ArrowDown'); await sleep(150); await page.press('Enter');
+  const loaded = await waitFor(`window.__game.scene.isActive('HudV2')`, 30000);
+  check('keyboard only: the Load screen loads a hero (↓ then Enter)', loaded);
+  if (loaded) { await ev(`(() => { const g = window.__game; for (const k of ['HudV2', 'WorldV2']) g.scene.stop(k); g.scene.start('MainMenu'); return 1; })()`); await waitFor(`window.__game.scene.isActive('MainMenu')`, 10000); await sleep(500); }
+
   // 4. a Warden in the Rime realm: People lists the realm's people; HUD state resets across a restart
   await ev(`(async () => {
     const core = await import('/src/core/index.ts');
@@ -120,6 +150,22 @@ try {
     return { head, n: ids.length, wrong };
   })()`);
   check("People in a school realm lists that realm's people", people.n > 0 && !people.wrong.length && people.head && !people.head.includes('Brindlecross'), JSON.stringify(people));
+
+  // reduced motion: a hit on the local hero shakes the camera, unless Settings › Reduce motion is on
+  const shake = await ev(`(async () => {
+    const core = await import('/src/core/index.ts');
+    const id = 'p:' + core.Services.get('net').localPlayer;
+    const cam = window.__game.scene.getScene('WorldV2').cameras.main;
+    const hit = () => core.bus.emit('combat:hit', { amount: 120, crit: false, kind: 'dmg', targetId: id, sourceId: 'e:test', type: 'physical' });
+    core.Settings.set('reduceMotion', false); cam.shakeEffect.reset(); hit();
+    const off = cam.shakeEffect.isRunning;
+    await new Promise((r) => setTimeout(r, 300)); cam.shakeEffect.reset();
+    core.Settings.set('reduceMotion', true); hit();
+    const on = cam.shakeEffect.isRunning;
+    core.Settings.set('reduceMotion', false);
+    return { off, on };
+  })()`);
+  check('reduce motion: a hit shakes the camera, and not with Reduce motion on', shake.off === true && shake.on === false, JSON.stringify(shake));
 
   const hud = await ev(`(async () => {
     const h = window.__game.scene.getScene('HudV2');
