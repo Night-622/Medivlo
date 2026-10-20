@@ -26,7 +26,7 @@ const stormlancer: ClassPerks = {
       { spellLevels: [{ spell: LUNGE, levels: 1 }, { spell: 'spell:thunder-charge', levels: 1 }] }),
     three('pk_stormlancer_momentum', 'Charge Momentum', 'trigger', (r) => `Landing a dash: +${r * 6}% damage for 3 s.`,
       (r) => ({ procs: [{ on: 'dashEnd', do: [{ a: 'buff', id: 'stl:charge', dur: 3000, to: 'self', mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r }] }] }] })),
-    one('pk_stormlancer_thunderstep', 'Thunderstep', 'trigger', 'Landing a dash shocks the foes around you.',
+    one('pk_stormlancer_thunderstep', 'Thunderstep', 'trigger', 'Landing a dash shocks the foes around you, once every 1 s.',
       { procs: [{ on: 'dashEnd', icd: 1000, do: [{ a: 'damage', coef: 0.5, kind: 'storm', area: near(64), status: [{ id: 'shock', dur: 2000 }] }] }] }),
     one('pk_stormlancer_lancers_reach', 'Lancer’s Reach', 'tradeoff', '+30% attack damage; dashing costs 30% more stamina.',
       { mods: [{ stat: 'attackDmg', op: 'flat', value: 0.3 }, { stat: 'staminaCost', op: 'flat', value: 0.3 }] }),

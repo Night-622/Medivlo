@@ -42,7 +42,7 @@ const swordsman: ClassPerks = {
     one('pk_swordsman_storm_of_steel', 'Storm of Steel', 'power', 'Whirling Edge recharges 20% faster and hits 25% harder.', { spellMods: [{ spell: WHIRL, cd: -0.2, dmg: 0.25 }] }),
     three('pk_swordsman_battle_trance', 'Battle Trance', 'resource', (r) => `Kills restore ${r * 6} stamina; heal for ${r}% of the damage you deal.`,
       (r) => ({ mods: [{ stat: 'staminaOnKill', op: 'flat', value: 6 * r }, { stat: 'lifesteal', op: 'flat', value: 0.01 * r }] })),
-    one('pk_swordsman_whirlwind_heart', 'Whirlwind Heart', 'trigger', 'Kills: +20% move and attack speed for 3 s.',
+    one('pk_swordsman_whirlwind_heart', 'Whirlwind Heart', 'trigger', 'Kills: +20% move and attack speed for 3 s, once every 1 s.',
       { procs: [{ on: 'kill', icd: 1000, do: [{ a: 'buff', id: 'swd:whirl', dur: 3000, to: 'self', mods: [{ stat: 'moveSpeed', op: 'flat', value: 0.2 }, { stat: 'atkSpeed', op: 'flat', value: 0.2 }] }] }] }),
     one('pk_swordsman_last_duellist', 'Last Duellist', 'power', 'With no ally within 300 px: +20% damage and take 10% less damage.',
       { mods: [{ stat: 'dmg', op: 'flat', value: 0.2, when: { c: 'alone', px: 300 } }, { stat: 'dmgTaken', op: 'flat', value: -0.1, when: { c: 'alone', px: 300 } }] }),
@@ -75,7 +75,7 @@ const samurai: ClassPerks = {
       (r) => ({ mods: [{ stat: 'crit', op: 'flat', value: 0.02 * r }, { stat: 'critd', op: 'flat', value: 0.06 * r }] })),
     one('pk_samurai_clear_water', 'Clear Water', 'resource', 'Critical hits restore 4 stamina and 2 Ember, once every 0.5 s.',
       { procs: [{ on: 'crit', icd: 500, do: [{ a: 'resource', stamina: 4, ember: 2 }] }] }),
-    one('pk_samurai_death_poem', 'Death Poem', 'trigger', 'Below 50% health: your next 3 hits are critical, once every 45 s.',
+    one('pk_samurai_death_poem', 'Death Poem', 'trigger', 'Below 50% health: your next 3 hits within 6 s are critical, once every 45 s.',
       { procs: [{ on: 'lowHp', icd: 45000, do: [{ a: 'buff', id: 'sam:poem', dur: 6000, to: 'self', charges: 3, flags: ['nextHitsCrit'] }] }] }),
   ],
 };

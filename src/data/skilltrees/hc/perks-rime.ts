@@ -35,7 +35,7 @@ const warden: ClassPerks = {
     three('pk_warden_frozen_bulwark', 'Frozen Bulwark', 'power', (r) => `+${r * 4}% block chance.`, (r) => ({ mods: [{ stat: 'block', op: 'flat', value: 0.04 * r }] })),
     one('pk_warden_retaliation', 'Retaliation', 'trigger', 'Blocking strikes back for 60% weapon power as Rime.',
       { procs: [{ on: 'block', icd: 500, do: [{ a: 'damage', coef: 0.6, kind: 'rime', area: tgt }] }] }),
-    one('pk_warden_stand_fast', 'Stand Fast', 'trigger', 'Blocking grants a shield of 5% max health, once every 2 s.',
+    one('pk_warden_stand_fast', 'Stand Fast', 'trigger', 'Blocking grants a shield of 5% max health for 4 s, once every 2 s.',
       { procs: [{ on: 'block', icd: 2000, do: [{ a: 'shield', pctMax: 0.05, dur: 4000, to: 'self' }] }] }),
     // path 2: Rime Ward (+ new spell 5): the frozen ground you hold
     one('pk_warden_ward_craft', 'Ward-craft', 'power', 'Rime Ward costs 20% less and recharges 15% faster.', { spellMods: [{ spell: WARD, cost: -0.2, cd: -0.15 }] }),
@@ -69,7 +69,7 @@ const rimecaller: ClassPerks = {
       { mods: [{ stat: 'spellDmg', op: 'flat', value: 0.35 }, { stat: 'moveSpeed', op: 'flat', value: -0.12 }] }),
     // path 2: Glacier Wall (+ new spell 5): walls and wards
     one('pk_rimecaller_quick_wall', 'Quick Wall', 'power', 'Glacier Wall recharges 25% faster and lasts 30% longer; +4% Rime damage.', { mods: [{ stat: 'dmg.rime', op: 'flat', value: 0.04 }], spellMods: [{ spell: WALL, cd: -0.25, dur: 0.3 }] }),
-    three('pk_rimecaller_ice_mirror', 'Ice Mirror', 'trigger', (r) => `When hit: a shield of ${3 + r * 3}% max health, once every 8 s.`,
+    three('pk_rimecaller_ice_mirror', 'Ice Mirror', 'trigger', (r) => `When hit: a shield of ${3 + r * 3}% max health for 5 s, once every 8 s.`,
       (r) => ({ procs: [{ on: 'hurt', icd: 8000, do: [{ a: 'shield', pctMax: 0.03 + 0.03 * r, dur: 5000, to: 'self' }] }] })),
     one('pk_rimecaller_cold_blood', 'Cold Blood', 'resource', 'Below 30% Ember: +3 Ember per second; above 50% Ember, +12% spell damage; +4% Rime damage.',
       { mods: [{ stat: 'dmg.rime', op: 'flat', value: 0.04 }, { stat: 'spellDmg', op: 'flat', value: 0.12, when: { c: 'emberAbove', pct: 0.5 } }, { stat: 'emberRegen', op: 'flat', value: 3, when: { c: 'emberBelow', pct: 0.3 } }] }),
@@ -89,7 +89,7 @@ const school: PerkDef[] = [
     (r) => ({ mods: [{ stat: 'resist.rime', op: 'flat', value: 0.05 * r }, { stat: 'armor', op: 'pct', value: 0.03 * r }] })),
   one('pk_rime_frozen_retort', 'Frozen Retort', 'trigger', 'When hit: chill the foes around you, once every 4 s; +10% armour; +4% Rime damage.',
     { mods: [{ stat: 'dmg.rime', op: 'flat', value: 0.04 }, { stat: 'armor', op: 'pct', value: 0.1 }], procs: [{ on: 'hurt', icd: 4000, do: [{ a: 'status', status: { id: 'chill', dur: 2000 }, area: near(64) }] }] }),
-  one('pk_rime_ice_block', 'Ice Block', 'trigger', 'Below 50% health: a shield of 25% max health, once every 60 s; +5% max health.',
+  one('pk_rime_ice_block', 'Ice Block', 'trigger', 'Below 50% health: a shield of 25% max health for 6 s, once every 60 s; +5% max health.',
     { mods: [{ stat: 'hp', op: 'pct', value: 0.05 }], procs: [{ on: 'lowHp', icd: 60000, do: [{ a: 'shield', pctMax: 0.25, dur: 6000, to: 'self' }] }] }),
   // p2 focus / resource
   three('pk_rime_clear_mind', 'Clear Mind', 'resource', (r) => `+${(0.3 * r).toFixed(1)} Ember per second and ${r * 2}% shorter cooldowns; +${r.toFixed(1)}% Rime damage; +${r.toFixed(1)}% spell damage.`,

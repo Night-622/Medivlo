@@ -90,7 +90,7 @@ const school: PerkDef[] = [
     (r) => ({ mods: [{ stat: 'armor', op: 'pct', value: 0.05 * r }, { stat: 'block', op: 'flat', value: 0.02 * r }] })),
   one('pk_iron_unshaken', 'Unshaken', 'power', '40% shorter stuns; you take 5% less damage.',
     { mods: [{ stat: 'stunTaken', op: 'flat', value: -0.4 }, { stat: 'dmgTaken', op: 'flat', value: -0.05 }] }),
-  one('pk_iron_last_bastion', 'Last Bastion', 'trigger', 'Below 50% health: a shield of 25% max health, once every 60 s.',
+  one('pk_iron_last_bastion', 'Last Bastion', 'trigger', 'Below 50% health: a shield of 25% max health for 6 s, once every 60 s.',
     { procs: [{ on: 'lowHp', icd: 60000, do: [{ a: 'shield', pctMax: 0.25, dur: 6000, to: 'self' }] }] }),
   // p2 focus / resource
   three('pk_iron_drilled', 'Drilled', 'resource', (r) => `+${r * 10} max stamina and ${r * 2}% shorter cooldowns.`,

@@ -63,7 +63,7 @@ const duskweaver: ClassPerks = {
     // path 1: Eclipse Orb (+ new spell 4): swallowing light
     one('pk_duskweaver_wide_eclipse', 'Patient Eclipse', 'power', 'Eclipse Orb recharges 20% faster, costs 15% less and hits 25% harder.', { spellMods: [{ spell: ORB, cd: -0.2, cost: -0.15, dmg: 0.25 }] }),
     three('pk_duskweaver_hungering_dark', 'Hungering Dark', 'resource', (r) => `Heal for ${r}% of the damage you deal.`, (r) => ({ mods: [{ stat: 'lifesteal', op: 'flat', value: 0.01 * r }] })),
-    one('pk_duskweaver_void_ward', 'Void Ward', 'trigger', 'Casting grants a shield of 4% max health, once every 3 s.',
+    one('pk_duskweaver_void_ward', 'Void Ward', 'trigger', 'Casting grants a shield of 4% max health for 4 s, once every 3 s.',
       { procs: [{ on: 'cast', icd: 3000, do: [{ a: 'shield', pctMax: 0.04, dur: 4000, to: 'self' }] }] }),
     one('pk_duskweaver_gloom', 'Gloom', 'aura', 'Foes near you deal 10% less damage.',
       { aura: [{ id: 'dsk:gloom', r: 120, enemies: true, mods: [{ stat: 'dmg', op: 'flat', value: -0.1 }] }] }),

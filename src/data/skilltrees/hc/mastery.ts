@@ -22,10 +22,10 @@ export const HC_MASTERY: MasteryDef[] = [
   // Verdant
   m('ranger', 'bow', 'Yew Longbow', '+8% damage to foes 200 px or more away; +3% critical chance.', { mods: [f('dmg', 0.08, { c: 'targetFar', px: 200 }), f('crit', 0.03)] }),
   m('hedgewitch', 'staff', 'Crooked Staff', '+10% healing done and +10% root duration.', { mods: [f('healing', 0.1), f('rootDur', 0.1)] }),
-  m('hedgewitch', 'wand', 'Willow Wand', 'Critical hits poison the foe for 3 s.', onCrit('poison', 3000)),
+  m('hedgewitch', 'wand', 'Willow Wand', 'Critical hits poison the foe for 3 s, once every 1 s.', onCrit('poison', 3000)),
   // Ash
   m('arcanist', 'staff', 'Ember Staff', '+8% Ash damage and +10% burn damage.', { mods: [f('dmg.ash', 0.08), f('statusDmg.burn', 0.1)] }),
-  m('arcanist', 'wand', 'Cinder Wand', '+10% cast speed; critical hits burn the foe for 2 s.', { mods: [f('castSpeed', 0.1)], ...onCrit('burn', 2000) }),
+  m('arcanist', 'wand', 'Cinder Wand', '+10% cast speed; critical hits burn the foe for 2 s, once every 1 s.', { mods: [f('castSpeed', 0.1)], ...onCrit('burn', 2000) }),
   m('reaver', 'axe', 'Muster Axe', '+6% attack damage and +2% lifesteal.', { mods: [f('attackDmg', 0.06), f('lifesteal', 0.02)] }),
   m('reaver', 'sword', 'Red Blade', '+8% attack speed.', { mods: [f('atkSpeed', 0.08)] }),
   m('reaver', 'mace', 'Pyre Hammer', '15% chance on critical hit to stun the foe for 1 s; +5% armour.', { ...onCrit('stun', 1000, 0.15), mods: [{ stat: 'armor', op: 'pct', value: 0.05 }] }),
@@ -33,7 +33,7 @@ export const HC_MASTERY: MasteryDef[] = [
   m('stormlancer', 'spear', 'Thunder Lance', 'Landing a dash: +10% damage for 2 s.', { procs: [{ on: 'dashEnd', do: [{ a: 'buff', id: 'mst:lance', dur: 2000, to: 'self', mods: [f('dmg', 0.1)] }] }] }),
   m('sparkwright', 'wand', 'Coil Wand', '+10% cast speed.', { mods: [f('castSpeed', 0.1)] }),
   m('sparkwright', 'staff', 'Lightning Rod', 'Your chains jump to 1 more foe.', { mods: [f('chains', 1)] }),
-  m('sparkwright', 'mace', 'Spanner', '+15% summon damage; critical hits shock the foe for 2 s.', { mods: [f('minionDmg', 0.15)], ...onCrit('shock', 2000) }),
+  m('sparkwright', 'mace', 'Spanner', '+15% summon damage; critical hits shock the foe for 2 s, once every 1 s.', { mods: [f('minionDmg', 0.15)], ...onCrit('shock', 2000) }),
   // Radiance
   m('oathbound', 'mace', 'Dawn Hammer', '+10% healing received and +5% armour.', { mods: [f('healingTaken', 0.1), { stat: 'armor', op: 'pct', value: 0.05 }] }),
   m('oathbound', 'sword', 'Oath Blade', 'Critical hits blind the foe for 1 s.', onCrit('blind', 1000)),
@@ -42,7 +42,7 @@ export const HC_MASTERY: MasteryDef[] = [
   m('cantor', 'staff', 'Processional Staff', '+15% buff duration.', { mods: [f('buffDur', 0.15)] }),
   // Umbral
   m('shade', 'dagger', 'Nightglass Dagger', '+10% damage from behind.', { mods: [f('dmg', 0.1, { c: 'behind' })] }),
-  m('shade', 'sword', 'Shadow Blade', 'Critical hits make the foe bleed for 3 s.', onCrit('bleed', 3000)),
+  m('shade', 'sword', 'Shadow Blade', 'Critical hits make the foe bleed for 3 s, once every 1 s.', onCrit('bleed', 3000)),
   m('duskweaver', 'wand', 'Thread Wand', '+10% status duration.', { mods: [f('statusDur', 0.1)] }),
   m('duskweaver', 'staff', 'Eclipse Staff', '+8% spell damage.', { mods: [f('spellDmg', 0.08)] }),
   m('duskweaver', 'dagger', 'Ritual Knife', '+2% lifesteal.', { mods: [f('lifesteal', 0.02)] }),
@@ -63,7 +63,7 @@ export const HC_MASTERY: MasteryDef[] = [
   // Hunt
   m('huntsman', 'bow', 'Crossbow', '+10% damage to marked foes.', { mods: [f('dmg', 0.1, { c: 'targetHas', status: 'mark' })] }),
   m('falconer', 'bow', 'Hunting Bow', '+10% summon damage.', { mods: [f('minionDmg', 0.1)] }),
-  m('falconer', 'dagger', 'Talon Knife', 'Critical hits make the foe bleed for 3 s.', onCrit('bleed', 3000)),
+  m('falconer', 'dagger', 'Talon Knife', 'Critical hits make the foe bleed for 3 s, once every 1 s.', onCrit('bleed', 3000)),
   // Guile
   m('corsair', 'sword', 'Cutlass', '+8% attack speed.', { mods: [f('atkSpeed', 0.08)] }),
   m('corsair', 'dagger', 'Boot Knife', 'Critical hits blind the foe for 1 s.', onCrit('blind', 1000)),

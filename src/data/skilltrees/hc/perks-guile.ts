@@ -42,7 +42,7 @@ const corsair: ClassPerks = {
     one('pk_corsair_deep_pockets', 'Greedy Hands', 'power', 'Plunder recharges 20% faster and hits 25% harder.', { spellMods: [{ spell: PLUNDER, cd: -0.2, dmg: 0.25 }] }),
     three('pk_corsair_treasure_nose', 'Treasure Nose', 'power', (r) => `+${r * 10}% Embershards and +${r * 3}% rarer loot.`,
       (r) => ({ mods: [{ stat: 'gold', op: 'flat', value: 0.1 * r }, { stat: 'itemFind', op: 'flat', value: 0.03 * r }] })),
-    one('pk_corsair_pirates_luck', 'Pirate’s Luck', 'trigger', 'Critical hits steal Embershards from the foe; +6% critical chance.',
+    one('pk_corsair_pirates_luck', 'Pirate’s Luck', 'trigger', 'Critical hits steal Embershards from the foe, once every 1 s; +6% critical chance.',
       { mods: [{ stat: 'crit', op: 'flat', value: 0.06 }], procs: [{ on: 'crit', icd: 1000, do: [{ a: 'steal', gold: 1, buffs: false, area: tgt }] }] }),
     one('pk_corsair_rum_ration', 'Rum Ration', 'resource', 'Kills restore 15 stamina and 3% of max health; when hit, restore 8 stamina, once every 3 s.',
       { mods: [{ stat: 'staminaOnKill', op: 'flat', value: 15 }], procs: [{ on: 'kill', do: [{ a: 'heal', pctMax: 0.03, to: 'self' }] }, { on: 'hurt', icd: 3000, do: [{ a: 'resource', stamina: 8 }] }] }),
@@ -71,7 +71,7 @@ const jester: ClassPerks = {
       { mods: [{ stat: 'crit', op: 'flat', value: 0.04 }], procs: [{ on: 'dashEnd', icd: 3000, do: [{ a: 'buff', id: 'jst:seeme', dur: 2000, to: 'self', charges: 1, flags: ['nextHitsCrit'] }] }] }),
     // path 2: Punchline (+ new spell 5): the timing
     one('pk_jester_good_timing', 'Good Timing', 'power', 'Punchline recharges 25% faster and lasts 30% longer.', { spellMods: [{ spell: PUNCH, cd: -0.25, dur: 0.3 }] }),
-    three('pk_jester_running_gag', 'Running Gag', 'trigger', (r) => `Critical hits: +${r * 5}% attack speed for 3 s; +${r.toFixed(1)}% damage; +${(3 * r).toFixed(1)}% critical damage.`,
+    three('pk_jester_running_gag', 'Running Gag', 'trigger', (r) => `Critical hits: +${r * 5}% attack speed for 3 s, once every 1.5 s; +${+r.toFixed(1)}% damage; +${+(3 * r).toFixed(1)}% critical damage.`,
       (r) => ({ mods: [{ stat: 'critd', op: 'flat', value: 0.03 * r }, { stat: 'dmg', op: 'flat', value: 0.01 * r }], procs: [{ on: 'crit', icd: 1500, do: [{ a: 'buff', id: 'jst:gag', dur: 3000, to: 'self', mods: [{ stat: 'atkSpeed', op: 'flat', value: 0.05 * r }] }] }] })),
     one('pk_jester_encore', 'Encore', 'resource', 'Critical hits restore 3 Ember and 4 stamina, once every 0.5 s.',
       { procs: [{ on: 'crit', icd: 500, do: [{ a: 'resource', ember: 3, stamina: 4 }] }] }),

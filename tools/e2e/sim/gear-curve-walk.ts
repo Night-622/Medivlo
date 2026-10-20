@@ -67,10 +67,13 @@ export const questsOf = async (cls: string): Promise<QuestDef[]> => ((await impo
 /** XP (xp-project's Hero) driving the Player's level */
 class Hero {
   xp = 0;
+  /** XP attribution (xp-pacing.ts): every gain, in levels' worth at the time, to the current quest and source */
+  onXp?: (levels: number) => void;
   constructor(readonly pl: Player) {}
   gain(n: number): void {
     const pl = this.pl;
     if (pl.level >= LEVEL_CAP) return;
+    this.onXp?.(n / xpToNext(pl.level));
     this.xp += n;
     while (pl.level < LEVEL_CAP && this.xp >= xpToNext(pl.level)) { this.xp -= xpToNext(pl.level); pl.level = pl.level + 1; }
   }
@@ -80,6 +83,7 @@ class Hero {
   }
 }
 
+export type XpSource = 'zone' | 'lair' | 'optional' | 'objective' | 'quest';
 export interface Snap { L: number; ilvl: number; rarity: Record<string, number>; upgrade: number; gold: number; income: number; spent: number; ingots: number; empty: string[] }
 export interface Run {
   cls: string; seed: number; snaps: Snap[]; end: number; upgrades: Player['t']['upgrades']; drops: Record<Rarity, number>; goldIn: Record<string, number>; goldOut: Record<string, number>;
@@ -91,11 +95,13 @@ export interface Run {
  * (boss-check copies the worn kit); `onQuest` gets each quest's id and the hero's exact level as it starts (hero-levels.ts).
  */
 export function runClass(cls: string, seed: number, own: QuestDef[], checks: readonly number[], onCheck?: (L: number, pl: Player) => void,
-  onQuest?: (quest: string, level: number) => void, opts: { party?: number } = {}): Run {
+  onQuest?: (quest: string, level: number) => void, opts: { party?: number; onXp?: (quest: string, src: XpSource, levels: number) => void } = {}): Run {
   // a party meets bigger packs and lair waves (spawnCountMult); every hero near a kill gets its full XP (sim/death.ts),
   // so party size only changes how many kills there are. Bosses and quest objective kills stay single. (Loot here stays solo.)
   const crowd = spawnCountMult(opts.party ?? 1);
   const pl = new Player(cls, seed), h = new Hero(pl);
+  let curQuest = '', curSrc: XpSource = 'zone';
+  if (opts.onXp) h.onXp = (lv) => opts.onXp!(curQuest, curSrc, lv);
   const walk = new Map((walks[cls] ?? []).map((w) => [w.quest, w]));
   const named = new Set(JSON.stringify([...own, ...sharedQs]).match(/inst:[a-z0-9-]+/g) ?? []);
   const side = startAreaOf(cls).waystone.replace(/^ws:/, '');
@@ -133,6 +139,7 @@ export function runClass(cls: string, seed: number, own: QuestDef[], checks: rea
   // optional sites a typical player opens (Claude 2): their own realm side's ruin cache and cave once the lookout has
   // marked them (about the 6th Act I main), and each Morvane region's ruin and cave on the first visit
   const optional = (base: string, level: number, table: string, inst: string) => {
+    curSrc = 'optional';
     if (OPT) { pl.chest(`obj:${base}-ruin-cache`, { level, rarity: 'rare', loot: table }); if (instanceDef(inst) && !cleared.has(inst)) { cleared.add(inst); clearLair(inst, false); } }
   };
   // the quest sequence: Claude 2's walk export order (it lists every quest, and bands.ts reads its expected levels in
@@ -144,12 +151,14 @@ export function runClass(cls: string, seed: number, own: QuestDef[], checks: rea
     const act = q.act;
     const w = walk.get(q.id);
     onQuest?.(q.id, pl.level >= LEVEL_CAP ? LEVEL_CAP : pl.level + h.xp / xpToNext(pl.level));
+    curQuest = q.id;
     if (act === 'act1' && own.includes(q) && (q.type === 'main' || q.type === 'class') && ++ownMains === 6)
       optional(side, Math.round(pl.level) + 1, `tbl:${CLASS_SCHOOL[cls]}-ruin`, `inst:${side}-cave`);
     for (const wz of w?.zones ?? []) {
       const r = /^region:([a-z]+)#/.exec(typeof wz === 'string' ? wz : wz.id)?.[1];
       if (r && !regions.has(r)) { regions.add(r); optional(r, typeof wz === 'string' ? Math.round(pl.level) : wz.level[1], 'tbl:morvane-ruin', `inst:${r}-cave`); }
     }
+    curSrc = 'zone';
     for (const wz of w?.zones ?? []) {
       const z = typeof wz === 'string' ? zoneById(wz) : { ...(zoneById(wz.id) ?? { id: wz.id, space: '', at: [0, 0], r: 0, pool: [] }), level: wz.level, cap: wz.cap, elite: wz.elite } as SpawnZoneDef;
       if (z) clearZone(z);
@@ -157,12 +166,15 @@ export function runClass(cls: string, seed: number, own: QuestDef[], checks: rea
     const objKills = (q.stages.flatMap((s) => s.objectives) as { kill?: string; count?: number }[]).filter((o) => o.kill);
     const inst = [...new Set([q.region, ...(w?.lairs ?? []), ...objKills.map((o) => lairOf.get(o.kill as string))]
       .filter((r): r is string => !!r && r.startsWith('inst:') && !!instanceDef(r)))];
+    curSrc = 'lair';
     for (const i of inst) if (!cleared.has(i)) { cleared.add(i); clearLair(i, objKills.some((o) => lairOf.get(o.kill as string) === i)); }
+    curSrc = 'objective';
     for (const o of objKills) {
       const id = o.kill as string, lv = bossLevel(id) ?? (/^bx_[a-z]+_5$/.test(id) ? 14 : pl.level + 0.5);
       for (let k = 0; k < (o.count ?? 1); k++) h.kill(id, lv, tierOf(id));
     }
     pl.quest(q.reward?.gold, q.reward?.hcItems);
+    curSrc = 'quest';
     if (q.reward?.xpTier) h.gain(QUEST_XP_TIER[q.reward.xpTier] * xpToNext(pl.level));
     pl.town();
     while (next < checks.length && pl.level >= checks[next]) snap(checks[next++]);
