@@ -16,6 +16,7 @@
  *   class-objects       class story objects: usable only in their own classes' campaigns (classObjects.ts)
  *   clearance           bodies fit their arenas, lair corridors and story markers (clearance.ts)
  *   smiths              every Runeforge within 30 tiles of a waystone; every capital and Concordia has one
+ *   reach               a hero body reaches every objective place, NPC spot, chest and search object (reach.ts)
  *   loot                chests' Claude 3 loot tables resolve; every rare chest has one
  *   merchants           smiths, plus each capital's smith + trader and each frontier's pedlar by its village waystone,
  *                       and every shop's merchant resolves through WorldService.npcPos
@@ -118,6 +119,8 @@ if (check === 'unplaced') {
   await import('./classObjects'); // each class as host sees only its own story objects, and all of them
 } else if (check === 'clearance') {
   await import('./clearance'); // bosses, minis and packs fit their arenas, corridors and markers
+} else if (check === 'reach') {
+  await import('./reach'); // a hero can get to every objective place, NPC, chest and search object
 } else if (check === 'loot') {
   // Claude 3's loot tables on chests: every `loot` id resolves (lootTable), every rare chest carries one
   const { lootTable } = await import('@/data/items/hc/lootTables');

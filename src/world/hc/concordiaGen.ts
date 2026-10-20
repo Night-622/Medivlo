@@ -145,10 +145,11 @@ export class ConcordiaGen implements SpaceGen {
       this.obj({ id: w.id, kind: 'waystone', at: w.at, props: { name: w.name, label: 'Wake' } });
     }
     this.placeGateCircle();
-    // the Drowned Bell on its island in the Abbey lake
+    // the Drowned Bell on its island in the Abbey lake: seen from Aldous's boat (dialogue:obj-shore-boat), not walked
+    // to, so a marker anchor rather than an [F] object no hero can reach (Claude 1's reach check)
     const bx = this.lake.cx * TILE_SIZE, by = this.lake.cy * TILE_SIZE;
     this.put({ art: 'd_bell', x: bx, y: by, key: 'drowned-bell' });
-    this.obj({ id: 'obj:drowned-bell', kind: 'interactable', at: [this.lake.cx, this.lake.cy], props: { name: 'The Drowned Bell', label: 'Ring' } });
+    this.obj({ id: 'obj:drowned-bell', kind: 'trigger', at: [this.lake.cx, this.lake.cy], size: [1, 1], props: { name: 'The Drowned Bell' } });
     // the Concord Citadel and its gates (sealed with the Heart)
     const [qx, qy] = this.citadel;
     this.put({ art: 'lm:citadel:concordia', x: qx * TILE_SIZE + 16, y: qy * TILE_SIZE, key: 'concord-citadel' });

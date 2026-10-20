@@ -409,7 +409,8 @@ export const CONCORDIA_EXTRA: ConcordiaExtra[] = [
   c('obj:lost-name-2', 'landmark:shore-fish-mill', "The mill's nets", -2, 0, 'Search the nets'),
   c('obj:lost-name-3', 'landmark:shore-ferry-house', 'A jar', 3, 0),
   c('obj:shore-dirge-stone', 'landmark:shore-chapel', 'The dirge stone', 0, 4, 'Read the stone'),
-  c('obj:nave-name-drum', 'obj:drowned-bell', 'A drum on the water', 2, -2, 'Strike the drum'),
+  // at the boat landing, the bell is rowed out to from here (it stood on the bell's island, out of any hero's reach)
+  c('obj:nave-name-drum', 'landmark:shore-boat', 'A drum on the water', 3, -1, 'Strike the drum'),
   c('landmark:gloam-stags-rest', 'obj:sentinel-verdant-door', "Stag's Rest", 0, 1),
   c('obj:marchetti-horn-1', 'ws:stag', "Marchetti's horn", -5, -2, 'Sound the horn'),
   c('obj:marchetti-horn-2', 'ws:stag', "Marchetti's horn", 5, -2, 'Sound the horn'),

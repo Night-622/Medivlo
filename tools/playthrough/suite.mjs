@@ -1,12 +1,12 @@
 // World pre-deploy suite (Claude 2): builds tools/playthrough/checks.ts once and runs the fast world checks, each in
-// its own Node process; exits non-zero if any fails. About 10 s. `--full` adds bands-concordia (~4 min).
+// its own Node process; exits non-zero if any fails. About 25 s (reach floods every space, ~13 s). `--full` adds bands-concordia (~4 min).
 //   node tools/playthrough/suite.mjs [--full]
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-const FAST = ['unplaced', 'pieces', 'instances', 'bands', 'class-objects', 'clearance', 'merchants', 'loot'];
+const FAST = ['unplaced', 'pieces', 'instances', 'bands', 'class-objects', 'clearance', 'merchants', 'loot', 'reach'];
 const checks = process.argv.includes('--full') ? [...FAST, 'bands-concordia'] : FAST;
 const out = join(mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'world-suite-')), 'checks.mjs');
 execFileSync(process.execPath, ['tools/playthrough/build.mjs'], { env: { ...process.env, ENTRY: 'tools/playthrough/checks.ts', OUT: out }, stdio: 'ignore' });

@@ -1,6 +1,6 @@
 # The Hollow Crown: world design
 
-Owner: **Claude 2** (`medival-12`). Status: **Foundation draft v1**. Source: the Claude Design handoff (`Medieval Browser Action RPG/`: `tiles.js`, `realms.js`, `map.js`, `atlas.json`, `medival-tokens.json`). Where old Morvane lore and the handoff clash, the handoff wins (docs/REBUILD.md). This replaces `WORLD.md`.
+Owner: **Claude 2**. Status: **v2, 2026-10-21**: built and placed for all 24 campaigns. §10 covers the campaign-order systems and §11 the world checks. Source: the Claude Design handoff (`Medieval Browser Action RPG/`: `tiles.js`, `realms.js`, `map.js`, `atlas.json`, `medival-tokens.json`). Where old Morvane lore and the handoff clash, the handoff wins (docs/REBUILD.md). This replaces `WORLD.md`.
 
 ---
 
@@ -111,8 +111,10 @@ World → full-screen grade rect with **MULTIPLY** → radial glow sprites with 
 ## 7. Map: Realms › Realm/Morvane › Village
 
 - **Realms:** the `realms.js` ring (`mvrealm`). Concordia sits at the centre and the 12 realms around it. Your home realm is teal, Concordia is open once Act II starts, and the others show "???".
-- **Morvane:** the `map.js` region map at 2× with fog clouds per unfound region, village markers, waystones (awake/asleep), quest markers and the hero. A region panel lists villages with a View button.
-- **School realm map:** the same style, drawn from the realm's area and zone data in its palette, with the capital, frontier, gate and waystones.
+- **Morvane:** the `map.js` region map at 2× with fog clouds per unfound region, village markers, waystones (awake/asleep), quest marks, merchants and the hero. A region panel lists villages with a View button and shows the level band the hero meets there now (§10.2).
+- **School realm map:** the same style, drawn from the realm's area and zone data in its palette, with the capital, frontier, gate, waystones, quest marks and merchants.
+- **Instance map:** a lair's or cave's floor plan, with the way out, the boss arena, chests, finds, quest marks and you.
+- **Show on map:** `ui:open { panel: 'map', focus: <place id> }` (from the Journal) opens the level holding that place and rings its mark.
 - **Village close-ups:** `mvvil` views of the 10 Morvane villages and the 12 capitals, using `vilLayout()` place boxes and NPC pills. Talk jumps to the NPCs screen.
 - **Fast travel:** attuned waystones within the current space, plus realm gates between spaces once Claude 4's flags allow it. Not in combat or in instances. The gold fare comes from `Services.economy`.
 
@@ -128,9 +130,87 @@ World → full-screen grade rect with **MULTIPLY** → radial glow sprites with 
 | Folder | Contents | Phaser? |
 |---|---|---|
 | `src/world/hc/` | Space model, tile registry, recolour rules (pure maths), realm and Concordia generators, dual-grid autotile, footprints, collision, A*, spawns, objects, discovery | **No** |
-| `src/world/render/` | Tile atlas baking (canvas recolour), chunk tilemaps, building and prop sprites, lighting layer | Yes |
-| `src/scenes/WorldScene.ts` | Wires sim (authority) and render (all clients) through `Services.net` | Yes |
-| `src/ui/map/` | Realms ring, Morvane map, realm maps, village close-ups, minimap | Yes |
-| `src/data/regions/hc/` | 13 realm defs, Concordia regions, villages, waystones, area/zone/lair placements | No |
+| `src/world/render/` | Tile atlas baking (canvas recolour), chunk tilemaps (worker-generated, `ChunkFeed`), building and prop sprites, lighting layer, [F] prompts, NPC view, see-through props (`Occlusion`) | Yes |
+| `src/scenes/WorldV2Scene.ts` | Wires sim (authority) and render (all clients) through `Services.net` (registered as `SceneKeys.World`) | Yes |
+| `src/ui/map/` | Realms ring, Morvane map, realm and instance maps, village close-ups, minimap, quest marks, merchant glyphs | Yes |
+| `src/data/regions/hc/` | 13 realm defs, Concordia regions, villages, waystones, area/zone/lair placements, campaign placement lists, generated band tables | No |
+| `tools/playthrough/` | Node world checks (`checks.ts`, `suite.mjs`), band generators, walk exports, the pacing bot | Node |
 
-The Phase 1 world (`src/world/*.ts` and the old Morvane data) stays until the new WorldScene replaces it, then is deleted.
+The Phase 1 world was moved to `archive/medival-v1/`; nothing was deleted.
+
+## 10. Campaign-order systems
+
+### 10.1 Realm spawn bands
+Spawn levels follow each campaign's quest order, not the zone number.
+- **Generation:** `tools/playthrough/bands.ts gen` walks every class's Act I quests with A*, both on foot and with waystone fast travel. It writes `src/data/regions/hc/zoneBands.gen.ts`.
+- **Groups:** a band group is a side's zone n with its roads, the gate road, or one optional area's approach.
+- **Tiers:** each group has a list of tiers. A tier's floor is the expected level at that visit, `1 + 1.3 × (main − 1)`. The tier applies once Act I main `step` is done, by the side's class or by the host's class (`src/world/hc/bands.ts`).
+- **Levels in a tier:** zones spawn at floor…floor+2 and patrols at floor+1…floor+2. Elites appear only from L8.
+- **Off-route groups:** optional areas, which no walk passes, take the nearest zone's band +1.
+- **Ruin caches** roll at their guarding pack's band in force.
+
+### 10.2 Concordia bands
+`concordiaBands.ts gen` does the same for Acts II–III across Morvane.
+- The table `concordiaBands.gen.ts` is keyed by host class (the `campaign.class` flag) × region.
+- Tiers step with the host's Act II/III mains.
+- Public realms (no host class) use L20; the Heart uses L30.
+- The check: every main-quest pass is within expected +2 and −4.
+
+### 10.3 Class story objects
+Each class's story objects are usable only in that class's own campaign. Gating is derived from the quest data (`src/world/hc/classGate.ts`, `classObjects.gen.ts`). Other hosts see the objects, but they are inert.
+
+### 10.4 Quest marks
+Claude 4's `questMarkers()` (`src/narrative/client/markers.ts`) lists the open objectives as place ids. `src/world/hc/questPlaces.ts` resolves each place for display:
+- **Objects, landmarks, zones, areas (including `area:<S>-gate`), regions and villages:** the marker index, via `markerPeek`, so a frame never builds the cold full index.
+- **A piece inside a lair, cave or the citadel:** the instance's door when the hero is outside, and the piece itself once inside.
+- **`inst:<lair>` asked from inside that lair:** its boss arena. Lair-boss kill objectives point at their lair (`bossLair()` in `instanceGen.ts`).
+- **`npc:<id>`:** the NPC entity where it stands, else its scheduled landmark.
+
+`markerAt` stays exact, because story fights spawn there. The authority warms the marker index one space per quiet tick, starting with the first player's space.
+
+How marks are drawn:
+- the tracked quest is gold, with an edge arrow on the minimap when off the window and a pulsing ring on the map;
+- other quests are teal.
+
+### 10.5 Merchants
+Every capital has a smith (with a Runeforge) and a trader, and every frontier has a pedlar. Claude 3 defines the shops and Claude 4 the NPCs.
+- **Village landmarks** stand at each building's door (`villageDoorRects`), so village NPCs no longer stack on the village centre.
+- **Distance:** capital merchants are 8–12 tiles from the capital waystone.
+- **NPCs on a set-piece landmark** stand on the nearest walkable tile in front of its prop (`onGround` in `npcs.ts`).
+- **`WorldService.npcPos(npcId)`** (authority, `npcWhere`) gives where an NPC stands now. Shop and Runeforge actions need the hero within 96 px of the merchant.
+
+### 10.6 Loot tables
+Claude 3's tables (`src/data/items/hc/lootTables.ts`) roll on top of the usual chest loot, through a chest's `loot` prop:
+
+| Chests | Table |
+|---|---|
+| Realm ruin caches | `tbl:<school>-ruin` |
+| Realm cave finales | `tbl:<school>-cave` |
+| Morvane ruin caches / cave finales | `tbl:morvane-ruin` / `tbl:morvane-cave` |
+| First side-room chest of a lair or cave | `tbl:lair-rare` |
+| The citadel's side rooms | `tbl:heart-cache` |
+
+Bosses roll their own tables; boss triggers carry no `loot` prop.
+
+### 10.7 See-through props and prompts
+- **See-through props:** tall props drawn over the local hero fade to 0.45 and ease back once the hero is clear (`src/world/render/Occlusion.ts`, testing the 3×3 chunks round the hero).
+- **Used search objects:** once an active objective has counted an object, its prompt says "Already searched" or "Already read", dimmed (Claude 4's `objectUsed`).
+
+## 11. World checks
+
+`node tools/playthrough/suite.mjs` runs the fast set in about 25 s and exits 1 on any failure. It is part of the pre-deploy check. Each check also runs alone:
+
+`ENTRY=tools/playthrough/checks.ts OUT=<file> node tools/playthrough/build.mjs && node <file> <check>`
+
+| Check | What must hold |
+|---|---|
+| `unplaced` | Every place and object id in the hc quests and dialogues exists in the world |
+| `pieces` | Every set piece is placed, with no placement warnings and no retired ids |
+| `instances` | Every instance builds; side rooms and objects are reachable from the entrance |
+| `bands` | Every Act I walk is within expected +2; hosts of other classes step sides up with their own progress |
+| `class-objects` | Each class sees only its own story objects, and all of them |
+| `clearance` | Bodies fit their arenas, lair corridors and story markers |
+| `merchants` | Runeforges, capital smiths and traders, and frontier pedlars stand by their waystone; every shop merchant resolves through `npcPos` |
+| `loot` | Every chest `loot` id is a known table, and every rare chest has one |
+| `reach` | A hero body (r12) reaches every quest objective place of all 24 campaigns, every NPC spot (on open ground), and every chest and search object |
+| `bands-concordia` (`--full` only, ~4 min) | Every Act II/III main-quest pass is within expected +2 and −4 |

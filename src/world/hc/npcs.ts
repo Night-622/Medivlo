@@ -7,18 +7,35 @@ import { TILE_SIZE } from '@/core';
 import type { NpcDef } from '@/core';
 import type { EntityState, SnapshotProvider } from '@/net';
 import { spaceRuntime } from './spaces';
+import { SpaceQuery } from './runtime';
 import type { WorldPlayer } from './authority';
 
 type P2 = [number, number];
 
 /** Positions (world px, feet) of npc-anchors and landmarks per space, built once per space. */
-const index = new Map<string, { anchors: Map<string, P2>; landmarks: Map<string, P2> }>();
+const index = new Map<string, { anchors: Map<string, P2>; landmarks: Map<string, P2>; q: SpaceQuery }>();
+
+/**
+ * Feet on open ground: a set-piece landmark often has its building or prop at the centre, so an NPC placed there
+ * stood inside the house (Claude 1's reach check: 179 spots). The nearest walkable tile wins, in front of (below) the
+ * prop first; px kept when already clear.
+ */
+function onGround(q: SpaceQuery, [x, y]: P2): P2 {
+  const tx = Math.floor(x / TILE_SIZE), ty = Math.floor((y - 1) / TILE_SIZE);
+  if (q.isWalkable(tx, ty)) return [x, y];
+  let best: P2 | null = null, bd = Infinity;
+  for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+    const d = Math.hypot(dx, dy) + (dy < 0 ? 0.6 : 0); // below the prop reads as "in front of it"
+    if (d < bd && q.isWalkable(tx + dx, ty + dy)) { bd = d; best = [(tx + dx + 0.5) * TILE_SIZE, (ty + dy + 1) * TILE_SIZE - 2]; }
+  }
+  return best ?? [x, y];
+}
 
 function spaceIndex(space: string) {
   let ix = index.get(space);
   if (ix) return ix;
-  ix = { anchors: new Map(), landmarks: new Map() };
-  const gen = spaceRuntime(space).gen;
+  const rt = spaceRuntime(space), gen = rt.gen;
+  ix = { anchors: new Map(), landmarks: new Map(), q: new SpaceQuery(rt, () => ({ hour: 12, phase: 'day' })) };
   const N = 32;
   for (let cy = 0; cy < Math.ceil(gen.heightTiles / N); cy++) for (let cx = 0; cx < Math.ceil(gen.widthTiles / N); cx++) {
     for (const o of gen.objects(cx, cy)) {
@@ -41,7 +58,7 @@ export function npcsIn(space: string, placements: ReadonlyMap<string, readonly N
     npcs.forEach((n, i) => {
       const a = ix.anchors.get(n.id);
       // several NPCs on one landmark without their own anchor stand in a short row
-      const at: P2 | undefined = a ?? (base ? [base[0] + (i - (npcs.length - 1) / 2) * 28, base[1]] : undefined);
+      const at: P2 | undefined = a ?? (base ? onGround(ix.q, [base[0] + (i - (npcs.length - 1) / 2) * 28, base[1]]) : undefined);
       if (at) out.push({ npc: n, x: at[0], y: at[1] });
     });
   }
