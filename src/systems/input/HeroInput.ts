@@ -12,7 +12,7 @@ import { Btn, type InputFrame } from '@/net/types';
 export interface TargetPicker { pick(x: number, y: number): string | null }
 
 const HELD: [Action, number][] = [
-  ['cast1', Btn.CAST1], ['cast2', Btn.CAST2], ['cast3', Btn.CAST3], ['cast4', Btn.CAST4], ['dash', Btn.DASH],
+  ['cast1', Btn.CAST1], ['cast2', Btn.CAST2], ['cast3', Btn.CAST3], ['cast4', Btn.CAST4], ['dash', Btn.DASH], ['slash', Btn.SLASH],
   ['potionQ', Btn.POTION_Q], ['potionE', Btn.POTION_E], ['interact', Btn.INTERACT],
 ];
 const PANELS: [Action, 'inventory' | 'skills' | 'spells'][] = [['inventory', 'inventory'], ['skills', 'skills'], ['spells', 'spells']];

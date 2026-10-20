@@ -133,6 +133,27 @@ export class CombatFx {
       g.lineStyle(6, e.ability === 'blink' ? 0xa35cff : 0xe8eef8, 0.5);
       g.lineBetween(e.x, e.y - 10, e.tx, e.ty - 10);
       this.scene.tweens.add({ targets: g, alpha: 0, duration: 220, onComplete: () => g.destroy() });
+    } else if (e.ability === 'slash') {
+      // a crescent trail swept across the swing's arc (tx/ty: the reach point straight ahead)
+      const g = this.scene.add.graphics().setDepth(Depth.Effects).setBlendMode(Phaser.BlendModes.ADD);
+      const a = Math.atan2(e.ty - e.y, e.tx - e.x), r = Math.max(24, Math.hypot(e.tx - e.x, e.ty - e.y)), cy = e.y - 12;
+      const sweep = { k: 0 };
+      const draw = () => {
+        g.clear();
+        g.lineStyle(5, 0xf4f6ff, 0.85 * (1 - sweep.k * 0.6));
+        g.beginPath(); g.arc(e.x, cy, r * 0.85, a - 0.9, a - 0.9 + 1.8 * Math.min(1, sweep.k * 1.6), false); g.strokePath();
+        g.lineStyle(2, 0xffe9a8, 0.6 * (1 - sweep.k));
+        g.beginPath(); g.arc(e.x, cy, r * 0.65, a - 0.7, a - 0.7 + 1.4 * Math.min(1, sweep.k * 1.6), false); g.strokePath();
+      };
+      draw();
+      this.scene.tweens.add({ targets: sweep, k: 1, duration: Math.max(120, e.ms), onUpdate: draw, onComplete: () => g.destroy() });
+    } else if (e.ability === 'quickshot') {
+      // the arrow itself is a projectile; a short release streak sells the snap
+      const g = this.scene.add.graphics().setDepth(Depth.Effects).setBlendMode(Phaser.BlendModes.ADD);
+      const a = Math.atan2(e.ty - e.y, e.tx - e.x);
+      g.lineStyle(3, 0xe8eef8, 0.7);
+      g.lineBetween(e.x + Math.cos(a) * 10, e.y - 12 + Math.sin(a) * 10, e.x + Math.cos(a) * 46, e.y - 12 + Math.sin(a) * 46);
+      this.scene.tweens.add({ targets: g, alpha: 0, duration: 140, onComplete: () => g.destroy() });
     } else if (e.ability === 'shatter' || e.ability === 'unmaking') {
       const c = this.scene.add.circle(e.x, e.y, 10, e.ability === 'shatter' ? 0x7fe3ff : 0xa35cff, 0.6).setDepth(Depth.Effects).setBlendMode(Phaser.BlendModes.ADD);
       this.scene.tweens.add({ targets: c, radius: 90, alpha: 0, duration: 300, onComplete: () => c.destroy() });

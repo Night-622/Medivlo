@@ -1,5 +1,5 @@
 // Systems features in the real browser with REAL input (Claude 3, pre-deploy gate). Per class (default warden,
-// arcanist, jester): click a creature at the edge of its sprite → targeted, just outside → not; keys 1–3 cast;
+// arcanist, jester): R slashes for martial classes and does nothing for magic ones; click a creature at the edge of its sprite → targeted, just outside → not; keys 1–3 cast;
 // standing in a creature's telegraph costs HP and walking out of it with real WASD does not; spend a skill point by
 // clicking in Skills and equip an item by clicking in the Pack, and read the change on screen. Once: every 5-tab bar
 // tab and ✕ clicked at its centre and in its bottom-right quarter; a boss-bar screenshot.
@@ -77,6 +77,25 @@ async function targeting(cls) {
   await ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(id)}); return 1; })()`);
 }
 
+const MARTIAL = ['swordsman', 'samurai', 'knight', 'juggernaut', 'monk', 'brawler', 'huntsman', 'falconer', 'corsair', 'jester', 'bard', 'skald'];
+async function slashKey(cls) {
+  // martial classes: a real R press (aimed by the real mouse) swings at a creature in front; magic classes: nothing
+  const [id] = await ev(`window.__hc.spawn('bx_wolf', 1, 1, 46)`);
+  await ev(`window.__hc.freeze(${JSON.stringify(id)})`);
+  await sleep(700);
+  const at = await ev(`window.__hc.screenOf(${JSON.stringify(id)})`);
+  await page.mouseMove(Math.round(at.x), Math.round(at.y)); await sleep(300);
+  await ev(`(async () => { const c = await import('/src/core/index.ts'); window.__hits = []; c.bus.on('combat:hit', (e) => window.__hits.push(e)); window.__casts = []; return 1; })()`);
+  await page.press('KeyR', 70);
+  const me = await ev(`(async () => 'p:' + (await import('/src/core/index.ts')).Services.get('net').localPlayer)()`);
+  const swung = await waitFor(`(window.__casts || []).some((e) => e.casterId === ${JSON.stringify(me)} && (e.ability === 'slash' || e.ability === 'quickshot'))`, 2500);
+  const hit = await waitFor(`(window.__hits || []).some((e) => e.sourceId === ${JSON.stringify(me)} && e.targetId === ${JSON.stringify(id)})`, 2500);
+  const slot = (await hudTexts()).includes('R');
+  if (MARTIAL.includes(cls)) check(swung && hit && slot, `${cls}: a real R press slashes the creature in front (hotbar shows R)`, JSON.stringify({ swung, hit, slot }));
+  else check(!swung && !slot, `${cls}: R does nothing for a magic class (no slash, no slot)`, JSON.stringify({ swung, slot }));
+  await ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(id)}); return 1; })()`);
+}
+
 async function telegraphs(cls) {
   // a creature rigged to one telegraphed ground strike at the hero (no basic attacks, never moves)
   const run = async (walkOut) => {
@@ -86,18 +105,22 @@ async function telegraphs(cls) {
     if (!rigged) return { rigged, tele: false };
     const tele = await waitFor(`(window.__teles || []).some((t) => t.id === ${JSON.stringify(id)})`, 12000);
     const t = (await ev('window.__teles'))[0];
+    // count the creature's hits on the hero (HP alone can hide one: out-of-combat regen refills a few points)
+    await ev("(async () => { const c = await import('/src/core/index.ts'); window.__struck = []; c.bus.on('combat:hit', (e) => window.__struck.push(e)); return 1; })()");
     const hp0 = (await ev('window.__hc.local()')).hp;
     if (walkOut) await page.hold(['KeyS'], 900);
     await sleep((t?.ms ?? 300) + 700);
     const hp1 = (await ev('window.__hc.local()')).hp;
     await ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(id)}); return 1; })()`);
-    return { rigged, tele, lost: Math.round(hp0 - hp1), r: t?.r };
+    const me = await ev('window.__hc.local()');
+    const struck = await ev(`(async () => { const c = await import('/src/core/index.ts'); const mine = 'p:' + c.Services.get('net').localPlayer; return (window.__struck || []).filter((e) => e.sourceId === ${JSON.stringify(id)} && e.targetId === mine).length; })()`);
+    return { rigged, tele, struck, lost: Math.round(hp0 - hp1), r: t?.r, at: t ? [t.x, t.y] : null, hero: [Math.round(me.x), Math.round(me.y)] };
   };
   const stay = await run(false);
-  check(stay.rigged && stay.tele && stay.lost > 0, `${cls}: standing in a telegraph costs HP`, JSON.stringify(stay));
+  check(stay.rigged && stay.tele && stay.struck > 0, `${cls}: standing in a telegraph gets you hit`, JSON.stringify(stay));
   await sleep(800);
   const out = await run(true);
-  check(out.rigged && out.tele && out.lost === 0, `${cls}: walking out of the telegraph (real S key) costs nothing`, JSON.stringify(out));
+  check(out.rigged && out.tele && out.struck === 0, `${cls}: walking out of the telegraph (real S key) is a dodge`, JSON.stringify(out));
 }
 
 async function skillsAndPack(cls) {
@@ -154,6 +177,7 @@ try {
   for (const [k, cls] of CLASSES.entries()) {
     await enter(cls);
     await targeting(cls);
+    await slashKey(cls);
     await telegraphs(cls);
     await skillsAndPack(cls);
     if (k === 0) { await tabs(); await bossBar(cls); }

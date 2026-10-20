@@ -11,6 +11,7 @@ import { unlockLevel } from '@/systems/rules/curves';
 import { allNodes, canLearn } from '@/systems/rules/tree';
 import type { CharacterSave } from '@/systems/rules/types';
 import { Sim } from '@/systems/sim/Sim';
+import { hasSlash } from '@/systems/rules/slash';
 import { HC_CAMPAIGN_BOSSES } from '@/data/enemies/hc/campaign';
 import type { SimPorts } from '@/systems/sim/world';
 
@@ -119,6 +120,8 @@ function fight(classId: string, label: string, spawns: { creature: string; tier?
       const slot = [0, 1, 2, 3].find((i) => { const id = p.save.hotbar[i]; return id && sim.w.t >= (p.cds.get(id) ?? 0); });
       if (slot !== undefined) { buttons |= [Btn.CAST1, Btn.CAST2, Btn.CAST3, Btn.CAST4][slot]; casts++; }
     }
+    // martial classes press the slash / quick shot whenever it is up (NOSLASH=1: the bot without it, for comparison)
+    if (!process.env.NOSLASH && hasSlash(p.save.classId) && tick % 2 === 0 && sim.w.t >= (p.cds.get('slash') ?? 0)) buttons |= Btn.SLASH;
     if (p.hp < p.maxHp * 0.4) buttons |= Btn.POTION_Q;
     if (p.ember < 20) buttons |= Btn.POTION_E;
     // dodge telegraphed wind-ups

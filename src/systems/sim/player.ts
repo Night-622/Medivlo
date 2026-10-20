@@ -13,6 +13,7 @@ import { spellDef } from '@/systems/rules/spells';
 import type { Action, Area, BasicAttack, CharacterSave, HcSpell, SpellMod, WeaponType } from '@/systems/rules/types';
 import { motionStep, motionTick, runActions } from './actions';
 import { tickKeystones } from './keystones';
+import { slash } from './slash';
 import { basicCast, consumeCharge, dealDamage, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
 import { newCombatantBase, type CastCtx, type Combatant, type PlayerEnt } from './state';
 import { dist, dist2, HERO_RADIUS, isBehind, norm, type SimWorld } from './world';
@@ -96,6 +97,7 @@ export function stepPlayer(w: SimWorld, p: PlayerEnt, frames: InputFrame[], dt: 
     if (f.target !== undefined) setTarget(w, p, f.target);
     if (p.dead || p.downed || w.frozen) continue;
     if (pressed & Btn.DASH) dash(w, p);
+    if (pressed & Btn.SLASH) slash(w, p);
     if (pressed & Btn.CAST1) cast(w, p, 0);
     if (pressed & Btn.CAST2) cast(w, p, 1);
     if (pressed & Btn.CAST3) cast(w, p, 2);
@@ -201,7 +203,7 @@ function dash(w: SimWorld, p: PlayerEnt): void {
 const basicOf = (p: PlayerEnt): BasicAttack => ({ ...BASIC[p.weapon.type], ...(p.kit.basic ?? {}) } as BasicAttack);
 const attackRange = (p: PlayerEnt): number => basicOf(p).range;
 
-function weaponRoll(w: SimWorld, p: PlayerEnt): number {
+export function weaponRoll(w: SimWorld, p: PlayerEnt): number {
   const roll = w.rng.range(p.weapon.min, p.weapon.max) + (p.weapon.offMax ? w.rng.range(p.weapon.offMin, p.weapon.offMax) : 0);
   const caster = p.weapon.type === 'staff' || p.weapon.type === 'wand' ? (p.stats.stats.sp ?? 0) * 0.6 : 0;
   return roll * (1 + (p.stats.stats.power ?? 0)) + caster;
@@ -240,7 +242,7 @@ function autoAttack(w: SimWorld, p: PlayerEnt): void {
   }
   if (fromStealth) { p.stealth = false; p.buffs = p.buffs.filter((x) => !x.flags.includes('stealth')); p.statsDirty = true; }
 }
-const inArc = (p: Combatant, x: Combatant, range: number, arc: number) => {
+export const inArc = (p: Combatant, x: Combatant, range: number, arc: number) => {
   const dx = x.x - p.x, dy = x.y - p.y, d = Math.hypot(dx, dy);
   if (d > range + x.r) return false;
   // a body overlapping the arc's edge is struck: widen the half-angle by the angle the body covers

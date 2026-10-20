@@ -64,6 +64,7 @@ Each class kit (`src/data/classes/hc/kits.ts`) contains:
 | Left-click ground / hold | Basic attack toward the cursor (`aim`), no target needed |
 | 1–4 | Cast the bound spell. It aims at the target if there is one, otherwise at the cursor. |
 | Space | Dash 72 px in the move direction (or toward the cursor when standing still). Costs 25 stamina, gives 220 ms of i-frames, then a 400 ms cooldown. |
+| R | **Martial classes only** (the user's request, 2026-10-20): a plain slash toward the cursor (or the click target), body-edge arc test like the basic attack, no cost, doesn't reset the auto-attack. Cooldown by weapon weight: dagger 0.35 s · wand 0.4 · sword 0.5 · spear / staff 0.6 · axe 0.75 · mace 0.85 (heavier swings hit harder: 0.39–0.53 of the weapon roll, about half the weapon's basic DPS if spammed; axes strike 3 foes, others 2). Bows loose a quick shot instead (0.5 s, 720 px/s, 220 px, 0.33). Rules: rules/slash.ts; sim: sim/slash.ts; hotbar slot 8 with a cooldown sweep. Magic classes neither see nor get it. |
 | Q / E | Drink the best health / Ember potion carried. Each has its own 8 s cooldown. Second Wind is used from the pack. |
 | F | Talk/interact (Claude 2/4). Held near a downed ally, it revives them (§6). |
 | I / K / B | Inventory, then Skills (Skills branch) and Spells (Spells branch) on the same tree screen. These are client-side UI only. |

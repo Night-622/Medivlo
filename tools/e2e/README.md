@@ -36,7 +36,8 @@ npx vite --config tools/e2e/vite.e2e.config.mjs          # → http://localhost:
 node tools/e2e/hc-smoke.mjs --class warden,arcanist   # --out tools/e2e/out  --base http://localhost:5198
 
 # 3. pre-deploy features gate (real input; ~160 s for 3 classes): click-targeting at a sprite's edge / just outside,
-#    keys 1–3 cast, standing in a telegraph hurts and walking out with S does not, a skill point clicked in Skills and a
+#    keys 1–3 cast, a real R slashes for martial classes (nothing for magic ones), standing in a telegraph gets you hit
+#    and walking out with S does not, a skill point clicked in Skills and a
 #    helm clicked in the Pack change the Pack stats on screen, every 5-tab bar tab + ✕ at centre and bottom-right,
 #    the boss bar clear of the unit frame. DEV helpers: __hc.bounds / rig / freeze / give / heal.
 node tools/e2e/hc-features.mjs --base http://localhost:5199 [--class warden,arcanist,jester]

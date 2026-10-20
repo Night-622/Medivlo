@@ -5,6 +5,7 @@
  *   node tools/e2e/sim/run.mjs gauntlet <realm> <level> [class|all] [rooms=6] [seeds=2]
  */
 import { HC_CLASSES } from '@/data/classes/hc/classes.gen';
+import { hasSlash } from '@/systems/rules/slash';
 import { kitFor } from '@/data/classes/hc/kits';
 import { HC_PIECES } from '@/data/items/hc/armour.gen';
 import { newCharacter, availablePoints } from '@/systems/rules/character';
@@ -13,7 +14,7 @@ import { unlockLevel } from '@/systems/rules/curves';
 import { lairWaves } from '@/systems/rules/encounters';
 import { Sim } from '@/systems/sim/Sim';
 import type { SimPorts } from '@/systems/sim/world';
-import type { InputFrame } from '@/net/types';
+import { Btn, type InputFrame } from '@/net/types';
 import { Fighter } from '../../playthrough/fighter';
 
 const [realm, lv, only, roomsArg, seedsArg] = process.argv.slice(3);
@@ -63,6 +64,8 @@ function run(cls: string, seed: number) {
       if (p.dead) { if (sim.w.t >= diedAt + 3000) sim.receive({ type: 'act', domain: 'systems', action: 'respawn', args: {} }, 'me'); f = { seq: ++seq, t: tick * DT, move: { x: 0, y: 0 }, aim: { x: p.x, y: p.y }, buttons: 0, target: null }; }
       else if (!fighter.engaged(p)) { const e = [...sim.w.enemies.values()].find((x) => !x.dead && x.team === 'enemies'); const d = e ? Math.hypot(e.x - p.x, e.y - p.y) || 1 : 1; f = { seq: ++seq, t: tick * DT, move: e ? { x: (e.x - p.x) / d, y: (e.y - p.y) / d } : { x: 0, y: 0 }, aim: { x: p.x, y: p.y }, buttons: 0, target: null }; }
       else f = { seq: ++seq, t: tick * DT, ...fighter.frame(p, tick) } as InputFrame;
+      // martial classes press the slash whenever it is up (NOSLASH=1: without it, for comparison)
+      if (!p.dead && !process.env.NOSLASH && hasSlash(p.save.classId) && tick % 2 === 0 && sim.w.t >= (p.cds.get('slash') ?? 0)) f = { ...f, buttons: f.buttons | Btn.SLASH };
       if (process.env.DEBUG && tick % 900 === 0) console.log(`  t=${Math.round(tick / 30)}s dead=${p.dead} downed=${!!p.downed} hp=${Math.round(p.hp)} pos=${Math.round(p.x)},${Math.round(p.y)} foes=${ids.map((id) => { const e = sim!.w.enemies.get(id); return e && !e.dead ? `${e.def}:${Math.round(e.hp)}:${e.ai}:${Math.round(e.x)},${Math.round(e.y)}` : ''; }).filter(Boolean).join(' ')}`);
       const hp0 = p.hp;
       sim.step(DT, tick, new Map([['me', [f]]]));

@@ -1,6 +1,6 @@
 /**
  * Hotbar (Claude 3, HANDOFF HUD): 7 slots of 60×60, 8px gap, centred at the HUD's bottom anchor —
- * 1–4 spells │ Q E potions │ Space dash. Cooldowns, Ember cost badges and dash stamina come from the local
+ * 1–4 spells │ Q E potions │ Space dash (+ R slash / quick shot for martial classes, cooldown from data.cs). Cooldowns, Ember cost badges and dash stamina come from the local
  * player's replicated entity data (c1–c4, cq, ce, em, st, dc).
  */
 import Phaser from 'phaser';
@@ -13,6 +13,17 @@ import { spellDef } from '@/systems/rules/spells';
 import { spellCost } from '@/systems/rules/spellText';
 import { character, onCharacterChanged } from '@/systems/client/character';
 import type { HeroInput } from '@/systems/input/HeroInput';
+import { SLASH, hasSlash } from '@/systems/rules/slash';
+import { itemInfo } from '@/systems/rules/gear';
+import { kitFor } from '@/data/classes/hc/kits';
+import type { WeaponType } from '@/systems/rules/types';
+
+/** The weapon the local hero swings with: the main hand, else the class start weapon. */
+function swungWith(): { type: WeaponType; base: string } {
+  const ch = character(), main = ch.equipment.main, kit = kitFor(ch.classId);
+  const base = main?.base ?? kit.startWeapon;
+  return { type: itemInfo(base)?.weaponType ?? kit.weapons[0], base };
+}
 
 const S = 60, GAP = 8, DIV = 12;
 interface Cell { key: Action; bg: Phaser.GameObjects.NineSlice; icon?: Phaser.GameObjects.Image; cd: Phaser.GameObjects.Rectangle; cdText: Phaser.GameObjects.Text; badge: Phaser.GameObjects.Text; label: Phaser.GameObjects.Text; x: number }
@@ -26,8 +37,9 @@ export class Hotbar extends Phaser.GameObjects.Container {
 
   constructor(scene: Phaser.Scene, private heroInput?: HeroInput) {
     super(scene, 0, 0);
-    const keys: Action[] = ['cast1', 'cast2', 'cast3', 'cast4', 'potionQ', 'potionE', 'dash'];
-    const width = 7 * S + 6 * GAP + 2 * DIV;
+    // martial classes get the slash slot after dash; magic classes never see it
+    const keys: Action[] = ['cast1', 'cast2', 'cast3', 'cast4', 'potionQ', 'potionE', 'dash', ...(hasSlash(character().classId) ? ['slash' as Action] : [])];
+    const width = keys.length * S + (keys.length - 1) * GAP + 2 * DIV;
     let x = -width / 2;
     keys.forEach((key, i) => {
       if (i === 4 || i === 6) {
@@ -80,7 +92,8 @@ export class Hotbar extends Phaser.GameObjects.Container {
         this.setIcon(c, sp?.icon, sp?.icon.startsWith('school_') ? 2 : 1);
       } else if (i === 4) this.setIcon(c, 'icon_potion_red', 1);
       else if (i === 5) this.setIcon(c, 'icon_potion_ember', 1);
-      else this.setIcon(c, 'school_storm', 2);
+      else if (i === 6) this.setIcon(c, 'school_storm', 2);
+      else { const wpn = swungWith(); this.setIcon(c, Art.tryFrame(wpn.base) ? wpn.base : `w_${wpn.type}_wood`, 1); }
       c.label.setText(KEY_LABEL[Settings.key(c.key)] ?? Settings.key(c.key));
     });
   }
@@ -98,7 +111,8 @@ export class Hotbar extends Phaser.GameObjects.Container {
         const ids = i === 4 ? ['i_hp_s', 'i_hp_l'] : ['i_em_s', 'i_em_l'];
         const qty = ch.inventory.filter((x) => ids.includes(x.base)).reduce((a, x) => a + x.qty, 0);
         left = Number(d[i === 4 ? 'cq' : 'ce'] ?? 0); total = 8000; badge = `×${qty}`; badgeColor = C.text; dim = qty === 0;
-      } else { badge = '25'; badgeColor = '#9be33f'; dim = st < 25; }
+      } else if (i === 6) { badge = '25'; badgeColor = '#9be33f'; dim = st < 25; }
+      else { left = Number(d.cs ?? 0); total = SLASH[swungWith().type].cd; }
       const k = Math.max(0, Math.min(1, left / Math.max(1, total)));
       c.cd.height = (S - 8) * k;
       c.cdText.setText(left > 600 ? String(Math.ceil(left / 1000)) : '');

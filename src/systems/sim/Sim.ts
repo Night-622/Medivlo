@@ -306,7 +306,7 @@ function playerState(w: SimWorld, p: PlayerEnt): EntityState {
     data: {
       em: Math.round(p.ember), emMax: p.emberMax, st: Math.round(p.stamina), stMax: p.staminaMax,
       lvl: p.save.level, xp: p.save.xp, xpMax: xpToNext(p.save.level), sh: Math.round(p.shield), mo: p.momentum, dc: p.dashCharges,
-      c1: cd(0), c2: cd(1), c3: cd(2), c4: cd(3), cq: Math.max(0, Math.round(p.potionReadyAt.q - w.t)), ce: Math.max(0, Math.round(p.potionReadyAt.e - w.t)),
+      c1: cd(0), c2: cd(1), c3: cd(2), c4: cd(3), cs: Math.max(0, Math.round((p.cds.get('slash') ?? 0) - w.t)), cq: Math.max(0, Math.round(p.potionReadyAt.q - w.t)), ce: Math.max(0, Math.round(p.potionReadyAt.e - w.t)),
       cast: p.windup?.label ?? '', tg: p.target ?? '', s: csv(p.statuses.keys()), b: csv(p.buffs.map((b) => b.id)),
       lk: lookOf(p),
       down: p.downed ? Math.round(p.downed.until - w.t) : 0, rv: p.downed ? Math.round(p.downed.revive) : 0, stealth: p.stealth,
