@@ -34,6 +34,7 @@ const SUITES = [
   { id: 'sim-coop', what: 'co-op + PvP rules, downed/revive, loot, escorts', cmd: sim('coop') },
   { id: 'coop-balance', what: 'co-op balance: every party fight won, parties beat solo on bosses by ×1.2+, revives land under heavy damage', cmd: sim('coop-balance', 'gate'), owner: 'Claude 5' },
   { id: 'boss-check', what: 'every campaign boss beaten at a typical player’s gear: 0 deaths, no fight over 300 s (documented allowances)', cmd: sim('boss-check', 'gate'), owner: 'Claude 5' },
+  { id: 'realm-perf', what: 'realm scale: 25 heroes in one space tick under 16 ms (p99) and snapshots stay under 22 KB per viewer', cmd: sim('realm-perf'), owner: 'Claude 3' },
   { id: 'sim-economy', what: 'quest rewards, shops, chests, Runeforge prices', cmd: sim('economy') },
   { id: 'sim-security', what: 'remote loadouts sanitised', cmd: sim('security') },
   { id: 'sim-hazards', what: 'boss arena hazards', cmd: sim('hazards') },
