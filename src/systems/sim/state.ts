@@ -90,6 +90,8 @@ export interface PlayerEnt extends Combatant {
   /** deeper builds: Ember / stamina spent toward the next 50 (spent triggers), next aura pulse */
   spent?: { ember: number; stamina: number };
   auraAt?: number;
+  /** last time this hero lost health to a hit (a revive channel pauses on it) */
+  hurtAt?: number;
   momentum: number;
   dashCharges: number; dashReadyAt: number;
   cds: Map<string, number>;

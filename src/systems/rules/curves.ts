@@ -54,8 +54,9 @@ export const TIER_DMG: Record<CreatureTier, number> = { enemy: 8, mini: 10.5, bo
 export const TIER_ARMOR: Record<CreatureTier, number> = { enemy: 8, mini: 20, boss: 35 };
 
 /** Party scaling (§6). */
-export const partyHpMult = (n: number, tier: CreatureTier): number => 1 + (tier === 'boss' ? 0.75 : 0.6) * Math.max(0, n - 1);
-export const spawnCountMult = (n: number): number => 1 + 0.5 * Math.max(0, n - 1);
+// party scaling (coop-balance 2026-10-21): each extra hero adds less than a hero's worth, so a party is faster than solo
+export const partyHpMult = (n: number, tier: CreatureTier): number => 1 + (tier === 'boss' ? 0.5 : 0.4) * Math.max(0, n - 1);
+export const spawnCountMult = (n: number): number => 1 + 0.35 * Math.max(0, n - 1);
 export const dropRolls = (n: number): number => Math.max(1, n);
 
 /** Gear unlocks: material / style index i drops from this level. */

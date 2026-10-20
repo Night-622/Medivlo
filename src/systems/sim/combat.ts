@@ -147,6 +147,7 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
   w.emit('combat:hit', { ...hitInfo, amount, crit, kind: 'dmg' });
   if (tgt.kind === 'player' && src) (tgt as PlayerEnt).lastHitBy = src.id;
   // health actually lost (a shield's soak is not damage taken)
+  if (tgt.kind === 'player' && landed > 0 && !o.dot) (tgt as PlayerEnt).hurtAt = w.t;
   if (tgt.kind === 'player' && landed > 0) w.emit('player:damaged', { amount: landed, type: kind as never, sourceId: src?.id ?? 'world', playerId: (tgt as PlayerEnt).playerId });
   if (src) {
     tgt.threat.set(src.id, (tgt.threat.get(src.id) ?? 0) + amount * (flags.includes('taunt') ? 5 : 1));

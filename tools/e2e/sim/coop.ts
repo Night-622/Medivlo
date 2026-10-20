@@ -34,8 +34,8 @@ function world(rule: RealmRule, party: number, zone: ZoneRule = 'wild') {
 {
   const d = creature('bx_wolf')!;
   const solo = creatureStats(d, 10, 1).hp, duo = creatureStats(d, 10, 2).hp, boss1 = creatureStats(creature('bx_stag')!, 10, 1).hp, boss4 = creatureStats(creature('bx_stag')!, 10, 4).hp;
-  check(Math.abs(duo / solo - 1.6) < 0.01, `enemy HP ×1.6 for 2 players (${solo} → ${duo})`);
-  check(Math.abs(boss4 / boss1 - 3.25) < 0.01, `boss HP ×3.25 for 4 players (${boss1} → ${boss4})`);
+  check(Math.abs(duo / solo - 1.4) < 0.01, `enemy HP ×1.4 for 2 players (${solo} → ${duo})`);
+  check(Math.abs(boss4 / boss1 - 2.5) < 0.01, `boss HP ×2.5 for 4 players (${boss1} → ${boss4})`);
 }
 
 // ── downed, revive by holding F, then wipe

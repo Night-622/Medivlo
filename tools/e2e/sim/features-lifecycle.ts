@@ -2,11 +2,12 @@
  * Hero lifecycle across world restarts and loads (Claude 3; Claude 6's integrity findings): a new input stream after
  * a door / reload is accepted; a load drops the old world and a dead hero; loading another class re-derives the kit.
  */
+import { Btn } from '@/net/types';
 import { plausible } from '@/systems/rules/plausible';
 import type { CharacterSave } from '@/systems/rules/types';
 import { kitFor } from '@/data/classes/hc/kits';
 import { newCharacter } from '@/systems/rules/character';
-import { check, DT, hero, world } from './features-harness';
+import { check, DT, dummy, hero, world } from './features-harness';
 
 function inputRestart(): void {
   const w = world(), p = hero(w, 'a', { ...newCharacter('warden'), level: 5 });
@@ -137,7 +138,25 @@ function plausibility(): void {
   check(ok && caught.length === bad.length, `plausible: honest saves pass; ${caught.length}/${bad.length} tampered ones refused`, bad.filter(([n]) => !caught.includes(n)).map(([n]) => n).join(', '));
 }
 
+/** Revive (coop-balance): the helper's own damage dealt never blocks it; a hit taken pauses it without resetting. */
+function reviveRules(): void {
+  const w = world({ party: 2 }), a = hero(w, 'a', { ...newCharacter('warden'), level: 10 }), b = hero(w, 'b', { ...newCharacter('warden'), level: 10 }, 20, 0);
+  a.spawnProtectUntil = b.spawnProtectUntil = 0;
+  w.sim.damage(a.id, 1e9, 'physical');
+  const d = dummy(w, 60, 0);
+  // the helper fights while holding F: its damage dealt must not stall the channel
+  b.inCombatUntil = w.sim.w.t + 5000;
+  w.run(1500, { b: { buttons: Btn.INTERACT, target: d.id } });
+  const mid = a.downed?.revive ?? 0;
+  b.hurtAt = w.sim.w.t; // a hit taken: the channel pauses
+  w.run(300, { b: { buttons: Btn.INTERACT } });
+  const paused = a.downed?.revive ?? 0;
+  w.run(2000, { b: { buttons: Btn.INTERACT } });
+  check(mid > 1000 && paused >= mid && paused - mid < 100 && !a.downed, 'revive: fighting while holding F still channels; a hit pauses (keeps progress); the revive lands', `mid ${Math.round(mid)}, after hit ${Math.round(paused)}, revived ${!a.downed}`);
+}
+
 export function lifecycleChecks(): void {
+  reviveRules();
   plausibility();
   tradeReach();
   audit();

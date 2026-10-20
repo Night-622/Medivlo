@@ -9,6 +9,8 @@ import { dist2, freeSpot, type SimWorld } from './world';
 
 const DOWNED_MS = 30_000;
 const REVIVE_MS = 3_000;
+/** a hit taken pauses a revive channel this long */
+const REVIVE_HIT_PAUSE_MS = 500;
 const REVIVE_RANGE = 40;
 const WIPE_RESPAWN_MS = 8_000;
 const PVP_RESPAWN_MS = 5_000;
@@ -116,19 +118,20 @@ export function tickCoop(w: SimWorld, dt: number): void {
     }
     if (!p.downed) continue;
     if (w.t >= p.downed.until) { die(w, p, WIPE_RESPAWN_MS); continue; }
-    // the first standing ally holding F in range channels the revive; moving away or taking damage resets it
+    // the first standing ally holding F in range channels the revive. Moving away resets it; a hit TAKEN pauses it
+    // (damage the helper deals, its DoTs and zones never block it: coop-balance 2026-10-21)
     const helper = [...w.players.values()].find((o) => o !== p && !o.dead && !o.downed && o.space === p.space
-      && (o.buttons & Btn.INTERACT) && dist2(o, p) <= (REVIVE_RANGE + o.r) ** 2 && w.t > o.inCombatUntil - 4500);
+      && (o.buttons & Btn.INTERACT) && dist2(o, p) <= (REVIVE_RANGE + o.r) ** 2);
     if (!helper || helper.id !== p.downed.reviver) p.downed.revive = 0;
     p.downed.reviver = helper?.id ?? null;
     if (helper) {
-      p.downed.revive += dt;
       helper.anim = 'revive';
       helper.animUntil = w.t + 100;
+      if (w.t - (helper.hurtAt ?? -Infinity) > REVIVE_HIT_PAUSE_MS) p.downed.revive += dt;
       if (p.downed.revive >= REVIVE_MS) revive(w, p, helper, 0.3);
     }
   }
-  const alive = [...w.players.values()].filter((p) => !p.dead && !p.downed);
+  const alive =[...w.players.values()].filter((p) => !p.dead && !p.downed);
   const downed = [...w.players.values()].filter((p) => p.downed);
   if (!alive.length && downed.length) wipe(w, downed[0]);
 }
