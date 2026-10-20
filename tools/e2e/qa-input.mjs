@@ -111,6 +111,14 @@ try {
   await core('c.Settings.reset();');
   await sleep(400);
 
+  // ── People (P) in a school realm lists that realm's people, not Brindlecross ──
+  await page.press('KeyP'); await sleep(1200);
+  const ppl = await page.eval(`(async () => { const { markerAt } = await import('/src/world/hc/spawns.ts'); const s = window.__game.scene.getScene('People'); const sp = window.__world.where().space;
+    const list = s.people ?? []; return { n: list.length, here: list.filter((n) => markerAt(n.home)?.space === sp).length, realm: s.realm ?? null, space: sp }; })()`);
+  check('People in a school realm lists the people of that realm', ppl.n > 0 && ppl.here === ppl.n, JSON.stringify(ppl));
+  await page.screenshot(`${OUT}/input-people-realm.png`);
+  await page.press('Escape'); await sleep(500);
+
   // ── 3. F5 ──
   await page.eval(`(() => { window.__qa.f5 = null; window.addEventListener('keydown', (e) => { if (e.key === 'F5') window.__qa.f5 = e.defaultPrevented; }); return 1; })()`);
   await page.eval(`(() => { const e = new KeyboardEvent('keydown', { key: 'F5', code: 'F5', keyCode: 116, which: 116, bubbles: true, cancelable: true }); window.dispatchEvent(e); return 1; })()`);

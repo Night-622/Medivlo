@@ -48,6 +48,7 @@ const SUITES = [
   { id: 'narrative-features', what: 'browser: dialogue, trust, journal + tracker, codex, votes, object scenes, First Steps', cmd: [NODE, 'tools/narrative/features.mjs', '--base', BASE], needs: ['web'], file: 'tools/narrative/features.mjs', owner: 'Claude 5' },
   { id: 'escort-side', what: 'browser: escorts walk side-on (east/west/diagonal), every NPC baked', cmd: e2e('escort-side.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/escort-side.mjs', owner: 'Claude 5' },
   { id: 'integrity-ui', what: 'browser: texture rebuilds keep live sprites, lifecycle resets, no async writes to closed screens', cmd: e2e('integrity-ui.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/integrity-ui.mjs', owner: 'Claude 6' },
+  { id: 'qa-input', what: 'browser: keys after alt-tab, rebinding every action, Esc only pauses, People per realm, window sizes, Large-text HUD', cmd: e2e('qa-input.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/qa-input.mjs', owner: 'Claude 7' },
   { id: 'coop-world', what: 'two browsers in co-op: join, input, chat, party vote', cmd: e2e('coop-world.mjs', '--base', BASE), needs: ['web'] },
   { id: 'hc-front', what: 'front end: load, pause, public realm, chat, leave', cmd: e2e('hc-front.mjs', '--base', BASE), needs: ['web', 'realm'] },
   { id: 'realm-duel', what: 'live Duels realm: challenge, accept, duel starts', cmd: e2e('realm-duel.mjs', '--base', BASE), needs: ['web', 'realm'] },
