@@ -39,7 +39,9 @@ export class NpcView implements SnapshotConsumer {
         if (!this.scene.textures.exists(tex)) continue;
         const body = this.scene.add.sprite(e.x, e.y, tex, 0).setOrigin(0.5, 38 / 40);
         if (this.scene.anims.exists(`${tex}:idle`)) body.play({ key: `${tex}:idle`, startFrame: Math.floor(Math.random() * 2) });
-        const plate = this.scene.add.text(e.x, e.y - 42, String(e.data?.name ?? ''), typeStyle('caption', C.text)).setOrigin(0.5, 1).setAlpha(0.85);
+        // the name on a dark pill (like the [F] prompt and the map labels), readable over any building art
+        const plate = this.scene.add.text(e.x, e.y - 42, String(e.data?.name ?? ''), typeStyle('caption', C.text)).setOrigin(0.5, 1)
+          .setBackgroundColor('#0d1226b8').setPadding(5, 2, 5, 2);
         // a soft ground shadow at the feet, the same as heroes and creatures (Claude 3's SHADOW)
         const w = Phaser.Math.Clamp(body.displayWidth * SHADOW.widthOfSprite, SHADOW.min, SHADOW.max);
         const shadow = this.scene.add.ellipse(e.x, e.y - 1, w, w * SHADOW.aspect, SHADOW.color, SHADOW.alpha).setDepth(SHADOW.depth);
@@ -49,6 +51,22 @@ export class NpcView implements SnapshotConsumer {
       s.body.setPosition(e.x, e.y).setDepth(Depth.Actors + e.y);
       s.shadow.setPosition(e.x, e.y - 1);
       s.plate.setPosition(e.x, e.y - 42).setDepth(Depth.WorldUi - 1);
+    }
+    this.unstack();
+  }
+
+  /** Two NPCs standing together: lift a plate that would cover another until it's clear (nearest the camera first). */
+  private unstack(): void {
+    const placed: [number, number, number, number][] = [];
+    const plates = [...this.live.values()].map((s) => s.plate).sort((a, b) => b.y - a.y);
+    for (const p of plates) {
+      const w = p.width, h = p.height;
+      for (let tries = 0; tries < 4; tries++) {
+        const box: [number, number, number, number] = [p.x - w / 2, p.y - h, w, h];
+        if (!placed.some((o) => box[0] < o[0] + o[2] && o[0] < box[0] + box[2] && box[1] < o[1] + o[3] && o[1] < box[1] + box[3])) break;
+        p.y -= h + 2;
+      }
+      placed.push([p.x - w / 2, p.y - h, w, h]);
     }
   }
 

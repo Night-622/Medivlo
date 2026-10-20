@@ -140,7 +140,8 @@ export interface ActQuestWalk { quest: string; type: string; campaign: string; o
 /**
  * Act II or III for each class (or `only`): its own act quests plus the shared ones it can get, in play order
  * (by `requires` depth, then data order), walked through Concordia from the Gate Circle (II) or the Heart camp (III).
- * `expected` runs along the act's level band by position in that order.
+ * `expected` runs along the act's level band by how many of the act's main and class quests come before (so every
+ * quest between the same two mains shares one level, as Act I does by main index).
  */
 export function actWalks(act: 'act2' | 'act3', only?: string[]): { cls: string; quests: ActQuestWalk[] }[] {
   load();
@@ -167,12 +168,16 @@ export function actWalks(act: 'act2' | 'act3', only?: string[]): { cls: string; 
     };
     const order = mine.map((x, i) => [x, i] as const).sort((a, b) => depthOf(a[0]) - depthOf(b[0]) || a[1] - b[1]).map(([x]) => x);
     const walked = walkQuests('concordia', start, order, cls, npcs, 3_000_000);
+    const isMain = (q: QuestDef) => q.type === 'main' || q.type === 'class';
+    const mains = order.filter(isMain).length;
+    let before = 0;
     out.push({
       cls,
-      quests: order.map((qd, i) => ({
-        quest: qd.id, type: qd.type, campaign: String(qd.campaign), order: i + 1,
-        expected: +(lo + ((hi - lo) * i) / Math.max(1, order.length - 1)).toFixed(1), ...walked[i],
-      })),
+      quests: order.map((qd, i) => {
+        const expected = +(lo + ((hi - lo) * before) / Math.max(1, mains)).toFixed(1);
+        if (isMain(qd)) before++;
+        return { quest: qd.id, type: qd.type, campaign: String(qd.campaign), order: i + 1, expected, ...walked[i] };
+      }),
     });
   }
   return out;

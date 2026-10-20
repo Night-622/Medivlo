@@ -12,6 +12,7 @@ import { C, HCButton, n, panel, tab, text } from '@/ui/kit/hc';
 import { isAction } from '@/ui/kit/hc/keys';
 import { REALM_OVERVIEW_STEP, mapMarkers, morvaneRegionAt, realmOverview, zoneInfo, type MapMarker } from '@/world/hc/overview';
 import { REALMS, instanceDef, placeName, realmOf } from '@/world/hc/spaces';
+import { regionBandNow } from '@/world/hc/spawns';
 import { MapLabels, capFirst } from './labels';
 
 export interface MapScreenSource {
@@ -205,7 +206,9 @@ export class MapScreen {
     const r = MORVANE_REGIONS.find((x) => x.id === id);
     if (!r) return;
     const known = this.src.found().includes(id) || (this.src.space() === 'concordia' && id === 'region:alder');
-    this.title(known ? r.name : 'Unexplored', `Levels ${r.levels}`);
+    // the band this hero will really meet there now (campaign-order bands), else the handoff's
+    const band = regionBandNow(id);
+    this.title(known ? r.name : 'Unexplored', band ? `Levels ${band[0]}–${band[1]}` : `Levels ${r.levels}`);
     this.para(known ? r.desc : 'Fog lies over this land. Walk it to fill the map.', 72);
     let y = 200;
     if (known) {

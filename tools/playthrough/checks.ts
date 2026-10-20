@@ -12,6 +12,8 @@
  *   escort <a> <b>      an escort leg: both ends resolve (placePos) and the walk between them (path steps)
  *   bands [classes]     realm spawn bands vs each class's Act I quest walks: every band a walk passes ≤ expected
  *                       level + 2 (tools/playthrough/bands.ts; regenerate the table with `bands.ts gen`)
+ *   bands-concordia     the same for Concordia vs Acts II/III, plus main quests ≥ expected − 4 (concordiaBands.ts)
+ *   class-objects       class story objects: usable only in their own classes' campaigns (classObjects.ts)
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { CHUNK_TILES } from '@/core';
@@ -101,6 +103,10 @@ if (check === 'unplaced') {
   console.log(miss.length ? `missing: ${miss.join(' ')}` : 'all exist');
 } else if (check === 'bands') {
   await import('./bands'); // reads argv itself: mode 'bands' = its check, arg = classes
+} else if (check === 'bands-concordia') {
+  await import('./concordiaBands'); // Concordia bands vs every class's Act II/III walks (~3 min)
+} else if (check === 'class-objects') {
+  await import('./classObjects'); // each class as host sees only its own story objects, and all of them
 } else {
   console.log('checks: exists <ids> | unplaced | pieces | instances | triggers <realm|concordia> | markers <inst> | escort <a> <b> | bands [classes]');
 }

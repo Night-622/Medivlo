@@ -14,6 +14,7 @@ import { type Placement, villageOrigin, villagePlacements, villageRoad, VIL_H, V
 import { artSize } from './footprints';
 import { placeConcordiaPlaces } from './concordiaPlaces';
 import { OPT_KINDS, optionalName, type OptKind } from '@/data/regions/hc/optionalAreas';
+import { classGated } from './classGate';
 
 const N = CHUNK_TILES;
 export const HEART_OPEN = { flag: 'story.heart_open' } as const;
@@ -131,7 +132,7 @@ export class ConcordiaGen implements SpaceGen {
   private obj(o: WorldObject): void {
     const k = `${Math.floor(o.at[0] / N)},${Math.floor(o.at[1] / N)}`;
     if (!this.objs.has(k)) this.objs.set(k, []);
-    this.objs.get(k)!.push(o);
+    this.objs.get(k)!.push(classGated(o)); // other classes' story objects stay inert (classGate.ts)
   }
 
   private placeFixed(): void {

@@ -75,7 +75,8 @@ export class FocusPrompt {
     const label = String(o.props?.label ?? LABEL[o.kind] ?? 'Use');
     const name = o.props?.name ? `${o.props.name} · ` : '';
     this.text.setText(`[${keyLabel('interact')}] ${name}${label}`);
-    this.text.setPosition(o.at[0] * TILE_SIZE + 16, o.at[1] * TILE_SIZE - 6);
+    // over an NPC, above its name plate (NpcView draws it 42 px over the feet)
+    this.text.setPosition(o.at[0] * TILE_SIZE + 16, o.at[1] * TILE_SIZE - (o.kind === 'npc-anchor' && o.id.startsWith('npc') ? 24 : 6));
   }
 
   destroy(): void { this.offSettings(); this.key?.removeAllListeners(); this.text.destroy(); }

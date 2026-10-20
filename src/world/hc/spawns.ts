@@ -4,7 +4,7 @@
  * creatures and level band. The director keeps zones near players stocked through Services.combat.spawn,
  * scaled by party size, and restocks after enemy:killed with a cooldown. Lairs and bosses live in instances.
  */
-import { CHUNK_TILES, Services, TILE_SIZE, bus, evalCondition, heroClassId, type WorldObject } from '@/core';
+import { CHUNK_TILES, Services, TILE_SIZE, bus, evalCondition, getFlag, heroClassId, type WorldObject } from '@/core';
 import { MORVANE_REGIONS, MORVANE_ROADS, MORVANE_SCALE } from '@/data/regions/hc/morvane';
 import { morvaneRegionAt } from './overview';
 import { allCreatures, bestiaryFor } from '@/systems/rules/creatures';
@@ -18,7 +18,7 @@ import type { InstanceGen } from './instanceGen';
 import { regionLevels, type ConcordiaGen } from './concordiaGen';
 import { objectsAround, tileDist } from './interact';
 import { REALMS, spaceRuntime } from './spaces';
-import { banded, eliteAt, levelAt, stepDone, zoneFloor, type LevelTier } from './bands';
+import { banded, concordiaBanded, eliteAt, levelAt, stepDone, zoneFloor, type Banded, type LevelTier } from './bands';
 
 export { levelAt as zoneLevelAt, eliteAt as zoneEliteAt };
 
@@ -46,6 +46,9 @@ export interface SpawnZoneDef {
   tiers?: LevelTier[];
   /** the class whose campaign this side belongs to (tiers also step with the host's own Act I progress) */
   cls?: string;
+  /** which main-quest list a tier's step counts in, and (Concordia) the band per host class: see bands.ts */
+  track?: Banded['track'];
+  byClass?: Banded['byClass'];
 }
 
 const ACTIVE_TILES = 48;     // a zone stocks while a player is this close to its centre
@@ -58,6 +61,17 @@ const WAVE_MS = 25_000;
 const STEP_MS = 1000;
 
 const zoneCache = new Map<string, SpawnZoneDef[]>();
+
+/** The campaign owner's class: the replicated campaign.class flag (the host's, on a guest too), else the hero's. */
+const hostClass = (): string | null => (typeof getFlag('campaign.class') === 'string' && getFlag('campaign.class') ? String(getFlag('campaign.class')) : heroClassId());
+
+/** The level band a Morvane region's creatures spawn at now, for this campaign's host and progress (map panel). */
+export function regionBandNow(region: string): [number, number] | null {
+  const z = spawnZones('concordia').find((x) => x.id.startsWith(`${region}#`)) ?? (region === 'region:heart' ? spawnZones('concordia').find((x) => x.id === 'zone:legion-camp') : undefined);
+  if (!z) return null;
+  const host = hostClass();
+  return levelAt(z, stepDone(host, (q) => evalCondition({ questCompleted: q })), host);
+}
 
 /** Spawn zones of a space (cached). */
 export function spawnZones(space: string): SpawnZoneDef[] {
@@ -160,7 +174,7 @@ function concordiaZones(): SpawnZoneDef[] {
   for (const r of MORVANE_REGIONS) {
     const pool = regionPool(r.name);
     if (!pool.length) continue;
-    const [lo, hi] = r.levels.split(/[–-]/).map((s) => parseInt(s, 10));
+    const [lo] = regionLevels(r);
     // anchors per region (8, 45+ tiles apart): deterministic samples that land inside the region
     let k = 0;
     for (let i = 0; i < 800 && k < 8; i++) {
@@ -170,14 +184,14 @@ function concordiaZones(): SpawnZoneDef[] {
       if ([[0, 0], [2, 0], [-2, 0], [0, 2], [0, -2]].some(([dx, dy]) => morvaneRegionAt(mx + dx, my + dy)?.id !== r.id)) continue;
       if (gen.zoneRule(tx, ty) !== 'wild' || gen.cornerAt(tx, ty) === Corner.WATER) continue; // not in the lakes
       if (out.some((z) => Math.hypot(z.at[0] - tx, z.at[1] - ty) < 45)) continue;
-      out.push({ id: `${r.id}#${k++}`, space: 'concordia', at: [tx, ty], r: 18, level: [lo || 1, hi || lo || 1], pool, cap: 6 });
+      out.push({ id: `${r.id}#${k++}`, space: 'concordia', at: [tx, ty], r: 18, ...concordiaBanded(r.id, lo, 'zone'), pool, cap: 6 });
     }
   }
   // the Legion camp in the Heart: III-2 needs six Hollow Legionnaires there; a couple of Weeping Shades mixed in (Claude 4)
   const camp = findObject('concordia', 'landmark:legion-camp');
   if (camp) {
     const [w, h] = camp.size ?? [1, 1];
-    out.push({ id: 'zone:legion-camp', space: 'concordia', at: [camp.at[0] + (w >> 1), camp.at[1] + (h >> 1)], r: 9, level: [30, 32],
+    out.push({ id: 'zone:legion-camp', space: 'concordia', at: [camp.at[0] + (w >> 1), camp.at[1] + (h >> 1)], r: 9, ...concordiaBanded('region:heart', 30, 'zone'),
       pool: ['bx_concord_0', 'bx_concord_0', 'bx_concord_0', 'bx_concord_1'], cap: 7 });
   }
   // road camps (PACING: encounter count): a small pack every 40 tiles along the Morvane roads, alternating sides,
@@ -196,7 +210,7 @@ function concordiaZones(): SpawnZoneDef[] {
         k++;
         if (!r || r.id === 'region:heart' || gen.zoneRule(at[0], at[1]) !== 'wild') continue;
         const pool = regionPool(r.name), [lo] = regionLevels(r);
-        if (pool.length) out.push({ id: `camp:morvane-${li}-${k}`, space: 'concordia', at, r: 4, level: [lo, lo + 1], pool, cap: 3 });
+        if (pool.length) out.push({ id: `camp:morvane-${li}-${k}`, space: 'concordia', at, r: 4, ...concordiaBanded(r.id, lo, 'camp'), pool, cap: 3 });
       }
       carry = (carry - len) % 40; if (carry < 0) carry += 40;
     }
@@ -209,14 +223,14 @@ function concordiaZones(): SpawnZoneDef[] {
     const d = Math.hypot(near[0] - o.at[0], near[1] - o.at[1]) || 1, f = Math.min(14, d / 2);
     const at: [number, number] = [Math.round(o.at[0] + ((near[0] - o.at[0]) / d) * f), Math.round(o.at[1] + ((near[1] - o.at[1]) / d) * f)];
     const pool = regionPool(r.name), lv = o.kind === 'cave' ? hi : lo;
-    if (pool.length) out.push({ id: `guard:${id.slice(5)}`, space: 'concordia', at, r: 4, level: [lv, lv + 1], pool, cap: 3, elite: o.kind === 'cave' });
+    if (pool.length) out.push({ id: `guard:${id.slice(5)}`, space: 'concordia', at, r: 4, ...concordiaBanded(o.region, lv, 'guard', o.kind === 'cave'), pool, cap: 3 });
   }
   // optional ruins: an elite-led pack at the top of the region band, guarding the cache
   for (const [id, o] of (gen as ConcordiaGen).optional) {
     if (o.kind !== 'ruin') continue;
     const r = MORVANE_REGIONS.find((x) => x.id === o.region)!, [, hi] = regionLevels(r);
     const pool = regionPool(r.name);
-    if (pool.length) out.push({ id: `pack:${id.slice(5)}`, space: 'concordia', at: o.at, r: o.r - 2, level: [hi, hi + 1], pool, cap: 3, elite: true });
+    if (pool.length) out.push({ id: `pack:${id.slice(5)}`, space: 'concordia', at: o.at, r: o.r - 2, ...concordiaBanded(o.region, hi - 1, 'pack'), pool, cap: 3 });
   }
   return out;
 }
@@ -377,11 +391,11 @@ export class SpawnDirector {
         const spot = this.spot(z, here);
         if (!spot) continue;
         const pick = z.pool[Math.floor(Math.random() * z.pool.length)];
-        const done = stepDone(heroClassId(), (q) => evalCondition({ questCompleted: q }));
-        const [lo, hi] = z.tiers ? levelAt(z, done) : z.level;
+        const host = hostClass(), done = stepDone(host, (q) => evalCondition({ questCompleted: q }));
+        const [lo, hi] = z.tiers || z.byClass ? levelAt(z, done, host) : z.level;
         const level = lo + Math.floor(Math.random() * (hi - lo + 1));
         // elite packs: one elite leads (the first of each fill)
-        const elite = (z.tiers ? eliteAt(z, done) : z.elite) && st.alive.size === 0;
+        const elite = (z.tiers || z.byClass ? eliteAt(z, done, host) : z.elite) && st.alive.size === 0;
         const patrol = z.patrol?.map(([x, y]) => ({ x: x * TILE_SIZE + TILE_SIZE / 2, y: y * TILE_SIZE + TILE_SIZE / 2 }));
         const id = combat.spawn({ creature: pick, level, space, x: spot[0], y: spot[1], zoneId: z.id, tier: 'enemy', ...(elite ? { elite: true } : {}), ...(patrol ? { patrol } : {}) });
         if (id) { st.alive.add(id); st.spawned++; }

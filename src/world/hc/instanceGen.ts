@@ -14,6 +14,7 @@ import type { SpaceGen, ZoneRule } from './space';
 import { paletteOf, TileRegistry, type Palette, type PaletteId, type Surface } from './theme';
 import type { SetPieceDef } from './types';
 import type { Placement } from './village';
+import { classGated } from './classGate';
 
 const N = CHUNK_TILES;
 const CELL_W = 20, CELL_H = 16, COLS = 4, ROWS = 3;
@@ -231,7 +232,7 @@ export class InstanceGen implements SpaceGen {
   private obj(o: WorldObject): void {
     const k = `${Math.floor(o.at[0] / N)},${Math.floor(o.at[1] / N)}`;
     if (!this.objs.has(k)) this.objs.set(k, []);
-    this.objs.get(k)!.push(o);
+    this.objs.get(k)!.push(classGated(o)); // other classes' story objects stay inert (classGate.ts)
   }
 
   private art(tx: number, ty: number, art: string, key: string): void {
