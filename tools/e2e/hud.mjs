@@ -56,6 +56,15 @@ try {
   check('HP bar matches the hero', Math.abs(h.bars.hp - me.hp / me.maxHp) < 0.03, `${h.bars.hp}`);
   await page.screenshot(`${OUT}/hud-start.png`);
 
+  // ── every gear item has an icon (all 384 armour pieces were blank once: atlas `pieces` weren't indexed) ──
+  const art = await page.eval(`(async () => {
+    const { Art } = await import('/src/art/index.ts');
+    const [a, w, it] = await Promise.all(['armour', 'weapons', 'items'].map((m) => import('/src/data/items/hc/' + m + '.gen.ts')));
+    const groups = { armour: a.HC_PIECES, weapons: w.HC_WEAPONS, items: it.HC_ITEMS };
+    return Object.fromEntries(Object.entries(groups).map(([k, list]) => { const miss = list.map((x) => x.id).filter((id) => !Art.tryFrame(id)); return [k, { n: list.length, missing: miss.length, first: miss.slice(0, 5) }]; }));
+  })()`);
+  for (const [k, r] of Object.entries(art)) check(`every ${k} entry has an icon`, r.n > 0 && r.missing === 0, `${r.n - r.missing}/${r.n}${r.missing ? ` missing ${r.first.join(', ')}` : ''}`);
+
   // ── layout: inside the screen, the big blocks don't overlap, the centre safe rect stays clear ──
   const { w: W, h: H } = h.size;
   const blocks = { frame: { x: 16, y: 16, w: 354, h: 100 }, minimap: h.anchors.topRight.b, tracker: h.anchors.rightColumn.b, hotbar: h.anchors.bottom.b,
@@ -161,9 +170,12 @@ try {
   // ── Esc pauses when nothing is open; Death screen on death ──
   await page.press('Escape', 60);
   const paused = await waitFor(() => scene('Pause'), 3000);
+  const fadedUnderPause = await waitFor(async () => ((await hud())?.alpha ?? 1) < 0.05, 3000); // its menu would sit on the hotbar
   await page.press('Escape', 60);
   const unpaused = await waitFor(async () => !(await scene('Pause')), 3000);
+  const backAfterPause = await waitFor(async () => (await hud())?.alpha === 1, 3000);
   check('Esc opens Pause and closes it again', !!paused && !!unpaused);
+  check('HUD fades under Pause and returns', !!fadedUnderPause && !!backAfterPause);
   await core(`c.bus.emit('player:died', { playerId: c.Services.get('net').localPlayer, x: 0, y: 0, regionId: 'hud-test', killerName: 'HUD test' });`);
   const dead = await waitFor(() => scene('Death'), 4000);
   await page.screenshot(`${OUT}/hud-death.png`);

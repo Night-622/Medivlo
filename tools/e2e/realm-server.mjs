@@ -48,6 +48,14 @@ try {
   await sleep(600);
   check('messages sent during verify are delivered after join', c.chats.includes('early bird'), JSON.stringify(c.chats));
   c.ws.close(); await sleep(300);
+  // one seat per account: the same uid joining again (a second tab or device) replaces the older connection
+  const d1 = await client('uid-d', 'Di');
+  let kicked = null; d1.ws.addEventListener('message', (e) => { const m = JSON.parse(e.data); if (m.type === 'kick') kicked = m.reason; });
+  const d2 = await client('uid-d', 'Di');
+  await sleep(500);
+  const seated = (await (await fetch(`${BASE}/realms`)).json()).find((r) => r.id === 'brindlecross-peaceful').players;
+  check('same account joining twice replaces the older connection', !!d2.welcome && !!kicked && seated === 1, `kick "${kicked}", players ${seated}`);
+  d2.ws.close(); await sleep(300);
 } catch (e) { check('harness', false, String(e)); }
 finally {
   srv.kill(); const f = results.filter((x) => !x).length;

@@ -28,7 +28,8 @@ export abstract class AuthorityNet extends NetBase implements NetService {
 
   protected constructor() {
     super();
-    for (const name of REPLICATED_EVENTS) this.offs.push(bus.on(name, (payload) => this.broadcast({ type: 'event', name, payload })));
+    // a payload marked local (e.g. a one-time hint in the host's own key bindings) stays on this machine
+    for (const name of REPLICATED_EVENTS) this.offs.push(bus.on(name, (payload) => { if ((payload as { local?: boolean } | undefined)?.local) return; this.broadcast({ type: 'event', name, payload }); }));
     this.offs.push(bus.on('player:downed', ({ playerId }) => this.setDowned(playerId, true)));
     this.offs.push(bus.on('player:revived', ({ playerId }) => this.setDowned(playerId, false)));
   }

@@ -71,7 +71,7 @@ export interface GameEvents {
   'subclass:chosen': { id: string };
   // ----- Hollow Crown combat/co-op (Claude 3)
   'ability:cast': { casterId: string; ability: string; x: number; y: number; tx: number; ty: number; ms: number };
-  'enemy:telegraph': { id: string; shape: 'circle' | 'cone' | 'line' | 'ring'; x: number; y: number; /** radius, or length for lines */ r: number; /** line width */ w?: number; angle: number; ms: number };
+  'enemy:telegraph': { id: string; shape: 'circle' | 'cone' | 'line' | 'ring'; x: number; y: number; /** radius, or length for lines */ r: number; /** line width */ w?: number; angle: number; /** cones: half-angle in radians (draw it; omitted = 0.6) */ arc?: number; ms: number };
   'player:downed': { playerId: string };
   'player:revived': { playerId: string; by: string };
   'party:wiped': { waystone: string };
@@ -105,7 +105,8 @@ export interface GameEvents {
   'reputation:changed': { factionId: ContentId; value: number; delta: number };
   'companion:changed': { npcId: ContentId; following: boolean };
   /** short on-screen notice; HUD shows it */
-  'narrative:toast': { text: string; kind: 'quest' | 'codex' | 'reputation' | 'trust' | 'info' };
+  /** local: shown only on the machine that emitted it, never replicated (one-time hints worded with that player's keys) */
+  'narrative:toast': { text: string; kind: 'quest' | 'codex' | 'reputation' | 'trust' | 'info'; local?: true };
   /** Authority → one player: why a buy/sell/use/act was refused, or other per-player info. Clients toast it if playerId is theirs. */
   'systems:notice': { playerId: string; text: string; kind?: 'info' | 'error' };
   /** Local only: the remote authority (co-op host or realm server) ended our session. HudV2 returns to the title. */
@@ -117,7 +118,8 @@ export interface GameEvents {
   'escort:arrived': { id: string; npc?: string; creature: string; marker: { space: string; x: number; y: number; r: number }; playerIds: string[] };
   'escort:lost': { id: string; npc?: string; creature: string; reason: 'died' | 'despawned' };
   'escort:downed': { id: string; npc?: string; until: number };
-  'duel:asked': { from: string; to: string };
+  /** names come from the authority (realm strangers aren't in the client's session list) */
+  'duel:asked': { from: string; to: string; fromName?: string; toName?: string };
   'duel:started': { a: string; b: string };
   'duel:ended': { winner: string; loser: string };
   /** Local only: the transport under Services.net was swapped (NetSwitch); subscriptions already moved across. */

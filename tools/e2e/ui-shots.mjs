@@ -44,8 +44,7 @@ try {
   })()`);
   await waitFor(`!!window.__game.scene.isActive('HudV2')`);
   await sleep(5000);
-  await page.screenshot(`${OUT}/ui-world.png`);
-  if (want('dialogue')) await page.screenshot(`${OUT}/ui-dialogue-intro.png`);
+  await page.screenshot(`${OUT}/ui-dialogue-intro.png`); // the class opening narration (ui-hud below is the world without it)
   await endDialogue(); // class openings start with narration
   await sleep(800);
   await page.screenshot(`${OUT}/ui-hud.png`);

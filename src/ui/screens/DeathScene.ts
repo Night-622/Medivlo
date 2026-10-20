@@ -6,6 +6,9 @@ import { C, randomTip, typeStyle } from '@/ui/kit/hc';
 import { SaveService } from '@/firebase/SaveService';
 import { defaultOutfit, heroSprite, heroTexture } from '@/scenes/create/heroChoice';
 
+/** Portraits stand on y 400 under the tip: fit any sprite (a boss is far bigger than a wolf) into 150×130. */
+const fit = <T extends Phaser.GameObjects.Image>(o: T, maxScale: number): T => o.setScale(Math.min(maxScale, 150 / o.width, 130 / o.height));
+
 export interface DeathInfo { killer?: string; killerName?: string; line?: string; stats?: [string, string][]; penalty?: string; waystone?: string }
 
 /**
@@ -32,14 +35,14 @@ export class DeathScene extends Phaser.Scene {
     const hero = p?.hero;
     if (hero) {
       const tex = heroTexture(this, heroSprite(hero.classId, hero.look, hero.outfit ?? defaultOutfit()));
-      if (tex) this.add.image(W / 2 - 120, 400, tex).setOrigin(0.5, 1).setScale(4).setTint(0x8a8aa0).setAlpha(0.55);
+      if (tex) fit(this.add.image(W / 2 - 120, 400, tex).setOrigin(0.5, 1).setTint(0x8a8aa0).setAlpha(0.55), 4);
       this.add.text(W / 2 - 120, 410, p?.name ?? '', typeStyle('caption', C.text500)).setOrigin(0.5, 0);
     }
     this.add.text(W / 2, 330, '✕', { fontFamily: '"Jersey 10"', fontSize: '40px', color: '#5a2a4a' }).setOrigin(0.5);
     if (this.info.killer) {
       try {
         const key = bakeBeast(this, this.info.killer);
-        const s = this.add.sprite(W / 2 + 120, 400, key, 0).setOrigin(0.5, 1).setScale(3);
+        const s = fit(this.add.sprite(W / 2 + 120, 400, key, 0).setOrigin(0.5, 1), 3);
         s.play(`${key}:idle`);
       } catch { /* unknown creature id: name only */ }
       this.add.text(W / 2 + 120, 410, this.info.killerName ?? this.info.killer.replace(/^bx_/, '').replace(/_/g, ' '), typeStyle('caption', '#ff8a9a')).setOrigin(0.5, 0);
@@ -55,7 +58,7 @@ export class DeathScene extends Phaser.Scene {
     this.button(390, 524, 500, `Return to the ${this.info.waystone ?? 'waystone'}`, true, () => this.respawn());
     this.button(390, 584, 246, 'Load last save', false, () => void this.loadLast());
     this.button(644, 584, 246, 'Quit to title', false, () => this.quit());
-    this.add.text(W / 2, H - 34, this.info.penalty ?? 'You keep your gear. Unspent Embershards are dropped where you fell.', typeStyle('caption', C.text500)).setOrigin(0.5, 0);
+    this.add.text(W / 2, H - 34, this.info.penalty ?? 'You keep your gear. You lose a tenth of the Embershards you carry.', typeStyle('caption', C.text500)).setOrigin(0.5, 0);
     this.add.text(W / 2, 220, `Tip · ${randomTip('combat')}`, typeStyle('body', C.text300, 720)).setOrigin(0.5, 0).setAlign('center');
     this.input.keyboard!.on('keydown-ENTER', () => this.respawn());
   }

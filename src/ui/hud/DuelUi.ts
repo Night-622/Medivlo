@@ -3,7 +3,8 @@ import { Services, bus } from '@/core';
 import { C, typeStyle } from '@/ui/kit/hc';
 
 /**
- * Duels realm UI (Claude 1). Incoming challenge → a prompt under the banner area with Accept / Decline (20 s);
+ * Duels realm UI (Claude 1). Incoming challenge → a prompt under the banner area with Accept / Decline and a 20 s
+ * countdown (wall clock; it also closes on death, a space change or leaving the realm);
  * duel start / end → a short banner line. Challenges are sent with `challenge(playerId)` (chat name menu, Pause list).
  * Protocol (Claude 3): ClientMsg { type:'duel', target, accept? }; events duel:asked / duel:started / duel:ended.
  */
@@ -15,12 +16,16 @@ export class DuelUi {
   private prompt: Phaser.GameObjects.Container | null = null;
 
   constructor(private scene: Phaser.Scene, private banner: (title: string, sub?: string) => void) {
-    const name = (id: string) => Services.get('net').session().members.find((m) => m.playerId === id)?.name ?? 'Someone';
+    const name = (id: string, given?: string) => given ?? Services.get('net').session().members.find((m) => m.playerId === id)?.name ?? 'A challenger';
     const me = () => Services.get('net').localPlayer;
-    bus.onScene(scene, 'duel:asked', ({ from, to }) => {
-      if (to === me()) this.ask(from, name(from));
-      else if (from === me()) this.toast(`Challenge sent to ${name(to)}`);
+    bus.onScene(scene, 'duel:asked', ({ from, to, fromName, toName }) => {
+      if (to === me()) this.ask(from, name(from, fromName));
+      else if (from === me()) this.toast(`Challenge sent to ${name(to, toName)}`);
     });
+    // an open challenge never outlives the moment it was made in
+    bus.onScene(scene, 'player:died', (e) => { if (!e.playerId || e.playerId === me()) this.close(); });
+    bus.onScene(scene, 'space:changed', (e) => { if (e.playerId === me()) this.close(); });
+    bus.onScene(scene, 'net:changed', () => this.close());
     bus.onScene(scene, 'duel:started', ({ a, b }) => { if (a === me() || b === me()) this.banner('Duel!', `${name(a)} vs ${name(b)}`); this.close(); });
     bus.onScene(scene, 'duel:ended', ({ winner, loser }) => {
       if (winner === me()) this.banner('Victory', `${name(loser)} yields`);
@@ -36,6 +41,8 @@ export class DuelUi {
     const c = sc.add.container(0, 0).setDepth(60);
     c.add(sc.add.nineslice(x - 220, y, 'ui:panel_gold', undefined, 440, 96, 8, 8, 8, 8).setOrigin(0));
     c.add(sc.add.text(x, y + 22, `${who} challenges you to a duel`, typeStyle('h3', C.text)).setOrigin(0.5));
+    const left = sc.add.text(x + 206, y + 10, '20', typeStyle('caption', C.text500)).setOrigin(1, 0);
+    c.add(left);
     const btn = (bx: number, label: string, gold: boolean, accept: boolean) => {
       const b = sc.add.nineslice(bx, y + 46, gold ? 'ui:btn_gold' : 'ui:btn_slate', undefined, 150, 40, 8, 8, 8, 8).setOrigin(0);
       const t = sc.add.text(bx + 75, y + 66, label, typeStyle('h3', gold ? C.ink : C.text)).setOrigin(0.5);
@@ -48,7 +55,13 @@ export class DuelUi {
     btn(x - 160, 'Accept', true, true);
     btn(x + 10, 'Decline', false, false);
     this.prompt = c;
-    sc.time.delayedCall(20_000, () => { if (this.prompt === c) this.close(); });
+    // wall-clock deadline: a scene timer can stall (a busy or paused HUD clock kept the prompt up indefinitely)
+    const until = Date.now() + 20_000;
+    this.timer = window.setInterval(() => {
+      const s = Math.ceil((until - Date.now()) / 1000);
+      if (s <= 0 || this.prompt !== c) { this.close(); return; }
+      if (left.active) left.setText(String(s));
+    }, 250);
   }
 
   private toast(text: string): void {
@@ -56,5 +69,6 @@ export class DuelUi {
     this.scene.time.delayedCall(2500, () => t.destroy());
   }
 
-  private close(): void { this.prompt?.destroy(); this.prompt = null; }
+  private timer = 0;
+  private close(): void { window.clearInterval(this.timer); this.prompt?.destroy(); this.prompt = null; }
 }

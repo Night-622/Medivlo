@@ -16,6 +16,9 @@ const TRUST_LABEL = ['Stranger', 'Wary', 'Neutral', 'Friendly', 'Trusted', 'Devo
  * tabs Everyone / Story / Trade / Villagers. Right: detail (4× sprite, title, trust, a bark line, place, services, bio).
  * Data: Claude 4's NpcDefs (Registry 'npc') + trust flags; grouped by home village; bearers (other heroes) are skipped.
  */
+/** Card grid viewport height (y 136 → 672): leaves the footer hint (y ≈ 698) clear of the cards. */
+const GRID_H = 536;
+
 export class PeopleScene extends Phaser.Scene {
   private tab: Tab = 'all';
   private sel = 0;
@@ -75,7 +78,7 @@ export class PeopleScene extends Phaser.Scene {
     });
   }
 
-  private maxScroll(): number { return Math.max(0, Math.ceil(this.shown.length / 4) * 206 - 552); }
+  private maxScroll(): number { return Math.max(0, Math.ceil(this.shown.length / 4) * 206 - 10 - GRID_H); }
 
   private drawGrid(): void {
     this.grid.removeAll(true);
@@ -84,7 +87,7 @@ export class PeopleScene extends Phaser.Scene {
     if (!list.length) add(this.add.text(412, 300, 'No one here yet.', typeStyle('bodyL', C.text300)).setOrigin(0.5));
     list.forEach((n, i) => {
       const x = 48 + (i % 4) * 182, y = 136 + Math.floor(i / 4) * 206 - this.scroll;
-      if (y + 196 < 136 || y > 688) return;
+      if (y + 196 < 136 || y > 136 + GRID_H) return;
       const on = i === this.sel;
       const card = add(this.add.nineslice(x, y, on ? 'ui:panel_gold' : 'ui:btn_slate', undefined, 172, 196, 8, 8, 8, 8).setOrigin(0));
       card.setInteractive({ useHandCursor: true }).on('pointerup', () => this.pick(i));
@@ -108,8 +111,12 @@ export class PeopleScene extends Phaser.Scene {
       if (q) add(this.add.text(x + 158, y + 10, q.state === 'offer' ? '!' : '?', { fontFamily: '"Jersey 10"', fontSize: '28px', color: C.ink, backgroundColor: q.state === 'offer' ? C.gold : '#8b9fe0', padding: { x: 7, y: 0 } }).setOrigin(0.5, 0));
     });
     // clip to the grid viewport
-    const mask = this.make.graphics({}, false).fillRect(40, 136, 744, 552).createGeometryMask();
+    const mask = this.make.graphics({}, false).fillRect(40, 136, 744, GRID_H).createGeometryMask();
     this.grid.setMask(mask);
+    // scroll cues: more cards above / below the viewport (wheel or arrow keys)
+    const cue = (y: number, up: boolean) => this.grid.add(this.add.text(412, y, up ? '▲ more' : '▼ more · scroll', { ...typeStyle('badge', C.gold300), backgroundColor: C.bg, padding: { x: 8, y: 2 } }).setOrigin(0.5, up ? 0 : 1).setDepth(5));
+    if (this.scroll > 0) cue(138, true);
+    if (this.scroll < this.maxScroll()) cue(134 + GRID_H, false);
   }
 
   private drawDetail(): void {
@@ -178,7 +185,7 @@ export class PeopleScene extends Phaser.Scene {
     this.line = 0;
     const rowY = Math.floor(this.sel / 4) * 206;
     if (rowY < this.scroll) this.scroll = rowY;
-    if (rowY + 196 > this.scroll + 552) this.scroll = rowY + 196 - 552;
+    if (rowY + 196 > this.scroll + GRID_H) this.scroll = rowY + 196 - GRID_H;
     this.drawGrid();
     this.drawDetail();
   }

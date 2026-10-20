@@ -5,7 +5,7 @@
 import type Phaser from 'phaser';
 import { heroName, mv, type HeroGear, type HeroLook } from './mv';
 
-export interface AtlasSheet { file: string; frameWidth: number; frameHeight: number; columns?: number; frames?: string[] | number; pivot?: [number, number] }
+export interface AtlasSheet { file: string; frameWidth: number; frameHeight: number; columns?: number; frames?: string[] | number; pivot?: [number, number]; pieces?: { id: string }[] }
 export interface AtlasImage { file: string; w?: number; h?: number; origin?: [number, number]; lights?: [number, number, number][]; label?: string; category?: string }
 export type Atlas = Record<string, Record<string, unknown>>;
 

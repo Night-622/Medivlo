@@ -41,10 +41,18 @@ export class OptionPanel {
 
   private scroll = 0;
   private contentBottom = 0;
+  private cueUp?: Phaser.GameObjects.Text;
+  private cueDown?: Phaser.GameObjects.Text;
   private scrollTo(v: number): void {
     const max = Math.max(0, this.contentBottom - (CLIP.y + CLIP.h) + 8);
     this.scroll = Math.max(0, Math.min(max, v));
     this.body.y = -Math.round(this.scroll);
+    // scroll cues (the panel scrolls with the mouse wheel): there is more above / below
+    const cue = (y: number, label: string, oy: number) => this.scene.add.text(CLIP.x + CLIP.w / 2, y, label, { ...typeStyle('badge', C.gold300), backgroundColor: C.bg, padding: { x: 8, y: 2 } }).setOrigin(0.5, oy).setDepth(10);
+    this.cueUp ??= cue(CLIP.y + 2, '▲ more', 0);
+    this.cueDown ??= cue(CLIP.y + CLIP.h - 2, '▼ more · scroll', 1);
+    this.cueUp.setVisible(this.scroll > 2);
+    this.cueDown.setVisible(this.scroll < max - 2);
   }
 
   render(hc: HeroChoice): void {
@@ -135,8 +143,10 @@ export class OptionPanel {
     const tex = heroTexture(this.scene, name);
     if (!tex) return;
     const img = this.add(this.scene.add.image(x + w / 2, y + h + dy, tex).setOrigin(0.5, 1).setScale(scale));
-    const g = this.scene.make.graphics({}, false).fillRect(x, y, w, h);
-    img.setMask(g.createGeometryMask());
+    // Crop to the w×h window in frame pixels. A crop moves with the image when the panel scrolls; the old world-space
+    // geometry mask stayed put, so every thumbnail vanished as soon as the Look/Outfit panel was scrolled.
+    const left = x + w / 2 - (img.width * scale) / 2, top = y + h + dy - img.height * scale;
+    img.setCrop((x - left) / scale, (y - top) / scale, w / scale, h / scale);
   }
 
   private renderOutfit(hc: HeroChoice): void {

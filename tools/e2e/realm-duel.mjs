@@ -21,8 +21,20 @@ const chrome = spawn(CHROME_PATH, ['--headless=new', `--remote-debugging-port=${
   '--disable-features=CalculateNativeWinOcclusion,IntensiveWakeUpThrottling', '--autoplay-policy=no-user-gesture-required', 'about:blank'], { stdio: 'ignore' });
 setTimeout(() => { console.log('TIMEOUT'); chrome.kill('SIGKILL'); process.exit(2); }, 8 * 60_000).unref();
 
-async function tab(url) {
-  const t = await (await fetch(`http://127.0.0.1:${PORT}/json/new?${encodeURIComponent(url)}`, { method: 'PUT' })).json();
+/** A target in its own browser context (separate storage), so the two players sign in as two different
+ *  anonymous Firebase users. In one shared profile both tabs got the same uid and a duel could never start. */
+async function isolatedTarget(url) {
+  const { webSocketDebuggerUrl } = await (await fetch(`http://127.0.0.1:${PORT}/json/version`)).json();
+  const bws = new WebSocket(webSocketDebuggerUrl); await new Promise((r) => (bws.onopen = r));
+  let n = 0; const call = (method, params = {}) => new Promise((r) => { const i = ++n; bws.addEventListener('message', function on(m) { const d = JSON.parse(m.data); if (d.id === i) { bws.removeEventListener('message', on); r(d.result); } }); bws.send(JSON.stringify({ id: i, method, params })); });
+  const { browserContextId } = await call('Target.createBrowserContext', { disposeOnDetach: false });
+  const { targetId } = await call('Target.createTarget', { url, browserContextId });
+  bws.close();
+  return { webSocketDebuggerUrl: `ws://127.0.0.1:${PORT}/devtools/page/${targetId}` };
+}
+
+async function tab(url, isolated = false) {
+  const t = isolated ? await isolatedTarget(url) : await (await fetch(`http://127.0.0.1:${PORT}/json/new?${encodeURIComponent(url)}`, { method: 'PUT' })).json();
   const ws = new WebSocket(t.webSocketDebuggerUrl); await new Promise((r) => (ws.onopen = r));
   let id = 0; const pending = new Map(); const errors = [];
   ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pending.has(d.id)) { pending.get(d.id)(d.result ?? d); pending.delete(d.id); }
@@ -66,7 +78,7 @@ const events = (T) => T.ev(`(async () => { const c = await import('/src/core/ind
 
 try {
   for (let i = 0; i < 40; i++) { await sleep(250); try { await fetch(`http://127.0.0.1:${PORT}/json/version`); break; } catch {} }
-  const A = await tab(`${BASE}/`), B = await tab(`${BASE}/`);
+  const A = await tab(`${BASE}/`), B = await tab(`${BASE}/`, true);
   check('both titles up', (await A.waitFor(`!!window.__game?.scene.isActive('MainMenu')`)) && (await B.waitFor(`!!window.__game?.scene.isActive('MainMenu')`)));
   await A.ev(hero('Ana', 'warden')); await B.ev(hero('Bo', 'samurai'));
   await events(A); await events(B);

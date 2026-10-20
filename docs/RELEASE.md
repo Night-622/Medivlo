@@ -29,7 +29,7 @@ screenshot. Deploy steps are in docs/DEPLOY.md.
 - [x] Crisp small text (sharp rendering, 2× buffer, default on)
 - [x] Production build boots and plays (vite preview smoke); vendor chunks cached across updates
 - [x] Worker-thread chunk generation (Claude 2)
-- [ ] Rare ~100 ms hitches on fresh terrain (polish list, STATUS.md)
+- [x] Fresh-terrain hitches (Claude 2: building bakes moved into the prefetch ring; no frame over 33 ms flying or walking, tools/playthrough/hitch.mjs)
 - [ ] Browser check on a normal desktop (Chrome, Firefox, Safari, Edge) at 1080p and 1440p, outside the headless harness
 
 ## 4. Ship (user + Claude 1, docs/DEPLOY.md)

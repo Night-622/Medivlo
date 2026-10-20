@@ -28,7 +28,8 @@ export function markTutorial(s: TutorialStep): void {
 export function hint(id: string, text: string): void {
   if (!Game.hasState || !hintsOn() || getFlag(`hint.${id}`)) return;
   setFlag(`hint.${id}`, true);
-  bus.emit('narrative:toast', { text: formatKeys(text), kind: 'info' });
+  // local: a hint is this player's own (their save's hint flag, their key bindings), so the host never replicates it
+  bus.emit('narrative:toast', { text: formatKeys(text), kind: 'info', local: true });
 }
 
 export const HINTS = {

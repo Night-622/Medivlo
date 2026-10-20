@@ -38,6 +38,8 @@ const REALMS: RealmDef[] = [
 const here = dirname(fileURLToPath(import.meta.url));
 const realmCode = new vm.Script(readFileSync(join(here, 'realm.js'), 'utf8'), { filename: 'realm.js' });
 const live = new Map<string, { api: RealmApi; timer: NodeJS.Timeout; emptySince: number | null }>();
+/** One connection per account: a second join (another tab or device) replaces the first. uid → leave(). */
+const seats = new Map<string, (reason: string) => void>();
 
 function spawnRealm(def: RealmDef): RealmApi {
   const t0 = performance.now();
@@ -133,6 +135,7 @@ async function onJoin(ws: WebSocket, def: RealmDef, token: string): Promise<void
   if (helloMsg === null) { kick('The realm did not hear from you in time'); return; }
   let hello: { name?: string; classId?: string; level?: number };
   try { hello = JSON.parse(helloMsg); } catch { kick('Bad hello'); return; }
+  seats.get(who.uid)?.('You joined from another window'); // detaches the old seat before the new one attaches
   let api: RealmApi;
   try { api = live.get(def.id)?.api ?? spawnRealm(def); }
   catch (e) { console.error(`[realm] ${def.id}: failed to start`, e); kick('That realm is unavailable right now'); return; }
@@ -146,7 +149,18 @@ async function onJoin(ws: WebSocket, def: RealmDef, token: string): Promise<void
     try { api.receive(who.uid, s); } catch (e) { console.warn(`[realm] ${def.id}: bad message from ${who.uid}`, e); }
   };
   for (const s of queued.splice(0)) deliver(s);
-  ws.on('close', (code) => { clearInterval(refill); api.detach(who.uid); console.log(`[realm] ${def.id}: - ${who.uid} (close ${code}, ${api.count()} in)`); });
+  let left = false;
+  const leave = (code: string) => {
+    if (left) return;
+    left = true;
+    clearInterval(refill);
+    if (seats.get(who.uid) === kickOut) seats.delete(who.uid);
+    api.detach(who.uid);
+    console.log(`[realm] ${def.id}: - ${who.uid} (${code}, ${api.count()} in)`);
+  };
+  const kickOut = (reason: string) => { deliver = undefined; leave('replaced'); kick(reason); };
+  seats.set(who.uid, kickOut);
+  ws.on('close', (code) => leave(`close ${code}`));
 }
 
 // One broken realm must never take the others down (Cloud Run would restart and drop every player).

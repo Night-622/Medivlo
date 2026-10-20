@@ -37,6 +37,8 @@ export function indexAtlas(atlas: Atlas): void {
       if (!s.file || !s.frameWidth) continue;
       const key = `${g}:${k}`;
       if (Array.isArray(s.frames)) s.frames.forEach((name, i) => { if (!frames.has(name)) frames.set(name, { key, frame: i, w: s.frameWidth, h: s.frameHeight }); });
+      // gear.armour names its frames through `pieces` (piece i = frame i), not `frames`: without this every armour icon is blank
+      if (Array.isArray(s.pieces)) s.pieces.forEach((p, i) => { if (p?.id && !frames.has(p.id)) frames.set(p.id, { key, frame: i, w: s.frameWidth, h: s.frameHeight }); });
       if (!frames.has(k)) frames.set(k, { key, frame: 0, w: s.frameWidth, h: s.frameHeight });
       metas.set(k, { group: g });
     }

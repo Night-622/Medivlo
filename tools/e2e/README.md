@@ -13,6 +13,14 @@ node tools/e2e/sim/run.mjs economy             # quest rewards, take-item, shops
 node tools/e2e/sim/run.mjs coop                # downed/revive/wipe, party scaling, shared drops, PvP by realm rule, yields
 node tools/e2e/sim/run.mjs inspect bx_ash_5 14 # print a creature's resolved combat def
 node tools/e2e/sim/run.mjs starts [school]     # spawn zones near each class start waystone: level, size, distance to the opening roads
+node tools/e2e/sim/run.mjs xp-project          # static Act I–III end-level projection (WALK=<walks.json>, EXPLORE=1, KPL=/QT= to calibrate)
+# pre-deploy gates (tools/release/predeploy-check.mjs runs them; FAIL-prefixed lines, last line "N/M passed"):
+node tools/e2e/sim/run.mjs hitboxes [hero|creature|dash|pvp|art]   # every hero attack/spell and creature ability: in → hit,
+                                               # out → miss; telegraphs resolve where drawn (dodging works); dash i-frames; PvP;
+                                               # body radius vs art (report only, "note" lines)
+node tools/e2e/sim/run.mjs features [casts|tree|gear|progress|hooks] [cls]  # 24 classes: slots 1–4, dash, potions; every
+                                               # tree node + keystones + hooks; gear/sets/Attuned/legendaries; level-up, shops,
+                                               # Runeforge, scrolls
 ```
 
 ## Browser (real keyboard/mouse over the Chrome DevTools Protocol)

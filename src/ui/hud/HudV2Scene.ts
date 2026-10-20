@@ -107,8 +107,14 @@ export class HudV2Scene extends Phaser.Scene {
     let dlgOpen = false;
     const fade = () => this.tweens.add({ targets: this.cameras.main, alpha: dlgOpen || fading > 0 ? 0 : 1, duration: 180 });
     const open = new Set<string>();
-    bus.onScene(this, 'ui:open', ({ panel }) => { if (!SELF_ESC.has(panel)) return; open.add(panel); this.panelOpen = true; if (FADES.has(panel)) { fading++; fade(); } });
+    // Pause is a full-screen screen too (its menu would sit on the hotbar), but it handles its own Esc: fade only
+    const FADE_ONLY = new Set(['pause']);
+    bus.onScene(this, 'ui:open', ({ panel }) => {
+      if (FADE_ONLY.has(panel)) { fading++; fade(); return; }
+      if (!SELF_ESC.has(panel)) return; open.add(panel); this.panelOpen = true; if (FADES.has(panel)) { fading++; fade(); }
+    });
     bus.onScene(this, 'ui:close', ({ panel }) => {
+      if (FADE_ONLY.has(panel)) { fading = Math.max(0, fading - 1); fade(); return; }
       if (!open.delete(panel)) return;
       if (FADES.has(panel)) { fading = Math.max(0, fading - 1); fade(); }
       this.time.delayedCall(0, () => { this.panelOpen = open.size > 0; });
@@ -150,7 +156,7 @@ export class HudV2Scene extends Phaser.Scene {
     };
     fitW(this.nameT, 170);
     if (hero) {
-      const cls = this.add.text(this.nameT.x + this.nameT.width + 8, 22, classDisplay(hero.classId)?.name ?? hero.classId, typeStyle('body', C.text300));
+      const cls = this.add.text(this.nameT.x + this.nameT.width + 8, 22, classDisplay(hero.classId)?.name ?? hero.classId, { ...typeStyle('body', C.text300), shadow: { offsetX: 2, offsetY: 2, color: C.ink, fill: true } });
       fitW(cls, 370 - cls.x);
     }
     this.hp = new HCBar(this, 108, 48, 'hp');
@@ -243,7 +249,10 @@ export class HudV2Scene extends Phaser.Scene {
   }
 
   private showControlsHint(): void {
-    const line = formatKeys('{key:move} move · click / {key:cast1}–{key:cast4} cast · {key:dash} dash · {key:potionQ}/{key:potionE} potions · {key:inventory} pack');
+    // "1–4" only when the four spell keys really are 1, 2, 3, 4; after a rebind list them ("Z/2/3/4")
+    const casts = (['cast1', 'cast2', 'cast3', 'cast4'] as const).map((a) => keyLabel(a));
+    const castKeys = casts.join('') === '1234' ? '1–4' : casts.join('/');
+    const line = formatKeys(`{key:move} move · click / ${castKeys} cast · {key:dash} dash · {key:potionQ}/{key:potionE} potions · {key:inventory} pack`);
     const t = this.add.text(this.scale.width / 2, 16, line, {
       ...typeStyle('caption', C.text300), backgroundColor: '#0d1226', padding: { x: 12, y: 6 },
     }).setOrigin(0.5, 0);

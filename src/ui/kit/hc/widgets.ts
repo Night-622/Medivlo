@@ -77,7 +77,10 @@ export function tab(scene: Phaser.Scene, x: number, y: number, str: string, acti
   const label = scene.add.text(w / 2 - (key ? 8 : 0), h / 2, str, typeStyle('h3', active ? C.gold : C.text)).setOrigin(0.5);
   c.add([bg, label]);
   if (key) c.add(scene.add.text(w - 14, h / 2, key, { fontFamily: '"Jersey 10"', fontSize: '15px', color: C.text500 }).setOrigin(1, 0.5));
-  c.setSize(w, h).setInteractive(new Phaser.Geom.Rectangle(0, 0, w, h), Phaser.Geom.Rectangle.Contains).on('pointerup', onClick);
+  // The bg takes the clicks, not the container: Phaser offsets a Container's hit point by half its size, so a
+  // Rectangle(0, 0, w, h) hit area only covered the tab's top-left quarter (dead tab-bar and map-crumb clicks).
+  c.setSize(w, h);
+  bg.setInteractive({ useHandCursor: true }).on('pointerup', onClick);
   return c;
 }
 

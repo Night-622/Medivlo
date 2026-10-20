@@ -109,6 +109,10 @@ try {
   const seen = await B.waitFor(`(async () => { const d = ${dc}; return d.view?.dialogueId === 'dialogue:dev-test-vote' && d.view?.choices.length === 2; })()`, 15000);
   check('guest sees the same scene with both choices', seen);
   await B.shot(join(OUT, 'coop-vote-guest.png'));
+  // one-time hints are local (narrative:toast local: true): the guest must not also show the host's copy (was 2)
+  await sleep(800);
+  const voteHints = await B.ev(`(window.__hud?.().texts ?? []).filter((t) => t.text.startsWith('Party vote')).length`);
+  check('guest shows at most one vote hint (the host\'s is not replicated)', voteHints <= 1, String(voteHints));
   await A.ev(`(async () => { const d = ${dc}; d.choose(0); return 1; })()`);
   await B.ev(`(async () => { const d = ${dc}; d.choose(1); return 1; })()`);
   const decided = await A.waitFor(`(async () => (await import('/src/core/index.ts')).Game.state.flags['dev.test_vote'] !== undefined)()`, 40000);
