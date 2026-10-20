@@ -130,5 +130,36 @@ const ss = notes.match(/the (\d+) school spells/); if (ss) check('PATCH-NOTES: s
 const hy = notes.match(/such as ([^.]+)\./); if (hy) for (const n of hy[1].split(/,\s*|\s+or\s+/)) check(`PATCH-NOTES: hybrid "${n}" exists`, !!data.hybrids.find((x) => norm(x.name) === norm(n)), '');
 const buff = notes.match(/stronger: ([^.]+)\./); if (buff) for (const n of buff[1].split(/,\s*|\s+and\s+/)) check(`PATCH-NOTES: spell "${n}" exists`, !!findName(data.spellNames, n), '');
 if (/draughts and tonics/.test(notes)) check('PATCH-NOTES: potions are named draughts and tonics', data.potions.some((p) => /draught/i.test(p)) && data.potions.some((p) => /tonic/i.test(p)), data.potions.join(', '));
+// ── MORNING-TEST: keys, lists and every capitalised bold / quoted name must exist in the game ──
+let blob = '';
+{
+  const { readdirSync, statSync } = await import('node:fs');
+  const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) walk(p); else if (p.endsWith('.ts')) blob += readFileSync(p, 'utf8') + '\n'; } };
+  walk('src');
+}
+const has = (t) => { const a = t.replace(/[’']/g, '’'), b = t.replace(/[’']/g, "'"); return blob.includes(a) || blob.includes(b); };
+let morning = '';
+try { morning = readFileSync('docs/MORNING-TEST.md', 'utf8').replace(/\r/g, '').replace(/\n {2}(?=\S)/g, ' '); } catch { /* not written yet */ }
+if (morning) {
+  const KEYS = [[/Pack \(\*\*([A-Z])\*\*\)/, 'inventory'], [/Journal \(\*\*([A-Z])\*\*\)/, 'journal'], [/track it \(\*\*([A-Z])\*\*\)/, 'track'], [/dash \(\*\*(\w+)\*\*\)/, 'dash'],
+    [/attack \(\*\*(\d)\*\*\)/, 'cast1'], [/draught \(\*\*([A-Z])\*\*\)/, 'potionQ'], [/Press \*\*([A-Z])\*\* for the map/, 'map'], [/press \*\*([A-Z])\*\* for Skills/i, 'skills'],
+    [/Press \*\*([A-Z])\*\* for Spells/, 'spells'], [/people around you[\s\S]{0,40}Press \*\*([A-Z])\*\*/, 'people'], [/press \*\*([A-Z])\*\* \(“Wake”\)/, 'interact']];
+  const DIGIT = { ONE: '1', TWO: '2', THREE: '3', FOUR: '4', SPACE: 'Space' };
+  for (const [re, action] of KEYS) { const m = morning.match(re); const want = DIGIT[data.keys[action]] ?? data.keys[action];
+    check(`MORNING-TEST: ${action} key`, !!m && m[1] === want, m ? `doc ${m[1]}, default ${want}` : `phrase ${re} not found`); }
+  const rar = morning.match(/Rarities run ([^.]+)\./); if (rar) check('MORNING-TEST: rarity list', rar[1].split(/,\s*/).join('|') === data.rarities.join('|'), `${rar[1]} vs ${data.rarities.join(', ')}`);
+  const forge = [...readFileSync('src/ui/character/hc/ForgeTabs.ts', 'utf8').matchAll(/\['[a-z]+', '([A-Z][a-z]+)'\]/g)].map((m) => m[1]);
+  const tabs = morning.match(/look through the tabs: ([^.]+)\./); if (tabs) check('MORNING-TEST: Runeforge tabs', tabs[1].replace(/\*/g, '').split(/,\s*/).join('|') === forge.join('|'), `${tabs[1].replace(/\*/g, '')} vs ${forge.join(', ')}`);
+  const terms = new Set();
+  for (const m of morning.matchAll(/\*\*([^*]+)\*\*|“([^”]+)”/g)) for (const part of (m[1] ?? m[2]).split(/\s*›\s*|:\s+/)) {
+    const t = part.replace(/^[“"]|[”"]$/g, '').replace(/^the /, '').trim();
+    // keys and the guide's own labels are not game names
+    if (!/^[A-Z]/.test(t) || /^(?:[A-Z0-9]|WASD|Space|Esc|Enter|Tab)$/.test(t) || /^You should see/.test(t) || t.length < 3) continue;
+    terms.add(t);
+  }
+  // a tooltip line is built from a template (describeHc: `${kind} · ${rarity} · Item level ${ilvl}`): check its fixed part
+  const shown = (t) => (/ · Item level \d+$/.test(t) ? has(' · Item level ') && data.rarities.some((r) => t.includes(` · ${r} · `)) : has(t));
+  for (const t of terms) check(`MORNING-TEST: "${t}" exists in the game`, shown(t), 'not found in src/');
+}
 console.log(`\n${pass}/${pass + fail} passed`);
 process.exit(fail ? 1 : 0);
