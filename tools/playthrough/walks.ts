@@ -19,11 +19,16 @@ export const AGGRO_TILES = 7.5;
 export const expectedLevel = (main: number): number => 1 + 1.3 * (main - 1);
 /**
  * Measured hero levels (Claude 5's gear-curve typical player, median over seeds): { class: { quest: level at its
- * start } } in out/hero-levels.json (or HERO_LEVELS). Acts II/III use them as the expected level where present (the
- * linear model below lagged the real hero by ~3.5 levels at L21–30); without the file, the model alone.
+ * start } }. Acts II/III use them as the expected level where present (the linear model below lagged the real hero by
+ * ~3.5 levels at L21–30); without a file, the model alone. Default: the PIN the Concordia bands were generated from
+ * (out/hero-levels.bands.json), so Claude 5 regenerating out/hero-levels.json never moves the check under bands built
+ * from the earlier file. A deliberate rebase: HERO_LEVELS=tools/playthrough/out/hero-levels.json concordiaBands.ts gen
+ * (gen re-pins).
  */
+export const HERO_LEVELS_PIN = 'tools/playthrough/out/hero-levels.bands.json';
+export const HERO_LEVELS_SRC = process.env.HERO_LEVELS ?? HERO_LEVELS_PIN;
 const MEASURED: Record<string, Record<string, number>> = (() => {
-  const f = process.env.HERO_LEVELS ?? 'tools/playthrough/out/hero-levels.json';
+  const f = HERO_LEVELS_SRC;
   try { return existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : {}; } catch { return {}; }
 })();
 /** Act II and III level bands (Act I ends L13–14, II L26–28, III L38–40) */

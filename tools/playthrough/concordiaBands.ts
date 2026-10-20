@@ -11,12 +11,12 @@
  *          (also `checks.ts bands-concordia`; ~3 min, it walks every class across Concordia twice)
  * Act II stays within L14–28 and Act III within L28–40; the Heart keeps its L30 floor.
  */
-import { writeFileSync } from 'node:fs';
+import { copyFileSync, writeFileSync } from 'node:fs';
 import { MORVANE_REGIONS, MORVANE_SCALE } from '@/data/regions/hc/morvane';
 import { morvaneRegionAt } from '@/world/hc/overview';
 import { spawnZones, zoneLevelAt } from '@/world/hc/spawns';
 import type { StepDone } from '@/world/hc/bands';
-import { actWalks, type ActQuestWalk } from './walks';
+import { HERO_LEVELS_PIN, HERO_LEVELS_SRC, actWalks, type ActQuestWalk } from './walks';
 
 // direct: <gen|check> [classes]; from checks.ts: bands-concordia [classes]
 const mode = process.argv[2] === 'gen' ? 'gen' : 'check', only = process.argv[3];
@@ -27,6 +27,8 @@ const classes = only?.split(',');
 const zones = spawnZones('concordia');
 const regionOf = new Map(zones.map((z) => [z.id, z.id === 'zone:legion-camp' ? 'region:heart' : morvaneRegionAt(z.at[0] / MORVANE_SCALE, z.at[1] / MORVANE_SCALE)?.id ?? '']));
 const isMain = (q: ActQuestWalk) => q.type === 'main' || q.type === 'class';
+/** how far over the hero a region not yet visited can be (floor; tops are floor + 2) */
+const RAMP = 5;
 const ACT_TOP: Record<'act2' | 'act3', number> = { act2: 28, act3: 38 }; // floor caps: band tops ≤ 30 / 40 (the measured hero ends Act II ~L28)
 
 interface Played { cls: string; quests: (ActQuestWalk & { act: 'act2' | 'act3'; stepsBefore: number })[]; steps: string[] }
@@ -64,6 +66,15 @@ if (mode === 'gen') {
       // and comes after a later quest becomes a tier from that quest (a visit during the same quest keeps the lower floor)
       const list: { floor: number; step?: number }[] = [];
       let lastStep = -1;
+      // before the first visit the region ramps with the hero, at most RAMP over them (it was the first visit's
+      // level from the start: an L16 hero off the route met L30 next door). Not the Heart (sealed, its L30 rule).
+      const first = v[0];
+      if (region !== 'region:heart' && first.step > 0) {
+        const at = (k: number) => Math.min(first.floor, Math.floor(w.quests[k].expected) + RAMP);
+        list.push({ floor: at(0) });
+        for (let k = 1; k < first.step; k++) if (at(k) > list[list.length - 1].floor) list.push({ floor: at(k), step: k });
+        lastStep = list.length > 1 ? list[list.length - 1].step! : -1;
+      }
       for (const x of v) {
         if (!list.length) { list.push({ floor: x.floor }); lastStep = x.step; continue; }
         if (x.floor <= list[list.length - 1].floor || x.step <= lastStep) continue;
@@ -99,7 +110,9 @@ export const ACT23_MAINS: Record<string, string[]> = {
 ${mains.join('\n')}
 };
 `);
-  console.log(`wrote src/data/regions/hc/concordiaBands.gen.ts: ${Object.keys(table).length} classes × ${MORVANE_REGIONS.length} regions at most`);
+  // pin the hero levels these bands came from: the check (and the walk exports) read the pin, not Claude 5's live file
+  if (HERO_LEVELS_SRC !== HERO_LEVELS_PIN) copyFileSync(HERO_LEVELS_SRC, HERO_LEVELS_PIN);
+  console.log(`wrote src/data/regions/hc/concordiaBands.gen.ts: ${Object.keys(table).length} classes × ${MORVANE_REGIONS.length} regions at most (hero levels pinned in ${HERO_LEVELS_PIN})`);
 } else {
   const byId = new Map(zones.map((z) => [z.id, z]));
   let bad = 0;
