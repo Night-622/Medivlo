@@ -50,7 +50,7 @@ export class RealmsScene extends Phaser.Scene {
     // closed (texts destroyed) or entering a realm while the list was on its way
     if (!alive(this.list) || this.busy) return;
     this.realms = realms;
-    if (error) this.status.setText(error instanceof Error && error.message.includes('launch') ? error.message : 'The realm server isn\'t answering. Try again soon.').setColor(C.text300);
+    if (error) this.status.setText(error instanceof Error && error.message.includes('launch') ? error.message : 'The realm server isn’t answering. Try again soon.').setColor(C.text300);
     else if (this.status.text === 'Finding realms…' || this.status.text.startsWith('The realm server')) this.status.setText('');
     this.render();
   }

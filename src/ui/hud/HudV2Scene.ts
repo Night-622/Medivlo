@@ -157,15 +157,10 @@ export class HudV2Scene extends Phaser.Scene {
     this.lvlT = this.add.text(81, 81, '1', typeStyle('h3', C.ink)).setOrigin(0.5);
     this.nameT = this.add.text(108, 14, Game.hasState ? Game.state.player.name : '', { ...typeStyle('h2', C.text), shadow: { offsetX: 2, offsetY: 2, color: C.ink, fill: true } });
     // long names (up to 16 chars) must not run into the class label: shrink, then ellipsize, within the plate (108…370)
-    const fitW = (t: Phaser.GameObjects.Text, max: number) => {
-      while (t.width > max && parseInt(String(t.style.fontSize), 10) > 18) t.setFontSize(parseInt(String(t.style.fontSize), 10) - 2);
-      let s = t.text;
-      while (t.width > max && s.length > 3) { s = s.slice(0, -1); t.setText(`${s}…`); }
-    };
-    fitW(this.nameT, 170);
+    fitText(this.nameT, 170, 18);
     if (hero) {
       const cls = this.add.text(this.nameT.x + this.nameT.width + 8, 22, classDisplay(hero.classId)?.name ?? hero.classId, { ...typeStyle('body', C.text300), shadow: { offsetX: 2, offsetY: 2, color: C.ink, fill: true } });
-      fitW(cls, 370 - cls.x);
+      fitText(cls, 370 - cls.x, 18);
     }
     this.hp = new HCBar(this, 108, 48, 'hp');
     // bar values in Jersey: small Pixelify digits blur ("265" read as "26S"); Jersey's numerals stay distinct
@@ -207,7 +202,7 @@ export class HudV2Scene extends Phaser.Scene {
         // down = ms left before they fall for good; rv = revive progress in ms of a 3 s hold (Claude 3, sim/coop.ts)
         const rv = typeof e.data?.rv === 'number' ? e.data.rv : 0;
         const left = Math.ceil((e.data!.down as number) / 1000);
-        L.add(this.add.text(105, y + 4, rv ? `REVIVING ${Math.min(100, Math.round(rv / 30))}%` : `DOWNED · ${left}s`, { ...typeStyle('badge', rv ? C.good : C.danger), fontStyle: '700' }).setOrigin(0.5, 0));
+        L.add(this.add.text(105, y + 4, rv ? `REVIVING ${Math.min(100, Math.round(rv / 30))}%` : `DOWNED · ${left} s`, { ...typeStyle('badge', rv ? C.good : C.danger), fontStyle: '700' }).setOrigin(0.5, 0));
       }
     });
   }
@@ -232,12 +227,12 @@ export class HudV2Scene extends Phaser.Scene {
 
   /**
    * Menu buttons, bottom-right (handoff › HUD › menu buttons): 44×44 slate buttons showing the bound key (Jersey 26),
-   * label underneath (11px). Keys come from Settings, so rebinding updates them. Click → ui:open.
+   * label underneath (11px). Keys come from Settings (core keyLabel: Space, ;, Num 1…), so rebinding updates them; a
+   * long key name shrinks to fit the button. Click → ui:open.
    */
   private buildMenuButtons(): void {
     const { width: W, height: H } = this.scale;
     const btns: [string, Action, string][] = [['inventory', 'inventory', 'Pack'], ['skills', 'skills', 'Skills'], ['spells', 'spells', 'Spells'], ['journal', 'journal', 'Journal'], ['map', 'map', 'Map']];
-    const keyLabel = (a: Action) => { const k = Settings.key(a); return k.length === 1 ? k : k.slice(0, 3); };
     const layer = this.add.container(0, 0);
     const draw = () => {
       layer.removeAll(true);
@@ -246,6 +241,7 @@ export class HudV2Scene extends Phaser.Scene {
         const x = W - 16 - (btns.length - i) * 50 + 6, y = H - 24 - 16 - 44;
         const bg = this.add.nineslice(x, y, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0);
         const key = this.add.text(x + 22, y + 22, keyLabel(action), { fontFamily: '"Jersey 10"', fontSize: '26px', color: C.text }).setOrigin(0.5);
+        fitText(key, 40, 12);
         const lab = this.add.text(x + 22, y + 46, label, { ...typeStyle('badge', C.text300), fontStyle: '700', stroke: C.ink, strokeThickness: 2 }).setOrigin(0.5, 0);
         bg.setInteractive({ useHandCursor: true }).on('pointerup', () => bus.emit('ui:open', { panel }))
           .on('pointerover', () => bg.setTexture('ui:btn_slate_hover')).on('pointerout', () => bg.setTexture('ui:btn_slate'));
@@ -261,7 +257,7 @@ export class HudV2Scene extends Phaser.Scene {
     // "1–4" only when the four spell keys really are 1, 2, 3, 4; after a rebind list them ("Z/2/3/4")
     const casts = (['cast1', 'cast2', 'cast3', 'cast4'] as const).map((a) => keyLabel(a));
     const castKeys = casts.join('') === '1234' ? '1–4' : casts.join('/');
-    const line = formatKeys(`{key:move} move · click / ${castKeys} cast · {key:dash} dash · {key:potionQ}/{key:potionE} potions · {key:inventory} pack`);
+    const line = formatKeys(`{key:move} move · click / ${castKeys} cast · {key:dash} dash · {key:potionQ}/{key:potionE} draughts · {key:inventory} pack`);
     const t = this.add.text(this.scale.width / 2, 16, line, {
       ...typeStyle('caption', C.text300), backgroundColor: '#0d1226', padding: { x: 12, y: 6 },
     }).setOrigin(0.5, 0);
@@ -335,10 +331,22 @@ export class HudV2Scene extends Phaser.Scene {
     const f = e.item ? Art.tryFrame(e.item) : Art.tryFrame('icon_coin');
     c.add(this.add.nineslice(2, 2, 'ui:slot_common', undefined, 36, 36, 8, 8, 8, 8).setOrigin(0));
     if (f) c.add(this.add.image(20, 20, f.key, f.frame));
-    c.add(this.add.text(46, 20, `${loss ? '−' : '+'} ${name}${e.qty && e.qty > 1 ? ` ×${e.qty}` : ''}`, typeStyle('body', loss ? C.danger : C.text)).setOrigin(0, 0.5));
+    // long item names stay inside the 300 px row: shrink a little, then end in an ellipsis (the count stays)
+    const qty = e.qty && e.qty > 1 ? ` ×${e.qty}` : '';
+    const label = this.add.text(46, 20, `${loss ? '−' : '+'} ${name}${qty}`, typeStyle('body', loss ? C.danger : C.text)).setOrigin(0, 0.5);
+    fitText(label, 300 - 46 - 8, 11, qty);
+    c.add(label);
     this.feed.unshift(c);
     while (this.feed.length > 5) this.feed.pop()!.destroy();
     this.feed.forEach((row, i) => row.setY(H - 24 - 40 - i * 44));
     this.time.delayedCall(6000, () => { this.feed = this.feed.filter((r) => r !== c); c.destroy(); });
   }
+}
+
+/** Shrink a one-line text 1 px at a time (down to minSize), then cut it to end in "…" (keeping `keep`) until it fits max px. */
+function fitText(t: Phaser.GameObjects.Text, max: number, minSize: number, keep = ''): void {
+  const size = () => parseInt(String(t.style.fontSize), 10);
+  while (t.width > max && size() > minSize) t.setFontSize(size() - 1);
+  let s = keep ? t.text.slice(0, -keep.length) : t.text;
+  while (t.width > max && s.length > 3) { s = s.slice(0, -1).trimEnd(); t.setText(`${s}…${keep}`); }
 }

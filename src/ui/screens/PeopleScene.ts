@@ -63,7 +63,7 @@ export class PeopleScene extends Phaser.Scene {
     this.grid = this.add.container(0, 0);
     this.detail = this.add.container(0, 0);
     this.add.nineslice(792, 96, 'ui:panel', undefined, 440, 592, 8, 8, 8, 8).setOrigin(0).setDepth(-1);
-    this.add.text(W / 2, H - 22, '← → choose · Enter next line · Esc back', typeStyle('caption', C.text500)).setOrigin(0.5);
+    this.add.text(W / 2, H - 22, '← → choose · Enter next line · Esc close', typeStyle('caption', C.text500)).setOrigin(0.5);
     const kb = this.input.keyboard!;
     kb.on('keydown-ESC', () => this.close());
     kb.on('keydown', (ev: KeyboardEvent) => { if (isAction(ev, 'people') && ev.key !== 'Escape') this.close(); });
@@ -114,6 +114,8 @@ export class PeopleScene extends Phaser.Scene {
       }
       const nm = add(this.add.text(x + 86, y + 100, met ? n.name : '???', { ...typeStyle('h3', on ? (n.school ? SCHOOL_COLOR[n.school] : C.gold) : C.text), align: 'center', wordWrap: { width: 160 } }).setOrigin(0.5, 0));
       if (nm.height > 26) nm.setFontSize(18).setLineSpacing(-4).setY(y + 96); // two-line names stay clear of the role line
+      // three-line names (Sergeant-at-Arms …): smaller still, so the name ends above the role line (y + 142)
+      for (let px = 16; nm.y + nm.height > y + 140 && px >= 12; px -= 2) nm.setFontSize(px);
       add(this.add.text(x + 86, y + 142, met ? roleOf(n) : 'Not met yet', typeStyle('caption', met ? C.text300 : C.text500)).setOrigin(0.5, 0));
       const crest = n.school ? Art.tryFrame(`school_${n.school}`) : null;
       const place = add(this.add.text(x + 86 + (crest ? 9 : 0), y + 162, placeOf(n).toUpperCase(), typeStyle('badge', C.text500)).setOrigin(0.5, 0));
@@ -137,7 +139,7 @@ export class PeopleScene extends Phaser.Scene {
     const add = <T extends Phaser.GameObjects.GameObject>(o: T): T => { this.detail.add(o); return o; };
     if (!npcMet(n.id)) {
       add(this.add.text(1012, 300, '???', { ...typeStyle('displayL', C.text500) }).setOrigin(0.5));
-      add(this.add.text(1012, 360, `Someone in ${placeOf(n)}. You haven't met them yet.`, typeStyle('body', C.text300, 360)).setOrigin(0.5, 0).setAlign('center'));
+      add(this.add.text(1012, 360, `Someone in ${placeOf(n)}. You haven’t met them yet.`, typeStyle('body', C.text300, 360)).setOrigin(0.5, 0).setAlign('center'));
       return;
     }
     const color = n.school ? SCHOOL_COLOR[n.school] : C.gold;
@@ -147,9 +149,11 @@ export class PeopleScene extends Phaser.Scene {
       const s = add(this.add.sprite(880, 280, tex, 0).setOrigin(0.5, 1).setScale(4));
       if (this.anims.exists(`${tex}:idle`)) s.play(`${tex}:idle`);
     }
-    add(this.add.text(960, 150, n.name, { ...typeStyle('displayL', C.text), fontSize: '40px', wordWrap: { width: 250 } }));
+    const name = add(this.add.text(960, 150, n.name, { ...typeStyle('displayL', C.text), fontSize: '40px', wordWrap: { width: 250 } }));
+    // a long hyphenated word (Sergeant-at-Arms, Prince-Regent…) cannot wrap: shrink until every line fits the 250 px column
+    for (let px = 36; name.width > 250 && px >= 20; px -= 4) name.setFontSize(px);
     const title = add(this.add.text(960, 150, n.title ?? roleOf(n), { ...typeStyle('h3', color), wordWrap: { width: 250 } }));
-    title.setY(Math.max(196, 150 + (this.detail.list.at(-2) as Phaser.GameObjects.Text).height + 4));
+    title.setY(Math.max(196, 150 + name.height + 4));
     const trust = getTrust(n.id);
     add(this.add.text(960, title.y + title.height + 10, 'Trust', typeStyle('caption', C.text500)));
     this.diamonds(add, 1046, title.y + title.height + 18, trust, 10);

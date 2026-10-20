@@ -81,7 +81,7 @@ export class LoadScene extends Phaser.Scene {
       const where = s.space === 'concordia' ? 'Concordia' : s.space ? realmOf(s.space)?.name ?? s.space : 'Not started';
       const hrs = Math.floor(s.playtimeSec / 3600), mins = Math.floor((s.playtimeSec % 3600) / 60);
       add(this.add.text(346, y + 110, `${where} · ${hrs}h ${mins}m played · saved ${ago(s.updatedAt)}`, typeStyle('body', C.text300)));
-      add(this.add.text(1066, y + 18, s.where === 'local' ? 'THIS DEVICE' : s.where === 'cloud' ? 'CLOUD' : 'CLOUD + DEVICE', typeStyle('badge', s.where === 'local' ? C.text500 : C.teal)).setOrigin(1, 0));
+      add(this.add.text(1066, y + 18, s.where === 'local' ? 'THIS DEVICE ONLY' : s.where === 'cloud' ? 'CLOUD' : 'CLOUD + THIS DEVICE', typeStyle('badge', s.where === 'local' ? C.text500 : C.teal)).setOrigin(1, 0));
       this.button(add, 866, y + 44, 200, 'Load', true, () => void this.loadSlot(slot));
       this.button(add, 866, y + 104, 200, this.armed === slot ? 'Really delete?' : 'Delete', false, () => void this.remove(slot), this.armed === slot);
     }
@@ -109,7 +109,7 @@ export class LoadScene extends Phaser.Scene {
   private async remove(slot: number): Promise<void> {
     // the hero being played: its next autosave would write the slot straight back
     if (this.from !== SceneKeys.MainMenu && Game.hasState && Game.state.meta.slot === slot) {
-      this.status.setText('You\'re playing this hero. Quit to the title to delete it.').setColor(C.danger);
+      this.status.setText('You’re playing this hero. Quit to the title to delete it.').setColor(C.danger);
       return;
     }
     if (this.armed !== slot) { this.armed = slot; this.render(); return; }

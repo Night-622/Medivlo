@@ -11,8 +11,8 @@ type Row =
 
 const ACTION_LABEL: Record<Action, string> = {
   up: 'Move up', down: 'Move down', left: 'Move left', right: 'Move right', dash: 'Dash', slash: 'Slash / quick shot (martial)', cast1: 'Spell 1', cast2: 'Spell 2',
-  cast3: 'Spell 3', cast4: 'Spell 4', potionQ: 'Health potion', potionE: 'Ember potion', interact: 'Talk / interact',
-  inventory: 'Inventory', skills: 'Skill tree', spells: 'Spellbook', journal: 'Journal', track: 'Track quest (Journal)', codex: 'Codex', map: 'World map', people: 'People', pause: 'Pause',
+  cast3: 'Spell 3', cast4: 'Spell 4', potionQ: 'Health draught', potionE: 'Ember tonic', interact: 'Talk / interact',
+  inventory: 'Pack', skills: 'Skills', spells: 'Spells', journal: 'Journal', track: 'Track quest (Journal)', codex: 'Codex', map: 'Map', people: 'People', pause: 'Pause',
 };
 
 const ROWS: Record<Tab, Row[]> = {
@@ -31,7 +31,7 @@ const ROWS: Record<Tab, Row[]> = {
   gameplay: [
     { label: 'Damage numbers', hint: 'Show floating damage in combat', opts: { key: 'damageNumbers', values: [['All', 'all'], ['Mine', 'mine'], ['Off', 'off']] } },
     { label: 'Control hints', hint: 'Show key prompts on screen', opts: { key: 'showHints', values: [['Off', false], ['On', true]] } },
-    { label: 'Auto-collect Embershards', hint: 'Pick up coins by walking over them', opts: { key: 'autoLootGold', values: [['Off', false], ['On', true]] } },
+    { label: 'Auto-collect Embershards', hint: 'Pick up Embershards by walking over them', opts: { key: 'autoLootGold', values: [['Off', false], ['On', true]] } },
     { label: 'Slash aim (martial)', hint: 'Facing: swing where you face, on the slash key · Mouse: swing at the cursor, on left click', opts: { key: 'slashAim', values: [['Facing', 'facing'], ['Mouse', 'mouse']] } },
   ],
   accessibility: [

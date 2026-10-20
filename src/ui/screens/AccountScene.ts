@@ -46,7 +46,7 @@ export class AccountScene extends Phaser.Scene {
     this.status = this.add.text(PX + PW / 2, PY + PH - 34, '', typeStyle('body', C.text300, PW - 60)).setOrigin(0.5).setAlign('center').setDepth(5);
     this.input.keyboard!.on('keydown-ESC', () => { if (!this.busy) this.close(); });
     this.events.once('shutdown', () => this.clearDom());
-    if (!isFirebaseConfigured) { this.title('Your account'); this.say('Online accounts aren\'t available in this build. Progress is saved on this device.'); return; }
+    if (!isFirebaseConfigured) { this.title('Your account'); this.say('Online accounts aren’t available in this build. Progress is saved on this device only.'); return; }
     this.say('…');
     void currentAccount().then((a) => { this.acct = a; this.go(a && a.kind !== 'guest' ? 'profile' : 'signin'); }).catch((e) => this.say(friendlyAuthError(e), C.danger));
   }
@@ -64,7 +64,7 @@ export class AccountScene extends Phaser.Scene {
 
   private drawAuth(creating: boolean): void {
     this.title(creating ? 'Create account' : 'Sign in');
-    if (this.acct?.kind === 'guest') this.note(PY + 74, 'You\'re playing as a guest. Create an account to keep your progress on any device.', C.gold300);
+    if (this.acct?.kind === 'guest') this.note(PY + 74, 'You’re playing as a guest. Create an account to keep your progress on any device.', C.gold300);
     this.tabs(PY + 108, [['Sign in', !creating, () => this.go('signin')], ['Create account', creating, () => this.go('create')]]);
     this.tabs(PY + 162, [['Username', this.via === 'username', () => { this.via = 'username'; this.go(this.view); }], ['Email', this.via === 'email', () => { this.via = 'email'; this.go(this.view); }]], 140);
     let y = PY + 222;
@@ -93,22 +93,22 @@ export class AccountScene extends Phaser.Scene {
       if (!id.value.trim()) { this.say('Type your email above first', C.danger); return; }
       void this.run(async () => { await resetEmailPassword(id.value); this.say('Reset link sent. Check your inbox', C.good); });
     });
-    if (!this.acct) this.link(PX + PW / 2, y + 28, 'Or play as a guest (this device only)', () => void this.run(async () => { await playAsGuest('Guest'); this.acct = await currentAccount(); this.say('Playing as a guest. Your saves stay on this device.', C.good); this.time.delayedCall(900, () => this.close()); }));
+    if (!this.acct) this.link(PX + PW / 2, y + 28, 'Or play as a guest (this browser only)', () => void this.run(async () => { await playAsGuest('Guest'); this.acct = await currentAccount(); this.say('Playing as a guest. Your saves stay in this browser.', C.good); this.time.delayedCall(900, () => this.close()); }));
     id.focus();
   }
 
   private drawCode(): void {
     this.title('Your recovery code');
-    this.note(PY + 84, 'This is the only way back into a username account if you forget your password. Write it down or save it somewhere safe. We can\'t show it again.', C.text300);
+    this.note(PY + 84, 'This is the only way back into a username account if you forget your password. Write it down or save it somewhere safe. We can’t show it again.', C.text300);
     this.layer.add(this.add.nineslice(PX + 60, PY + 170, 'ui:panel_inset', undefined, PW - 120, 80, 8, 8, 8, 8).setOrigin(0));
     this.layer.add(this.add.text(PX + PW / 2, PY + 210, this.recoveryCode, { ...typeStyle('displayL', C.gold), letterSpacing: 4 } as Phaser.Types.GameObjects.Text.TextStyle).setOrigin(0.5));
     this.button(PX + 60, PY + 280, 230, 48, 'Copy', false, () => { void navigator.clipboard?.writeText(this.recoveryCode).then(() => this.say('Copied', C.good)); });
-    this.button(PX + PW - 290, PY + 280, 230, 48, 'I\'ve saved it', true, () => this.go('profile'));
+    this.button(PX + PW - 290, PY + 280, 230, 48, 'I’ve saved it', true, () => this.go('profile'));
   }
 
   private drawRecover(): void {
     this.title('Recover account');
-    this.note(PY + 80, 'Enter your username, the recovery code you saved, and a new password. You\'ll get a new recovery code.', C.text300);
+    this.note(PY + 80, 'Enter your username, the recovery code you saved, and a new password. You’ll get a new recovery code.', C.text300);
     const user = this.field(PY + 150, 'Username', 'text', 'username');
     const code = this.field(PY + 222, 'Recovery code (XXXX-XXXX-XXXX-XXXX)', 'text', 'off');
     const pw = this.field(PY + 294, 'New password', 'password', 'new-password');
@@ -128,8 +128,8 @@ export class AccountScene extends Phaser.Scene {
     this.title('Your account');
     const rows: [string, string][] = [
       ['Name', a.name],
-      ['Signed in with', a.kind === 'email' ? `Email · ${a.email ?? ''}` : a.kind === 'username' ? 'Username + password' : 'Guest (this device)'],
-      ['Saves', a.kind === 'guest' ? 'This device only' : 'Cloud and this device'],
+      ['Signed in with', a.kind === 'email' ? `Email · ${a.email ?? ''}` : a.kind === 'username' ? 'Username + password' : 'Guest (this browser)'],
+      ['Saves', a.kind === 'guest' ? 'This browser only (guest)' : 'Cloud + this device'],
     ];
     rows.forEach(([k, v], i) => {
       this.layer.add(this.add.text(PX + 48, PY + 96 + i * 34, k, typeStyle('body', C.text500)));
@@ -138,7 +138,7 @@ export class AccountScene extends Phaser.Scene {
     this.layer.add(this.add.text(PX + 48, PY + 214, 'YOUR FRIEND CODE', typeStyle('badge', C.text500)));
     this.layer.add(this.add.nineslice(PX + 48, PY + 236, 'ui:panel_inset', undefined, PW - 96, 72, 8, 8, 8, 8).setOrigin(0));
     this.layer.add(this.add.text(PX + PW / 2, PY + 272, a.friendCode ?? '…', { ...typeStyle('displayL', C.gold), letterSpacing: 6 } as Phaser.Types.GameObjects.Text.TextStyle).setOrigin(0.5));
-    this.note(PY + 318, 'Friends add you with this code, and can join your world through it when you\'re hosting.', C.text300);
+    this.note(PY + 318, 'Friends add you with this code, and can join your world through it when you’re hosting.', C.text300);
     let y = PY + 380;
     if (a.friendCode) this.button(PX + 48, y, 160, 48, 'Copy code', false, () => { void navigator.clipboard?.writeText(a.friendCode!).then(() => this.say('Friend code copied', C.good)); });
     if (a.kind === 'username') this.button(PX + 220, y, 160, 48, 'Add email', false, () => this.go('addEmail'));
@@ -149,7 +149,7 @@ export class AccountScene extends Phaser.Scene {
 
   private drawAddEmail(): void {
     this.title('Add an email');
-    this.note(PY + 84, 'Optional. We\'ll send a link to confirm it. After that you can sign in with this email too, and reset your password by email.', C.text300);
+    this.note(PY + 84, 'Optional. We’ll send a link to confirm it. After that you can sign in with this email too, and reset your password by email.', C.text300);
     const email = this.field(PY + 170, 'Email', 'email', 'email');
     this.button(PX + 120, PY + 252, 360, 52, 'Send confirmation link', true, () => void this.run(async () => { await addEmail(email.value.trim()); this.say('Check your inbox for the confirmation link', C.good); }));
     this.link(PX + PW / 2, PY + 324, 'Back', () => this.go('profile'));

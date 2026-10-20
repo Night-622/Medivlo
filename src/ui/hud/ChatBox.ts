@@ -51,7 +51,7 @@ export class ChatBox {
       `width:${W}px;height:32px;box-sizing:border-box;padding:0 10px;font:500 14px "Pixelify Sans";color:${C.text};background:rgba(11,15,34,.92);border:2px solid #2e3a6e;outline:none;caret-color:${C.gold}`).setOrigin(0);
     const input = el.node as HTMLInputElement;
     input.maxLength = 240;
-    input.placeholder = 'Say something… (Enter to send, Esc to close)';
+    input.placeholder = 'Say something… (Enter send · Esc close)';
     input.addEventListener('keydown', (ev) => {
       ev.stopPropagation();
       if (ev.key === 'Enter') { const t = input.value.trim(); if (t) this.send(t); this.closeField(); }

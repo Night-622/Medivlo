@@ -38,7 +38,7 @@ export class FriendsScene extends Phaser.Scene {
     this.list = this.add.container(0, 0);
     this.status = this.add.text(W / 2, H - 34, '', typeStyle('body', C.text300)).setOrigin(0.5);
     this.input.keyboard!.on('keydown-ESC', () => { if (!this.entryOpen) this.close(); });
-    if (!isFirebaseConfigured) { this.status.setText('Friends need online accounts, which aren\'t available in this build.'); return; }
+    if (!isFirebaseConfigured) { this.status.setText('Friends need online accounts, which aren’t available in this build.'); return; }
     // closed before the account arrived: drawing now would add a second panel and refresh loop to the NEXT open
     void currentAccount().then((a) => {
       if (!alive(this.list)) return;
@@ -66,7 +66,7 @@ export class FriendsScene extends Phaser.Scene {
     this.add.text(228, 240, 'Share it so friends can add you and join your world while you host.', typeStyle('body', C.text300, 300)).setOrigin(0.5, 0).setAlign('center');
     this.button(72, 300, 148, 'Copy', false, () => { void navigator.clipboard?.writeText(a.friendCode ?? '').then(() => this.say('Friend code copied', C.good)); });
     this.button(236, 300, 148, 'Add friend', true, () => this.openAdd());
-    if (a.kind === 'guest') this.add.text(228, 368, 'Guest account: friends stay on this device only.', typeStyle('caption', C.gold300)).setOrigin(0.5, 0);
+    if (a.kind === 'guest') this.add.text(228, 368, 'Guest account: friends stay in this browser only.', typeStyle('caption', C.gold300)).setOrigin(0.5, 0);
   }
 
   private async refresh(): Promise<void> {

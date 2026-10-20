@@ -86,6 +86,9 @@ const KEY_NAMES: Record<string, string> = {
   SPACE: 'Space', ESC: 'Esc', ENTER: 'Enter', SHIFT: 'Shift', CTRL: 'Ctrl', ALT: 'Alt', TAB: 'Tab', BACKSPACE: 'Backspace',
   ZERO: '0', ONE: '1', TWO: '2', THREE: '3', FOUR: '4', FIVE: '5', SIX: '6', SEVEN: '7', EIGHT: '8', NINE: '9',
   UP: '↑', DOWN: '↓', LEFT: '←', RIGHT: '→',
+  SEMICOLON: ';', COMMA: ',', PERIOD: '.', FORWARD_SLASH: '/', BACK_SLASH: '\\', MINUS: '-', PLUS: '=', QUOTES: "'",
+  BACKTICK: '`', OPEN_BRACKET: '[', CLOSED_BRACKET: ']', PAGE_UP: 'PgUp', PAGE_DOWN: 'PgDn', DELETE: 'Del', INSERT: 'Ins',
+  ...Object.fromEntries(['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'].map((n, i) => [`NUMPAD_${n}`, `Num ${i}`])),
 };
 
 /** The bound key for an action, as a player reads it ('Space', '1', 'E'). */

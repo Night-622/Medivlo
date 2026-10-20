@@ -16,8 +16,8 @@ import { classDisplay } from '@/data/classes/hc';
  */
 /** Where saves go. A guest (the automatic anonymous sign-in) does get cloud saves, but only on this browser's account. */
 function saveWhere(): string {
-  if (!SaveService.cloudEnabled) return 'This device';
-  try { return accountKind(firebase().auth.currentUser) === 'guest' ? 'Guest · this browser' : 'Cloud + local'; } catch { return 'This device'; }
+  if (!SaveService.cloudEnabled) return 'This device only';
+  try { return accountKind(firebase().auth.currentUser) === 'guest' ? 'This browser only (guest)' : 'Cloud + this device'; } catch { return 'This device only'; }
 }
 
 export class PauseScene extends Phaser.Scene {
@@ -108,11 +108,11 @@ export class PauseScene extends Phaser.Scene {
     add(this.add.text(772, 328, s.kind === 'solo' ? 'PARTY' : `PARTY · ${s.members.filter((m) => m.connected).length}/${s.maxPlayers}`, typeStyle('badge', C.text500)));
     let y = 348;
     if (this.code || s.joinCode) {
-      add(this.add.text(772, y, 'Join code', typeStyle('caption', C.text300)));
+      add(this.add.text(772, y, 'Party code', typeStyle('caption', C.text300)));
       add(this.add.text(1032, y - 6, this.code ?? s.joinCode ?? '', { ...typeStyle('h1', C.gold), letterSpacing: 4 } as Phaser.Types.GameObjects.Text.TextStyle).setOrigin(1, 0));
       y += 40;
       const safe = hostInSafeZone();
-      const note = add(this.add.text(772, y, safe ? 'You\'re in a safe zone: friends joining for the first time can come in now.' : 'Friends joining for the first time can enter once you\'re in a safe zone (a town or waystone).', typeStyle('caption', safe ? C.good : C.text300, 260)));
+      const note = add(this.add.text(772, y, safe ? 'You’re in a safe zone: friends joining for the first time can come in now.' : 'Friends joining for the first time can enter once you’re in a safe zone (a town or waystone).', typeStyle('caption', safe ? C.good : C.text300, 260)));
       y += note.height + 10;
     }
     const members = s.kind === 'solo' ? [] : s.members;
@@ -127,13 +127,13 @@ export class PauseScene extends Phaser.Scene {
   private async party(): Promise<void> {
     const role = coopRole();
     if (role === 'guest') { leaveCoop(); this.quit(); return; }
-    if (role === 'host') { this.flash(`Code: ${Services.get('net').session().joinCode}`); return; }
+    if (role === 'host') { this.flash(`Party code: ${Services.get('net').session().joinCode}`); return; }
     this.flash('Opening your world…');
     try {
       // First-time joiners need the host in a safe zone (Claude 2's zoneRule, checked live at each join)
       this.code = await hostGame(hostInSafeZone);
       if (!alive(this.card)) return; // resumed while the room was opening; the next Pause shows the code
-      this.flash(`Share this code: ${this.code}`);
+      this.flash(`Share your party code: ${this.code}`);
       this.drawCard();
     } catch (e) { this.flash(e instanceof Error ? e.message : 'Could not open your world'); }
   }

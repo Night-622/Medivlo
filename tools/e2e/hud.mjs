@@ -82,7 +82,7 @@ try {
   check('no HUD text off screen', offscreen.length === 0, offscreen.join(' | '));
 
   // ── menu buttons: bound keys, click opens, Esc closes without pausing ──
-  const expectKey = await core(`return Object.fromEntries(['inventory','skills','spells','journal','map'].map((a) => { const k = c.Settings.key(a); return [a, k.length === 1 ? k : k.slice(0, 3)]; }));`);
+  const expectKey = await core(`return Object.fromEntries(['inventory','skills','spells','journal','map'].map((a) => { return [a, c.keyLabel(a)]; }));`);
   check('5 menu buttons', h.buttons.length === 5, h.buttons.map((b) => b.label).join(','));
   check('buttons show the bound keys', h.buttons.every((b) => b.key === expectKey[b.panel === 'inventory' ? 'inventory' : b.panel]), h.buttons.map((b) => `${b.label}=${b.key}`).join(' '));
   for (const b of h.buttons) {

@@ -5,7 +5,7 @@ import { C, typeStyle } from '@/ui/kit/hc';
 const SECTIONS: [string, string[]][] = [
   ['THE HOLLOW CROWN', ['A pixel-art action RPG of twenty-four heroes, twelve schools and one hollow king.']],
   ['DESIGN', ['Art direction, UI kit, bestiary, tiles and screens: the Medival design handoff', 'Created with Claude Design']],
-  ['BUILT BY', ['Claude 1 · core, network, art pipeline, interface', 'Claude 2 · world, map and exploration', 'Claude 3 · combat, classes and builds', 'Claude 4 · lore, quests, dialogue and the people of the realms', 'Claude 5 · story depth, proofreading and story tests']],
+  ['BUILT BY', ['Claude 1 · core, network, art pipeline, interface', 'Claude 2 · world, map and exploration', 'Claude 3 · combat, classes and builds', 'Claude 4 · lore, quests, dialogue and the people of the realms', 'Claude 5 · story depth, proofreading, story tests and deeper builds (uniques, hybrid sets, balance tuning)', 'Claude 6 · code integrity', 'Claude 7 · player-experience QA']],
   ['TYPE', ['Jersey 10 and Pixelify Sans, SIL Open Font License 1.1']],
   ['ENGINE AND SERVICES', ['Phaser 3 (MIT) · Firebase · Google Cloud Run · Vite · TypeScript']],
   ['THANK YOU', ['for playing.']],
@@ -23,14 +23,14 @@ export class CreditsScene extends Phaser.Scene {
     for (const [head, lines] of SECTIONS) {
       roll.add(this.add.text(W / 2, y, head, { ...typeStyle(head === 'THE HOLLOW CROWN' ? 'displayL' : 'h2', head === 'THE HOLLOW CROWN' ? C.gold : C.gold300), letterSpacing: 3 } as Phaser.Types.GameObjects.Text.TextStyle).setOrigin(0.5, 0));
       y += head === 'THE HOLLOW CROWN' ? 72 : 44;
-      for (const l of lines) { roll.add(this.add.text(W / 2, y, l, typeStyle('bodyL', C.text, 900)).setOrigin(0.5, 0).setAlign('center')); y += 30; }
+      for (const l of lines) { const t = this.add.text(W / 2, y, l, typeStyle('bodyL', C.text, 900)).setOrigin(0.5, 0).setAlign('center'); roll.add(t); y += Math.max(30, t.height + 8); }
       y += 48;
     }
     const end = -(y - H / 2);
     this.tweens.add({ targets: roll, y: end, duration: (H - end) * 28, ease: 'Linear' });
     // footer band drawn over the roll, so the hint never sits on a rolling line
     this.add.rectangle(0, H - 56, W, 56, parseInt(C.bg.slice(1), 16), 1).setOrigin(0);
-    this.add.text(W / 2, H - 28, 'Esc to close', typeStyle('caption', C.text500)).setOrigin(0.5);
+    this.add.text(W / 2, H - 28, 'Esc close', typeStyle('caption', C.text500)).setOrigin(0.5);
     this.input.keyboard!.on('keydown-ESC', () => this.close());
     this.input.keyboard!.on('keydown-ENTER', () => this.close());
   }
