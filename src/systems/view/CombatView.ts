@@ -218,8 +218,11 @@ export class CombatView implements SnapshotConsumer {
     const o = r.obj as Phaser.GameObjects.Sprite;
     o.setPosition(Math.round(r.x), Math.round(r.y) + (r.anim === 'yield' ? 4 : 0)).setDepth(Depth.Actors + r.y);
     this.drawShadow(r, o);
-    if (r.facing === 'e') o.setFlipX(r.kind !== 'player');
-    else if (r.facing === 'w') o.setFlipX(r.kind === 'player');
+    // side-view frames face right: mirror only facing west, for every kind (heroes, escorts). Front atlas sheets keep
+    // their own convention (creatures face left, heroes right)
+    const sideAnim = !!o.anims.currentAnim?.key.endsWith('-side');
+    if (r.facing === 'e') o.setFlipX(sideAnim ? false : r.kind !== 'player');
+    else if (r.facing === 'w') o.setFlipX(sideAnim ? true : r.kind === 'player');
     const st = String(r.data.s ?? '');
     const down = r.anim === 'down' || r.anim === 'dead' || r.anim === 'die';
     o.setAngle(down ? 90 : 0);

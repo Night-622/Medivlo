@@ -135,6 +135,8 @@ export interface EnemyEnt extends Combatant {
   elite?: string[];
   /** escorted NPC state (sim/escort.ts) */
   escort?: import('./escort').EscortState;
+  /** escorts walk with side-view anims: their facing keeps hysteresis like a hero's (facing4Sticky) */
+  facingView?: 'n' | 'e' | 's' | 'w';
   /** rolled once: this creature goes for escorts first */
   huntsEscort?: boolean;
   /** side (+1 / -1) this creature last stepped around an obstacle */

@@ -327,7 +327,7 @@ function eliteName(e: EnemyEnt): string {
 
 function enemyState(w: SimWorld, e: EnemyEnt): EntityState {
   return {
-    id: e.id, space: e.space, kind: e.kind, def: e.def, x: Math.round(e.x), y: Math.round(e.y), facing: facing4(e.face), anim: e.dead ? 'die' : e.anim,
+    id: e.id, space: e.space, kind: e.kind, def: e.def, x: Math.round(e.x), y: Math.round(e.y), facing: e.escort ? (e.facingView = facing4Sticky(e.face, e.facingView)) : facing4(e.face), anim: e.dead ? 'die' : e.anim,
     hp: Math.max(0, Math.round(e.hp)), maxHp: e.maxHp, owner: e.ownerId?.slice(2),
     data: { lvl: e.level, tier: e.tier, ph: e.phase + 1, cos: !!e.storyPet, elite: e.elite?.join(',') ?? '', ename: e.elite?.length ? eliteName(e) : '', s: csv(e.statuses.keys()), cast: e.windup?.label ?? '', sh: Math.round(e.shield), team: e.team,
       ...(e.escort ? { esc: 1, npc: e.escort.npc ?? '', name: e.cdef.name, down: e.escort.down ? Math.max(0, Math.round(e.escort.down.until - w.t)) : 0, rv: Math.round(e.escort.down?.revive ?? 0) } : {}) },
