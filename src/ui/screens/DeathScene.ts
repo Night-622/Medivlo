@@ -89,7 +89,7 @@ export class DeathScene extends Phaser.Scene {
   }
 
   private quit(): void {
-    for (const k of [SceneKeys.HudV2, SceneKeys.Hud, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k)) this.scene.stop(k);
+    for (const k of [SceneKeys.HudV2, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k)) this.scene.stop(k);
     this.scene.start(SceneKeys.MainMenu);
   }
 }

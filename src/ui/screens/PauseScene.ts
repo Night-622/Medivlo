@@ -157,7 +157,7 @@ export class PauseScene extends Phaser.Scene {
     leaveCoop();
     sim.setPaused(false);
     bus.emit('ui:close', { panel: 'pause' });
-    for (const k of [SceneKeys.HudV2, SceneKeys.Hud, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k)) this.scene.stop(k);
+    for (const k of [SceneKeys.HudV2, SceneKeys.WorldV2, SceneKeys.World]) if (this.scene.isActive(k)) this.scene.stop(k);
     this.scene.start(SceneKeys.MainMenu);
   }
 }

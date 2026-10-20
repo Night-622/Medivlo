@@ -20,10 +20,6 @@ export interface BaseDef {
   description?: string;
 }
 
-// ---------- geometry ----------
-export interface Vec2 { x: number; y: number }
-export interface ChunkCoord { cx: number; cy: number }
-
 // ---------- character appearance (skins) ----------
 export interface AppearanceLayers {
   body: string;      // body type id
@@ -84,15 +80,6 @@ export interface LandmarkDef {
   instance?: `instance:${string}`;
 }
 
-export interface SpawnEntry {
-  enemy: `enemy:${string}`;
-  weight: number;
-  level: [number, number];
-  group: [number, number];
-  time?: 'day' | 'night' | 'any';
-  when?: FlagCond;
-}
-export interface SpawnTable { id: `spawn:${string}`; entries: SpawnEntry[] }
 export interface SpawnZone {
   id: string;
   table: `spawn:${string}`;

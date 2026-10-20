@@ -16,12 +16,3 @@ export function smallButton(g: Phaser.GameObjects.Graphics, x: number, y: number
     g.fillStyle(c, 1).fillRect(col, cy - 8 + i * 2, 2, 16 - i * 4);
   }
 }
-
-/** Shrink a single-line text to `max` px with an ellipsis. */
-export function ellipsize(t: Phaser.GameObjects.Text, max: number): Phaser.GameObjects.Text {
-  const full = t.text;
-  if (t.width <= max) return t;
-  let s = full;
-  while (s.length > 1) { s = s.slice(0, -1); t.setText(`${s.trimEnd()}…`); if (t.width <= max) break; }
-  return t;
-}

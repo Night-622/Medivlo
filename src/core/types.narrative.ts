@@ -2,7 +2,7 @@
  * Narrative contracts v2 (Hollow Crown). Authored by Claude 4 (docs/lore/hollow-crown/07-narrative-systems.md),
  * owned by Claude 1. FROZEN DRAFT for pasting over src/core/types.narrative.ts.
  *
- * v2 is ADDITIVE: every v1 field still exists, so the old Medival content typechecks until it is archived.
+ * v2 is ADDITIVE: the v1 fields are kept (the old Medival content itself is in archive/medival-v1/).
  * Changes are marked "v2". NarrativeCondition/NarrativeEffect extend core Condition/Effect and are evaluated
  * in src/narrative/engine (core variants delegate to evalCondition).
  */
@@ -43,7 +43,7 @@ export type NarrativeCondition =
   | { questOutcome: QuestId; outcome: string }
   | { stat: AttributeId; min: number }               // passive check against the player's attribute
   | { classIs: ClassId }
-  | { dialogueTag: string }                          // v1 (traits); unused by Hollow Crown content
+  | { dialogueTag: string }                          // player tag (narrative/engine/conditions.ts); no content uses it
   | { rep: FactionId; min?: number; max?: number }
   | { loreUnlocked: LoreId }
   | { hour: [number, number] }                       // [from, to), wraps midnight
@@ -83,7 +83,7 @@ export type NarrativeEffect =
   | { unlockLore: LoreId; section?: string }
   | { openDialogue: DialogueId }
   | { companion: NpcId; following: boolean }
-  | { loyalty: NpcId; delta: number }                // v1: flag companion.<id>.loyalty, clamped 0..100
+  | { loyalty: NpcId; delta: number }                // flag companion.<id>.loyalty, clamped 0..100; no content uses it (trust does)
   // v2 ↓
   | { trust: NpcId; delta?: number; set?: TrustValue }  // delta clamps 0..4; only `set` reaches 5 (Devoted)
   | { insight: string };                             // sets insight.<id> = true
@@ -187,7 +187,7 @@ export interface DialogueDef extends BaseDef {   // BaseDef.name = editor label
 }
 
 // ----- NPCs
-/** v1 peoples (old lore). v2 Hollow Crown NPCs use `origin` instead. */
+/** Old Medival peoples. No Hollow Crown NPC sets `people`; they use `origin`. */
 export type PeopleId = 'haldish' | 'solenni' | 'hrothi' | 'aelthi' | 'orrun' | 'qasiri' | 'drowned';
 
 export interface NpcScheduleEntry {
@@ -202,7 +202,7 @@ export interface NpcDef extends BaseDef {   // BaseDef.name = display name
   id: NpcId;
   kind?: 'npc';
   title?: string;
-  /** v2: optional (v1 content only) */
+  /** optional; no Hollow Crown NPC sets it (see `origin`) */
   people?: PeopleId;
   /** v2: home realm (school) or Concordia */
   origin?: SchoolId | 'concord';

@@ -33,7 +33,7 @@ export function evalCondition(cond: Condition | undefined): boolean {
       case '<=': return typeof v === 'number' && typeof cond.value === 'number' && v <= cond.value;
     }
   }
-  // Hollow Crown: level and items live on the systems character (core/hc CharacterSave); v1 slices are the fallback
+  // level and items live on the systems character (core/hc CharacterSave); the old player slices are read only when a state has no character
   if ('minLevel' in cond) return (s.character?.level ?? s.player.progression.level) >= cond.minLevel;
   if ('hasItem' in cond) {
     const n = s.character

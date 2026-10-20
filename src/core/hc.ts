@@ -1,7 +1,8 @@
 /**
  * Hollow Crown systems contract (cross-agent types only). Authored by Claude 3 (docs/systems/types-v2-proposal.ts,
  * frozen 2026-10-19), owned by Claude 1. Import from '@/core/hc'. Kept separate from core/types.systems.ts because
- * the old Medival runtime still uses the v1 names (ItemInstance, StatusId…) until it moves to archive/medival-v1/.
+ * that file still holds the old Medival names (ItemInstance, Rarity…) used by GameState's legacy save slices and
+ * re-exported from '@/core', so the Hollow Crown versions would clash there.
  * Content ids are the handoff's own (w_*, a_*, i_*, lg_*, bx_*, spell:*, class ids) and are validated with lookups
  * from '@/systems/rules', not the Registry.
  */

@@ -19,7 +19,6 @@ export const C = {
 } as const;
 
 export type RarityKey = keyof typeof T.color.rarity;
-export type SchoolKey = keyof typeof T.color.school;
 export type TypeKey = keyof typeof T.type;
 
 export const FONT = { display: '"Jersey 10", monospace', text: '"Pixelify Sans", monospace' } as const;
@@ -39,7 +38,3 @@ export function typeStyle(key: TypeKey, color: string = C.text, wrap?: number): 
     ...(wrap ? { wordWrap: { width: wrap } } : {}),
   };
 }
-
-/** HUD safe centre: no HUD element may enter this rect. */
-export const SAFE_CENTRE = T.hud.safeCentre;
-export const MARGIN = T.hud.margin;

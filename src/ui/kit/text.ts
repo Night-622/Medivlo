@@ -15,11 +15,6 @@ export function textStyle(key: TypeKey, color: string = Theme.css.text, shadow =
   };
 }
 
-/** Text over the world: 4-way ink outline instead of a drop shadow. */
-export function outlinedStyle(key: TypeKey, color: string): Phaser.Types.GameObjects.Text.TextStyle {
-  return { ...textStyle(key, color, false), stroke: hex(Theme.palette['ink-900']), strokeThickness: 4 };
-}
-
 export function pxText(scene: Phaser.Scene, x: number, y: number, text: string, key: TypeKey = 'bodyS', color: string = Theme.css.text, shadow = true, wrap?: number): Phaser.GameObjects.Text {
   return scene.add.text(x, y, text, textStyle(key, color, shadow, wrap)).setResolution(1);
 }

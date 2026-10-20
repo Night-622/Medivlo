@@ -46,12 +46,12 @@ export interface GameEvents {
 
   // ----- systems (Claude 3, SYSTEMS.md §10)
   'enemy:killed': {
-    /** v1 fields (old runtime) */ enemyId: EnemyId | string; zoneId?: string; x: number; y: number; level: number; family?: EnemyFamily; variant?: EnemyVariant; rank?: EnemyRank; byPlayer?: boolean;
-    /** v2 (Hollow Crown) */ creature?: string; tier?: CreatureTier; space?: string; killers?: string[];
+    /** enemyId = the entity id (systems/sim/death.ts); family/variant/rank are set only by the narrative dev kill command */ enemyId: EnemyId | string; zoneId?: string; x: number; y: number; level: number; family?: EnemyFamily; variant?: EnemyVariant; rank?: EnemyRank; byPlayer?: boolean;
+    /** creature def id, tier, space and the players credited */ creature?: string; tier?: CreatureTier; space?: string; killers?: string[];
   };
   'enemy:cleansed': { enemyId: EnemyId; flag: string };
   'boss:phase': { enemyId: EnemyId; phase: number };
-  'combat:hit': { x?: number; y?: number; kind?: 'dmg' | 'heal' | 'block' | 'miss' | 'immune'; sourceId: string; targetId: string; amount: number; /** v2: DamageKind (12 schools + physical); v1 DamageType until cutover */ type: DamageType | DamageKind; crit: boolean };
+  'combat:hit': { x?: number; y?: number; kind?: 'dmg' | 'heal' | 'block' | 'miss' | 'immune'; sourceId: string; targetId: string; amount: number; /** the sim sends DamageKind (12 schools + physical); old DamageType is still in the union but nothing sends it */ type: DamageType | DamageKind; crit: boolean };
   'combat:engaged': Record<string, never>;
   'combat:disengaged': Record<string, never>;
   'player:damaged': { playerId?: string; amount: number; type: DamageType; sourceId: string };

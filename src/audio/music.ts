@@ -149,8 +149,6 @@ export function playTheme(theme: Theme | null, fade = 1.4): void {
   timer ??= setInterval(tick, 25);
 }
 
-export function currentThemeId(): string | null { return current?.theme.id ?? null; }
-
 function tick(): void {
   const a = audio();
   if (!a || a.ctx.state !== 'running') return;

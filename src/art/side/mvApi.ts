@@ -58,11 +58,3 @@ export function palette(L: Look): Pal {
   const I = M()._int, sk = I.SKINS[L.skin % 5], hc = I.HAIRC[L.hc % 8], ec = I.EYEC[L.ec % 6];
   return { k: M().INK, w: '#ffffff', s: sk[0], S: sk[1], d: sk[2], b: sk[3], h: hc[0], H: hc[1], j: hc[2], e: ec[0], E: ec[1], l: '#9be8ff' };
 }
-
-/** Read a pixel as '#rrggbb', or null when (nearly) transparent. */
-export function px(c: HTMLCanvasElement, x: number, y: number): string | null {
-  if (x < 0 || y < 0 || x >= c.width || y >= c.height) return null;
-  const d = c.getContext('2d')!.getImageData(x, y, 1, 1).data;
-  if (d[3] < 40) return null;
-  return '#' + [d[0], d[1], d[2]].map((v) => v.toString(16).padStart(2, '0')).join('');
-}

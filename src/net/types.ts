@@ -9,7 +9,7 @@
  *   - emit gameplay events normally; events listed in REPLICATED_EVENTS are forwarded to clients
  * All payloads are plain JSON (no class instances), entity ids are stable strings.
  */
-import type { GameEventName, GameEvents } from '@/core/events';
+import type { GameEventName } from '@/core/events';
 
 export type NetRole = 'solo' | 'host' | 'guest' | 'server' | 'server-client';
 /** Account uid (Firebase Auth). */
@@ -195,5 +195,3 @@ export interface NetService {
   /** Authority only: receive client messages with their sender (solo routes the local player's sends here). */
   onClient<T extends ClientMsg['type']>(type: T, fn: (msg: Extract<ClientMsg, { type: T }>, from: PlayerId) => void): () => void;
 }
-
-export type ReplicatedPayload<K extends GameEventName> = GameEvents[K];

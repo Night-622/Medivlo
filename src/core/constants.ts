@@ -1,9 +1,6 @@
 /** Shared engine constants. Owner: Claude 1. */
 export const TILE_SIZE = 32;
 export const CHUNK_TILES = 32;
-export const CHUNK_PX = TILE_SIZE * CHUNK_TILES;
-/** Chunks kept loaded around the player in each direction. */
-export const CHUNK_LOAD_RADIUS = 2;
 
 export const GAME_WIDTH = 1280;
 export const GAME_HEIGHT = 720;
@@ -29,9 +26,7 @@ export const SceneKeys = {
   Friends: 'Friends',
   People: 'People',
   Credits: 'Credits',
-  Hud: 'Hud',
 } as const;
-export type SceneKey = (typeof SceneKeys)[keyof typeof SceneKeys];
 
 /** Render depth bands. Systems pick a value inside their band. */
 export const Depth = {
@@ -56,9 +51,6 @@ export const Palette = {
 
 /** Single fixed world seed shared by all saves (agreed with Claude 2). */
 export const WORLD_SEED = 0x4d6f7276; // "Morv"
-/** Continent size in chunks (WORLD.md §1.1). */
-export const WORLD_CHUNKS_W = 64;
-export const WORLD_CHUNKS_H = 48;
 
 /** Per-tile collision bitmask (WORLD.md §4.2). */
 export const Collision = {

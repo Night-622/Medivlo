@@ -1,3 +1,6 @@
+// The world scene (SceneKeys.World) is imported first: it replaced an eager import.meta.glob, which Vite hoists
+// above every other import, so this keeps the module evaluation order the same.
+import { WorldV2Scene } from '@/scenes/WorldV2Scene';
 import '@fontsource/jersey-10/400.css';
 import '@fontsource/jacquard-24/400.css';
 import '@fontsource/jacquard-12/400.css';
@@ -31,10 +34,6 @@ import { installLigatureFix } from '@/ui/kit/hc';
 
 installLigatureFix();
 
-// Claude 2's v2 world scene is registered automatically once src/scenes/WorldV2Scene.ts exists.
-const v2Modules = import.meta.glob<{ WorldV2Scene?: typeof Phaser.Scene }>('./scenes/WorldV2Scene.ts', { eager: true });
-const v2Scenes = Object.values(v2Modules).map((mod) => mod.WorldV2Scene).filter((s): s is typeof Phaser.Scene => !!s);
-
 // Pixel fonts are self-hosted (no external URLs). Wait for them so Phaser never caches a fallback font.
 await Promise.all(
   ['40px "Jersey 10"', '400 16px "Pixelify Sans"', '500 16px "Pixelify Sans"', '600 16px "Pixelify Sans"', '700 16px "Pixelify Sans"', '24px "Jacquard 12"', '48px "Jacquard 24"', '12px "Silkscreen"'].map((f) => document.fonts.load(f)),
@@ -53,7 +52,7 @@ const game = new Phaser.Game({
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   physics: { default: 'arcade', arcade: { debug: false } },
   callbacks: { postBoot: () => document.getElementById('boot')?.remove() },
-  scene: [BootScene, MainMenuScene, CharacterCreateScene, HudV2Scene, PauseScene, DeathScene, SettingsScene, AccountScene, LoadScene, RealmsScene, FriendsScene, PeopleScene, CreditsScene, ...v2Scenes],
+  scene: [BootScene, MainMenuScene, CharacterCreateScene, HudV2Scene, PauseScene, DeathScene, SettingsScene, AccountScene, LoadScene, RealmsScene, FriendsScene, PeopleScene, CreditsScene, WorldV2Scene],
 });
 
 // Video › Pixel-perfect: integer zoom (crisp pixels, borders), falling back to FIT when the window is smaller than 1×.

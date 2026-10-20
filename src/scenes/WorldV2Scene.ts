@@ -1,5 +1,5 @@
 /**
- * Hollow Crown world scene (Claude 2), under construction beside the Phase 1 WorldScene until the swap.
+ * Hollow Crown world scene (Claude 2), registered as SceneKeys.World (the Phase 1 WorldScene is in archive/medival-v1/).
  * Renders one space (realm:<school> | concordia) from the shared SpaceRuntime; registers Services.world and
  * Services.worlds; the world sim (region tracking) is a SimLoop stepper that runs only on the authority.
  * Dev: ?scene=WorldV2&space=realm:ash&tp=tx,ty&zoom=0.5&hour=22&fly=1

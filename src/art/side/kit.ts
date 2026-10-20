@@ -44,4 +44,3 @@ export const band = (g: Gfx, x: number, y: number, w: number, h: number, c: stri
 /** art.js shared ramps (light, mid, dark) */
 export const ST = ['#eef4ff', '#a9bbd6', '#62759a'];  // steel
 export const GO = ['#ffe27a', '#f0a823', '#b8661a'];  // gold
-export const LE = ['#e8a868', '#b06a38', '#7a4526'];  // leather

@@ -1,10 +1,10 @@
 /**
- * UI theme tokens: Medival Design System v1 (design canvas "Medival UI Design").
+ * The original Medival UI theme tokens (Design System v1, design canvas "Medival UI Design"). Owner: Claude 1.
  * Pixel-art rules: 2× art grid, 64-colour locked palette, light from top-left, 1-art ink outlines,
- * hard drop shadows, dither instead of alpha. Owner: Claude 1.
+ * hard drop shadows, dither instead of alpha.
  *
- * Existing keys (color.*, css.*, font.*, size.*, space.*) are kept for compatibility.
- * New code should prefer `palette`, `roles`, `rarity`, `schools`, `damage`, `type`, `themes`.
+ * Still live: the 64-colour `palette` (map glyphs, narrative widgets, BookReader) and the `Theme` colours Boot uses
+ * for placeholder textures. Hollow Crown screens use ui/kit/hc/theme.ts (the handoff tokens) instead.
  */
 
 /** The locked 64-colour palette. Token names are final. */
@@ -27,7 +27,6 @@ export const palette = {
   'skin-100': 0xf0cba8, 'skin-300': 0xc98e62, 'skin-500': 0x8f5a3a, 'skin-700': 0x4e2f1e,
   'highlight-100': 0xfff8e8, 'ruin-teal-500': 0x2f6f6a, 'dusk-700': 0x4a4058,
 } as const;
-export type PaletteToken = keyof typeof palette;
 
 /** 0xRRGGBB → '#rrggbb' for Phaser text styles. */
 export const hex = (c: number): string => `#${c.toString(16).padStart(6, '0')}`;

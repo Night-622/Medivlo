@@ -42,9 +42,9 @@ export interface PlayerState {
 /** World slice, owned by Claude 2 (WORLD.md §4.4). */
 export interface WorldState {
   /** `space` = which world space the player is in (school realm, 'morvane', or an instance id). x/y in world px. */
-  location: { /** Hollow Crown world space ('concordia', 'realm:<school>', 'inst:…'); '' until the hero first enters the world */ space: string; /** pre-rebuild field, removed with the old world */ instance: 'overworld' | `instance:${string}`; floor?: string; x: number; y: number; facing: 'n' | 'e' | 's' | 'w' };
+  location: { /** Hollow Crown world space ('concordia', 'realm:<school>', 'inst:…'); '' until the hero first enters the world */ space: string; /** old-world field: new states write 'overworld' and nothing reads it; kept so the save shape is unchanged */ instance: 'overworld' | `instance:${string}`; floor?: string; x: number; y: number; facing: 'n' | 'e' | 's' | 'w' };
   lastOverworld: { x: number; y: number };
-  /** base64 bitset, WORLD_CHUNKS_W × WORLD_CHUNKS_H bits. */
+  /** old-world base64 chunk bitset (64 × 48 chunks): always '' now, nothing reads it; kept so the save shape is unchanged */
   discoveredChunks: string;
   discoveredLandmarks: string[];
   visitedRegions: string[];

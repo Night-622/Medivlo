@@ -102,7 +102,7 @@ export class LoadScene extends Phaser.Scene {
     Game.set(st);
     bus.emit('game:loaded', { slot });
     if (this.from !== SceneKeys.MainMenu) { this.scene.stop(this.from); leaveCoop(); sim.setPaused(false); }
-    for (const k of [SceneKeys.HudV2, SceneKeys.Hud, SceneKeys.WorldV2, SceneKeys.World, SceneKeys.MainMenu]) if (this.scene.isActive(k) || this.scene.isPaused(k)) this.scene.stop(k);
+    for (const k of [SceneKeys.HudV2, SceneKeys.WorldV2, SceneKeys.World, SceneKeys.MainMenu]) if (this.scene.isActive(k) || this.scene.isPaused(k)) this.scene.stop(k);
     this.scene.start(worldKey(this));
   }
 

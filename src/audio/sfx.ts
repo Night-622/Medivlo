@@ -144,5 +144,3 @@ function voice(ctx: AudioContext, noise: AudioBuffer, out: AudioNode, v: Voice, 
   osc.start(t); osc.stop(stop);
   return stop;
 }
-
-export const SFX_NAMES = Object.keys(P);

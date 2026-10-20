@@ -73,18 +73,3 @@ export function drawFrame(g: Phaser.GameObjects.Graphics, style: FrameStyle, x: 
     rect(g, t.rivet, x + rx, y + ry, 4, 4);
   }
 }
-
-/** Item / ability slot (Design System §09). */
-export function drawSlot(g: Phaser.GameObjects.Graphics, x: number, y: number, size: number, border: number = P['stone-500'], plate: number = P['ink-800'], state: 'normal' | 'hover' | 'selected' | 'locked' = 'normal'): void {
-  if (state === 'hover' || state === 'selected') rect(g, state === 'selected' ? P['gold-200'] : P['gold-500'], x - 4, y - 4, size + 8, size + 8);
-  outlineAndShadow(g, x, y, size, size, state === 'locked' ? 0 : 2);
-  if (state === 'locked') {
-    rect(g, P['stone-800'], x, y, size, size);
-    rect(g, P['stone-900'], x + 4, y + 4, size - 8, size - 8);
-    checker(g, x + 4, y + 4, size - 8, size - 8, P['stone-800']);
-    return;
-  }
-  rect(g, state === 'selected' ? P['gold-500'] : border, x, y, size, size);
-  rect(g, P['ink-900'], x + 4, y + 4, size - 8, size - 8);
-  rect(g, plate, x + 6, y + 6, size - 12, size - 12);
-}
