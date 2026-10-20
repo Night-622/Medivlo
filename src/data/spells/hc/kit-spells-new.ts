@@ -57,7 +57,7 @@ export const HC_KIT_SPELLS_NEW: HcSpell[] = [
   k('oathbound', 'Judgement Day', 'After 0.4 s a pillar of light strikes 64 px round the target for 220% power, healing you for part of it.', { cost: 24, cd: 14, range: 300, aim: 'enemy', castMs: 400, tags: ['area'], actions: [{ a: 'delay', ms: 400, then: [dmg(2.2, atT(64), undefined, undefined, { flags: ['lifesteal'] })] }] }),
   k('cantor', 'Choral Burst', 'A ringing note: heal allies within 150 px (80% power) and strike foes there for 80% power.', { cost: 16, cd: 6, range: 0, aim: 'self', tags: ['heal', 'area'], actions: [{ a: 'heal', coef: 0.8, to: 'allies', r: 150 }, dmg(0.8, self(150))] }),
   k('cantor', 'Silence', 'A hushing chord: foes within 90 px of the point are stunned for 1 s.', { cost: 14, cd: 12, range: 300, aim: 'ground', tags: ['control'], actions: [status(st('stun', 1000), atAim(90))] }),
-  k('cantor', 'Benediction', 'Shield every ally within 170 px for 18% of their max health, 6 s.', { cost: 24, cd: 16, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'shield', pctMax: 0.18, dur: 6000, to: 'allies', r: 170 }] }),
+  k('cantor', 'Benediction', 'Shield every ally within 170 px for 18% of their max health for 6 s.', { cost: 24, cd: 16, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'shield', pctMax: 0.18, dur: 6000, to: 'allies', r: 170 }] }),
   // ── Umbral ──
   k('shade', 'Shadowstrike', 'A strike of 180% power on one foe that makes it bleed for 3 s.', { cost: 14, cd: 6, range: 70, aim: 'enemy', tags: [], actions: [dmg(1.8, single, undefined, [st('bleed', 3000)])] }),
   k('shade', 'Smoke Veil', 'Vanish for 2 s; your next hit is a critical hit.', { cost: 16, cd: 14, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'buff', id: 'smoke-veil', dur: 2000, to: 'self', charges: 1, flags: ['untargetable', 'nextHitsCrit'] }] }),
@@ -105,7 +105,7 @@ export const HC_KIT_SPELLS_NEW: HcSpell[] = [
   k('bard', 'Discordant Wave', 'A wave of noise: 80% power in a 140 px cone, knocking foes back and confusing them for 2 s.', { cost: 14, cd: 8, range: 140, aim: 'direction', tags: ['area', 'control'], actions: [dmg(0.8, cone(140, 90), undefined, [st('confuse', 2000)], { flags: ['knockback'] })] }),
   k('bard', 'Showstopper', 'A crashing chord: 180% power within 80 px of the target.', { cost: 24, cd: 14, range: 320, aim: 'enemy', tags: ['area'], actions: [dmg(1.8, atT(80))] }),
   k('skald', 'Chant of Fury', 'For 6 s, you and allies within 190 px deal 12% more damage and heal 4% of damage dealt.', { cost: 14, cd: 12, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'buff', id: 'chant-of-fury', dur: 6000, to: 'allies', r: 190, mods: [mod('dmg', 0.12), mod('lifesteal', 0.04)] }] }),
-  k('skald', 'Shield Song', 'Shield you and allies within 170 px for 14% of max health, 6 s.', { cost: 16, cd: 14, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'shield', pctMax: 0.14, dur: 6000, to: 'allies', r: 170 }] }),
+  k('skald', 'Shield Song', 'Shield you and allies within 170 px for 14% of max health for 6 s.', { cost: 16, cd: 14, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'shield', pctMax: 0.14, dur: 6000, to: 'allies', r: 170 }] }),
   k('skald', 'Saga Strike', 'A great blow of 220% power in a 90 px arc; you deal 10% more damage for 4 s.', { cost: 22, cd: 10, range: 90, aim: 'direction', kind: 'physical', tags: ['area', 'buff'], actions: [dmg(2.2, cone(90, 120)), { a: 'buff', id: 'saga-strike', dur: 4000, to: 'self', mods: [mod('dmg', 0.1)] }] }),
 ];
 

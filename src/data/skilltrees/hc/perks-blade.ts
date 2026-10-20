@@ -40,7 +40,7 @@ const swordsman: ClassPerks = {
       { procs: [{ on: 'dashEnd', icd: 800, do: [{ a: 'damage', coef: 0.6, kind: 'blade', area: near(56) }] }] }),
     // path 2: Whirling Edge (+ new spell 5): the crowd
     one('pk_swordsman_storm_of_steel', 'Storm of Steel', 'power', 'Whirling Edge recharges 20% faster and hits 25% harder.', { spellMods: [{ spell: WHIRL, cd: -0.2, dmg: 0.25 }] }),
-    three('pk_swordsman_battle_trance', 'Battle Trance', 'resource', (r) => `Kills restore ${r * 6} stamina and +${r}% of damage healed back.`,
+    three('pk_swordsman_battle_trance', 'Battle Trance', 'resource', (r) => `Kills restore ${r * 6} stamina; heal for ${r}% of the damage you deal.`,
       (r) => ({ mods: [{ stat: 'staminaOnKill', op: 'flat', value: 6 * r }, { stat: 'lifesteal', op: 'flat', value: 0.01 * r }] })),
     one('pk_swordsman_whirlwind_heart', 'Whirlwind Heart', 'trigger', 'Kills: +20% move and attack speed for 3 s.',
       { procs: [{ on: 'kill', icd: 1000, do: [{ a: 'buff', id: 'swd:whirl', dur: 3000, to: 'self', mods: [{ stat: 'moveSpeed', op: 'flat', value: 0.2 }, { stat: 'atkSpeed', op: 'flat', value: 0.2 }] }] }] }),
@@ -59,13 +59,13 @@ const samurai: ClassPerks = {
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'targetHpAbove', pct: 0.8 } }] })),
     one('pk_samurai_one_stroke', 'One Stroke', 'trigger', 'After standing still for 1 s: +40% critical damage.',
       { mods: [{ stat: 'critd', op: 'flat', value: 0.4, when: { c: 'stationary', ms: 1000 } }] }),
-    one('pk_samurai_bleeding_edge', 'Bleeding Edge', 'trigger', 'Attack critical hits make the foe bleed (4 s).',
+    one('pk_samurai_bleeding_edge', 'Bleeding Edge', 'trigger', 'Attack critical hits make the foe bleed for 4 s.',
       { procs: [{ on: 'attackCrit', do: [{ a: 'status', status: { id: 'bleed', dur: 4000 }, area: tgt }] }] }),
     // path 1: Wind Step (+ new spell 4): through the line
     one('pk_samurai_gale_step', 'Gale Step', 'power', 'Wind Step recharges 20% faster and hits 25% harder.', { spellMods: [{ spell: WIND, cd: -0.2, dmg: 0.25 }] }),
     three('pk_samurai_wind_breath', 'Wind Breath', 'resource', (r) => `Your dash costs ${r * 8}% less stamina; +${r * 5}% stamina regeneration.`,
       (r) => ({ mods: [{ stat: 'staminaCost', op: 'flat', value: -0.08 * r }, { stat: 'staminaRegen', op: 'pct', value: 0.05 * r }] })),
-    one('pk_samurai_passing_cut', 'Passing Cut', 'trigger', 'Landing a dash: your next hit within 2 s is a critical hit (3 s).',
+    one('pk_samurai_passing_cut', 'Passing Cut', 'trigger', 'Landing a dash: your next hit within 2 s is a critical hit, once every 3 s.',
       { procs: [{ on: 'dashEnd', icd: 3000, do: [{ a: 'buff', id: 'sam:passing', dur: 2000, to: 'self', charges: 1, flags: ['nextHitsCrit'] }] }] }),
     one('pk_samurai_ronin', 'Ronin', 'tradeoff', '+30% critical damage and +5% critical chance, −15% max health.',
       { mods: [{ stat: 'critd', op: 'flat', value: 0.3 }, { stat: 'crit', op: 'flat', value: 0.05 }, { stat: 'hp', op: 'pct', value: -0.15 }] }),
@@ -73,9 +73,9 @@ const samurai: ClassPerks = {
     one('pk_samurai_deep_focus', 'Deep Focus', 'power', 'Still Mind recharges 25% faster; +4% critical chance.', { spellMods: [{ spell: STILL, cd: -0.25 }], mods: [{ stat: 'crit', op: 'flat', value: 0.04 }] }),
     three('pk_samurai_zanshin', 'Zanshin', 'power', (r) => `+${r * 2}% critical chance and +${r * 6}% critical damage.`,
       (r) => ({ mods: [{ stat: 'crit', op: 'flat', value: 0.02 * r }, { stat: 'critd', op: 'flat', value: 0.06 * r }] })),
-    one('pk_samurai_clear_water', 'Clear Water', 'resource', 'Critical hits restore 4 stamina and 2 Ember (0.5 s).',
+    one('pk_samurai_clear_water', 'Clear Water', 'resource', 'Critical hits restore 4 stamina and 2 Ember, once every 0.5 s.',
       { procs: [{ on: 'crit', icd: 500, do: [{ a: 'resource', stamina: 4, ember: 2 }] }] }),
-    one('pk_samurai_death_poem', 'Death Poem', 'trigger', 'Below 50% health: your next 3 hits are critical (45 s).',
+    one('pk_samurai_death_poem', 'Death Poem', 'trigger', 'Below 50% health: your next 3 hits are critical, once every 45 s.',
       { procs: [{ on: 'lowHp', icd: 45000, do: [{ a: 'buff', id: 'sam:poem', dur: 6000, to: 'self', charges: 3, flags: ['nextHitsCrit'] }] }] }),
   ],
 };
@@ -84,12 +84,12 @@ const school: PerkDef[] = [
   // p0 offence
   one('pk_blade_keen', 'Keen', 'power', '+12% Blade damage and +3% critical chance.',
     { mods: [{ stat: 'dmg.blade', op: 'flat', value: 0.12 }, { stat: 'crit', op: 'flat', value: 0.03 }] }),
-  one('pk_blade_hamstring', 'Hamstring', 'trigger', 'Hits have a 15% chance to slow the foe (2 s); +3% critical chance.',
+  one('pk_blade_hamstring', 'Hamstring', 'trigger', 'Hits have a 15% chance to slow the foe for 2 s; +3% critical chance.',
     { mods: [{ stat: 'crit', op: 'flat', value: 0.03 }], procs: [{ on: 'hit', chance: 0.15, do: [{ a: 'status', status: { id: 'slow', dur: 2000 }, area: tgt }] }] }),
   // p1 defence
   three('pk_blade_parry_stance', 'Parry Stance', 'power', (r) => `+${r * 3}% block chance and +${r * 3}% armour.`,
     (r) => ({ mods: [{ stat: 'block', op: 'flat', value: 0.03 * r }, { stat: 'armor', op: 'pct', value: 0.03 * r }] })),
-  one('pk_blade_second_guard', 'Second Guard', 'trigger', 'When hit: take 12% less damage for 4 s (6 s).',
+  one('pk_blade_second_guard', 'Second Guard', 'trigger', 'When hit: take 12% less damage for 4 s, once every 6 s.',
     { procs: [{ on: 'hurt', icd: 6000, do: [{ a: 'buff', id: 'bld:guard', dur: 4000, to: 'self', mods: [{ stat: 'dmgTaken', op: 'flat', value: -0.12 }] }] }] }),
   one('pk_blade_sidestep', 'Sidestep', 'power', '+1 dash charge.', { mods: [{ stat: 'dashCharges', op: 'flat', value: 1 }] }),
   // p2 focus / resource
