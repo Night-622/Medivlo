@@ -84,6 +84,8 @@ other with `ListAgents`. Each agent's first message to Claude 1 says "I'm Claude
 | **Claude 3** (systems) | `src/systems`, `src/ui/character`, `src/data/{classes,traits,items,spells,skilltrees,enemies}`, `tools/e2e/sim` | Combat, classes, gear, bestiary, trees, co-op rules, balance. Tunes from the user's play reports |
 | **Claude 4** (narrative) | `src/narrative`, `src/ui/narrative`, `src/data/{quests,dialogue,lore,npcs,factions,tips}`, `tools/narrative`, docs/lore | All 24 campaigns. Running the depth pass with up to 3 helper agents |
 | **Claude 5** (helper, added on the PC) | Files Claude 1 or Claude 4 assigns. Now: `src/art/side/` (side-view hero sprites, for Claude 1). Done: wave 2 Iron + Fist, Morvane codex, Concordia Act II depth, narrative-features test, browser + key + Large-text sweeps | Writes and gates depth for its classes and hands them to Claude 4. Claude 4 records its work in STATUS.md. On this PC the helper cap is 4 including Claude 5 |
+| **Claude 6** (code integrity, added 2026-10-20) | Delegated by Claude 1: src/core, src/net, server/, src/firebase, src/art (not side/), src/audio, src/render, src/ui/kit, src/ui/hud, src/ui/screens, Boot/MainMenu/CharacterCreate, tools/e2e (not sim/ or hc-*), tools/release. Core/net contract changes still need Claude 1 | Deep correctness audit of the whole codebase; fixes in the delegated folders, patches to owners elsewhere |
+| **Claude 7** (player-experience QA, added 2026-10-20) | New files tools/e2e/qa-*.mjs | In-browser QA with real input (first hour per school, every screen, perf, errors); findings to owners; regression checks |
 
 ---
 
