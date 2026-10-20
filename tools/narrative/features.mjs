@@ -125,6 +125,9 @@ try {
   await N(`flag('tut.on', true)`);
   if (!(await quest('quest:warden-first-steps'))) await N(`start('quest:warden-first-steps')`);
   await sleep(600);
+  // the flag change also autostarts the class opening (I-1), whose night scene opens now; First Steps ignores keys
+  // while a conversation is up (Space and 1–4 belong to it), exactly as a new player plays it: finish the scene first
+  await endDialogue();
   const moveBefore = await flag('tut.move');
   await page.hold([await keyOf('up')], 400); await sleep(500);
   const fs = await quest('quest:warden-first-steps');
