@@ -14,7 +14,8 @@ import { REALM_OVERVIEW_STEP, mapMarkers, morvaneRegionAt, realmOverview, zoneIn
 import { REALMS, instanceDef, placeName, realmOf } from '@/world/hc/spaces';
 import { regionBandNow } from '@/world/hc/spawns';
 import { MapLabels, capFirst } from './labels';
-import { drawMerchants, drawQuestMarks, mapTopBar } from './mapQuests';
+import { drawMerchants, drawQuestMarks, mapTopBar, villageView } from './mapQuests';
+import { drawMarkerGlyph, drawOptionalGlyph } from './markerGlyphs';
 import { resolvePlace, type QuestMark } from './questMarks';
 
 export interface MapScreenSource {
@@ -268,13 +269,16 @@ export class MapScreen {
     this.image(key, ox, oy, 1);
     this.side.removeAll(true);
     this.title(this.villageName(space, id), space === 'concordia' ? 'Village' : 'Capital');
-    if (!v || !key) { this.para('No close-up of this place has been drawn yet.', 72); return; }
+    if (!v || !key) { this.para('The mapmakers never came this far in.', 72); return; }
     let y = 64;
     for (const p of world().vilLayout(v)) {
       const pill = text(this.scene, ox + p.x + p.w / 2, oy + p.y + p.h + 4, `${p.npc ? '◆ ' : ''}${capFirst(p.label)}`, 'caption', p.npc ? C.gold : C.text).setOrigin(0.5, 0);
       this.view.add([this.scene.add.rectangle(pill.x, pill.y + pill.height / 2, pill.width + 12, pill.height + 4, n(C.bg), 0.85), pill]);
       if (y < MH - 40) { this.side.add(text(this.scene, 0, y, `${capFirst(p.label)} · ${p.svc}`, 'caption', p.npc ? C.gold : C.text300, PW - 32)); y += 26; }
     }
+    // the merchants and quest marks standing in this village, where they stand in the world
+    const vv = villageView(space, id, ox, oy);
+    if (vv) { drawMerchants(this.scene, this.view, space, vv.toScreen, vv.inside); drawQuestMarks(this.scene, this.view, (this.src.quests?.() ?? []).filter((m) => vv.inside(m.x / TILE, m.y / TILE)), space, vv.toScreen, this.focus); }
   }
 
   private villageName(space: string, id: string): string {
@@ -304,33 +308,13 @@ export class MapScreen {
     for (const m of this.markers) {
       const [x, y] = this.toScreen(m.at[0], m.at[1]);
       if (m.kind !== 'zone') labels.block(x, y);
-      if (m.kind === 'waystone') {
-        const lit = woken.has(m.id) || m.startsLit;
-        g.fillStyle(n(C.ink), 1).fillTriangle(x, y - 8, x + 7, y, x, y + 8).fillTriangle(x, y - 8, x - 7, y, x, y + 8);
-        g.fillStyle(lit ? n(C.teal) : 0x6b7494, 1).fillTriangle(x, y - 6, x + 5, y, x, y + 6).fillTriangle(x, y - 6, x - 5, y, x, y + 6);
-      } else if (m.kind === 'village') {
-        g.fillStyle(n(C.ink), 1).fillRect(x - 6, y - 6, 12, 12);
-        g.fillStyle(n(C.gold), 1).fillRect(x - 4, y - 4, 8, 8);
-      } else if (m.kind === 'zone' && space !== 'concordia') {
-        names.push(() => labels.add(x, y, m.name));
-      } else if (m.kind === 'exit') {
-        g.fillStyle(n(C.ink), 1).fillTriangle(x, y - 8, x + 7, y, x, y + 8).fillTriangle(x, y - 8, x - 7, y, x, y + 8);
-        g.fillStyle(n(C.teal), 1).fillTriangle(x, y - 6, x + 5, y, x, y + 6).fillTriangle(x, y - 6, x - 5, y, x, y + 6);
-      } else if (m.kind === 'boss') {
-        g.fillStyle(n(C.ink), 1).fillCircle(x, y, 9);
-        g.fillStyle(0xb8402e, 1).fillCircle(x, y, 7);
-      } else if (m.kind === 'chest') {
-        g.fillStyle(n(C.ink), 1).fillRect(x - 5, y - 4, 10, 8);
-        g.fillStyle(n(C.gold), 1).fillRect(x - 3, y - 2, 6, 4);
-      } else if (m.kind === 'find') {
-        g.fillStyle(n(C.ink), 1).fillCircle(x, y, 4);
-        g.fillStyle(n(C.text), 1).fillCircle(x, y, 2.5);
-      } else if (m.kind === 'optional') {
+      if (drawMarkerGlyph(g, m.kind, x, y, woken.has(m.id) || !!m.startsLit)) continue;
+      if (m.kind === 'zone' && space !== 'concordia') names.push(() => labels.add(x, y, m.name));
+      else if (m.kind === 'optional') {
         // optional areas: named once walked into, a question mark once a lookout has shown them, else nothing
         const seen = found.has(m.id);
         if (!seen && !found.has(`hint:${m.id}`)) continue;
-        g.fillStyle(n(C.ink), 1).fillCircle(x, y, 6);
-        g.fillStyle(seen ? n(C.gold) : 0x6b7494, 1).fillCircle(x, y, 4);
+        drawOptionalGlyph(g, x, y, seen);
         names.push(() => labels.add(x, y, seen ? m.name : '?', seen ? C.text : C.text500, true));
       }
     }

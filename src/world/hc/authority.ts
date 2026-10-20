@@ -8,7 +8,7 @@ import { sim as defaultSim, type SimLoop } from '@/net';
 import { handleWorldAct, landmarksAt } from './interact';
 import { NpcProvider, npcWhere, npcsIn } from './npcs';
 import { BossWatch, SpawnDirector, markerAt, warmMarkers, zoneTopNow, type QuestKill } from './spawns';
-import { allWaystones, placeName, spaceRuntime } from './spaces';
+import { allWaystones, instanceDef, placeName, spaceRuntime } from './spaces';
 import { optionalName } from '@/data/regions/hc/optionalAreas';
 import { prewarm } from './runtime';
 import { HcWorldService } from './worldService';
@@ -172,7 +172,7 @@ export function installWorldAuthority(opts: WorldAuthorityOpts): WorldAuthority 
     const busy = lastMs < 15 && prewarm(spaceRuntime, ps);
     // place index for quest markers, story markers and escorts (placePos): one space per quiet tick once the chunks
     // round the players are warm, the first player's space first (it was unreachable behind the prewarm branch)
-    if (!busy && lastMs < 8 && tickN % 30 === 0) warmMarkers(ps[0]?.space);
+    if (!busy && lastMs < 8 && tickN % 30 === 0) { const s = ps[0]?.space; warmMarkers(s?.startsWith('inst:') ? instanceDef(s)?.exit?.space : s); }
     tickN++;
     tracker.step(ps); director?.step(dt); bosses.step(dt);
     lastMs = performance.now() - t0;

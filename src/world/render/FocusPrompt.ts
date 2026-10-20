@@ -15,6 +15,9 @@ const FOCUS_RANGE = 1.9;
 const NPC_BIAS = 0.75;
 const LABEL: Partial<Record<WorldObject['kind'], string>> = { waystone: 'Wake', door: 'Enter', 'npc-anchor': 'Talk', chest: 'Open', sign: 'Read', lore: 'Read', lever: 'Pull' };
 
+/** A counted search object's prompt, by its verb: Read → "Already read", Search → "Already searched", else "Already seen". */
+const usedLabel = (label: string): string => (/read/i.test(label) ? 'Already read' : /search/i.test(label) ? 'Already searched' : 'Already seen');
+
 export class FocusPrompt {
   private text: Phaser.GameObjects.Text;
   private focus: WorldObject | null = null;
@@ -75,7 +78,7 @@ export class FocusPrompt {
     this.text.setVisible(!!o && !this.paused());
     if (!o) return;
     const done = o.kind === 'interactable' && this.used(o.id);
-    const label = done ? (/read/i.test(String(o.props?.label)) ? 'Already read' : 'Already searched') : String(o.props?.label ?? LABEL[o.kind] ?? 'Use');
+    const label = done ? usedLabel(String(o.props?.label ?? '')) : String(o.props?.label ?? LABEL[o.kind] ?? 'Use');
     const name = o.props?.name ? `${o.props.name} · ` : '';
     this.text.setText(`[${keyLabel('interact')}] ${name}${label}`).setColor(done ? C.text300 : C.text);
     // over an NPC, above its name plate (NpcView draws it 42 px over the feet)

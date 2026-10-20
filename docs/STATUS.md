@@ -147,8 +147,8 @@ Design: docs/world/HOLLOW-CROWN-WORLD.md. Pure code in src/world/hc (shared with
   - Merchants show on the minimap as gold coins, at the live NPC entity.
   - The map's village close-up draws the merchants and quest marks standing in that village.
   - Inside an instance, the marker index warms the instance's outside space first.
-  - The browser look is pending until Chrome is free.
-- [ ] Next: browser look at the village close-up and minimap coins once Chrome is free; user world reports via Claude 1
+  - Browser-checked: 3 merchant coins at Glacierhome, the close-up shows the smithy anvil and the market coin, no page errors. WorldV2Scene.ts (379) and MapScreen.ts (385) trimmed under 400 (WorldHud.ts, markerGlyphs.ts)
+- [ ] Next: user world reports via Claude 1
 - Dev: `?scene=WorldV2&space=<space>&tp=tx,ty&zoom=0.5&hour=22&fly=1&hc_class=<class>`. Console: `__world.where() / tp(tx,ty) / space(id) / focus() / press() / hour(h)`
 
 ## Claude 3 (medival-61): systems — THE HOLLOW CROWN (combat, classes, gear, bestiary, trees, co-op rules)

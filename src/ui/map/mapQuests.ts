@@ -6,11 +6,12 @@
  */
 import Phaser from 'phaser';
 import { C, n } from '@/ui/kit/hc';
-import { GAME_WIDTH, bus, keyLabel, type Action, type NpcId } from '@/core';
-import { HC_SHOPS } from '@/data/items/hc/shops';
-import { isPresent } from '@/narrative/engine';
+import { GAME_WIDTH, bus, keyLabel, type Action } from '@/core';
 import { drawGlyph } from './glyphs';
-import { resolvePlace, type QuestMark } from './questMarks';
+import { merchantsIn, type QuestMark } from './questMarks';
+import { spaceRuntime } from '@/world/hc/spaces';
+import { VIL_H, VIL_W, villageOrigin } from '@/world/hc/village';
+import type { VillageDef } from '@/world/hc/types';
 
 const TILE = 32;
 const SCALE = 2;
@@ -37,21 +38,11 @@ export function drawQuestMarks(
   return out;
 }
 
-/** Merchants standing in `space` now (world px): every shop whose NPC is present there. */
-export function merchantsIn(space: string): { x: number; y: number; forge: boolean }[] {
-  const out: { x: number; y: number; forge: boolean }[] = [];
-  for (const s of HC_SHOPS) {
-    if (!s.npc.startsWith('npc:') || !isPresent(s.npc as NpcId)) continue;
-    const at = resolvePlace(s.npc);
-    if (at?.space === space) out.push({ x: at.x, y: at.y, forge: !!s.runeforge });
-  }
-  return out;
-}
-
 /** Merchant glyphs, under the quest marks: an ink-rimmed anvil (Runeforge) or gold coin. Returns screen points. */
-export function drawMerchants(scene: Phaser.Scene, view: Phaser.GameObjects.Container, space: string, toScreen: (tx: number, ty: number) => [number, number]): [number, number][] {
+export function drawMerchants(scene: Phaser.Scene, view: Phaser.GameObjects.Container, space: string, toScreen: (tx: number, ty: number) => [number, number], inside?: (tx: number, ty: number) => boolean): [number, number][] {
   const g = scene.add.graphics(), out: [number, number][] = [];
   for (const m of merchantsIn(space)) {
+    if (inside && !inside(m.x / TILE, m.y / TILE)) continue;
     const [x, y] = toScreen(m.x / TILE, m.y / TILE);
     if (m.forge) {
       g.fillStyle(n(C.ink), 1).fillRect(x - 7, y - 5, 14, 5).fillRect(x - 3, y - 1, 6, 4).fillRect(x - 6, y + 2, 12, 4);
@@ -64,6 +55,20 @@ export function drawMerchants(scene: Phaser.Scene, view: Phaser.GameObjects.Cont
   }
   view.add(g);
   return out;
+}
+
+/**
+ * A village close-up's transform (the close-up is the stamped village, 24 × 14 tiles at 1 px a world px): world tile →
+ * screen with the close-up's top-left at (ox, oy), and whether a tile lies inside it (plus the row below: the
+ * lower buildings' doors, where their merchants stand). null: no such village here.
+ */
+export function villageView(space: string, id: string, ox: number, oy: number): { toScreen: (tx: number, ty: number) => [number, number]; inside: (tx: number, ty: number) => boolean } | null {
+  const g = spaceRuntime(space).gen as { villages?: VillageDef[]; data?: { villages: VillageDef[] } };
+  const all = g.villages ?? g.data?.villages ?? [];
+  const v = all.find((x) => x.id === id) ?? all.find((x) => x.capital);
+  if (!v) return null;
+  const [x0, y0] = villageOrigin(v);
+  return { toScreen: (tx, ty) => [ox + (tx - x0) * TILE, oy + (ty - y0) * TILE], inside: (tx, ty) => tx >= x0 && ty >= y0 && tx < x0 + VIL_W && ty < y0 + VIL_H + 1 };
 }
 
 /** [label, key action (its hint follows rebinds), panel it opens (null = the map)] */

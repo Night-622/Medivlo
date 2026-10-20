@@ -14,7 +14,7 @@ export interface MinimapV2Source {
   colorAt(tx: number, ty: number): number | null;
   /** enemies and points of interest (world px); quest = the tracked quest's objectives (gold, with an edge arrow
    * when off the window), quest-side = other active quests' (teal) */
-  dots?(): { x: number; y: number; kind: 'enemy' | 'door' | 'waystone' | 'quest' | 'quest-side' }[];
+  dots?(): { x: number; y: number; kind: 'enemy' | 'door' | 'waystone' | 'shop' | 'quest' | 'quest-side' }[];
   label(): string;
 }
 
@@ -24,7 +24,7 @@ const SCALE = T.component.minimap.scale;
 const TILE_PX = TILE_SIZE * SCALE;
 const COLS = Math.ceil(MW / TILE_PX) + 2, ROWS = Math.ceil(MH / TILE_PX) + 2;
 const TEX = 'hc-minimap';
-const DOT: Record<string, number> = { enemy: n(C.danger), door: n(C.text), waystone: n(C.teal), quest: n(C.gold), 'quest-side': n(C.teal) };
+const DOT: Record<string, number> = { enemy: n(C.danger), door: n(C.text), waystone: n(C.teal), shop: n(C.gold), quest: n(C.gold), 'quest-side': n(C.teal) };
 /** the edge arrow toward an off-window tracked objective sits this far inside the window */
 const EDGE = 6;
 
@@ -91,6 +91,7 @@ export class MinimapV2 {
         g.fillStyle(DOT[d.kind], 1).fillTriangle(x, y - r, x + r, y, x, y + r).fillTriangle(x, y - r, x - r, y, x, y + r);
         continue;
       }
+      if (d.kind === 'shop') { g.fillStyle(n(C.ink), 1).fillCircle(x, y, 3); g.fillStyle(DOT.shop, 1).fillCircle(x, y, 2); continue; }
       const s = d.kind === 'enemy' ? 4 : 3;
       g.fillStyle(DOT[d.kind], 1).fillRect(Math.round(x - s / 2), Math.round(y - s / 2), s, s);
     }

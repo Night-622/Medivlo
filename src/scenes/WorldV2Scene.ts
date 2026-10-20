@@ -12,11 +12,11 @@ import { systemsAuthority } from '@/systems/sim';
 import { activeQuests, npcPlacements } from '@/narrative';
 import { currentStage, objectiveDone } from '@/narrative/engine/quests';
 import { objectUsed } from '@/narrative/client/markers';
-import type { HudV2Scene } from '@/ui/hud/HudV2Scene';
-import { MinimapV2 } from '@/ui/map/MinimapV2';
-import { MapScreen } from '@/ui/map/MapScreen';
+import type { MinimapV2 } from '@/ui/map/MinimapV2';
+import type { MapScreen } from '@/ui/map/MapScreen';
+import { attachWorldHud } from './WorldHud';
 import { WorldClock } from '@/world/render/WorldClock';
-import { ARENAS, REALMS, entryWaystone, knownSpace, placeName, spaceRuntime } from '@/world/hc/spaces';
+import { ARENAS, REALMS, entryWaystone, knownSpace, spaceRuntime } from '@/world/hc/spaces';
 import { HcWorldService, standBeside, startAreaOf } from '@/world/hc/worldService';
 import type { SpaceQuery } from '@/world/hc/runtime';
 import { installWorldAuthority, type WorldAuthority } from '@/world/hc/authority';
@@ -26,7 +26,6 @@ import { Occlusion } from '@/world/render/Occlusion';
 import { bakeStats } from '@/world/render/artCache';
 import { chunkFeed } from '@/world/render/ChunkFeed';
 import { ListeningShadow } from '@/world/render/ListeningShadow';
-import { isAction } from '@/ui/kit/hc/keys';
 import { Lighting } from '@/world/render/Lighting';
 import { FocusPrompt } from '@/world/render/FocusPrompt';
 import { NpcView } from '@/world/render/NpcView';
@@ -275,46 +274,11 @@ export class WorldV2Scene extends Phaser.Scene {
     return this.player ? { x: this.player.x, y: this.player.y } : this.fly ?? { x: 0, y: 0 };
   }
 
-  /** Launch HudV2 and mount the minimap in its top-right anchor; M or the HUD map button opens the map. */
+  /** HudV2 with the map screen and the minimap (WorldHud.ts). */
   private attachHud(): void {
-    const mount = () => {
-      const hud = this.scene.get(SceneKeys.HudV2) as HudV2Scene;
-      if (!hud.anchors || this.minimap) return;
-      if (this.visit) hud.banner(this.visit.name, 'Public realm');
-      const rt = spaceRuntime(this.space);
-      this.map = new MapScreen(hud, {
-        space: () => this.space,
-        player: () => this.pos(),
-        found: () => Game.state.world.foundRegions,
-        woken: () => Game.state.world.waystones,
-        homeSpace: () => startAreaOf(heroClassId()).space,
-        travel: (waystone) => Services.tryGet('net')?.send({ type: 'act', domain: 'world', action: 'travel', args: { waystone } }),
-        quests: () => this.quests.all(),
-      });
-      this.minimap = new MinimapV2(hud, hud.anchors.topRight, {
-        player: () => this.pos(),
-        colorAt: (tx, ty) => {
-          const c = rt.chunk(Math.floor(tx / CHUNK_TILES), Math.floor(ty / CHUNK_TILES), false);
-          return c ? c.mini[(ty - c.cy * CHUNK_TILES) * CHUNK_TILES + (tx - c.cx * CHUNK_TILES)] : null;
-        },
-        dots: () => [
-          ...this.chunks.views().flatMap((c) => c.objects
-            .filter((o) => o.kind === 'door' || o.kind === 'waystone')
-            .map((o) => ({ x: o.at[0] * TILE_SIZE + 16, y: o.at[1] * TILE_SIZE + 16, kind: o.kind as 'door' | 'waystone' }))),
-          // the open objectives here: the tracked quest gold (with an edge arrow when off the window), others teal
-          ...this.quests.here(this.time.now, this.game.loop.delta).map((m) => ({ x: m.x, y: m.y, kind: (m.tracked ? 'quest' : 'quest-side') as 'quest' | 'quest-side' })),
-        ],
-        label: () => (this.region ? placeName(this.space, this.region).name : ''),
-      });
-    };
-    if (this.scene.isActive(SceneKeys.HudV2)) mount();
-    else {
-      this.scene.launch(SceneKeys.HudV2);
-      this.scene.get(SceneKeys.HudV2).events.once(Phaser.Scenes.Events.CREATE, mount);
-    }
-    // the map key follows rebinds; typing in chat never opens it
-    this.input.keyboard!.on('keydown', (ev: KeyboardEvent) => {
-      if (!(ev.target instanceof HTMLInputElement) && !(ev.target instanceof HTMLTextAreaElement) && isAction(ev, 'map')) bus.emit('ui:open', { panel: 'map' });
+    attachWorldHud(this, {
+      space: () => this.space, pos: () => this.pos(), region: () => this.region, chunks: () => this.chunks, quests: this.quests,
+      visit: this.visit?.name, mounted: () => !!this.minimap, done: ({ map, minimap }) => { this.map = map; this.minimap = minimap; },
     });
   }
 

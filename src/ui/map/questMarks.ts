@@ -5,8 +5,9 @@
  * else by questPlace (src/world/hc/questPlaces.ts: pieces inside an instance point at its door from outside).
  */
 import { TILE_SIZE, type NpcId } from '@/core';
+import { HC_SHOPS } from '@/data/items/hc/shops';
 import { questMarkers, type QuestMarker } from '@/narrative/client/markers';
-import { npcLandmark } from '@/narrative/engine';
+import { isPresent, npcLandmark } from '@/narrative/engine';
 import { questPlace } from '@/world/hc/questPlaces';
 import { warmMarkers } from '@/world/hc/spawns';
 
@@ -42,6 +43,17 @@ export function resolvePlace(place: string, npcAt?: NpcAt, here?: string): { spa
   return hit ? { space: hit.space, x: hit.at[0] * TILE_SIZE + TILE_SIZE / 2, y: hit.at[1] * TILE_SIZE + TILE_SIZE / 2 } : null;
 }
 
+/** Merchants standing in `space` now (world px): every shop whose NPC is present there, at its entity when `npcAt` sees it. */
+export function merchantsIn(space: string, npcAt?: NpcAt): { x: number; y: number; forge: boolean }[] {
+  const out: { x: number; y: number; forge: boolean }[] = [];
+  for (const s of HC_SHOPS) {
+    if (!s.npc.startsWith('npc:') || !isPresent(s.npc as NpcId)) continue;
+    const at = resolvePlace(s.npc, npcAt, space);
+    if (at?.space === space) out.push({ x: at.x, y: at.y, forge: !!s.runeforge });
+  }
+  return out;
+}
+
 /** The open objectives, resolved; unresolvable ones are dropped (see unresolvedMarkers). Tracked first. */
 export function questMarks(npcAt?: NpcAt, here?: string): QuestMark[] {
   const out: QuestMark[] = [];
@@ -63,8 +75,15 @@ export function unresolvedMarkers(npcAt?: NpcAt, here?: string): string[] {
  */
 export class QuestMarkFeed {
   private cache: { at: number; marks: QuestMark[] } = { at: -1e9, marks: [] };
+  private shops: { at: number; list: { x: number; y: number; forge: boolean }[] } = { at: -1e9, list: [] };
   private warmedAt = 0;
   constructor(private space: () => string, private guest: () => boolean, private npcAt: NpcAt) {}
+
+  /** the merchants present here (minimap coins), every 2 s: presence follows quests and schedules */
+  merchants(now: number): { x: number; y: number; forge: boolean }[] {
+    if (now - this.shops.at > 2000) this.shops = { at: now, list: merchantsIn(this.space(), this.npcAt) };
+    return this.shops.list;
+  }
 
   /** every open objective, seen from this space (the map screen) */
   all(): QuestMark[] { return questMarks(this.npcAt, this.space()); }
