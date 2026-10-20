@@ -12,6 +12,8 @@ upgrades". User decisions (via Claude 1, 2026-10-20):
 Kept as they are: level bands and the XP curve (rules/curves.ts), the 3-branch tree with one shared point pool, the
 Action / Passive language, Phaser-free rules and sim (they run on the realm server), and folder ownership.
 
+**What is built now, and the checks that guard it: §11.** Sections 1–10 are the original plan.
+
 ---
 
 ## 1. How it fits together
@@ -479,3 +481,162 @@ tests and the UI shots, run one after another.
 **Order of value for the user:** affixes + uniques first (loot excitement), then perks (choices), then spells +
 runes, then the Runeforge, then polish. Each phase lands behind its own gates (features + hitboxes + builds), so the
 game stays playable throughout.
+
+---
+
+## 11. As built (2026-10-21, Claude 5)
+
+Sections 1–10 are the plan. This section is what is in the game tonight, and which check guards each part. Run every
+check from the repo root. "Gate" means it fails the pre-deploy check; "report" means it writes a file under
+tools/e2e/out/ for a person to read.
+
+### 11.1 Affixes and rarity
+
+- **238 affixes** (data/items/hc/affixes.ts): 197 prefixes and 41 suffixes. 156 of them are "+N to a spell" lines:
+  each class's 6 kit spells and its school, which roll only for that class.
+- **Rarity** (rules/affixTypes.ts):
+
+| Rarity | Roll weight | Affix lines | Sockets |
+|---|---|---|---|
+| common | 50 | 0 | 0 |
+| fine | 30 | 1 | 0 |
+| ember | 13 | 2 | 1 |
+| runed | 5 | 3 | 1 |
+| wrought | 1.6 | 3–4 | 2 |
+| spark | 0.4 | 4 | 3 |
+
+  Item-find raises every tier above common. Minis double ember+, bosses ×5 runed+. At most 2 prefixes and 2
+  suffixes, one per group. Affix values scale with item level (tiers at ilvl 1 / 10 / 20 / 30 / 38).
+- **Drops** (sim/loot.ts):
+  - about 1 in 10 gear rolls is a ring or amulet;
+  - kill gear rolls at max(creature level, hero level − 2);
+  - chest gear (loot-table gear included) rolls at max(chest level, hero level);
+  - the newest unlocked material / style drops 70% of the time.
+- **Guards:** `run.mjs rules-props` (gate, 356 checks: every affix's tiers, slots, budgets and text);
+  `qa-builds-text.mjs` (gate, every affix line as the player sees it).
+
+### 11.2 Perks, keystones, mastery
+
+- **Signature perks:** 12 per class (288). **School perks:** 8 per school (96). Both are in
+  data/skilltrees/hc/perks-<school>.ts. 3-rank perks are front-loaded (rank weights 1.5 / 2.25 / 3).
+- **Shared keystones:** 20, in data/skilltrees/hc/keystones.ts. Each class is offered 3 of them (KEYSTONE_OFFERS)
+  and can hold at most 2.
+  - Glass Cannon, Conduit and Chain Reaction are the strongest wherever offered.
+  - The jester is offered Chain Reaction instead of Hoarder, so it has a real second choice.
+- **School keystones:** 2 per school (rules/tree.ts). Each carries one plain rider so that none is dead. Tonight:
+  - Blood Pact: +10% damage and a 30% power blood nova on kill;
+  - Pressure Points: +10% attack speed and +20% critical damage.
+- **Weapon mastery:** 49 entries (data/skilltrees/hc/mastery.ts), active while wielding that weapon.
+- **Text:** every timing reads "for N s" for a duration and "once every N s" for a cooldown. Claude 4's
+  `tools/narrative/text-mech-audit.ts` checks text against mechanics (clean).
+- **Guards:** `run.mjs rules-props` (gate); `run.mjs builds` (gate, 145: starter and typical builds beat every
+  campaign boss); `run.mjs builds full` (report: the dead-content list, §7); `run.mjs fresh-pass` (report: what a new
+  player can pick at L1 / 5 / 10, and whether each pick matters).
+
+### 11.3 Spells, runes, tomes
+
+- **72 new kit spells** (data/spells/hc/kit-spells-new.ts), 3 per class, each learned on its Spells-branch path.
+  Budgets: cost 8–30, cd 2–20 s, coefficient ≤ 3.2 (checked by rules-props).
+- **27 runes** (data/items/hc/build-items.ts, Claude 3), slotted into spells.
+- **24 tomes:** each teaches one off-school school spell (never an ultimate), one at a time.
+  - Meteor, Blizzard, Blade Dance and Dragon Kick are the strongest picks.
+  - Flame Wall, Ice Lance and Perfect Parry were lifted tonight as real alternatives.
+  - Iron Skin stays defensive by design.
+- **Guards:** `run.mjs features` (gate, 759: every spell casts); `run.mjs hitboxes` (gate, 247: every shape hits what it
+  shows); `run.mjs rules-props spells` (gate).
+
+### 11.4 Uniques and hybrid sets
+
+- **40 uniques** (data/items/hc/uniques.ts): 25 boss legendaries (lg_) and 15 others (u_). Each has 2 fixed
+  affixes plus its own effect. Built with `uniqueInstance(id, ilvl)`.
+  - An armour unique counts as its base piece for set bonuses (rules/gear.ts).
+  - Every unique gives a real gain to at least one class at L40.
+- **12 curated hybrid sets** (data/items/hc/hybrid-sets.ts): 2 pieces of one school + 2 of a neighbouring school
+  replace the generic half-and-half bonus.
+  - The ring: Scald (ash+rime), Hailstorm (rime+storm), Lightning Rod, Iron Body, Flurry, Dirty Fencing
+    (blade+guile), Shadowplay, Night Stalker, Wildwood, Pastoral, Hymnal, Sunfire.
+  - Names and flavour come from Claude 4's overlay.
+  - Every hybrid is viable for at least 2 classes.
+- **Guards:** `run.mjs rules-props uniques` and `rules-props hybrids` (gate); `run.mjs build-diversity` (report, see
+  11.8).
+
+### 11.5 Runeforge and respec
+
+- **Where:** Odo in Brindlecross, and every realm capital's smith.
+- **Tabs:** Reforge, Sockets, Upgrade, Reroll, Imbue, Transfer, Craft, Salvage (ui/character/hc/ForgeTabs.ts).
+- **Costs** (rules/runeforge.ts, s = P(level)^0.6):
+
+| Action | Cost |
+|---|---|
+| upgrade to +n (max +5) | 40·s·n² gold + n ingots |
+| reroll an affix | 25·s·(1 + rarity / 2) |
+| imbue | 60·s + an Essence |
+| transfer | 120·s |
+| socket | max(10, 20·s) |
+
+- **Salvage:** gives ingots, plus rune dust per affix.
+- **Respec:** costs 10 × level per branch. A save migrated from the old tree gets one free respec.
+- **Gold:** with the Runeforge in use, it takes about 95% of all gold a player spends, so gold never piles up
+  unused. Without it, gold idles at about 11,000 by L20.
+- **Guards:** `run.mjs economy` (gate: shop, quest rewards, chests, Runeforge actions); `run.mjs gear-curve`
+  (report, 11.6).
+
+### 11.6 Loot and gear curve
+
+`node tools/e2e/sim/run.mjs gear-curve` (report → tools/e2e/out/gear-curve.md, 5 s; `RF=0` → gear-curve-noforge.md)
+plays a typical player through each class campaign:
+- **Route:** Claude 2's walk-export order.
+- **Optional sites:** the hero's own realm ruin and cave, and each Morvane region's ruin and cave.
+- **Rolls:** every roll is the game's own (rollKillLoot, openChest, questReward, shopStock, Runeforge costs).
+
+Tonight:
+- drops arrive within about 0.5 levels of the hero all game (Act II gap 4.3 → 0.3);
+- every run ends with its ring and amulet slots filled;
+- kills are the top source of real upgrades, ahead of the smith.
+
+A real upgrade is +3% for a weapon or +1% for an armour piece or trinket. Upgrades come every few levels, at the
+5-level material / style tiers. With the Runeforge, longer gaps remain mid-campaign, because upgraded favourites
+outlast fresh drops. Claude 3 accepted that as power fantasy.
+
+### 11.7 XP pacing
+
+`node tools/e2e/sim/run.mjs xp-pacing` (report, 4 s) runs the same walk solo and as a duo. It compares each quest's
+start level with that quest's zone band.
+- **Duo rule:** every hero near a kill gets the full XP, and packs and lair waves are 35% bigger per extra player.
+- **Quest XP:** scaled by rules/curves.ts questXpMult against Claude 2's QUEST_BANDS.
+
+Tonight, solo:
+- act ends at L14.2 / 29.8 / 40;
+- 3 of 1,177 quest starts are under-levelled and 6 over-levelled.
+
+A duo runs about half a level ahead. Open item: the Sentinel bosses still keep a fixed level (Claude 3), so the storm
+classes, juggernaut and knight end Act II at L31.7–32.6.
+
+`xp-pacing attribute` → tools/e2e/out/xp-attribution.md splits Act II XP by source (zones, lairs, optional sites,
+objectives, quests). `run.mjs hero-levels` → tools/playthrough/out/hero-levels.json is the hero's level at each quest
+start. Claude 2 builds bands from it, so regenerate it only together with Claude 2 and run
+`node tools/playthrough/suite.mjs --full` (bands-concordia) before it lands.
+
+### 11.8 Bosses, co-op, PvP, build diversity
+
+- **`run.mjs boss-check gate`** (gate, 13 s): every class's lair-2, nemesis and Act III boss, at the gear a typical
+  player actually wears.
+  - It checks: every fight won, 0 deaths, every win ≤ 300 s (or a documented allowance; none today), no crash.
+  - Tonight 10/10: median time to kill 88–110 s.
+- **`run.mjs coop-balance gate`** (gate, 14 s): parties of 2–4 through the real party scaling and revive rules.
+  - Party scaling (rules/curves.ts): boss HP +50% per extra player, creature HP +40%, pack size +35%.
+  - Revives: hold F for 3 s; a hit taken pauses the channel instead of resetting it.
+  - Threat (sim/enemy.ts): ×2 within 120 px, and tanks get ×1.5 (threatPower).
+  - It checks: every normal party fight won, median boss speed-up ≥ ×1.2 per party size, revives land under heavy
+    damage, no crash.
+  - Tonight 11/11: bosses ×1.46 / 1.50 / 1.86 faster than solo for 2 / 3 / 4 players.
+  - Companion reports: `coop-ab` (bot vs game A/B), `coop-trace` (positions over time).
+- **`run.mjs pvp-duels`** (report): 24×24 duels at L20 / L40 under the real duel rules.
+  - Tonight: median time to kill 7–9 s; 58 one-shots at L40; stun-locks up to 4.9 s; healers lead.
+  - The PvP rules are Claude 3's open item.
+- **`run.mjs build-diversity`** (report, 27 s): at L40, how many choices on each axis stay within 15% of a class's
+  best build (keystone pairings, armour set, tome).
+  - Tonight 6–48 viable combinations per class.
+  - No school keystone, unique or hybrid that nobody would pick.
+  - Open: endgame bosses barely threaten a typical player, so defensive choices rarely pay off. That's the user's
+    call (power fantasy).
