@@ -152,10 +152,15 @@ const npcs: Record<string, SideGear> = {
   ysolde: {
     open: true,
     head: (g) => {
-      // gold spectacles on the near eye, the temple arm back to the ear; a quill tucked behind it
+      // gold spectacles on the near eye, the temple arm back to the ear
       const c = '#d9a03a';
       g.r(19, 14, 3, 1, c); g.r(19, 16, 3, 1, c); g.p(19, 15, c); g.p(21, 15, c); g.p(20, 15, '#e8fbff'); g.line(13, 15, 18, 15, c);
-      g.line(10, 8, 14, 14, '#ffffff'); g.p(9, 7, '#e6e9f5');
+    },
+    hold: 3,
+    held: (g, _P, hand, ph) => {
+      // the quill in her fist, nib down, its dark-tipped feather up ahead of her chest
+      const x = 18 + hand, b = bob(ph);
+      g.line(x, 30 + b, x + 3, 22 + b, '#ffffff'); g.p(x + 3, 21 + b, '#3a2a4a'); g.p(x + 4, 21 + b, '#3a2a4a');
     },
   },
   pip: {
@@ -166,7 +171,7 @@ const npcs: Record<string, SideGear> = {
     },
     hold: 6,
     held: (g, _P, hand, ph) => {
-      // the broom carried upright, head down, ahead of him
+      // the wooden practice sword carried upright ahead of him, crossguard over the fist
       const x = 19 + hand, b = bob(ph), t = tilt(ph);
       g.r(x + t, 14 + b, 2, 15, '#d9955a'); g.r(x + 1 + t, 14 + b, 1, 15, '#a8622f'); g.r(x - 3, 29 + b, 8, 2, '#8a5a3a'); g.r(x, 31 + b, 2, 3, '#5e3220');
     },

@@ -1,6 +1,6 @@
 // Side-view review sheet (Claude 5): front frames next to the new side idle + walk at 4×, per class / body / hair.
 //   node tools/art-side/sheet.mjs [--base http://localhost:5196] [--classes warden,arcanist,huntsman] [--hairs 2,1]
-// Writes tools/e2e/out/side/side-sheet.png (and side-sheet-1x.png: 1x on grass + 2x on the panel colour).
+// --hairs -1 --bodies -1 keep each row's own look (NPCs). Writes tools/e2e/out/side/side-sheet.png (and side-sheet-1x.png: 1x on grass + 2x on the panel colour).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { launch, sleep } from '../e2e/cdp.mjs';
 
@@ -30,7 +30,7 @@ try {
     const classes = ${JSON.stringify(CLASSES)}, hairs = ${JSON.stringify(HAIRS)};
     const rows = [];
     const XK = ['brows', 'dye', 'headw', 'cape', 'neck', 'face', 'extra', 'helm', 'chest', 'hands', 'feet', 'weapon'], GEAR = ${JSON.stringify(GEAR)}, GEARS = ${JSON.stringify(GEARS.length ? GEARS : [{ t: '', g: {} }])};
-    const mk = (r) => { const G = Object.assign({}, GEAR, r.gear.g), L = Object.assign(MV.heroLook(r.cls), { body: r.body, hair: r.hair, nohat: ${NOHAT} }, G);
+    const mk = (r) => { const G = Object.assign({}, GEAR, r.gear.g), L = Object.assign(MV.heroLook(r.cls), { ...(r.body >= 0 ? { body: r.body } : {}), ...(r.hair >= 0 ? { hair: r.hair } : {}), nohat: ${NOHAT} }, G);
       const name = 'hero:' + r.cls + ':' + [L.skin, L.hair, L.hc, L.eyes, L.ec, L.mouth, L.mark].join(':') + ':${NOHAT ? 1 : 0}:' + L.body + (Object.keys(G).length ? ':' + XK.map((k) => (k === 'brows' ? (L.brows ?? '') : (L[k] ?? 0))).join(':') : '');
       return { L, name }; };
     for (const cls of classes) for (const body of ${JSON.stringify(BODIES)}) for (const hair of hairs) for (const gear of GEARS) rows.push({ cls, body, hair, gear });
@@ -51,7 +51,7 @@ try {
       put(front[0], 0, ri); walk.forEach((f, i) => put(f, 1 + i, ri)); sIdle.forEach((f, i) => put(f, 5 + i, ri)); sWalk.forEach((f, i) => put(f, 7 + i, ri)); put(sWalk[0], 11, ri, true);
       x.fillStyle = '#e8ecff'; x.font = '20px "Jersey 10", monospace';
       const py = 40 + ri * (CH + GAP);
-      x.fillText(r.cls, 8, py + 40); x.fillText((r.body ? 'male' : 'female'), 8, py + 66); x.fillText(MV.LOOK.hair[r.hair], 8, py + 92); if (r.gear.t) x.fillText(r.gear.t, 8, py + 118);
+      x.fillText(r.cls, 8, py + 40); x.fillText(r.body < 0 ? '' : r.body ? 'male' : 'female', 8, py + 66); x.fillText(r.hair >= 0 ? MV.LOOK.hair[r.hair] : 'own look', 8, py + 92); if (r.gear.t) x.fillText(r.gear.t, 8, py + 118);
     });
     // native scales, as they read in game: per row, front idle + side idle + side walk ×4 + flipped, at 1× on grass
     // (the world) and at 2× on the panel colour (character creation preview, HUD portrait)

@@ -41,6 +41,7 @@ const SUITES = [
   { id: 'hc-smoke', what: 'real combat in the browser for 3 classes', cmd: e2e('hc-smoke.mjs', '--class', 'warden,arcanist,jester', '--base', BASE), needs: ['web'] },
   { id: 'hc-features', what: 'browser: click hitboxes on sprites, telegraph damage, casts 1–4, spend a skill point, equip gear', cmd: e2e('hc-features.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/hc-features.mjs', owner: 'Claude 3' },
   { id: 'narrative-features', what: 'browser: dialogue, trust, journal + tracker, codex, votes, object scenes, First Steps', cmd: [NODE, 'tools/narrative/features.mjs', '--base', BASE], needs: ['web'], file: 'tools/narrative/features.mjs', owner: 'Claude 5' },
+  { id: 'escort-side', what: 'browser: escorts walk side-on (east/west/diagonal), every NPC baked', cmd: e2e('escort-side.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/escort-side.mjs', owner: 'Claude 5' },
   { id: 'coop-world', what: 'two browsers in co-op: join, input, chat, party vote', cmd: e2e('coop-world.mjs', '--base', BASE), needs: ['web'] },
   { id: 'hc-front', what: 'front end: load, pause, public realm, chat, leave', cmd: e2e('hc-front.mjs', '--base', BASE), needs: ['web', 'realm'] },
   { id: 'realm-duel', what: 'live Duels realm: challenge, accept, duel starts', cmd: e2e('realm-duel.mjs', '--base', BASE), needs: ['web', 'realm'] },

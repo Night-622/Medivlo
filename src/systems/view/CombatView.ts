@@ -192,7 +192,9 @@ export class CombatView implements SnapshotConsumer {
     if (!(r.obj instanceof Phaser.GameObjects.Sprite)) return;
     const key = r.obj.texture.key;
     const walk = anim === 'walk' || anim === 'dash' || anim === 'leap';
-    // heroes with side-view frames (bakeHero 6–11, facing right) use them facing east / west; others keep the front sheet
+    // heroes with side-view frames (bakeHero 6–11, facing right) use them facing east / west; others keep the front sheet.
+    // Anim names come from the sprite's texture key, so side frames must live in the SAME texture as the front ones
+    // (bakeHero and npcBake both do this)
     const side = (r.facing === 'e' || r.facing === 'w') && hasSideView(this.scene, key) ? '-side' : '';
     const pick = `${key}:${walk ? 'walk' : 'idle'}${side}`;
     const want = this.scene.anims.exists(pick) ? pick : this.scene.anims.exists(`${key}:${walk ? 'walk' : 'idle'}`) ? `${key}:${walk ? 'walk' : 'idle'}` : `${key}:idle`;
