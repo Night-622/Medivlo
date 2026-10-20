@@ -14,6 +14,7 @@ import { C, T, typeStyle } from '@/ui/kit/hc';
 import type { HeroInput } from '@/systems/input/HeroInput';
 import { InventoryPanel } from './InventoryPanel';
 import { TreePanel } from './TreePanel';
+import { navClear } from './panelNav';
 
 type Which = 'inventory' | 'skills' | 'spells';
 type Target = Which | 'journal' | 'map';
@@ -112,6 +113,8 @@ export class CharacterPanels {
     this.tabs.forEach((t) => t.destroy());
     this.tabs = [];
     if (this.escKey) { this.escKey.off('down', this.onEsc, this); this.hud()?.input.keyboard?.removeKey(this.escKey, false); }
+    const hud = this.hud();
+    if (hud) navClear(hud);
     this.escKey = null;
     this.root?.destroy();
     this.root = null;

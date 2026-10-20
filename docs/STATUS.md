@@ -269,6 +269,9 @@ Plan: docs/systems/HOLLOW_CROWN.md. The Medival v1 systems (code, data, panels, 
   - Gates: features 764, hitboxes 247, rules-props 356, builds 145, campaign 24/24/24, coop / economy / security OK.
   - **First-evening lair-2 slog:** HP trims on 8 lair-2 bosses and on warden's Herald. Typical build: the slow classes 173–255 s → 90–173 s. Creation kit: max 543 s → 378 s. boss-check gate 10/10 (e472d80).
   - **Juggernaut toughness:** kit +15% armour and 5% life steal; Spiked Hide also −30% damage taken for 8 s. A bare L8 juggernaut now beats its lair-2 boss 6/6 (was 0/3), and fight starter lair-2 is 24/24 for the first time. PvP win rate 78% → 87% at L40 (for the user's PvP decision).
+  - **Accessibility:**
+    - Keyboard reach for Pack, Skills, Spells, Shop and Runeforge: panelNav.ts, one shared KeyNav per HUD scene that registers every clickable control after each draw. qa-a11y passes Pack, Skills and Spells.
+    - Reduced motion in fx.ts and CombatView: no shake, damage-number pop, loot bob, squash or ▼ bounce.
   - Committed by Claude 1: 620d59e (quest bands, catch-up cap, snapshot compaction, realm-perf) and 7f7c282 (PvP, deterministic realm-perf, respec, Act II factor, bars). realm-perf is in the pre-deploy check.
 - [ ] Next: hc-features in the browser on the compaction and new bars (covered by Claude 1's pre-deploy run13). Act II factors re-measured by Claude 5: 21/24 in L28.5–31.5 (was L27.6–32.7). Juggernaut 31.8, stormlancer 32.1 and sparkwright 32.2 are at the 0.6 floor; accept or thin kills is Claude 1's call, then the hero-levels regen and Claude 2's final band rebase. PvP win-rate spread (L40: cantor 98% … samurai 4%) sent to Claude 1 as a user decision. User play reports via Claude 1. Claude 5's jewel affixes on dropped trinkets.
 

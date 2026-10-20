@@ -23,6 +23,7 @@ import { availablePoints, bindSpell, branchHasRanks, character, learn, onCharact
 import { clauses, kindFrame, kindLegend } from './treeKinds';
 import { runePips, runeSection, type RuneUi } from './RunePanel';
 import { showTooltip } from './tooltip';
+import { navFocused, navRefresh } from './panelNav';
 
 const OX = 58, OY = 150;
 const FRAME: Record<TreeBranch, string> = { spells: 'ui:slot_ember', skills: 'ui:slot_runed', upgrades: 'ui:slot_fine' };
@@ -37,14 +38,14 @@ export class TreePanel {
   private tip: Phaser.GameObjects.Container | null = null;
   private runeUi: RuneUi = { picking: false };
 
-  constructor(private scene: Phaser.Scene, parent: Phaser.GameObjects.Container, private branch: TreeBranch) {
+  constructor(private scene: Phaser.Scene, private parent: Phaser.GameObjects.Container, private branch: TreeBranch) {
     this.c = scene.add.container(0, 0);
     parent.add(this.c);
     this.offs.push(onCharacterChanged(() => this.draw()));
     const kb = scene.input.keyboard!;
     const keys: [string, () => void][] = [
       ['keydown-ONE', () => this.setBranch('spells')], ['keydown-TWO', () => this.setBranch('skills')],
-      ['keydown-THREE', () => this.setBranch('upgrades')], ['keydown-ENTER', () => this.learnSel()],
+      ['keydown-THREE', () => this.setBranch('upgrades')], ['keydown-ENTER', () => this.learnSel(true)],
     ];
     for (const [ev, fn] of keys) { kb.on(ev, fn); this.offs.push(() => kb.off(ev, fn)); }
     this.draw();
@@ -54,7 +55,8 @@ export class TreePanel {
 
   private setBranch(b: TreeBranch): void { this.branch = b; this.sel = null; this.msg = ''; this.runeUi.picking = false; this.draw(); }
 
-  private learnSel(): void {
+  private learnSel(fromKey = false): void {
+    if (fromKey && navFocused(this.scene)) return; // the ring presses the focused control instead
     if (!this.sel || this.sel === TOME_ID) return;
     this.msg = learn(this.sel) ?? '';
     this.draw();
@@ -95,7 +97,8 @@ export class TreePanel {
       g.lineStyle(4, lit ? 0xffc43d : 0x2c3868, 1).lineBetween(OX + n.x, OY + n.y, OX + q.x, OY + q.y);
     }
     // nodes
-    for (const n of nodes) this.node(n, ch.tree, pts);
+    // nodes in reading order (the keyboard ring walks them in drawing order)
+    for (const n of [...nodes].sort((a, b) => a.y - b.y || a.x - b.x)) this.node(n, ch.tree, pts);
     const tome = this.tomeNode();
     if (tome) {
       this.node(tome, ch.tree, pts);
@@ -103,6 +106,7 @@ export class TreePanel {
     }
     kindLegend(s, this.c, 72, 668, 872);
     this.detail(this.sel === TOME_ID ? tome : nodes.find((x) => x.id === this.sel) ?? null, pts);
+    navRefresh(s, this.parent, this.c);
   }
 
   private node(n: TreeNode, tree: Record<string, number>, pts: number): void {
@@ -141,7 +145,7 @@ export class TreePanel {
     this.c.add(panel(s, x, 84, w, 604, 'panel'));
     if (!n) {
       this.c.add(s.add.text(x + 24, 110, 'Select a node', typeStyle('h3', C.text300)));
-      this.c.add(s.add.text(x + 24, 144, 'Click a node to read it. Click it again or press Enter to learn.\n\n1 · 2 · 3 switch branches.', typeStyle('body', C.text500, w - 48)));
+      this.c.add(s.add.text(x + 24, 144, 'Click a node to read it. Click it again or press Enter to learn.\n\nKeyboard: arrows or Tab move, Enter picks, Enter again learns.\n\n1 · 2 · 3 switch branches.', typeStyle('body', C.text500, w - 48)));
       this.resetButton(x, w);
       return;
     }

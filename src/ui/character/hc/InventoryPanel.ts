@@ -21,6 +21,7 @@ import { character, equip, onCharacterChanged, unequip, useItem } from '@/system
 import { C, panel, slot, typeStyle } from '@/ui/kit/hc';
 import { showTooltip } from './tooltip';
 import { rarityGlyph } from './glyph';
+import { navRefresh } from './panelNav';
 
 const EQUIP: [GearSlot, number, number, string][] = [
   ['head', 72, 168, 'Head'], ['chest', 72, 240, 'Chest'], ['hands', 72, 312, 'Hands'], ['feet', 72, 384, 'Feet'],
@@ -41,7 +42,7 @@ export class InventoryPanel {
   private filter: string = 'all';
   private off: () => void;
 
-  constructor(private scene: Phaser.Scene, parent: Phaser.GameObjects.Container) {
+  constructor(private scene: Phaser.Scene, private parent: Phaser.GameObjects.Container) {
     this.c = scene.add.container(0, 0);
     parent.add(this.c);
     this.off = onCharacterChanged(() => this.draw());
@@ -122,7 +123,8 @@ export class InventoryPanel {
         .on('pointerup', () => { this.hideTip(); if (info?.slot) this.toast(equip(it.uid)); else useItem(it.uid); });
     }
     if (items.length > GRID.cols * GRID.rows) this.c.add(s.add.text(1200, 540, `+${items.length - GRID.cols * GRID.rows} more`, typeStyle('caption', C.text500)).setOrigin(1, 0));
-    this.c.add(s.add.text(504, 664, 'Click to equip or use · click worn gear to take it off', typeStyle('caption', C.text500)));
+    this.c.add(s.add.text(504, 664, 'Click (or arrows + Enter) to equip or use · worn gear: take it off', typeStyle('caption', C.text500)));
+    navRefresh(s, this.parent, this.c);
   }
 
   private icon(it: ItemInstance, x: number, y: number): void {

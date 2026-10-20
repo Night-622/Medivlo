@@ -29,6 +29,7 @@ import { iconFrame } from './InventoryPanel';
 import { showTooltip } from './tooltip';
 import { rarityGlyph } from './glyph';
 import { drawForge, forgeFits, forgePrice, newForgeState, type ForgeAction, type ForgeCtx } from './ForgeTabs';
+import { navClear, navRefresh } from './panelNav';
 
 const CELL = 56, GAP = 8;
 
@@ -122,7 +123,7 @@ export class ShopPanel {
         .on('pointerout', () => this.hideTip())
         .on('pointerup', () => { if (afford) this.act('buy', { shop: shop.id, item: l.item }); });
     });
-    if (!forge) root.add(hud.add.text(76, 652, 'Click to buy', typeStyle('caption', C.text500)));
+    if (!forge) root.add(hud.add.text(76, 652, 'Click (or arrows + Enter) to buy', typeStyle('caption', C.text500)));
     // pack
     root.add(panel(hud, 648, 84, 584, 604, 'panel'));
     root.add(hud.add.text(676, 104, 'Your pack', typeStyle('h2', C.text)));
@@ -165,6 +166,7 @@ export class ShopPanel {
     close.add([closeBg, hud.add.text(22, 22, '✕', typeStyle('h3', C.text)).setOrigin(0.5)]);
     closeBg.setInteractive({ useHandCursor: true }).on('pointerup', () => this.close(false));
     root.add(close);
+    navRefresh(hud, root);
   }
 
   /** "Compared with what you wear" for an unworn piece (the slot it would take). */
@@ -197,6 +199,8 @@ export class ShopPanel {
     if (!this.root) return;
     if (this.escKey) { this.escKey.off('down', this.onEsc, this); this.hud()?.input.keyboard?.removeKey(this.escKey, false); }
     this.escKey = null;
+    const hud = this.hud();
+    if (hud) navClear(hud);
     this.root.destroy();
     this.root = null;
     this.shop = null;
