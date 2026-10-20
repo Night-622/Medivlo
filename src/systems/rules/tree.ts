@@ -5,6 +5,7 @@
 import { HC_CLASSES, HC_SCHOOL_ELEMENT, HC_SCHOOL_KEYSTONES, HC_SCHOOL_SPELLS } from '@/data/classes/hc/classes.gen';
 import { HC_KIT_SPELLS } from '@/data/spells/hc/kit-spells';
 import { HC_KIT_SPELLS_NEW, NEW_KIT } from '@/data/spells/hc/kit-spells-new';
+import { HC_SCHOOL_SPELL_DEFS } from '@/data/spells/hc/school-spells';
 import { HC_SCHOOL_PERKS } from '@/data/skilltrees/hc';
 import { HC_SHARED_KEYSTONES, KEYSTONE_OFFERS } from '@/data/skilltrees/hc/keystones';
 import type { PerkDef, SchoolPerks } from './perkTypes';
@@ -68,8 +69,12 @@ function spellsBranch(classId: string, school: SchoolId): BranchSpec {
   });
   const top = (i: 0 | 1): Spec => {
     const id = `spell:${slug(SP[i][0])}`;
-    return { name: SP[i][0], icon: si, max: 3, spell: id, text: (r) => (r === 1 ? SP[i][1] : `${SP[i][1]} Rank ${r}: +${(r - 1) * 20}% effect, ${r - 1}s less cooldown.`),
-      fx: (r) => ({ spellMods: r > 1 ? [{ spell: id, dmg: 0.2 * (r - 1), cd: -(r - 1) / 10 }] : [] }) };
+    // ranks 2–3: +30% damage per rank; a spell that deals no damage (buff / trap / control) lasts 25% longer per rank
+    const def = HC_SCHOOL_SPELL_DEFS.find((s) => s.id === id);
+    const hurts = !!def && JSON.stringify(def.actions).match(/"a":"(damage|projectile|chain)"/) !== null;
+    const what = (r: number) => (hurts ? `+${(r - 1) * 30}% damage` : `+${(r - 1) * 25}% duration`);
+    return { name: SP[i][0], icon: si, max: 3, spell: id, text: (r) => (r === 1 ? SP[i][1] : `${SP[i][1]} Rank ${r}: ${what(r)}, ${r - 1}s less cooldown.`),
+      fx: (r) => ({ spellMods: r > 1 ? [{ spell: id, ...(hurts ? { dmg: 0.3 * (r - 1) } : { dur: 0.25 * (r - 1) }), cd: -(r - 1) / 10 }] : [] }) };
   };
   return {
     root: { ...one(`${c.name} Spellcraft`, si, 'Your path into magic. Every spell grows from here.', {}), free: true },
@@ -119,7 +124,24 @@ function keystone(school: SchoolId, i: 0 | 1): Spec {
     guile: [{ procs: [{ on: 'crit', do: [{ a: 'steal', gold: 1, buffs: false, area: { shape: 'single', at: 'target' } }] }] }, { procs: [{ on: 'dash', icd: 4000, do: [{ a: 'zone', kind: 'decoy', area: { shape: 'circle', at: 'self', r: 16 }, dur: 3000, taunts: true }] }] }],
     song: [{ hooks: [{ id: 'encore' }] }, { hooks: [{ id: 'buffStacks', value: 3 }] }],
   };
-  return one(name, `school_${school}`, desc, P[school][i]);
+  // each keystone also carries one plain stat (2026-10-21 dead-content pass: several were utility- or probe-blind)
+  const X: Partial<Record<SchoolId, [[string, Passive] | null, [string, Passive] | null]>> = {
+    rime: [['+15% damage to chilled foes.', { mods: [f('dmg', 0.15, { c: 'targetHas', status: 'chill' })] }], null],
+    verdant: [null, ['+8% max health.', { mods: [pct('hp', 0.08)] }]],
+    radiance: [null, ['+5% Radiance damage.', { mods: [f('dmg.radiance', 0.05)] }]],
+    umbral: [null, ['Kills cloak you in shadow for 1 s.', { procs: [{ on: 'kill', icd: 3000, do: [{ a: 'buff', id: 'ks:shadowborn', dur: 1000, to: 'self', flags: ['stealth'] }] }] }]],
+    blade: [['+5% block; a parry gives +10% damage for 3 s.', { mods: [f('block', 0.05)], procs: [{ on: 'parry', do: [{ a: 'buff', id: 'ks:riposte', dur: 3000, to: 'self', mods: [f('dmg', 0.1)] }] }] }], null],
+    iron: [['+10% max health.', { mods: [pct('hp', 0.1)] }], null],
+    guile: [['+5% crit chance.', { mods: [f('crit', 0.05)] }], null],
+    song: [['+10% buff strength.', { mods: [f('buffPower', 0.1)] }], null],
+    fist: [null, ['+5% attack speed.', { mods: [f('atkSpeed', 0.05)] }]],
+  };
+  const extra = X[school]?.[i];
+  if (!extra) return one(name, `school_${school}`, desc, P[school][i]);
+  const base = P[school][i];
+  return one(name, `school_${school}`, `${desc} ${extra[0]}`, {
+    ...base, mods: [...(base.mods ?? []), ...(extra[1].mods ?? [])], procs: [...(base.procs ?? []), ...(extra[1].procs ?? [])],
+  });
 }
 
 // Path 0 offence, 1 defence, 2 focus; the school's 8 perks sit at p0 c1/c2, p1 b/c1/c2, p2 b/c1/c2 (BUILDS.md §3)
@@ -132,18 +154,18 @@ function skillsBranch(school: SchoolId): BranchSpec {
     root: { ...one(`${S} Discipline`, si, 'The core of your school. Grow outward into offence, defence and utility.', {}), free: true },
     paths: [
       { a: ranks(`${S} Attunement`, si, 5, (r) => `+${r * 3}% ${S} damage`, (r) => ({ mods: [f(dk, 0.03 * r)] })),
-        m1: one('Set Mastery', 'icon_robe', 'Attuned armour bonuses are 25% stronger.', { hooks: [{ id: 'setMastery', value: 0.25 }] }),
+        m1: one('Set Mastery', 'icon_robe', 'Attuned armour bonuses are 25% stronger; +3% damage.', { hooks: [{ id: 'setMastery', value: 0.25 }], mods: [f('dmg', 0.03)] }),
         m2: one('Keen Eye', 'icon_dagger', '+3% crit chance and +10% crit damage', { mods: [f('crit', 0.03), f('critd', 0.1)] }),
         b: elementNode(school),
         c1: perk(P[0], si, pick), c2: perk(P[1], si, pick) },
       { a: ranks('Toughness', 'icon_shield', 5, (r) => `+${r * 4}% max health`, (r) => ({ mods: [pct('hp', 0.04 * r)] })),
-        m1: one('+10% armour', 'icon_helm', '+10% armour', { mods: [pct('armor', 0.1)] }),
+        m1: one('Hardened', 'icon_helm', '+10% armour and +4% max health', { mods: [pct('armor', 0.1), pct('hp', 0.04)] }),
         m2: one('+5% max health', 'icon_potion_red', '+5% max health', { mods: [pct('hp', 0.05)] }),
         b: perk(P[2], si, 'School perk'),
         c1: perk(P[3], si, pick), c2: perk(P[4], si, pick) },
-      { a: ranks('Focus', 'icon_potion_ember', 5, (r) => `+${r * 10} max Ember`, (r) => ({ mods: [f('ember', 10 * r)] })),
-        m1: one('+0.6 Ember regen', 'icon_potion_ember', '+0.6 Ember regen per second', { mods: [f('emberRegen', 0.6)] }),
-        m2: one('5% shorter cooldowns', 'icon_staff', '5% shorter cooldowns', { mods: [f('cdr', 0.05)] }),
+      { a: ranks('Focus', 'icon_potion_ember', 5, (r) => `+${r * 10} max Ember; +${(r * 1.5).toFixed(1)}% spell damage while above half Ember`, (r) => ({ mods: [f('ember', 10 * r), f('spellDmg', 0.015 * r, { c: 'emberAbove', pct: 0.5 })] })),
+        m1: one('Deep Well', 'icon_potion_ember', '+0.6 Ember regen per second; spells cost 3% less', { mods: [f('emberRegen', 0.6), f('emberCost', -0.03)] }),
+        m2: one('Quick Hands', 'icon_staff', '6% shorter cooldowns; +0.3 Ember regen', { mods: [f('cdr', 0.06), f('emberRegen', 0.3)] }),
         b: perk(P[5], si, 'School perk'),
         c1: perk(P[6], si, pick), c2: perk(P[7], si, pick) },
     ],
@@ -168,11 +190,11 @@ function upgradesBranch(classId: string): BranchSpec {
     paths: [
       { a: ranks('Vitality', 'icon_potion_red', 5, (r) => `+${r * 5}% max health`, (r) => ({ mods: [pct('hp', 0.05 * r)] })),
         m1: one('+2% move speed', 'icon_boots', '+2% move speed', { mods: [f('moveSpeed', 0.02)] }),
-        m2: one('+2% max health', 'icon_potion_red', '+2% max health', { mods: [pct('hp', 0.02)] }),
+        m2: one('+4% max health', 'icon_potion_red', '+4% max health', { mods: [pct('hp', 0.04)] }),
         b: ranks('Fleet Foot', 'icon_boots', 3, (r) => `+${r * 3}% move speed`, (r) => ({ mods: [f('moveSpeed', 0.03 * r)] })),
         c1: ks(0, one('Extra Dash', 'school_storm', '+1 dash charge.', { mods: [f('dashCharges', 1)] })),
         c2: one('Sure Footed', 'icon_boots', '+1 dash charge, and you can’t be slowed while dashing.', { mods: [f('dashCharges', 1)], hooks: [{ id: 'dashNoSlow' }] }) },
-      { a: ranks('Ember Reserve', 'icon_potion_ember', 5, (r) => `+${r * 15} max Ember`, (r) => ({ mods: [f('ember', 15 * r)] })),
+      { a: ranks('Ember Reserve', 'icon_potion_ember', 5, (r) => `+${r * 15} max Ember; +${r}% spell damage while above half Ember`, (r) => ({ mods: [f('ember', 15 * r), f('spellDmg', 0.01 * r, { c: 'emberAbove', pct: 0.5 })] })),
         m1: one('+3 bag slots', 'icon_robe', '+3 bag slots', { mods: [f('bag', 3)] }),
         m2: one('+5% potion healing', 'icon_potion_red', '+5% potion healing', { mods: [f('potionHeal', 0.05)] }),
         b: ranks('Deep Pockets', 'icon_robe', 3, (r) => `+${r * 6} bag slots`, (r) => ({ mods: [f('bag', 6 * r)] })),
