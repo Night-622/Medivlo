@@ -54,6 +54,7 @@ const SUITES = [
   { id: 'save-roundtrip', what: 'save → reload → load restores the hero', cmd: e2e('save-roundtrip.mjs', BASE), needs: ['web'] },
   { id: 'hud', what: 'HUD: frame, bars move in combat, buttons, rebinding, layout, boss bar, toasts, Pause, Death', cmd: e2e('hud.mjs', '--base', BASE), needs: ['web'] },
   { id: 'hc-panels', what: 'Pack / Skills / Spells / shop / Runeforge panels with real clicks', cmd: e2e('hc-panels.mjs', '--base', BASE), needs: ['web'] },
+  { id: 'hc-builds-ui', what: 'browser: Runeforge tabs, perk tree (kinds, keystones, free reset), rune slots, rarity and tooltips with real clicks', cmd: e2e('hc-builds-ui.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/hc-builds-ui.mjs', owner: 'Claude 3' },
   { id: 'hc-smoke', what: 'real combat in the browser for 3 classes', cmd: e2e('hc-smoke.mjs', '--class', 'warden,arcanist,jester', '--base', BASE), needs: ['web'] },
   { id: 'hc-features', what: 'browser: click hitboxes on sprites, telegraph damage, casts 1–4, spend a skill point, equip gear', cmd: e2e('hc-features.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/hc-features.mjs', owner: 'Claude 3' },
   { id: 'narrative-features', what: 'browser: dialogue, trust, journal + tracker, codex, votes, object scenes, First Steps', cmd: [NODE, 'tools/narrative/features.mjs', '--base', BASE], needs: ['web'], file: 'tools/narrative/features.mjs', owner: 'Claude 5' },
