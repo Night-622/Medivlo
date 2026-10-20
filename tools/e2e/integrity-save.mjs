@@ -87,6 +87,23 @@ const s = hero(2, 'Stamp');
 await SaveService.save(s);
 check('saving stamps the owner', s.meta.ownerUid === 'bob' && JSON.parse(localStorage.getItem('hollowcrown.save.2')).meta.ownerUid === 'bob');
 
+// 5. "newest" across devices is the save counter, not the device clock
+await reset('me');
+const ahead = hero(0, 'ClockAhead', 'me'); ahead.meta.rev = 3; ahead.meta.updatedAt = Date.now() + 3_600_000; // a device whose clock runs an hour fast
+putLocal(0, ahead);
+const played = hero(0, 'PlayedMore', 'me'); played.meta.rev = 5; played.meta.updatedAt = Date.now() - 60_000;
+putCloud('me', 0, played);
+fakeDb.docs.get('users/me/saves/0').rev = 5;
+check('a device whose clock runs ahead (lower rev) does not win', (await SaveService.load(0))?.player.name === 'PlayedMore' && (await SaveService.list())[0]?.name === 'PlayedMore');
+const legacy = hero(1, 'Legacy', 'me'); delete legacy.meta.rev; legacy.meta.updatedAt = Date.now() - 10_000;
+putLocal(1, legacy);
+const newer1 = hero(1, 'Newer', 'me'); newer1.meta.rev = 1; newer1.meta.updatedAt = Date.now() - 20_000;
+putCloud('me', 1, newer1); fakeDb.docs.get('users/me/saves/1').rev = 1;
+check('a save from before the counter counts as rev 0', (await SaveService.load(1))?.player.name === 'Newer');
+const r = hero(2, 'Counter', 'me'); r.meta.rev = 7;
+await SaveService.save(r);
+check('every save adds 1 to the counter, and the cloud copy carries it', r.meta.rev === 8 && fakeDb.docs.get('users/me/saves/2')?.rev === 8, JSON.stringify({ rev: r.meta.rev, cloud: fakeDb.docs.get('users/me/saves/2')?.rev }));
+
 console.warn = warn;
 console.log(fails ? `\nintegrity-save: ${fails} FAILED` : '\nintegrity-save: ALL PASS');
 process.exit(fails ? 1 : 0);

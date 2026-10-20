@@ -80,6 +80,9 @@ export interface MetaState {
   playtimeSec: number;
   /** Firebase uid of the account that last saved this hero (local copies are per browser, not per account). */
   ownerUid?: string;
+  /** Save counter, +1 on every save and carried with the cloud copy: "newest" compares this before updatedAt
+   * (device clocks disagree; one running ahead used to win every time). Older saves count as 0. */
+  rev?: number;
   slot: number;
 }
 

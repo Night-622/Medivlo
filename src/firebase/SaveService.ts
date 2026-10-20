@@ -17,14 +17,21 @@ const localKey = (slot: number) => `hollowcrown.save.${slot}`;
 const GAME_TAG = 'hollowcrown';
 
 export interface SaveSummary {
-  slot: number; name: string; level: number; updatedAt: number; playtimeSec: number;
+  slot: number; name: string; level: number; updatedAt: number; rev: number; playtimeSec: number;
   classId?: string; hero?: HeroChoiceState; space?: string; where: 'local' | 'cloud' | 'both';
 }
+
+/**
+ * Which copy is newer: the save counter first (every save adds 1, on whichever device), the wall clock only as a
+ * tiebreak. Device clocks disagree, and comparing them alone let a device whose clock ran ahead win every time.
+ */
+const newer = (a: { rev?: number; updatedAt?: number }, b: { rev?: number; updatedAt?: number }): number =>
+  (a.rev ?? 0) - (b.rev ?? 0) || (a.updatedAt ?? 0) - (b.updatedAt ?? 0);
 
 /** Hollow Crown level lives on the systems character once it exists. */
 const levelOf = (s: GameState) => s.character?.level ?? s.player.progression.level;
 const summary = (slot: number, s: GameState, where: SaveSummary['where']): SaveSummary => ({
-  slot, name: s.player.name, level: levelOf(s), updatedAt: s.meta.updatedAt, playtimeSec: s.meta.playtimeSec,
+  slot, name: s.player.name, level: levelOf(s), updatedAt: s.meta.updatedAt, rev: s.meta.rev ?? 0, playtimeSec: s.meta.playtimeSec,
   classId: s.player.hero?.classId, hero: s.player.hero, space: s.world.location?.space, where,
 });
 
@@ -61,6 +68,7 @@ async function writeCloud(state: GameState): Promise<boolean> {
       level: levelOf(state),
       classId: state.player.hero?.classId ?? null,
       updatedAt: state.meta.updatedAt,
+      rev: state.meta.rev ?? 0,
       version: state.meta.version,
     });
     return true;
@@ -99,6 +107,7 @@ export const SaveService = {
   async save(state: GameState = Game.state, opts: { auto?: boolean; localOnly?: boolean } = {}): Promise<void> {
     bus.emit('game:saving', { slot: state.meta.slot, auto: opts.auto });
     state.meta.updatedAt = Date.now();
+    state.meta.rev = (state.meta.rev ?? 0) + 1;
     state.meta.ownerUid = knownUid() ?? state.meta.ownerUid;
     writeLocal(state);
     // cloud autosaves at most once a minute (local copies are always written); manual saves go straight up
@@ -114,7 +123,7 @@ export const SaveService = {
     // would overwrite it). With the cloud slot empty there is nothing to lose: the hero is adopted (a guest who
     // signs in to an existing account keeps playing it).
     const local = anyLocal && (ownedBy(anyLocal, knownUid()) || !cloud) ? anyLocal : null;
-    const pick = !local ? cloud : !cloud ? local : cloud.meta.updatedAt > local.meta.updatedAt ? cloud : local;
+    const pick = !local ? cloud : !cloud ? local : newer(cloud.meta, local.meta) > 0 ? cloud : local;
     try { return pick ? migrate(pick) : null; } catch (e) { console.warn('[save] unreadable save', slot, e); return null; }
   },
 
@@ -139,9 +148,9 @@ export const SaveService = {
         const slot = Number(d.id);
         if (!(slot >= 0 && slot < SAVE_SLOTS) || d.data().game !== GAME_TAG) continue;
         const cur = out[slot] && ownedBy(readLocal(slot)!, user.uid) ? out[slot] : null;
-        const updatedAt = Number(d.data().updatedAt ?? 0);
-        if (cur && Math.abs(cur.updatedAt - updatedAt) < 1000) { cur.where = 'both'; continue; }
-        if (cur && cur.updatedAt > updatedAt) continue;
+        const remote = { rev: Number(d.data().rev ?? 0), updatedAt: Number(d.data().updatedAt ?? 0) };
+        if (cur && cur.rev === remote.rev && Math.abs(cur.updatedAt - remote.updatedAt) < 1000) { cur.where = 'both'; continue; }
+        if (cur && newer(cur, remote) > 0) continue;
         try { const s = sane(JSON.parse(d.data().json as string)); if (s) out[slot] = summary(slot, s, 'cloud'); } catch { /* unreadable cloud copy */ }
       }
     } catch (e) { console.warn('[save] cloud list failed', e); return SaveService.listLocal(); }
