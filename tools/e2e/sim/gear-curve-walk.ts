@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import type { QuestDef, WorldObject } from '@/core';
 import { CLASS_SCHOOL } from '@/core/constants';
 import { creature } from '@/systems/rules/creatures';
-import { LEVEL_CAP, xpForKill, xpToNext } from '@/systems/rules/curves';
+import { LEVEL_CAP, spawnCountMult, xpForKill, xpToNext } from '@/systems/rules/curves';
 import type { Rarity } from '@/systems/rules/types';
 import { QUEST_XP_TIER } from '@/systems/sim/shop';
 import { ELITE } from '@/data/enemies/hc/elites';
@@ -91,7 +91,10 @@ export interface Run {
  * (boss-check copies the worn kit); `onQuest` gets each quest's id and the hero's exact level as it starts (hero-levels.ts).
  */
 export function runClass(cls: string, seed: number, own: QuestDef[], checks: readonly number[], onCheck?: (L: number, pl: Player) => void,
-  onQuest?: (quest: string, level: number) => void): Run {
+  onQuest?: (quest: string, level: number) => void, opts: { party?: number } = {}): Run {
+  // a party meets bigger packs and lair waves (spawnCountMult); every hero near a kill gets its full XP (sim/death.ts),
+  // so party size only changes how many kills there are. Bosses and quest objective kills stay single. (Loot here stays solo.)
+  const crowd = spawnCountMult(opts.party ?? 1);
   const pl = new Player(cls, seed), h = new Hero(pl);
   const walk = new Map((walks[cls] ?? []).map((w) => [w.quest, w]));
   const named = new Set(JSON.stringify([...own, ...sharedQs]).match(/inst:[a-z0-9-]+/g) ?? []);
@@ -101,10 +104,15 @@ export function runClass(cls: string, seed: number, own: QuestDef[], checks: rea
   for (const i of named) { const d = instanceDef(i); for (const b of [d?.boss, d?.boss2]) if (b && !lairOf.has(b.creature)) lairOf.set(b.creature, i); }
   const bossLevel = (id: string) => { const d = instanceDef(lairOf.get(id) ?? ''); return [d?.boss, d?.boss2].find((b) => b?.creature === id)?.level; };
   const fallback = `bx_${CLASS_SCHOOL[cls]}_0`;
-  const clearZone = (z: SpawnZoneDef) => { for (let k = 0; k < z.cap; k++) h.kill(z.pool?.[k % Math.max(1, z.pool.length)] ?? fallback, (z.level[0] + z.level[1]) / 2, 'enemy', !!z.elite && k === 0); };
+  const clearZone = (z: SpawnZoneDef) => { for (let k = 0; k < Math.round(z.cap * crowd); k++) h.kill(z.pool?.[k % Math.max(1, z.pool.length)] ?? fallback, (z.level[0] + z.level[1]) / 2, 'enemy', !!z.elite && k === 0); };
   const clearLair = (inst: string, bossByObjective: boolean) => {
     for (const z of spawnZones(inst).filter((x) => EXPLORE || !x.id.includes(':side-'))) {
-      if (z.waves) for (const wave of z.waves) for (const e of wave) h.kill(e.creature, e.level, e.tier ?? tierOf(e.creature), !!e.elite);
+      if (z.waves) for (const wave of z.waves) {
+        // waves are stored for one player: a party's wave has round(n × mult) of the same creatures (bosses / minis stay one)
+        const extra = wave.filter((e) => (e.tier ?? tierOf(e.creature)) === 'enemy');
+        const more = Math.round(extra.length * crowd) - extra.length;
+        for (const e of [...wave, ...Array.from({ length: Math.max(0, more) }, (_, k) => extra[k % Math.max(1, extra.length)])]) if (e) h.kill(e.creature, e.level, e.tier ?? tierOf(e.creature), !!e.elite);
+      }
       else clearZone(z);
     }
     const b = instanceDef(inst)?.boss;
