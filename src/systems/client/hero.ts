@@ -17,7 +17,7 @@ import { CombatView } from '@/systems/view/CombatView';
 import { Hotbar } from '@/ui/character/hc/Hotbar';
 import { BossBar, BuffRow } from '@/ui/character/hc/HudExtras';
 import { CharacterPanels } from '@/ui/character/hc/CharacterPanels';
-import { character, installCharacterSync, sendLoadout } from './character';
+import { changed, character, installCharacterSync, sendLoadout } from './character';
 
 export interface HeroHandle {
   readonly sprite: Phaser.GameObjects.Sprite;
@@ -131,5 +131,26 @@ function installDevHandle(scene: Phaser.Scene, view: CombatView, space: () => st
       const sx = (r.x - cam.worldView.x) * cam.zoom, sy = (r.y - 12 - cam.worldView.y) * cam.zoom;
       return { x: canvas.left + (sx * canvas.width) / scene.scale.width, y: canvas.top + (sy * canvas.height) / scene.scale.height };
     },
+    /** the page-pixel rectangle an entity's sprite covers (hc-features clicks its edges) */
+    bounds: (id: string) => {
+      const r = view.entity(id);
+      if (!r || !('getBounds' in r.obj)) return null;
+      const b = (r.obj as Phaser.GameObjects.Sprite).getBounds(), cam = scene.cameras.main, canvas = scene.game.canvas.getBoundingClientRect();
+      const px = (x: number) => canvas.left + ((x - cam.worldView.x) * cam.zoom * canvas.width) / scene.scale.width;
+      const py = (y: number) => canvas.top + ((y - cam.worldView.y) * cam.zoom * canvas.height) / scene.scale.height;
+      return { x: px(b.x), y: py(b.y), w: px(b.right) - px(b.x), h: py(b.bottom) - py(b.y) };
+    },
+    /** a creature that only uses the ability whose text matches, never moves and never basic-attacks */
+    rig: (id: string, text: string) => {
+      const e = systemsAuthority()?.sim.w.enemies.get(id);
+      const ab = e && [...e.cdef.abilities, ...e.cdef.phases.flat()].find((a) => a.text.toLowerCase().includes(text.toLowerCase()));
+      if (!e || !ab) return false;
+      e.cdef = { ...e.cdef, abilities: [{ ...ab, cd: 1500 }], phases: [], ai: { ...e.cdef.ai, speed: 0, immobile: true, attackMs: 1e9 } };
+      e.abilityReadyAt.clear();
+      return true;
+    },
+    /** put an item in the local pack (the authority's copy is the same save in solo) */
+    give: (base: string, ilvl = 1) => { const c = character(); c.inventory.push({ uid: `dev-${base}-${c.inventory.length}-${Date.now()}`, base, ilvl, qty: 1 }); sendLoadout(); changed(); return true; },
+    heal: () => { const p = me(); if (p) { p.hp = p.maxHp; p.ember = p.emberMax; } },
   };
 }

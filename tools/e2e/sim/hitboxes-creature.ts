@@ -15,7 +15,8 @@ import { ambiguous, edgePoints, expected, fmt, v, type Cat, type Shape, type V }
 
 type Move = Extract<Action, { a: 'move' }>;
 const HERO = 'arcanist';
-const HERO_R = 10;
+import { HERO_RADIUS } from '@/systems/sim/player';
+const HERO_R = HERO_RADIUS;
 
 interface Setup { w: World; p: PlayerEnt; e: EnemyEnt }
 
@@ -47,6 +48,8 @@ const consumables = (p: { save: { inventory: { base: string; qty: number }[] } }
 function runOnce(def: CreatureDef, ab: CreatureAbility | null, L: V, probe: V | null, settle: number, shot = false): Run {
   const s = setup(def, ab, L);
   if (!waitStart(s, shot)) return { started: false, got: false, moved: 0 };
+  // judge this one attack: no second shot (a 950 ms flyer fires again inside the settle window) at the moved hero
+  s.e.attackReadyAt = Number.POSITIVE_INFINITY;
   const tele = [...s.w.events].reverse().find((x) => x.name === 'enemy:telegraph')?.p as GameEvents['enemy:telegraph'] | undefined;
   if (probe) { s.p.x = probe.x; s.p.y = probe.y; }
   // something for "steals your buffs" to take

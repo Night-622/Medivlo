@@ -33,13 +33,16 @@ export const BASIC: Record<WeaponType, BasicAttack> = {
 };
 const CLEAVE: WeaponType[] = ['axe', 'spear'];
 
+/** a hero's body: about 85% of the 26–32 px class sprites (hitboxes art check) */
+export const HERO_RADIUS = 12;
+
 export function createPlayer(w: SimWorld, playerId: string, save: CharacterSave, space: string, x: number, y: number): PlayerEnt {
   const kit = kitFor(save.classId);
   const cls = HC_CLASSES.find((c) => c.id === save.classId)!;
   const empty = compile([]);
   const p: PlayerEnt = {
     ...newCombatantBase(),
-    id: `p:${playerId}`, kind: 'player', def: `class:${save.classId}`, space, x, y, r: 10, face: { x: 0, y: 1 }, team: 'players',
+    id: `p:${playerId}`, kind: 'player', def: `class:${save.classId}`, space, x, y, r: HERO_RADIUS, face: { x: 0, y: 1 }, team: 'players',
     level: save.level, hp: 1, maxHp: 1, base: empty, stats: empty, playerId, school: cls.school, save, kit,
     weapon: { type: kit.weapons[0], min: 1, max: 2, offMin: 0, offMax: 0 }, spells: new Map(),
     ember: 0, emberMax: 0, stamina: 0, staminaMax: 0, momentum: 0, dashCharges: 1, dashReadyAt: 0, cds: new Map(),

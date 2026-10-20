@@ -9,7 +9,7 @@ import path from 'path';
 import { inflateSync } from 'zlib';
 import { CLASS_SCHOOL } from '@/core/constants';
 import { allCreatures, creature, type CreatureDef } from '@/systems/rules/creatures';
-import { World } from './hitboxes-harness';
+import { check, World } from './hitboxes-harness';
 
 interface Sheet { file: string; frameWidth: number; frameHeight: number; tier?: string; body?: string }
 interface Atlas { heroes: Record<string, Sheet>; bestiary: Record<string, Sheet> }
@@ -100,10 +100,36 @@ export function artSection(): void {
     if (d.body !== d.id && bodyDef !== d && bodyDef.radius > 0) vis = Math.round(vis * Math.max(0.5, Math.min(3, d.radius / bodyDef.radius)));
     rows.push({ who: `${d.id}${d.body !== d.id ? ` (body ${d.body})` : ''} ${d.tier}/${d.arch}`, r: d.radius, vis, frame, est, ratio: (2 * d.radius) / vis });
   }
-  const bad = rows.filter((x) => x.ratio < 0.6 || x.ratio > 1.4).sort((a, b) => Math.max(b.ratio, 1 / b.ratio) - Math.max(a.ratio, 1 / a.ratio));
-  console.log(`# body radius vs art: ${rows.length} bodies, ${bad.length} outside 60–140% of the visible sprite width (report only)`);
+  const bad = rows.filter((x) => x.ratio < 0.7 || x.ratio > 1.3).sort((a, b) => Math.max(b.ratio, 1 / b.ratio) - Math.max(a.ratio, 1 / a.ratio));
+  console.log(`# body radius vs art: ${rows.length} bodies, ${bad.length} outside 70–130% of the visible sprite width`);
   console.log(`note ${'body'.padEnd(52)} ${'r'.padStart(3)} ${'diam'.padStart(4)} ${'visible'.padStart(8)} ${'frame'.padStart(5)} ${'diam/vis'.padStart(8)}`);
   for (const x of bad) console.log(`note ${x.who.padEnd(52)} ${String(x.r).padStart(3)} ${String(2 * x.r).padStart(4)} ${`${x.vis}${x.est ? '~' : ''}`.padStart(8)} ${String(x.frame).padStart(5)} ${`${Math.round(x.ratio * 100)}%`.padStart(8)}`);
+  // the user's rule: hitboxes match what you see (an enemy you visibly hit is hit)
+  check(!bad.length, 'every hero and creature body is 70–130% of its drawn sprite width', bad.slice(0, 14).map((x) => `${x.who}: r ${x.r} vs ${x.vis}${x.est ? '~' : ''} px (${Math.round(x.ratio * 100)}%)`));
   const heroes = rows.filter((x) => x.who.startsWith('hero'));
   console.log(`note heroes: body diameter ${2 * heroes[0].r} px vs visible ${Math.min(...heroes.map((x) => x.vis))}–${Math.max(...heroes.map((x) => x.vis))} px; "~" = estimated (code-drawn body, no exported sheet)`);
+}
+
+/**
+ * Drawn width (alpha-trimmed, px) of every creature body's own art, for the generated radius table
+ * (tools/e2e/sim/bodies-gen.ts → src/data/enemies/hc/bodies.gen.ts). Same measurement as artSection.
+ */
+export function bodyWidths(): Map<string, { w: number; est: boolean }> {
+  const base = root(), atlas = JSON.parse(readFileSync(path.join(base, 'public/art/atlas.json'), 'utf8')) as Atlas;
+  const file = (s: Sheet) => path.join(base, 'public/art', s.file.replace(/^assets\//, ''));
+  const ratios = new Map<string, number[]>();
+  for (const s of Object.values(atlas.bestiary)) {
+    const l = ratios.get(s.body ?? '') ?? []; l.push(visibleWidth(file(s), s.frameWidth, s.frameHeight) / s.frameWidth); ratios.set(s.body ?? '', l);
+  }
+  const med = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
+  const frameOf = (arch: string, tier: string) => Object.values(atlas.bestiary).find((s) => s.body === arch && s.tier === tier)?.frameWidth;
+  const out = new Map<string, { w: number; est: boolean }>();
+  for (const d of allCreatures()) {
+    if (out.has(d.body)) continue;
+    const bodyDef: CreatureDef = creature(d.body) ?? d, s = atlas.bestiary[d.body.replace(/^bx_/, '')];
+    if (s) { out.set(d.body, { w: visibleWidth(file(s), s.frameWidth, s.frameHeight), est: false }); continue; }
+    const fw = frameOf(bodyDef.arch, bodyDef.tier);
+    if (fw) out.set(d.body, { w: Math.round(fw * med(ratios.get(bodyDef.arch) ?? [0.85])), est: true });
+  }
+  return out;
 }

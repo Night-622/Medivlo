@@ -20,7 +20,8 @@ interface Case {
 }
 interface Custom { label: string; cat: Cat; bodies: ProbeBody[]; want: boolean[] }
 
-const CASTER_R = 10;
+import { HERO_RADIUS } from '@/systems/sim/player';
+const CASTER_R = HERO_RADIUS;
 const PLAIN = new Set(['spell:nothing']);
 
 /** Run one probe world; returns which bodies the hero's effect reached. */

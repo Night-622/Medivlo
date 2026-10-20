@@ -164,7 +164,8 @@ export class EffectWatch {
       zone: () => this.zones,
       decoy: () => this.decoy,
       summon: () => this.summon,
-      move: () => this.moved >= 15,
+      // a dash travels; a blink lands beside its target, which can be only a few px away (the blink event proves it)
+      move: () => this.moved >= 15 || ev.some((e) => e.name === 'ability:cast' && e.p.casterId === p.id && e.p.ability === 'blink'),
       displace: () => this.displaced >= 5,
       momentum: () => this.momentum > 0,
       stamina: () => this.stamina > 20,

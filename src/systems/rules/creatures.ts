@@ -9,6 +9,19 @@ import { HC_CAMPAIGN_BOSSES } from '@/data/enemies/hc/campaign';
 import { HC_ITEMS } from '@/data/items/hc/items.gen';
 import { D, P, TIER_ARMOR, TIER_DMG, TIER_HP, partyHpMult } from './curves';
 import type { BodyArch, CreatureTier, DamageKind, HcCreatureBase, Hook, SchoolId, StyleId } from './types';
+import { HC_BODY_WIDTH } from '@/data/enemies/hc/bodies.gen';
+
+/** A hitbox that matches the drawn art: 85% of the body's measured width (bodies.gen.ts). A creature drawn on a
+ * borrowed body (campaign bosses, regional rank-and-file) is drawn at its tier's size, scaled 0.5–3× from that body
+ * (CombatView does the same), so its radius scales with it. */
+export const FIT = 0.85;
+function bodyRadius(id: string, body: string, tier: CreatureTier, scale: number): number {
+  const tierR = Math.round((tier === 'boss' ? 34 : tier === 'mini' ? 22 : 10) * Math.max(0.8, Math.min(1.4, scale || 1)));
+  const fitted = (b: string) => (HC_BODY_WIDTH[b] ? Math.max(8, Math.round((HC_BODY_WIDTH[b] * FIT) / 2)) : undefined);
+  if (body === id) return fitted(id) ?? tierR;
+  const br = fitted(body) ?? tierR;
+  return Math.round(br * Math.max(0.5, Math.min(3, tierR / br)));
+}
 
 const SCHOOLS: SchoolId[] = ['ash', 'rime', 'storm', 'radiance', 'umbral', 'verdant', 'blade', 'iron', 'fist', 'hunt', 'guile', 'song'];
 
@@ -134,8 +147,7 @@ function build(b: HcCreatureBase): CreatureDef {
     realm: HC_REALMS.find((r) => r.name === b.region)?.id,
     kind, elements, resist,
     hpShape: Math.max(0.6, Math.min(1.6, b.hp / MEDIAN_HP[b.tier])),
-    // minis and bosses are drawn ×2 / ×3 (MV art): their bodies follow, so the hitbox is about the sprite's size
-    radius: Math.round((b.tier === 'boss' ? 34 : b.tier === 'mini' ? 22 : 10) * Math.max(0.8, Math.min(1.4, b.scale || 1))),
+    radius: bodyRadius(b.id, (b as { body?: string }).body ?? b.id, b.tier, b.scale),
     scale: b.scale,
     ai: { ...base, attackMs: base.attackMs * (b.tier === 'boss' ? 1.6 : b.tier === 'mini' ? 1.2 : 1), ranged, immobile, flee: hooks.some((h) => h.id === 'flee'), attackRange: ranged ? Math.max(base.attackRange, 240) : base.attackRange, speed: immobile ? 0 : base.speed },
     abilities: free.filter((a) => a.use === 'attack' || a.use === 'self'),
