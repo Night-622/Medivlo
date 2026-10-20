@@ -47,6 +47,7 @@ async function tab(url) {
   const send = (method, params = {}) => { const i = ++id; ws.send(JSON.stringify({ id: i, method, params })); return new Promise((r) => pending.set(i, r)); };
   await send('Runtime.enable'); await send('Page.enable');
   await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 720, deviceScaleFactor: 1, mobile: false });
+  await send('Emulation.setFocusEmulationEnabled', { enabled: true });
   const ev = async (expr) => { const r = await send('Runtime.evaluate', { expression: `(async () => (${expr}))()`, awaitPromise: true, returnByValue: true }); if (r.exceptionDetails) throw new Error(JSON.stringify(r.exceptionDetails).slice(0, 300)); return r.result?.value; };
   const waitFor = async (expr, ms = 60_000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { try { if (await ev(expr)) return true; } catch { /* loading */ } await sleep(400); } return false; };
   return { id: t.id, send, ev, waitFor, errors };
@@ -65,7 +66,7 @@ const hero = (name, cls, space = 'concordia') => `(async () => {
 })()`;
 const savedAt = `(() => { try { return JSON.parse(localStorage.getItem('hollowcrown.save.0')).meta.updatedAt; } catch { return 0; } })()`;
 const onTitle = `window.__game.scene.isActive('MainMenu') && !window.__game.scene.isActive('WorldV2') && !window.__game.scene.isActive('HudV2')`;
-const notice = `(window.__game.scene.getScene('MainMenu').children.list.find((o) => typeof o.text === 'string' && /Disconnected|ended the session|realm/i.test(o.text))?.text ?? '')`;
+const notice = `(window.__game.scene.getScene('MainMenu').children.list.find((o) => typeof o.text === 'string' && /Disconnected from|ended the session/.test(o.text))?.text ?? '')`;
 const enterRealm = `(async () => {
   const coop = await import('/src/net/coop/index.ts');
   const list = await coop.browseRealms();
@@ -127,14 +128,17 @@ try {
   await G.ev(`(window.__game.scene.getScene('MainMenu').scene.start('WorldV2'), 1)`);
   await G.waitFor(`!!window.__game.scene.isActive('HudV2')`);
   await sleep(2000);
+  const tick = `(async () => (await import('/src/net/index.ts')).sim.tick)()`;
+  const state = `(async () => { const { sim } = await import('/src/net/index.ts'); const l = window.__game.loop; return { vis: document.visibilityState, focus: document.hasFocus(), paused: sim.isPaused(), running: l.running, fps: Math.round(l.actualFps) }; })()`;
+  const p1 = await G.ev(tick); await sleep(1500); const p2 = await G.ev(tick);
+  const pre = { ticks: p2 - p1, ...(await G.ev(state)) };
   const e0 = G.errors.length;
   await G.send('Page.setWebLifecycleState', { state: 'frozen' });
   await sleep(20_000);
   await G.send('Page.setWebLifecycleState', { state: 'active' });
   await sleep(1500);
-  const tick = `(async () => (await import('/src/net/index.ts')).sim.tick)()`;
   const t1 = await G.ev(tick); await sleep(1500); const t2 = await G.ev(tick);
-  check('S3: after sleeping, the game carries on (sim ticking, world up, no errors)', t2 > t1 && await G.ev(`window.__game.scene.isActive('HudV2')`) && G.errors.length === e0, JSON.stringify({ ticks: t2 - t1, errors: G.errors.slice(e0, e0 + 2) }));
+  check('S3: after sleeping, the game carries on (sim ticking, world up, no errors)', t2 > t1 && await G.ev(`window.__game.scene.isActive('HudV2')`) && G.errors.length === e0, JSON.stringify({ before: pre, after: { ticks: t2 - t1, ...(await G.ev(state)) }, errors: G.errors.slice(e0, e0 + 2) }));
   const errs = [...A.errors, ...G.errors].filter((e) => !/auth\/|firestore|Firebase/i.test(e ?? ''));
   check('no page errors', !errs.length, errs.slice(0, 3).join(' || '));
 } catch (e) { check('harness', false, String(e)); }
