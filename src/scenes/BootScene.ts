@@ -5,6 +5,7 @@ import { Theme, rectTexture, circleTexture } from '@/ui/kit';
 import { LocalNet, NetSwitch, sim } from '@/net';
 import { installNarrative, validateContent } from '@/narrative';
 import { createCharacterAnims, indexAtlas, mvReady, queueAtlas, type Atlas } from '@/art';
+import { bakeNpcSides } from '@/art/side/npcBake';
 
 /**
  * Loads the handoff art (atlas sheets + MV art libraries), content and services, then shows the main menu.
@@ -39,6 +40,8 @@ export class BootScene extends Phaser.Scene {
     indexAtlas(atlas);
     createCharacterAnims(this, atlas);
     mvReady()
+      // NPC side-view walk anims (npcs:<id>:walk-side) need MV, so they bake here; escorts use them (never throws)
+      .then(() => { bakeNpcSides(this); })
       .catch((e) => console.error('[art]', e))
       .finally(() => this.startFirstScene());
   }

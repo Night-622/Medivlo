@@ -4,7 +4,9 @@
  * WHERE: one file per school, src/art/side/classes/<school>.ts, default-exporting { <class>: SideGear } for its two
  * classes. Owners: ash, rime, hunt + shared gear: Claude 5 · storm, radiance, umbral, verdant, song: Claude 4 ·
  * blade, iron, fist, guile: Claude 2. Shared worn gear (paperdoll weapons, helm sets, alt headwear, accessories):
- * src/art/side/shared/*, Claude 5. Contract and helpers: ./kit.ts. Edit only your files.
+ * src/art/side/shared/*, Claude 5. The 14 atlas NPCs (escort stand-ins): classes/npcs.ts, Claude 5; npcBake.ts
+ * turns them into `npcs:<id>:idle-side` / `walk-side` anims. Contract and helpers: ./kit.ts. Edit only your files.
+ * Tall held items stand AHEAD of the face (shaft x 25+), or they cover the eye.
  *
  * WHAT IS AUTOMATIC (don't redraw it): torso, sleeves, hands, legs and boots are sampled from the hero's real front
  * body (body.ts), so the class colours, dyes, chest sets and gloves come through. The head, face and hair are drawn
@@ -57,11 +59,12 @@ import fist from './classes/fist';
 import hunt from './classes/hunt';
 import guile from './classes/guile';
 import song from './classes/song';
+import npcs from './classes/npcs';
 
 export type { SideGear } from './kit';
 
 /** every class's side gear, by class id */
-export const SIDE: Record<string, SideGear> = { ...ash, ...rime, ...storm, ...radiance, ...umbral, ...verdant, ...blade, ...iron, ...fist, ...hunt, ...guile, ...song };
+export const SIDE: Record<string, SideGear> = { ...ash, ...rime, ...storm, ...radiance, ...umbral, ...verdant, ...blade, ...iron, ...fist, ...hunt, ...guile, ...song, ...npcs };
 
 /** Fallback headgear: the class's front hat squeezed from 21 to 13 columns, set back over the skull. */
 export function squeezedHead(cls: string, P: Pal): HTMLCanvasElement | null {
