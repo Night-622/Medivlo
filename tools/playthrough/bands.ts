@@ -46,7 +46,8 @@ if (mode === 'gen') {
   for (const w of walks) {
     const visits = new Map<string, number[]>();
     for (const q of w.quests) {
-      for (const z of q.zones) {
+      // on foot and with fast travel alike: a band must suit both kinds of player
+      for (const z of new Set([...q.zones, ...q.ftZones])) {
         const g = bandGroup(z);
         if (!g) continue;
         if (g.endsWith('-gate')) { gate.set(g, Math.min(gate.get(g) ?? 99, Math.floor(expectedLevel(q.during)))); continue; }
@@ -102,7 +103,7 @@ ${sides.join('\n')}
     let worst = { m: -99, what: '' }, sideWorst = { m: -99, what: '' }, over = 0, sideOver = 0;
     for (const q of w.quests) {
       const e = expectedLevel(q.during), done = upTo(q.during);
-      for (const id of q.zones) {
+      for (const id of new Set([...q.zones, ...q.ftZones])) {
         const z = zones.get(id);
         if (!z) continue;
         const lv = zoneLevelAt(z, done), m = lv[1] - e;
@@ -144,7 +145,9 @@ function exportWalks(all: ClassWalk[], file: string): void {
       const done = upTo(q.during);
       return {
         quest: q.quest, type: q.type, main: q.main ?? null, during: q.during, expected: +expectedLevel(q.during).toFixed(1),
-        zones: q.zones.map((id) => { const z = zones.get(id)!; return { id, level: zoneLevelAt(z, done), elite: zoneEliteAt(z, done), cap: z.cap }; }),
+        // zones: with fast travel (the figure the pacing target uses); zonesWalk: on foot everywhere
+        zones: q.ftZones.map((id) => { const z = zones.get(id)!; return { id, level: zoneLevelAt(z, done), elite: zoneEliteAt(z, done), cap: z.cap }; }),
+        zonesWalk: q.zones.map((id) => { const z = zones.get(id)!; return { id, level: zoneLevelAt(z, done), elite: zoneEliteAt(z, done), cap: z.cap }; }),
         lairs: q.lairs,
       };
     });

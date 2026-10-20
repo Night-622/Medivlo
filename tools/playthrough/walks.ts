@@ -7,7 +7,7 @@
  * Needs the content Registry: bundle with tools/playthrough/build.mjs.
  */
 import { Game, Registry, createNewGameState, type NpcDef, type QuestDef } from '@/core';
-import { AREAS, spaceRuntime } from '@/world/hc/spaces';
+import { AREAS, allWaystones, spaceRuntime } from '@/world/hc/spaces';
 import { spawnZones, type SpawnZoneDef } from '@/world/hc/spawns';
 import { SpaceQuery } from '@/world/hc/runtime';
 import { doorInto, where, whereCreature, type Spot } from './places';
@@ -26,8 +26,9 @@ export interface QuestWalk {
   main?: number;
   /** the main quest this one is played during (sides: the one after the last main they need) */
   during: number;
-  /** spawn zones within aggro of the walk, and instances entered */
+  /** spawn zones within aggro of the walk (on foot; ftZones: with fast travel), and instances entered */
   zones: string[];
+  ftZones: string[];
   lairs: string[];
 }
 export interface ClassWalk { cls: string; school: string; side: 'capital' | 'frontier'; mains: string[]; quests: QuestWalk[] }
@@ -70,13 +71,32 @@ function reach(z: SpawnZoneDef, p: [number, number]): number {
   return best;
 }
 
-/** Walk quests in order through `space` from `start`: zones passed and instances entered, per quest. */
-function walkQuests(space: string, start: [number, number], order: QuestDef[], cls: string, npcs: Map<string, NpcDef>, maxNodes: number): { zones: string[]; lairs: string[] }[] {
+/** fast travel (Claude 1): a leg longer than this (tiles, straight) jumps to a woken waystone near its end */
+export const FT_LEG = 120;
+const FT_NEAR = 40; // the waystone must be this close to the leg's end
+const FT_WAKE = 3; // a walk passing this close to a waystone wakes it
+
+export interface Walked { zones: string[]; lairs: string[]; path?: [number, number][]; ftZones: string[]; ftPath?: [number, number][] }
+
+/**
+ * Walk quests in order through `space` from `start`, two ways: on foot everywhere (`zones`), and with fast
+ * travel (`ftZones`): any leg over FT_LEG tiles starts from the woken waystone nearest its end (within FT_NEAR,
+ * and nearer than the walker already is). Waystones wake when the fast-travel walk passes them (or start lit).
+ */
+function walkQuests(space: string, start: [number, number], order: QuestDef[], cls: string, npcs: Map<string, NpcDef>, maxNodes: number, keepPaths = false): Walked[] {
   const zones = spawnZones(space).filter((z) => !z.rect && !z.waves);
   const q = new SpaceQuery(spaceRuntime(space), () => ({ hour: 12, phase: 'day' }) as never);
-  let pos = start;
+  const stones = allWaystones().filter((w) => w.space === space);
+  const woken = new Set(stones.filter((w) => w.startsLit).map((w) => w.id));
+  let pos = start, ftPos = start;
+  const pass = (path: [number, number][], hit: Set<string>) => {
+    for (const p of path) for (const z of zones) {
+      if (hit.has(z.id) || Math.abs(p[0] - z.at[0]) > z.r + AGGRO_TILES + 200 || Math.abs(p[1] - z.at[1]) > z.r + AGGRO_TILES + 200) continue;
+      if (reach(z, p) <= z.r + AGGRO_TILES) hit.add(z.id);
+    }
+  };
   return order.map((qd) => {
-    const hit = new Set<string>(), lairs = new Set<string>();
+    const hit = new Set<string>(), ftHit = new Set<string>(), lairs = new Set<string>(), trail: [number, number][] = [], ftTrail: [number, number][] = [];
     for (const st of qd.stages) for (const o of st.objectives as Record<string, any>[]) {
       if (o.optional) continue;
       let spot: Spot | null = null;
@@ -93,14 +113,24 @@ function walkQuests(space: string, start: [number, number], order: QuestDef[], c
         spot = door;
       }
       if (spot.space !== space) continue;
-      const path = (q.findPath(pos, spot.at, maxNodes) as [number, number][] | null) ?? [pos, spot.at];
-      for (const p of path) for (const z of zones) {
-        if (hit.has(z.id) || Math.abs(p[0] - z.at[0]) > z.r + AGGRO_TILES + 200 || Math.abs(p[1] - z.at[1]) > z.r + AGGRO_TILES + 200) continue;
-        if (reach(z, p) <= z.r + AGGRO_TILES) hit.add(z.id);
+      const to = spot.at, dist = (a: [number, number], b: [number, number]) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+      // on foot
+      const path = (q.findPath(pos, to, maxNodes) as [number, number][] | null) ?? [pos, to];
+      if (keepPaths) trail.push(...path);
+      pass(path, hit);
+      pos = to;
+      // with fast travel
+      if (dist(ftPos, to) > FT_LEG) {
+        const best = stones.filter((w) => woken.has(w.id) && dist(w.at, to) <= FT_NEAR && dist(w.at, to) < dist(ftPos, to)).sort((a, b) => dist(a.at, to) - dist(b.at, to))[0];
+        if (best) ftPos = best.at;
       }
-      pos = spot.at;
+      const ftPath = ftPos === pos ? path : ((q.findPath(ftPos, to, maxNodes) as [number, number][] | null) ?? [ftPos, to]);
+      if (keepPaths) ftTrail.push(...ftPath);
+      pass(ftPath, ftHit);
+      for (const w of stones) if (!woken.has(w.id) && ftPath.some((p) => dist(p, w.at) <= FT_WAKE)) woken.add(w.id);
+      ftPos = to;
     }
-    return { zones: [...hit], lairs: [...lairs] };
+    return { zones: [...hit], lairs: [...lairs], ftZones: [...ftHit], ...(keepPaths ? { path: trail, ftPath: ftTrail } : {}) };
   });
 }
 
@@ -135,7 +165,7 @@ export function act1Walks(only?: string[]): ClassWalk[] {
   return out;
 }
 
-export interface ActQuestWalk { quest: string; type: string; campaign: string; order: number; expected: number; zones: string[]; lairs: string[] }
+export interface ActQuestWalk { quest: string; type: string; campaign: string; order: number; expected: number; zones: string[]; ftZones: string[]; lairs: string[]; path?: [number, number][]; ftPath?: [number, number][] }
 
 /**
  * Act II or III for each class (or `only`): its own act quests plus the shared ones it can get, in play order
@@ -143,7 +173,7 @@ export interface ActQuestWalk { quest: string; type: string; campaign: string; o
  * `expected` runs along the act's level band by how many of the act's main and class quests come before (so every
  * quest between the same two mains shares one level, as Act I does by main index).
  */
-export function actWalks(act: 'act2' | 'act3', only?: string[]): { cls: string; quests: ActQuestWalk[] }[] {
+export function actWalks(act: 'act2' | 'act3', only?: string[], keepPaths = false): { cls: string; quests: ActQuestWalk[] }[] {
   load();
   const npcs = new Map((Registry.all('npc') as NpcDef[]).map((n) => [n.id, n]));
   const quests = Registry.all('quest') as QuestDef[];
@@ -167,7 +197,7 @@ export function actWalks(act: 'act2' | 'act3', only?: string[]): { cls: string; 
       return d;
     };
     const order = mine.map((x, i) => [x, i] as const).sort((a, b) => depthOf(a[0]) - depthOf(b[0]) || a[1] - b[1]).map(([x]) => x);
-    const walked = walkQuests('concordia', start, order, cls, npcs, 3_000_000);
+    const walked = walkQuests('concordia', start, order, cls, npcs, 3_000_000, keepPaths);
     const isMain = (q: QuestDef) => q.type === 'main' || q.type === 'class';
     const mains = order.filter(isMain).length;
     let before = 0;

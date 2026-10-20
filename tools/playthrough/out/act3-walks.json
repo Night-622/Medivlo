@@ -7,7 +7,8 @@
    "order": 1,
    "expected": 28,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-wall",
@@ -16,6 +17,36 @@
    "order": 2,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -43,8 +74,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -63,7 +93,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -72,6 +113,27 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -99,8 +161,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -109,6 +170,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -145,8 +236,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:arcanist-ignaces-apprentice",
@@ -174,7 +264,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -193,7 +303,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -212,6 +333,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -220,8 +362,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:arcanist-the-herald-of-ash",
@@ -249,7 +390,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -260,7 +421,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:arcanist-thranes-lantern",
@@ -269,7 +431,8 @@
    "order": 11,
    "expected": 34.9,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -280,7 +443,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -289,7 +453,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -298,7 +463,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "reaver": [
@@ -309,6 +475,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -336,8 +532,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:reaver-bring-him-home",
@@ -365,7 +560,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -393,7 +608,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -402,6 +637,27 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -429,8 +685,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -439,6 +694,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -475,8 +760,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -504,7 +788,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -523,6 +827,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -531,8 +856,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:reaver-the-hollow-muster",
@@ -560,7 +884,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -581,6 +925,17 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -590,7 +945,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:reaver-the-peace-axes-edge",
@@ -599,7 +955,8 @@
    "order": 11,
    "expected": 34.9,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -610,7 +967,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -619,7 +977,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -628,7 +987,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "rimecaller": [
@@ -639,6 +999,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -666,8 +1056,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:rimecaller-anselm",
@@ -686,7 +1075,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -705,7 +1105,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -714,6 +1125,27 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -741,8 +1173,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -751,6 +1182,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -787,8 +1248,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -816,7 +1276,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -835,6 +1315,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -843,8 +1344,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:rimecaller-the-still-one",
@@ -872,7 +1372,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -893,6 +1413,17 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -902,7 +1433,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:rimecaller-hallas-first-new-entry",
@@ -930,7 +1462,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -941,7 +1493,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -950,7 +1503,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -959,7 +1513,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "warden": [
@@ -970,6 +1525,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -997,8 +1582,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:warden-dagnys-last-watch",
@@ -1026,7 +1610,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -1045,7 +1649,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -1054,6 +1669,27 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -1081,8 +1717,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -1091,6 +1726,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -1127,8 +1792,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:warden-the-goat-who-crosses-walls",
@@ -1156,7 +1820,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -1175,7 +1859,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -1194,6 +1889,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -1202,8 +1918,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:warden-the-clans-in-the-camp",
@@ -1231,7 +1946,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -1261,6 +1996,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -1270,7 +2025,8 @@
    "order": 11,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -1281,7 +2037,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -1290,7 +2047,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -1299,7 +2057,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "sparkwright": [
@@ -1310,6 +2069,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -1337,8 +2126,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -1357,7 +2145,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -1366,6 +2165,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -1393,8 +2213,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -1403,6 +2222,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -1439,8 +2288,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -1468,7 +2316,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -1487,6 +2355,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -1495,8 +2384,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:sparkwright-the-chancellors-engineers",
@@ -1524,7 +2412,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:sparkwright-sixty-one-flies-home",
@@ -1552,7 +2460,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -1582,6 +2510,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -1591,7 +2539,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -1602,7 +2551,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:sparkwright-tess-last-patent",
@@ -1630,7 +2580,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -1639,7 +2609,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -1648,7 +2619,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "stormlancer": [
@@ -1659,6 +2631,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -1686,8 +2688,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:stormlancer-thistle",
@@ -1715,7 +2716,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -1743,7 +2764,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -1752,6 +2793,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -1779,8 +2850,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -1789,6 +2859,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -1825,8 +2925,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -1854,7 +2953,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -1873,6 +2992,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -1881,8 +3021,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:stormlancer-ride-second",
@@ -1910,7 +3049,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:stormlancer-the-ones-who-came-back-fast",
@@ -1938,7 +3097,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -1968,6 +3147,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -1977,7 +3176,8 @@
    "order": 11,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -1988,7 +3188,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -1997,7 +3198,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -2006,7 +3208,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "cantor": [
@@ -2017,6 +3220,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -2044,8 +3277,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -2064,7 +3296,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -2073,6 +3316,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -2100,8 +3364,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -2110,6 +3373,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -2146,8 +3439,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:cantor-the-brightwatch-recruits",
@@ -2175,7 +3467,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:cantor-tobit-lark-falls-asleep",
@@ -2194,7 +3506,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -2213,7 +3536,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -2232,6 +3566,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -2240,8 +3595,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:cantor-the-herald-of-noon",
@@ -2269,7 +3623,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:cantor-compline-at-the-citadel",
@@ -2297,7 +3671,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      33,
+      35
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      33,
+      35
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -2318,6 +3712,17 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      33,
+      35
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -2329,7 +3734,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -2338,7 +3744,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -2347,7 +3754,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "oathbound": [
@@ -2358,6 +3766,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -2385,8 +3823,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:oathbound-a-promise-kept-late",
@@ -2414,7 +3851,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:oathbound-ser-gallants-rest",
@@ -2442,7 +3899,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -2461,7 +3938,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -2470,6 +3958,27 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -2497,8 +4006,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -2507,6 +4015,36 @@
    "order": 6,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -2543,8 +4081,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -2572,7 +4109,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -2591,6 +4148,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -2599,8 +4177,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:oathbound-the-sorrow-sworn",
@@ -2628,7 +4205,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -2639,7 +4236,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:oathbound-the-sorrow-herald",
@@ -2648,7 +4246,8 @@
    "order": 11,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -2659,7 +4258,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -2668,7 +4268,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -2677,7 +4278,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "duskweaver": [
@@ -2688,6 +4290,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -2715,8 +4347,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:duskweaver-the-cat-comes-too",
@@ -2744,7 +4375,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -2772,7 +4423,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -2781,6 +4452,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -2808,8 +4509,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -2818,6 +4518,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -2854,8 +4584,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:duskweaver-the-stolen-hours",
@@ -2883,7 +4612,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -2911,7 +4660,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -2930,6 +4699,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -2938,8 +4728,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:duskweaver-the-herald-of-memory",
@@ -2967,7 +4756,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -2978,7 +4787,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:duskweaver-nyxs-kept-name",
@@ -3006,7 +4816,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -3036,6 +4866,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -3045,7 +4895,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -3054,7 +4905,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "shade": [
@@ -3065,6 +4917,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -3092,8 +4974,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -3112,7 +4993,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -3121,6 +5013,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -3148,8 +5061,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -3158,6 +5070,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -3194,8 +5136,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:shade-bryns-flock",
@@ -3214,7 +5155,18 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -3242,7 +5194,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -3261,6 +5233,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -3269,8 +5262,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:shade-the-weeping-shades",
@@ -3298,7 +5290,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -3328,6 +5340,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -3337,7 +5369,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:shade-send-mabs-shadow-home",
@@ -3356,7 +5389,18 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -3386,6 +5430,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -3395,7 +5459,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -3404,7 +5469,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "hedgewitch": [
@@ -3415,6 +5481,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -3442,8 +5538,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:hedgewitch-thistledowns-answer",
@@ -3498,6 +5593,15 @@
      "cap": 6
     },
     {
+     "id": "camp:route-act2-ranger-1",
+     "level": [
+      29,
+      30
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       29,
@@ -3516,7 +5620,81 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "pack:frost-ruin",
+     "level": [
+      30,
+      31
+     ],
+     "elite": true,
+     "cap": 3
+    },
+    {
+     "id": "region:frost#4",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "region:frost#0",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "region:briar#2",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "region:gloam#3",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "camp:route-act2-ranger-1",
+     "level": [
+      29,
+      30
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "region:briar#6",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -3544,6 +5722,15 @@
      "cap": 6
     },
     {
+     "id": "camp:route-act2-ranger-1",
+     "level": [
+      29,
+      30
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       29,
@@ -3562,7 +5749,54 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:briar#2",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "region:gloam#3",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "camp:route-act2-ranger-1",
+     "level": [
+      29,
+      30
+     ],
+     "elite": false,
+     "cap": 4
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -3571,6 +5805,27 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -3598,8 +5853,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -3608,6 +5862,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -3644,8 +5928,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -3673,7 +5956,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -3692,6 +5995,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -3700,8 +6024,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:hedgewitch-gran-burdocks-rest",
@@ -3729,7 +6052,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -3740,7 +6083,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:hedgewitch-the-herald-of-bloom",
@@ -3749,7 +6093,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:hedgewitch-yarrows-acorn",
@@ -3777,7 +6122,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -3788,7 +6153,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -3797,7 +6163,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -3806,7 +6173,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "ranger": [
@@ -3817,6 +6185,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -3844,8 +6242,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:ranger-the-salt-thief-abroad",
@@ -3873,7 +6270,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -3892,7 +6309,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -3901,6 +6329,27 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -3928,8 +6377,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -3938,6 +6386,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -3974,8 +6452,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -4003,7 +6480,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -4022,6 +6519,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -4030,8 +6548,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -4061,6 +6578,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -4070,7 +6607,8 @@
    "order": 9,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:ranger-holts-last-blaze",
@@ -4098,7 +6636,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -4109,7 +6667,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:ranger-aldos-garden",
@@ -4137,7 +6696,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -4146,7 +6725,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -4155,7 +6735,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "swordsman": [
@@ -4166,6 +6747,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -4193,8 +6804,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -4213,7 +6823,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -4222,6 +6843,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -4249,8 +6891,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -4259,6 +6900,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -4295,8 +6966,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -4324,7 +6994,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -4343,6 +7033,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -4351,8 +7062,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:swordsman-the-kept-opponents",
@@ -4371,7 +7081,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:swordsman-percys-thousandth",
@@ -4380,6 +7101,27 @@
    "order": 8,
    "expected": 32.1,
    "zones": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -4398,8 +7140,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -4410,7 +7151,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:swordsman-the-chimeras-champion",
@@ -4419,7 +7161,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -4430,7 +7173,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:swordsman-ferros-ribbon",
@@ -4449,7 +7193,18 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -4458,7 +7213,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -4467,7 +7223,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "samurai": [
@@ -4478,6 +7235,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -4505,8 +7292,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -4525,7 +7311,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -4534,6 +7331,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -4561,8 +7379,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -4571,6 +7388,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -4607,8 +7454,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:samurai-kentas-letter",
@@ -4627,7 +7473,18 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -4655,7 +7512,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -4674,6 +7551,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -4682,8 +7580,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:samurai-the-masterless",
@@ -4711,7 +7608,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -4732,6 +7649,17 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -4741,7 +7669,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -4752,7 +7681,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:samurai-say-it-for-me",
@@ -4761,6 +7691,27 @@
    "order": 12,
    "expected": 36.3,
    "zones": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -4779,8 +7730,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -4789,7 +7739,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -4798,7 +7749,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "knight": [
@@ -4809,6 +7761,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -4836,8 +7818,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -4856,7 +7837,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -4865,6 +7857,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -4892,8 +7905,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -4902,6 +7914,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -4938,8 +7980,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -4967,7 +8008,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -4986,6 +8047,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -4994,8 +8076,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:knight-the-regents-regiment",
@@ -5032,7 +8113,36 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "camp:morvane-1-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -5053,6 +8163,17 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -5062,7 +8183,8 @@
    "order": 9,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:knight-the-blank-shields-crest",
@@ -5090,7 +8212,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -5120,6 +8262,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -5129,6 +8291,27 @@
    "order": 12,
    "expected": 36.3,
    "zones": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -5147,8 +8330,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -5157,7 +8339,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -5166,7 +8349,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "juggernaut": [
@@ -5177,6 +8361,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -5204,8 +8418,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -5224,7 +8437,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -5233,6 +8457,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -5260,8 +8505,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -5270,6 +8514,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -5306,8 +8580,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -5335,7 +8608,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -5354,6 +8647,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -5362,8 +8676,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:juggernaut-last-shift",
@@ -5391,7 +8704,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:juggernaut-pay-day",
@@ -5419,7 +8752,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -5440,6 +8793,17 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -5449,7 +8813,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -5460,7 +8825,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:juggernaut-one-winter-coat",
@@ -5469,7 +8835,8 @@
    "order": 12,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -5478,7 +8845,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -5487,7 +8855,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "monk": [
@@ -5498,6 +8867,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -5525,8 +8924,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -5545,7 +8943,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -5554,6 +8963,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -5581,8 +9011,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -5591,6 +9020,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -5627,8 +9086,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -5656,7 +9114,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -5675,6 +9153,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -5683,8 +9182,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:monk-forty-novices",
@@ -5712,7 +9210,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -5733,6 +9251,17 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -5742,7 +9271,8 @@
    "order": 9,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:monk-sop-on-the-stair",
@@ -5770,7 +9300,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -5800,6 +9350,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -5828,7 +9398,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -5837,7 +9427,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -5846,7 +9437,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "brawler": [
@@ -5857,6 +9449,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -5884,8 +9506,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -5904,7 +9525,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -5913,6 +9545,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -5940,8 +9593,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -5950,6 +9602,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -5986,8 +9668,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:brawler-pops-stock",
@@ -6015,7 +9696,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:brawler-calling-the-names",
@@ -6034,7 +9735,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -6053,7 +9765,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -6072,6 +9795,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -6080,8 +9824,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:brawler-the-promoters-corner",
@@ -6109,7 +9852,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:brawler-big-mother-ox-comes-through",
@@ -6118,7 +9881,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-citadel",
@@ -6129,7 +9893,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -6140,7 +9905,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -6149,7 +9915,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -6158,7 +9925,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "huntsman": [
@@ -6169,6 +9937,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -6196,8 +9994,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -6216,7 +10013,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -6225,6 +10033,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -6252,8 +10081,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -6262,6 +10090,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -6298,8 +10156,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -6327,7 +10184,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -6346,6 +10223,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -6354,8 +10252,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -6385,6 +10282,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -6394,7 +10311,8 @@
    "order": 8,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:huntsman-the-homeward-call",
@@ -6422,7 +10340,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:huntsman-the-calf-on-the-stair",
@@ -6450,7 +10388,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -6480,6 +10438,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -6508,7 +10486,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -6517,7 +10515,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -6526,7 +10525,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "falconer": [
@@ -6556,7 +10556,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-wall",
@@ -6565,6 +10585,36 @@
    "order": 2,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -6592,8 +10642,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -6612,7 +10661,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -6621,6 +10681,27 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -6648,8 +10729,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -6658,6 +10738,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -6694,8 +10804,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:falconer-the-hooded-steadings",
@@ -6732,7 +10841,36 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "camp:morvane-1-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -6760,7 +10898,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -6779,6 +10937,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -6787,8 +10966,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:falconer-the-eyes-of-the-chimera",
@@ -6816,7 +10994,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:falconer-wrens-last-flight",
@@ -6844,7 +11042,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      33,
+      35
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      33,
+      35
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -6874,6 +11092,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      33,
+      35
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      33,
+      35
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -6885,7 +11123,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -6894,7 +11133,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -6903,7 +11143,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "jester": [
@@ -6914,6 +11155,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -6941,8 +11212,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:jester-the-joke-for-the-king",
@@ -6970,7 +11240,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -6998,7 +11288,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      29,
+      31
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -7007,6 +11317,27 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -7034,8 +11365,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -7044,6 +11374,36 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -7080,8 +11440,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -7109,7 +11468,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -7128,6 +11507,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -7136,8 +11536,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:jester-gull-number-nine-goes-straight",
@@ -7165,7 +11564,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -7186,6 +11605,17 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -7195,7 +11625,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -7206,7 +11637,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:jester-paid-in-full",
@@ -7234,7 +11666,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -7243,7 +11695,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -7252,7 +11705,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "corsair": [
@@ -7282,7 +11736,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:corsair-the-white-flagship",
@@ -7310,7 +11784,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-wall",
@@ -7319,6 +11813,36 @@
    "order": 3,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -7346,8 +11870,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -7366,7 +11889,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -7375,6 +11909,27 @@
    "order": 5,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -7402,8 +11957,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -7412,6 +11966,36 @@
    "order": 6,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -7448,8 +12032,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -7477,7 +12060,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -7496,6 +12099,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -7504,8 +12128,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:corsair-saltmarshs-last-sale",
@@ -7533,7 +12156,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -7544,7 +12187,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:corsair-nobodys-name",
@@ -7572,7 +12216,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-king",
@@ -7602,6 +12266,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      34,
+      36
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -7611,7 +12295,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -7620,7 +12305,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "bard": [
@@ -7631,6 +12317,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -7658,8 +12374,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -7678,7 +12393,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -7687,6 +12413,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -7714,8 +12461,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -7724,6 +12470,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -7760,8 +12536,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:bard-rosalinds-aria",
@@ -7789,7 +12564,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:bard-the-bought-songs",
@@ -7817,7 +12612,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:bard-tobbles-lullaby",
@@ -7845,7 +12660,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -7854,7 +12689,8 @@
    "order": 8,
    "expected": 30.8,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -7873,6 +12709,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -7881,8 +12738,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:bard-the-last-performance",
@@ -7910,7 +12766,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -7921,7 +12797,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -7932,7 +12809,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-choice",
@@ -7941,7 +12819,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -7950,7 +12829,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ],
  "skald": [
@@ -7961,6 +12841,36 @@
    "order": 1,
    "expected": 28,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      28,
+      29
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      28,
+      30
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "region:gloam#5",
      "level": [
@@ -7988,8 +12898,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-legion",
@@ -8008,7 +12917,18 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-marens-mother",
@@ -8017,6 +12937,27 @@
    "order": 3,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "zone:legion-camp",
      "level": [
@@ -8044,8 +12985,7 @@
      "elite": false,
      "cap": 3
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-what-godric-saw",
@@ -8054,6 +12994,36 @@
    "order": 4,
    "expected": 30.8,
    "zones": [
+    {
+     "id": "camp:morvane-0-1",
+     "level": [
+      30,
+      31
+     ],
+     "elite": false,
+     "cap": 3
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
     {
      "id": "camp:morvane-2-8",
      "level": [
@@ -8090,8 +13060,7 @@
      "elite": false,
      "cap": 7
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:heart-stairs",
@@ -8119,7 +13088,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      30,
+      32
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:heart-last-chronicle",
@@ -8138,6 +13127,27 @@
      "cap": 7
     },
     {
+     "id": "camp:morvane-0-1",
+     "level": [
+      32,
+      33
+     ],
+     "elite": false,
+     "cap": 3
+    }
+   ],
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
      "id": "region:gloam#5",
      "level": [
       32,
@@ -8146,8 +13156,7 @@
      "elite": false,
      "cap": 6
     }
-   ],
-   "lairs": []
+   ]
   },
   {
    "quest": "quest:skald-the-nine-hundred-and-first",
@@ -8175,7 +13184,27 @@
      "cap": 7
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
+   ]
   },
   {
    "quest": "quest:skald-the-hollow-skalds",
@@ -8203,7 +13232,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-citadel",
@@ -8233,6 +13282,26 @@
    ],
    "lairs": [
     "inst:concord-citadel"
+   ],
+   "zonesWalk": [
+    {
+     "id": "region:gloam#5",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 6
+    },
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      32,
+      34
+     ],
+     "elite": false,
+     "cap": 7
+    }
    ]
   },
   {
@@ -8242,7 +13311,8 @@
    "order": 10,
    "expected": 33.5,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-king",
@@ -8253,7 +13323,8 @@
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
-   ]
+   ],
+   "zonesWalk": []
   },
   {
    "quest": "quest:skald-a-stone-for-ulf",
@@ -8281,7 +13352,27 @@
      "cap": 6
     }
    ],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": [
+    {
+     "id": "zone:legion-camp",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 7
+    },
+    {
+     "id": "region:gloam#5",
+     "level": [
+      36,
+      38
+     ],
+     "elite": false,
+     "cap": 6
+    }
+   ]
   },
   {
    "quest": "quest:heart-choice",
@@ -8290,7 +13381,8 @@
    "order": 13,
    "expected": 36.3,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   },
   {
    "quest": "quest:heart-after",
@@ -8299,7 +13391,8 @@
    "order": 14,
    "expected": 37.6,
    "zones": [],
-   "lairs": []
+   "lairs": [],
+   "zonesWalk": []
   }
  ]
 }

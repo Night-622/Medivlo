@@ -43,7 +43,7 @@ if (mode === 'gen') {
   const table: Record<string, Record<string, { floor: number; step?: number }[]>> = {};
   for (const w of walks) {
     const visits = new Map<string, { floor: number; step: number }[]>();
-    for (const q of w.quests) for (const id of q.zones) {
+    for (const q of w.quests) for (const id of new Set([...q.zones, ...q.ftZones])) {
       const region = regionOf.get(id);
       if (!region) continue;
       let floor = Math.min(ACT_TOP[q.act], Math.floor(q.expected));
@@ -94,7 +94,7 @@ ${mains.join('\n')}
     let worstHigh = { m: -99, what: '' }, worstLow = { m: 99, what: '' }, over = 0, under = 0;
     for (const q of w.quests) {
       const done: StepDone = (_c, step) => step <= q.mainsBefore;
-      for (const id of q.zones) {
+      for (const id of new Set([...q.zones, ...q.ftZones])) {
         const z = byId.get(id);
         if (!z) continue;
         const [, hi] = zoneLevelAt(z, done, w.cls), m = hi - q.expected;

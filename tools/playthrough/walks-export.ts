@@ -2,7 +2,8 @@
  * Act II / III walk export for Claude 3's XP projection (tools/e2e/sim/xp-project.ts). Bundle with build.mjs:
  *   ENTRY=tools/playthrough/walks-export.ts OUT=<file> node tools/playthrough/build.mjs && node <file> [act2|act3|both] [classes]
  * Writes tools/playthrough/out/act2-walks.json / act3-walks.json:
- *   { [classId]: [{ quest, type, campaign, order, expected, zones: [{ id, level, elite, cap }], lairs }] }
+ *   { [classId]: [{ quest, type, campaign, order, expected, zones: [{ id, level, elite, cap }], zonesWalk: [...], lairs }] }
+ * zones: with waystone fast travel (walks.ts FT_LEG); zonesWalk: the same quest on foot everywhere.
  * (Act I is bands.ts export: out/act1-walks.json.) `level`/`elite` are the band in force for that class at that point:
  * Concordia bands follow the host's Act II/III main quests (concordiaBands.gen.ts), counted across both acts.
  */
@@ -23,7 +24,9 @@ for (const act of (which === 'both' ? ['act2', 'act3'] : [which]) as ('act2' | '
     let before = act === 'act3' ? act2Mains.get(w.cls) ?? actWalks('act2', [w.cls])[0].quests.filter((q) => isMain(q.type)).length : 0;
     out[w.cls] = w.quests.map((q) => {
       const done = (_c: string | undefined, step: number) => step <= before;
-      const row = { ...q, zones: q.zones.map((id) => { const z = zones.get(id)!; return { id, level: zoneLevelAt(z, done, w.cls), elite: zoneEliteAt(z, done, w.cls), cap: z.cap }; }) };
+      const band = (id: string) => { const z = zones.get(id)!; return { id, level: zoneLevelAt(z, done, w.cls), elite: zoneEliteAt(z, done, w.cls), cap: z.cap }; };
+      const { ftZones, ...rest } = q;
+      const row = { ...rest, zones: ftZones.map(band), zonesWalk: q.zones.map(band) };
       if (isMain(q.type)) before++;
       return row;
     });

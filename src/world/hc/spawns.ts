@@ -6,6 +6,7 @@
  */
 import { CHUNK_TILES, Services, TILE_SIZE, bus, evalCondition, getFlag, heroClassId, type WorldObject } from '@/core';
 import { MORVANE_REGIONS, MORVANE_ROADS, MORVANE_SCALE } from '@/data/regions/hc/morvane';
+import { ROUTE_CAMPS } from '@/data/regions/hc/routeCamps.gen';
 import { morvaneRegionAt } from './overview';
 import { allCreatures, bestiaryFor } from '@/systems/rules/creatures';
 import { spawnCountMult } from '@/systems/rules/curves';
@@ -168,6 +169,8 @@ function realmZones(space: string): SpawnZoneDef[] {
  * Concordia zones: a few anchors per region, sampled against the region polygons (map px). Never through
  * gen.regionAt here: that builds noise-warped 32×32 region blocks per sample (a 12 s stall, Claude 1's profile).
  */
+/** creatures in a route camp (tools/playthrough/routeCamps.ts places them along the sparse class threads) */
+export const ROUTE_CAMP_CAP = 4;
 function concordiaZones(): SpawnZoneDef[] {
   const gen = spaceRuntime('concordia').gen;
   const out: SpawnZoneDef[] = [];
@@ -215,6 +218,13 @@ function concordiaZones(): SpawnZoneDef[] {
       carry = (carry - len) % 40; if (carry < 0) carry += 40;
     }
   });
+  // route camps along the class threads that cross little else (routeCamps.gen.ts), at the band underfoot
+  for (const c of ROUTE_CAMPS) {
+    const r = morvaneRegionAt(c.at[0] / MORVANE_SCALE, c.at[1] / MORVANE_SCALE);
+    if (!r) continue;
+    const pool = regionPool(r.name), [lo] = regionLevels(r);
+    if (pool.length) out.push({ id: c.id, space: 'concordia', at: c.at, r: 4, ...concordiaBanded(r.id, lo, 'camp'), pool, cap: ROUTE_CAMP_CAP });
+  }
   // optional caves and lookouts: a pack on the approach, 14 tiles towards the nearest road (elite-led to caves)
   for (const [id, o] of (gen as ConcordiaGen).optional) {
     if (o.kind === 'ruin' || !roadPts.length) continue;
