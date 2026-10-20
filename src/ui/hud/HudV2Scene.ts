@@ -64,6 +64,7 @@ export class HudV2Scene extends Phaser.Scene {
     const net = Services.get('net');
     const off = net.addConsumer({ kinds: ['player'], apply: (ents, _removed, snap) => this.applyPlayer(ents, snap) });
     this.events.once('shutdown', off);
+    this.watchAuthority(net);
 
     bus.onScene(this, 'region:entered', (e) => { if (!e.playerId || e.playerId === net.localPlayer) this.banner(e.name ?? e.regionId, e.subtitle); });
     bus.onScene(this, 'narrative:toast', ({ text, kind }) => this.toast(text, kind === 'trust' ? C.teal : kind === 'quest' ? C.gold : C.text));
@@ -265,6 +266,25 @@ export class HudV2Scene extends Phaser.Scene {
       ...typeStyle('caption', C.text300), backgroundColor: '#0d1226', padding: { x: 12, y: 6 },
     }).setOrigin(0.5, 0);
     this.time.delayedCall(9000, () => this.tweens.add({ targets: t, alpha: 0, duration: 600, onComplete: () => t.destroy() }));
+  }
+
+  /**
+   * A guest (or realm player) whose authority stopped sending snapshots for 3 s sees "Waiting for the host…" (a host
+   * whose browser stalls, or the network), cleared as soon as snapshots come back.
+   */
+  private watchAuthority(net: ReturnType<typeof Services.get<'net'>>): void {
+    let lastSnap = performance.now();
+    const offSnap = net.addConsumer({ kinds: ['player'], apply: () => { lastSnap = performance.now(); } });
+    const offNet = bus.on('net:changed', () => { lastSnap = performance.now(); });
+    this.events.once('shutdown', () => { offSnap(); offNet(); });
+    const note = this.add.text(this.scale.width / 2, 176, '', { ...typeStyle('h3', C.gold), backgroundColor: C.bg, padding: { x: 14, y: 6 } })
+      .setOrigin(0.5, 0).setDepth(40).setVisible(false);
+    this.time.addEvent({ delay: 500, loop: true, callback: () => {
+      const remote = net.role === 'guest' || net.role === 'server-client';
+      const stale = remote && performance.now() - lastSnap > 3000;
+      if (stale) note.setText(net.role === 'guest' ? 'Waiting for the host…' : 'Waiting for the realm…');
+      note.setVisible(stale);
+    } });
   }
 
   /** Region banner, top centre (56px Jersey + gold subline), fades after the handoff banner life. */

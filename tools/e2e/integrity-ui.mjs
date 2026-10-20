@@ -75,6 +75,24 @@ try {
   })()`);
   check('the title keyboard works again after leaving a joined game', titleKeys === false);
 
+  // 3b. character creation: Esc used to drop a whole customisation without asking
+  const inCC = `window.__game.scene.isActive('CharacterCreate')`;
+  const confirmUp = `!!window.__game.scene.getScene('CharacterCreate').confirm`;
+  await ev(`(window.__game.scene.getScene('MainMenu').scene.start('CharacterCreate', { slot: 2 }), 1)`);
+  await waitFor(inCC, 15000); await sleep(600);
+  await page.press('Escape'); await sleep(500);
+  const untouched = await ev(`window.__game.scene.isActive('MainMenu')`);
+  await ev(`(window.__game.scene.getScene('MainMenu').scene.start('CharacterCreate', { slot: 2 }), 1)`);
+  await waitFor(inCC, 15000); await sleep(600);
+  await page.press('KeyQ'); await sleep(200); // a letter goes into the name
+  await page.press('Escape'); await sleep(400);
+  const asked = await ev(`${inCC} && ${confirmUp}`);
+  await page.press('Enter'); await sleep(400);
+  const kept = await ev(`${inCC} && !${confirmUp}`);
+  await page.press('Escape'); await sleep(300); await page.press('Escape'); await sleep(600);
+  const discarded = await ev(`window.__game.scene.isActive('MainMenu')`);
+  check('character creation asks before discarding an edited hero', untouched && asked && kept && discarded, JSON.stringify({ untouched, asked, kept, discarded }));
+
   // 4. a Warden in the Rime realm: People lists the realm's people; HUD state resets across a restart
   await ev(`(async () => {
     const core = await import('/src/core/index.ts');

@@ -7,7 +7,7 @@ import '@fontsource/pixelify-sans/600.css';
 import '@fontsource/pixelify-sans/700.css';
 import '@fontsource/silkscreen/400.css';
 import Phaser from 'phaser';
-import { GAME_HEIGHT, GAME_WIDTH, Palette, Settings, bus } from '@/core';
+import { GAME_HEIGHT, GAME_WIDTH, Palette, Services, Settings, bus } from '@/core';
 import { BootScene } from '@/scenes/BootScene';
 import { MainMenuScene } from '@/scenes/MainMenuScene';
 import { CharacterCreateScene } from '@/scenes/CharacterCreateScene';
@@ -26,6 +26,7 @@ import { FriendsScene } from '@/ui/screens/FriendsScene';
 import { PeopleScene } from '@/ui/screens/PeopleScene';
 import { CreditsScene } from '@/ui/screens/CreditsScene';
 import { sim } from '@/net';
+import { backgroundDriving, installBackgroundSim } from '@/net/backgroundSim';
 import { installLigatureFix } from '@/ui/kit/hc';
 
 installLigatureFix();
@@ -84,4 +85,6 @@ game.events.once('ready', () => { installAudio(game); installAutosave(game); ins
 if (import.meta.env.DEV) (window as unknown as { __game: Phaser.Game }).__game = game;
 
 // The fixed-step simulation (src/net/SimLoop.ts) is driven by Phaser's global step, independent of any scene.
-game.events.on('step', (_time: number, delta: number) => sim.advance(delta));
+game.events.on('step', (_time: number, delta: number) => { if (!backgroundDriving()) sim.advance(delta); });
+// …and, for a co-op host whose tab is hidden (Phaser's loop stops), by a worker clock, so guests keep playing
+installBackgroundSim(sim, () => Services.tryGet('net'));

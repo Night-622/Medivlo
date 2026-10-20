@@ -191,5 +191,27 @@ check('ensureUser signs a new player in as a guest', u.isAnonymous && fakeAuth.s
   host.close();
 }
 
+// ───────── 6. per-player rates (duel requests are replicated to everyone: 1 msg → N events) ─────────
+{
+  let onPeer;
+  const host = new m.HostNet({ host: async (_c, _h, fn) => { onPeer = fn; return () => {}; } }, 'host-r', { name: 'H', classId: 'warden', level: 5, worldSeed: 1, hostInSafeZone: () => true, hasVisited: () => true, markVisited: () => {} });
+  await host.open('RATE01');
+  let acts = 0, duels = 0, ownActs = 0;
+  host.onClient('act', (_msg, from) => { if (from === 'host-r') ownActs++; else acts++; });
+  host.onClient('duel', () => { duels++; });
+  onPeer('guest-r', { send() {}, onMessage() { return () => {}; }, close() {} });
+  const pc = pcs.at(-1);
+  const mk = (label) => ({ label, readyState: 'open', send() {} });
+  const rel = mk('rel'), fast = mk('fast');
+  pc.ondatachannel({ channel: rel }); pc.ondatachannel({ channel: fast });
+  rel.onmessage({ data: JSON.stringify({ type: 'hello', playerId: 'guest-r', name: 'R', classId: 'warden', level: 1, firstVisit: false }) });
+  for (let i = 0; i < 60; i++) rel.onmessage({ data: JSON.stringify({ type: 'act', domain: 'systems', action: 'buy', args: {} }) });
+  for (let i = 0; i < 10; i++) rel.onmessage({ data: JSON.stringify({ type: 'duel', target: 'host-r' }) });
+  for (let i = 0; i < 60; i++) host.send({ type: 'act', domain: 'systems', action: 'buy', args: {} });
+  check('a burst of acts from one remote is capped (30), the host is never limited', acts === 30 && ownActs === 60, `remote ${acts}/60, host ${ownActs}/60`);
+  check('duel request spam is capped (3)', duels === 3, `${duels}/10`);
+  host.close();
+}
+
 console.log(fails ? `\nintegrity-net: ${fails} FAILED` : '\nintegrity-net: ALL PASS');
 process.exit(fails ? 1 : 0);

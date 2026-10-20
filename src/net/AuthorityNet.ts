@@ -89,7 +89,7 @@ export abstract class AuthorityNet extends NetBase implements NetService {
     if (!this.remotes.has(playerId)) return;
     this.remotes.delete(playerId);
     this.pending.delete(playerId);
-    this.stateAsked.delete(playerId); // (chatBucket is kept: reconnecting must not refill a flooder's bucket)
+    this.stateAsked.delete(playerId); // (rate buckets are kept: reconnecting must not refill a flooder's)
     this.info.members = this.role === 'server'
       ? this.info.members.filter((m) => m.playerId !== playerId)
       : this.info.members.map((m) => (m.playerId === playerId ? { ...m, connected: false } : m));
@@ -117,7 +117,7 @@ export abstract class AuthorityNet extends NetBase implements NetService {
     }
     if (msg.type === 'chat' && typeof msg.text === 'string') {
       // every line goes to everyone: a flood from one remote (120 msgs/s fit the realm budget) is dropped
-      if (from !== this.localPlayer && !this.chatToken(from)) return;
+      if (from !== this.localPlayer && !this.take('chat', from)) return;
       const text = this.filterChat(msg.text.slice(0, 240));
       if (!text) return;
       const name = this.info.members.find((m) => m.playerId === from)?.name ?? '?';
@@ -126,6 +126,7 @@ export abstract class AuthorityNet extends NetBase implements NetService {
       this.broadcast(out);
     }
     if (msg.type === 'vote') this.castVote(from, msg.voteId, msg.choice);
+    if ((msg.type === 'duel' || msg.type === 'act') && from !== this.localPlayer && !this.take(msg.type, from)) return;
     this.emitClient(msg, from);
   }
 
@@ -145,15 +146,20 @@ export abstract class AuthorityNet extends NetBase implements NetService {
   // ───────── internals ─────────
 
   private stateAsked = new Map<PlayerId, number>();
-  private chatBucket = new Map<PlayerId, { n: number; at: number }>();
+  private buckets = new Map<string, { n: number; at: number }>();
 
-  /** Chat rate: a burst of 5 lines, then one every 1.5 s. */
-  private chatToken(from: PlayerId): boolean {
-    const now = Date.now();
-    const b = this.chatBucket.get(from) ?? { n: 5, at: now };
-    b.n = Math.min(5, b.n + (now - b.at) / 1500);
+  /**
+   * Per-player message rates (remote players only), as token buckets: a burst, then one per `everyMs`. Chat and
+   * duel requests go to every player (1 → N), acts run authority work. Loadouts are never dropped (the newest must
+   * land). Buckets outlive a reconnect, so rejoining doesn't refill them.
+   */
+  private take(kind: 'chat' | 'duel' | 'act', from: PlayerId): boolean {
+    const [burst, everyMs] = RATES[kind];
+    const now = Date.now(), key = `${kind}:${from}`;
+    const b = this.buckets.get(key) ?? { n: burst, at: now };
+    b.n = Math.min(burst, b.n + (now - b.at) / everyMs);
     b.at = now;
-    this.chatBucket.set(from, b);
+    this.buckets.set(key, b);
     if (b.n < 1) return false;
     b.n -= 1;
     return true;
@@ -218,6 +224,9 @@ export abstract class AuthorityNet extends NetBase implements NetService {
     return removed;
   }
 }
+
+/** [burst, ms per refilled message] */
+const RATES = { chat: [5, 1500], duel: [3, 3000], act: [30, 100] } as const;
 
 const num = (v: unknown, lo: number, hi: number): number => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : 0);
 

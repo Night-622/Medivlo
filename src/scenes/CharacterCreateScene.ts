@@ -31,6 +31,9 @@ export class CharacterCreateScene extends Phaser.Scene {
   private anim: 'idle' | 'walk' = 'idle';
   private flip = false;
   private caret = true;
+  /** the hero as the screen opened: leaving unchanged needs no confirm */
+  private initial = '';
+  private confirm: Phaser.GameObjects.Container | null = null;
 
   constructor() { super(SceneKeys.CharacterCreate); }
 
@@ -39,6 +42,8 @@ export class CharacterCreateScene extends Phaser.Scene {
     const first = HC_CLASS_DISPLAY[0]?.id ?? 'warden';
     this.hc = { classId: first, name: Phaser.Utils.Array.GetRandom(NAMES), look: defaultLook(first), outfit: defaultOutfit() };
     this.looks.clear();
+    this.initial = JSON.stringify(this.hc);
+    this.confirm = null;
   }
 
   create(): void {
@@ -151,7 +156,7 @@ export class CharacterCreateScene extends Phaser.Scene {
   private buildFooter(): void {
     const back = this.add.nineslice(48, 636, 'ui:btn_slate', undefined, 160, 52, 8, 8, 8, 8).setOrigin(0);
     this.add.text(128, 662, 'Back', typeStyle('button', C.text)).setOrigin(0.5);
-    back.setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.start(SceneKeys.MainMenu));
+    back.setInteractive({ useHandCursor: true }).on('pointerup', () => this.leave());
     this.add.text(224, 656, '↑ ↓ class · Enter begin · Esc back', typeStyle('caption', C.text500));
     this.add.nineslice(856, 636, 'ui:panel_inset', undefined, 194, 52, 8, 8, 8, 8).setOrigin(0);
     this.add.text(868, 656, 'NAME', typeStyle('badge', C.text500));
@@ -169,7 +174,8 @@ export class CharacterCreateScene extends Phaser.Scene {
   private drawName(): void { this.nameT?.setText(this.hc.name + (this.caret ? '|' : ' ')); }
 
   private onKey(ev: KeyboardEvent): void {
-    if (ev.key === 'Escape') { this.scene.start(SceneKeys.MainMenu); return; }
+    if (this.confirm) { if (ev.key === 'Escape') this.scene.start(SceneKeys.MainMenu); else if (ev.key === 'Enter') this.keep(); return; }
+    if (ev.key === 'Escape') { this.leave(); return; }
     if (ev.key === 'Enter') { this.begin(); return; }
     if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
       const ids = this.list.order(), i = ids.indexOf(this.hc.classId);
@@ -183,6 +189,28 @@ export class CharacterCreateScene extends Phaser.Scene {
     this.caret = true;
     this.drawName();
   }
+
+  /** Back / Esc: a hero the player has worked on is only dropped after "Discard this hero?" (Esc again or Yes). */
+  private leave(): void {
+    if (this.confirm || JSON.stringify(this.hc) === this.initial) { this.scene.start(SceneKeys.MainMenu); return; }
+    const { width: W, height: H } = this.scale;
+    const c = this.add.container(0, 0).setDepth(1000);
+    c.add(this.add.rectangle(0, 0, W, H, parseInt(C.bg.slice(1), 16), 0.72).setOrigin(0).setInteractive()); // blocks clicks below
+    c.add(this.add.nineslice(W / 2 - 260, H / 2 - 110, 'ui:panel', undefined, 520, 220, 8, 8, 8, 8).setOrigin(0));
+    c.add(this.add.text(W / 2, H / 2 - 78, 'Discard this hero?', typeStyle('h1', C.text)).setOrigin(0.5, 0));
+    c.add(this.add.text(W / 2, H / 2 - 30, `${this.hc.name || 'Your hero'}'s class, look and name will be lost.`, typeStyle('body', C.text300, 460)).setOrigin(0.5, 0).setAlign('center'));
+    const btn = (x: number, label: string, gold: boolean, fn: () => void) => {
+      const b = this.add.nineslice(x, H / 2 + 34, gold ? 'ui:btn_gold' : 'ui:btn_slate', undefined, 200, 52, 8, 8, 8, 8).setOrigin(0);
+      b.setInteractive({ useHandCursor: true }).on('pointerup', fn);
+      c.add([b, this.add.text(x + 100, H / 2 + 60, label, typeStyle('button', gold ? C.ink : C.text)).setOrigin(0.5)]);
+    };
+    btn(W / 2 - 220, 'Keep editing', true, () => this.keep());
+    btn(W / 2 + 20, 'Discard', false, () => this.scene.start(SceneKeys.MainMenu));
+    c.add(this.add.text(W / 2, H / 2 + 96, 'Esc discard · Enter keep editing', typeStyle('caption', C.text500)).setOrigin(0.5, 0));
+    this.confirm = c;
+  }
+
+  private keep(): void { this.confirm?.destroy(); this.confirm = null; }
 
   private begin(): void {
     const raw = this.hc.name.trim();

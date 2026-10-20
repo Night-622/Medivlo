@@ -225,7 +225,13 @@ export class MainMenuScene extends Phaser.Scene {
 
   private async loadSlot(slot: number): Promise<void> {
     const state = await SaveService.load(slot);
-    if (!state) return;
+    if (!state) {
+      // unreadable, or another account's hero: say so (Continue used to do nothing at all)
+      if (!this.scene.isActive()) return;
+      const t = this.add.text(this.scale.width / 2, 286, 'That save could not be read. Try Load Game.', { ...typeStyle('h3', C.danger), backgroundColor: C.bg, padding: { x: 14, y: 6 } }).setOrigin(0.5).setDepth(30);
+      this.time.delayedCall(4000, () => t.destroy());
+      return;
+    }
     Game.set(state);
     bus.emit('game:loaded', { slot });
     this.scene.start(worldKey(this));
