@@ -55,6 +55,19 @@ export function syncMentor(): void {
   if (getFlag('story.mentor_trust') !== t) setFlag('story.mentor_trust', t);
 }
 
+/**
+ * campaign.class / campaign.school: the campaign owner's class ('warden', no 'class:' prefix) and school ('rime').
+ * Derived on the authority (so in co-op they are the host's), never set by content, like story.bearers_gathered.
+ * Claude 2 gates every obj:<class>-… / obj:<school>-… placement on them; they replicate to guests like any flag.
+ */
+export function syncCampaignClass(): void {
+  const c = heroClass();
+  if (!c) return;
+  if (getFlag('campaign.class') !== c) setFlag('campaign.class', c);
+  const s = campaign(c)?.school;
+  if (s && getFlag('campaign.school') !== s) setFlag('campaign.school', s);
+}
+
 export function syncBearers(): void {
   const n = Object.entries(Game.state.flags).filter(([k, v]) => k.startsWith('story.bearer.') && v === true).length;
   if (getFlag('story.bearers_gathered') !== n) setFlag('story.bearers_gathered', n);
@@ -79,8 +92,10 @@ export function installNarrativeAuthority(): void {
   authBus.on('game:loaded', () => syncMentor());
   for (const ev of ['quest:started', 'quest:advanced', 'quest:completed', 'game:loaded'] as const) authBus.on(ev, () => syncGateFight());
   authBus.on('game:new', () => syncAllRepFlags());
+  // the hero may be created after game:new, so the first quest start (I-1 / First Steps) syncs too
+  for (const ev of ['game:new', 'game:loaded', 'quest:started'] as const) authBus.on(ev, () => syncCampaignClass());
   // net is a switch facade (Claude 1): becoming a guest or realm visitor drops this machine's own scenes (the host's
   // story takes over); becoming the authority again (back to solo, or hosting) resumes the local campaign
-  bus.on('net:changed', () => { if (isAuthority()) schedule(); else dialogue.drop(); });
+  bus.on('net:changed', () => { if (isAuthority()) { syncCampaignClass(); schedule(); } else dialogue.drop(); });
   authBus.on('game:loaded', () => syncAllRepFlags());
 }
