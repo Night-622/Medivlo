@@ -17,6 +17,8 @@ const npcs: NpcDef[] = [
     id: 'npc:halla-vint', name: 'Archivist-Superior Halla Vint', title: 'Head of the Archive of the Spire', school: 'rime', origin: 'rime', trust: 2,
     services: ['Mentor', 'Trains Rimecallers'], region: Z1, home: 'landmark:halla-vint-study', lore: 'lore:hc-halla-vint',
     presentWhen: RC,
+    // I-1: she comes out to the lamplighter on the Spire Stair the night of the tick, then walks ahead to her study
+    schedule: [{ from: 0, to: 24, at: 'landmark:spire-stair-lamplighter', activity: 'idle', when: at('quest:rimecaller-the-first-tick', 'halla') }],
     dialogue: [
       { when: at('quest:rimecaller-the-first-tick', 'halla'), dialogue: 'dialogue:rimecaller-halla-tick' },
       { when: at('quest:rimecaller-the-first-tick', 'pin'), dialogue: 'dialogue:rimecaller-halla-pin' },

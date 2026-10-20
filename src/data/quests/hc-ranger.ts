@@ -19,7 +19,7 @@ const quests: QuestDef[] = [
   // ======================= ACT I: main (I-1 … I-10)
   {
     ...A1, id: 'quest:ranger-the-bell-in-the-thorns', name: 'The Bell in the Thorns', type: 'main', region: Z1, giver: HB,
-    summary: 'Night watch at Wayfarer’s Rest. Holt had just got to the part with the Circle witch when a bell rang somewhere very far away, and every path in the Thornwilds moved at once.',
+    summary: 'Night watch at Wayfarer’s Rest. Old Holt had just got to the best part of his joke when a bell rang somewhere very far away, and every path in the Thornwilds moved at once.',
     requires: RG, autoStart: true, firstStage: 'ladders',
     stages: [
       {
@@ -56,7 +56,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'blazes', journal: 'Five waymarks out in the Thornwilds, each one a Wayfarer blaze cut in a tree. Find them where the paths have put them now.',
-        objectives: [{ id: 'blazes', text: 'Re-blaze the old waymarks', interact: 'obj:wayfarer-blaze-*', count: 5, marker: { place: Z2 } }],
+        objectives: [{ id: 'blazes', text: 'Re-blaze the old waymarks out in the Thornwilds', interact: 'obj:wayfarer-blaze-*', count: 5, marker: { place: Z2 } }],
         next: 'grey',
       },
       {

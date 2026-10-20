@@ -55,7 +55,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'golems', journal: 'Four Rivet Golems haul the ore carts on the main line. Kick their boilers until they start. That is the official procedure.',
-        objectives: [{ id: 'golems', text: 'Restart the stopped Rivet Golems', interact: 'obj:rivet-golem-*', count: 4, marker: { place: Z2 } }],
+        objectives: [{ id: 'golems', text: 'Restart the stopped Rivet Golems on the main line', interact: 'obj:rivet-golem-*', count: 4, marker: { place: Z2 } }],
         next: 'fight',
       },
       {

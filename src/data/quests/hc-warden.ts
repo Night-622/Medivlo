@@ -30,13 +30,13 @@ const quests: QuestDef[] = [
       },
       {
         id: 'dagny', journal: 'The wolves are gone. Something is singing out past the Breach, and only you can hear it.',
-        objectives: [{ id: 'dagny', text: 'Report to Dagny in the drill yard', talk: DO, marker: { landmark: 'landmark:wardwall-drill-yard' } }],
+        objectives: [{ id: 'dagny', text: 'Report to Wall-Captain Dagny in the drill yard', talk: DO, marker: { landmark: 'landmark:wardwall-drill-yard' } }],
         onComplete: [{ setFlag: 'warden.bell_heard', value: true }],
         next: 'heads',
       },
       {
         id: 'heads', journal: 'Thirty-seven Wardens in the drill yard, and there should be forty. Dagny wants every head counted before dawn, nightshirt or no nightshirt.',
-        objectives: [{ id: 'heads', text: 'Find the three Wardens who never turned out', interact: 'obj:warden-missing-warden-*', count: 3, marker: { place: Z1 } }],
+        objectives: [{ id: 'heads', text: 'Find the three Wardens who never turned out, around the Gatehouse', interact: 'obj:warden-missing-warden-*', count: 3, marker: { place: Z1 } }],
         next: 'quarters',
       },
       {

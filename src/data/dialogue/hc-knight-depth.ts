@@ -56,7 +56,7 @@ const dialogues: DialogueDef[] = [
           { text: '(Put your hand flat on the table. Let him feel it hum.)', to: 'hum', school: 'iron' },
         ],
       },
-      forge: { speaker: GM, text: 'The Forge half. Of course. It fell under the Regency’s throne when the crown broke, and it has never come out for any of them. They have tried. Konrad has tried hardest.', next: 'colossus' },
+      forge: { speaker: GM, text: 'The Forge half. Of course. It fell under the Regency’s throne when the crown broke, and it has never come out for any of them. They have tried. Prince-Regent Konrad has tried hardest.', next: 'colossus' },
       hammer: { speaker: GM, mood: 'sad', text: 'Patient. Yes. That is the Iron song. My mother said it was the sound of something being made slowly and properly. Ironhold has not made anything slowly or properly in thirty years. Only walls.', next: 'colossus' },
       hum: { speaker: 'narrator', text: 'The table hums. The cups on it ring, faintly, the same note. Gideon lays his own hand flat beside yours and keeps it there a long moment, his eyes shut. When he takes it away, it is shaking a little.', next: 'colossus' },
       colossus: {

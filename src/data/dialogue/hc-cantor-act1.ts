@@ -47,7 +47,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       why: { speaker: CH, text: 'I haven’t the faintest idea. Perhaps it likes people who can still fall asleep. There are not many of us left.', next: 'do' },
-      do: { speaker: CH, text: 'Tonight, if Dawnspire had a tonight, you would go to bed. Instead, you will finish the Hour of Lamps with your mouth closed, and come to my cell after Lauds. Keep your collar done up.', next: null },
+      do: { speaker: CH, text: 'Tonight, if Dawnspire had a tonight, you would go to bed. Instead, you will finish the Hour of Lamps with your mouth closed, and come to my cell in the Choir Cloisters after Lauds. Keep your collar done up.', next: null },
     },
   },
   // ---------- I-2 The Sleepers' Census

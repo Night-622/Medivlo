@@ -18,18 +18,18 @@ const quests: QuestDef[] = [
   // ======================= ACT I: main (I-1 … I-10)
   {
     ...A1, id: 'quest:corsair-the-bell-over-the-water', name: 'The Bell over the Water', type: 'main', region: Z1, giver: DB,
-    summary: 'Night in the Brine Market. Captain Dot Brine was slipping the Overdraft’s moorings to dodge a creditor when a bell rang under the sea, and every ship’s bell in the market rang back.',
+    summary: 'Night in the Brine Market. Your captain, Dot Brine, was slipping the moorings of her ship, the Overdraft, to dodge a creditor when a bell rang under the sea, and every ship’s bell in the market rang back.',
     requires: CS, autoStart: true, firstStage: 'deck',
     stages: [
       {
-        id: 'deck', journal: 'The creditor sent Cutpurses after the Overdraft, and they are coming over the rail. The deck is swaying. So are you.',
+        id: 'deck', journal: 'The creditor has sent hired Cutpurses after Dot’s ship, the Overdraft, and they are coming over the rail. The deck is swaying. So are you.',
         onEnter: [{ openDialogue: 'dialogue:corsair-bell-night' }],
         objectives: [{ id: 'boarders', text: 'Throw the Cutpurses off the Overdraft', kill: 'bx_guile_0', count: 4, marker: { landmark: 'landmark:the-overdraft' } }],
         next: 'dot',
       },
       {
         id: 'dot', journal: 'The deck is clear. The black pearls in the hold are humming one note, and so is your chest.',
-        objectives: [{ id: 'dot', text: 'Report to Captain Dot', talk: DB, marker: { landmark: 'landmark:the-overdraft' } }],
+        objectives: [{ id: 'dot', text: 'Report to Captain Dot on deck', talk: DB, marker: { landmark: 'landmark:the-overdraft' } }],
         onComplete: [{ setFlag: 'corsair.bell_heard', value: true }],
         next: 'lines',
       },
@@ -40,7 +40,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'hold', journal: 'The Overdraft is drifting free in the dark. Dot says there is something in the hold you ought to hear.',
-        objectives: [{ id: 'hold', text: 'Go down into the Overdraft’s hold', interact: 'obj:corsair-hold-pearls', marker: { landmark: 'landmark:the-overdraft' } }],
+        objectives: [{ id: 'hold', text: 'Go down into the Overdraft’s hold and listen to the pearls', interact: 'obj:corsair-hold-pearls', marker: { landmark: 'landmark:the-overdraft' } }],
         onComplete: [{ startQuest: 'quest:corsair-dots-creditors' }],
         end: { status: 'completed' },
       },

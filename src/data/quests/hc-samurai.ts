@@ -31,7 +31,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'kanemori', journal: 'Sensei Kanemori is standing at the top of the steps with his hands in his sleeves, looking at you.',
-        objectives: [{ id: 'kanemori', text: 'Go to Sensei Kanemori', talk: HK, marker: { landmark: 'landmark:kanemori-cell' } }],
+        objectives: [{ id: 'kanemori', text: 'Go to Sensei Kanemori at the top of the temple steps', talk: HK, marker: { landmark: 'landmark:kanemori-cell' } }],
         onComplete: [{ setFlag: 'samurai.bell_heard', value: true }],
         next: 'climb',
       },
@@ -51,12 +51,12 @@ const quests: QuestDef[] = [
   },
   {
     ...A1, id: 'quest:samurai-tea-before-steel', name: 'Tea Before Steel', type: 'main', region: Z2, giver: HK,
-    summary: 'Without a word, Sensei Kanemori has put a tray in your hands: five cups of tea for the five dojo yards on the Terraces.',
+    summary: 'Without a word, Sensei Kanemori has put a tray in your hands: five cups of tea for the five dojo yards on the Hushpine Terraces.',
     requires: req(done('quest:samurai-the-bell-in-the-pines')), firstStage: 'tea',
     stages: [
       {
         id: 'tea', journal: 'Five dojo yards, five cups of tea. Do not spill. Do not speak.',
-        objectives: [{ id: 'yards', text: 'Carry tea to the five dojo yards', interact: 'obj:hushpine-dojo-*', count: 5, marker: { place: Z2 } }],
+        objectives: [{ id: 'yards', text: 'Carry tea to the five dojo yards on the Terraces', interact: 'obj:hushpine-dojo-*', count: 5, marker: { place: Z2 } }],
         next: 'trail',
       },
       {

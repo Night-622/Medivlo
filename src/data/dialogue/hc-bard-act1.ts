@@ -58,7 +58,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       posters: { speaker: RV, mood: 'happy', text: 'The one on the posters, the one on the tea-towels, the one on a regrettable series of commemorative plates. Yes. I am resting the voice. I have been resting it for some time.', next: 'chest' },
-      chest: { speaker: RV, text: 'Then the stone has chosen its singer, and it has chosen someone who breaks into opera houses at midnight. I approve. Follow me to my dressing room, at once, before the wisps come back. Encore wants to smell your shoes.', next: null },
+      chest: { speaker: RV, text: 'Then the stone has chosen its singer, and it has chosen someone who breaks into opera houses at midnight. I approve. Follow me to my dressing room, at once, before the wisps come back. Encore, my pug, wants to smell your shoes.', next: null },
     },
   },
   // ---------- I-2 The Five Bars

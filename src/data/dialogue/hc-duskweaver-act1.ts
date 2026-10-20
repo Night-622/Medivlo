@@ -41,7 +41,7 @@ const dialogues: DialogueDef[] = [
       },
       know: { speaker: NX, mood: 'happy', text: 'Of course you do, dear! I taught you your letters. Loremistress Nyx Aubade, Keeper of the Moon Obelisk, forgetter of everyone’s name. You’ll get used to it. Everyone does, eventually, and then I forget that they have.', next: 'stone' },
       stone: {
-        speaker: NX, text: 'That song is half of the Umbral stone. The Obelisk half. It has lain in the Obelisk’s shadow for thirty years, and the Obelisk has been leaking ever since, like a bucket with no bottom, and now it has woken up for you. Of all people. Well! Not of all people. I’m sure you’re lovely.',
+        speaker: NX, text: 'That song is half of the Umbral Stone. The Obelisk half. It has lain in the Obelisk’s shadow for thirty years, and the Obelisk has been leaking ever since, like a bucket with no bottom, and now it has woken up for you. Of all people. Well! Not of all people. I’m sure you’re lovely.',
         choices: [
           { text: 'What do I do?', to: 'do' },
           { text: 'The shadows are all facing the Obelisk. Is it calling them?', to: 'calling', school: 'umbral', trust: 1 },

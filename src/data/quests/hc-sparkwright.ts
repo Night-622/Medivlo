@@ -22,9 +22,9 @@ const quests: QuestDef[] = [
     requires: SW, autoStart: true, firstStage: 'rubble',
     stages: [
       {
-        id: 'rubble', journal: 'You are lying in the rubble of your workshop with a song in your chest and no eyebrows. Somebody is shouting your name from the Guildmother’s door.',
+        id: 'rubble', journal: 'You are lying in the rubble of your workshop with a song in your chest and no eyebrows. Somebody is shouting your name from the door of the Guildmother’s workshop.',
         onEnter: [{ openDialogue: 'dialogue:sparkwright-bell-night' }],
-        objectives: [{ id: 'out', text: 'Climb out of the rubble to Tess’s workshop', reach: 'landmark:tess-ampery-workshop', marker: { landmark: 'landmark:tess-ampery-workshop' } }],
+        objectives: [{ id: 'out', text: 'Climb out of the rubble to the Guildmother’s workshop', reach: 'landmark:tess-ampery-workshop', marker: { landmark: 'landmark:tess-ampery-workshop' } }],
         next: 'tess',
       },
       {
@@ -35,12 +35,12 @@ const quests: QuestDef[] = [
       },
       {
         id: 'street', journal: 'Tess wants a head count before tea. Three workshops on Coil Street went up harder than the rest. Go and see that everyone in them still has most of their eyebrows.',
-        objectives: [{ id: 'blasts', text: 'Check on the worst-hit workshops', interact: 'obj:sparkwright-blast-site-*', count: 3, marker: { place: Z1 } }],
+        objectives: [{ id: 'blasts', text: 'Check on the worst-hit workshops on Coil Street', interact: 'obj:sparkwright-blast-site-*', count: 3, marker: { place: Z1 } }],
         next: 'tea',
       },
       {
         id: 'tea', journal: 'Nobody hurt, one hat lost, and every scorch on the street pointing the same way. Kettle Twenty has made tea. Tess is waiting.',
-        objectives: [{ id: 'tess', text: 'Have tea with Tess', talk: TA, marker: { landmark: 'landmark:tess-ampery-workshop' } }],
+        objectives: [{ id: 'tess', text: 'Have tea with Tess in her workshop', talk: TA, marker: { landmark: 'landmark:tess-ampery-workshop' } }],
         onComplete: [{ startQuest: 'quest:sparkwright-rod-duty' }],
         end: { status: 'completed' },
       },
@@ -54,7 +54,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'rods', journal: 'Five rods on the Coil Street rooftops, every one of them knocked crooked by the Bell.',
-        objectives: [{ id: 'rods', text: 'Reset the lightning rods', interact: 'obj:coil-rod-*', count: 5, marker: { place: Z1 } }],
+        objectives: [{ id: 'rods', text: 'Reset the lightning rods on the Coil Street rooftops', interact: 'obj:coil-rod-*', count: 5, marker: { place: Z1 } }],
         next: 'wisps',
       },
       {

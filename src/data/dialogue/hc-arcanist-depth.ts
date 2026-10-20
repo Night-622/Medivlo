@@ -40,7 +40,7 @@ const dialogues: DialogueDef[] = [
     entries: [{ node: 'in' }],
     nodes: {
       in: { speaker: 'narrator', text: 'Magister Thrane’s study is three rooms of paper with a fire in the middle of them. A Lava Slime the size of a cat is asleep on a stack of Conclave minutes, gently scorching them.', next: 'pudding' },
-      pudding: { speaker: TH, text: 'That is Pudding. Pudding, this is a bearer of the Ash stone. Don’t eat their permit. Sit, sit. Move the treatise. No, the other treatise.', next: 'tea' },
+      pudding: { speaker: TH, text: 'That is Pudding. Pudding, this is a bearer of the Ash Stone. Don’t eat their permit. Sit, sit. Move the treatise. No, the other treatise.', next: 'tea' },
       tea: {
         speaker: TH, text: '(He pours two cups of something black and fragrant, and his hands are shaking.) Forty years I’ve studied the Concord Stones. Forty years and never a whisper. And tonight one of them sings, and here it is in my study, about to drink my tea.',
         choices: [

@@ -22,18 +22,18 @@ const quests: QuestDef[] = [
     requires: FA, autoStart: true, firstStage: 'perches',
     stages: [
       {
-        id: 'perches', journal: 'Ten thousand wings in the dark, all flying the same way: towards the Moor’s Crown. Your hawk is somewhere among them.',
+        id: 'perches', journal: 'Ten thousand wings in the dark, all flying the same way: towards the Moor’s Crown, the highest hill on the moor. Your hawk is somewhere among them.',
         onEnter: [{ openDialogue: 'dialogue:falconer-bell-night' }],
         objectives: [{ id: 'perches', text: 'Go up to the cliff perches', reach: 'landmark:mews-cliff-perches', marker: { landmark: 'landmark:mews-cliff-perches' } }],
         next: 'lure',
       },
       {
         id: 'lure', journal: 'The perches are empty. Swing the lure and call your hawk home.',
-        objectives: [{ id: 'lure', text: 'Call your hawk back with the lure', interact: 'obj:mews-lure-post', marker: { landmark: 'landmark:mews-cliff-perches' } }],
+        objectives: [{ id: 'lure', text: 'Call your hawk back with the lure at the cliff perches', interact: 'obj:mews-lure-post', marker: { landmark: 'landmark:mews-cliff-perches' } }],
         next: 'wren',
       },
       {
-        id: 'wren', journal: 'Your hawk came back with something caught in its feathers: a sound. Up on her ledge, Old Wren is laughing.',
+        id: 'wren', journal: 'Your hawk came back with something caught in its feathers: a sound. Up on her ledge, Old Wren, who taught you to fly your first bird, is laughing.',
         objectives: [{ id: 'wren', text: 'Go up to Old Wren’s ledge', talk: WR, marker: { landmark: 'landmark:wren-ledge' } }],
         onComplete: [{ setFlag: 'falconer.bell_heard', value: true }],
         next: 'clifftop',
@@ -54,7 +54,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'count', journal: 'Three tors, three counts. Send the hawk up from each and count what rises with it.',
-        objectives: [{ id: 'tors', text: 'Count the wild hawks from the three tors', interact: 'obj:hawkmoor-tor-*', count: 3, marker: { place: Z2 } }],
+        objectives: [{ id: 'tors', text: 'Count the wild hawks from the three tors on the Hawkmoor', interact: 'obj:hawkmoor-tor-*', count: 3, marker: { place: Z2 } }],
         next: 'fallen',
       },
       {

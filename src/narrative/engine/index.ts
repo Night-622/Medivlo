@@ -92,6 +92,8 @@ export function installNarrativeAuthority(): void {
   authBus.on('game:loaded', () => syncMentor());
   for (const ev of ['quest:started', 'quest:advanced', 'quest:completed', 'game:loaded'] as const) authBus.on(ev, () => syncGateFight());
   authBus.on('game:new', () => syncAllRepFlags());
+  // the smiths' "A Smith's Eye" quests wait on the first Runeforge upgrade (Claude 3 emits it on the authority)
+  authBus.on('item:crafted', ({ recipe }) => { if (recipe === 'recipe:upgrade' && getFlag('builds.upgraded') !== true) setFlag('builds.upgraded', true); });
   // the hero may be created after game:new, so the first quest start (I-1 / First Steps) syncs too
   for (const ev of ['game:new', 'game:loaded', 'quest:started'] as const) authBus.on(ev, () => syncCampaignClass());
   // net is a switch facade (Claude 1): becoming a guest or realm visitor drops this machine's own scenes (the host's

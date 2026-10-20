@@ -42,7 +42,7 @@ const dialogues: DialogueDef[] = [
           { text: 'Something’s singing under my ribs.', to: 'sing' },
         ],
       },
-      count: { speaker: GH, text: 'All out. Forty-one. Only I keep counting forty-two. Every time. Forty-one heads, and one sound too many. Sergeant’s been singing at the floor for ten minutes.', next: 'sergeant' },
+      count: { speaker: GH, text: 'All out. Forty-one. Only I keep counting forty-two. Every time. Forty-one heads, and one sound too many. And Sergeant, my canary, has been singing at the floor for ten minutes.', next: 'sergeant' },
       sing: { speaker: GH, mood: 'afraid', text: 'Singing. Under your ribs. (She looks at the floor of the shaft-head. So does her canary.) Forty-one heads, and one sound too many. I knew it.', next: 'sergeant' },
       sergeant: {
         speaker: GH, text: '(In his cage on her belt, Sergeant the canary is singing, loud and furious, straight down at the rock.) He only does that for gas or trouble. That’s not gas. That’s coming from below. Way below. Below the bottom.',

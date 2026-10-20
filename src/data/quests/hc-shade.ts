@@ -26,7 +26,7 @@ const quests: QuestDef[] = [
     requires: SHA, autoStart: true, firstStage: 'lift',
     stages: [
       {
-        id: 'lift', journal: 'A fat purse on a fat merchant, halfway across the third bridge. Mab is watching from the rail. Lift it.',
+        id: 'lift', journal: 'A fat purse on a fat merchant, halfway across the third bridge. Grey Mab, your teacher, is watching from the rail. Lift it.',
         onEnter: [{ openDialogue: 'dialogue:shade-bridges-night' }],
         objectives: [{ id: 'purse', text: 'Lift the merchant’s purse on the third bridge', interact: 'obj:bridge-mark-purse', marker: { landmark: 'landmark:rope-bridges' } }],
         onComplete: [{ setFlag: 'shade.shadowless', value: true }],
@@ -44,8 +44,8 @@ const quests: QuestDef[] = [
         next: 'bunk',
       },
       {
-        id: 'bunk', journal: 'Mab has sent you to bed. Your bunk in the Veil hall is exactly as you left it, except that somebody has left a note on the pillow, and there is only one somebody it could be.',
-        objectives: [{ id: 'note', text: 'Read the note on your bunk', interact: 'obj:shade-bunk-note', marker: { landmark: 'landmark:shade-bunk' } }],
+        id: 'bunk', journal: 'Mab has sent you to bed. Your bunk in the Veil hall, where Mab’s thieves sleep, is exactly as you left it, except that somebody has left a note on the pillow, and there is only one somebody it could be.',
+        objectives: [{ id: 'note', text: 'Read the note on your bunk in the Veil hall', interact: 'obj:shade-bunk-note', marker: { landmark: 'landmark:shade-bunk' } }],
         onComplete: [{ startQuest: 'quest:shade-mabs-toll' }],
         end: { status: 'completed' },
       },
@@ -59,7 +59,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'spool', journal: 'The Cutter-Mother of the silk-cutters, Wilhelmina Spool, pays the Veil’s toll. Usually. Grudgingly. In silk.',
-        objectives: [{ id: 'spool', text: 'Collect the toll from the Cutter-Mother', talk: WS, marker: { landmark: 'landmark:silk-cutters-camp' } }],
+        objectives: [{ id: 'spool', text: 'Collect the toll from the Cutter-Mother at the silk-cutters’ camp', talk: WS, marker: { landmark: 'landmark:silk-cutters-camp' } }],
         next: 'spiders',
       },
       {

@@ -25,7 +25,7 @@ const quests: QuestDef[] = [
       {
         id: 'graves', journal: 'The duel-graves of the Fencing Quarter have opened, and the Revenants are climbing out with their swords already drawn.',
         onEnter: [{ openDialogue: 'dialogue:swordsman-bell-night' }],
-        objectives: [{ id: 'revenants', text: 'Fight off the Duelist Revenants', kill: 'bx_blade_0', count: 3, marker: { landmark: 'landmark:ladder-board' } }],
+        objectives: [{ id: 'revenants', text: 'Fight off the Duelist Revenants round the Ladder board', kill: 'bx_blade_0', count: 3, marker: { landmark: 'landmark:ladder-board' } }],
         next: 'ferro',
       },
       {

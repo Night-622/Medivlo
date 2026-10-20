@@ -25,11 +25,11 @@ const quests: QuestDef[] = [
       {
         id: 'bout', journal: 'Round three, ahead on points. The bell rang. The round bell, surely. Turn for your corner.',
         onEnter: [{ openDialogue: 'dialogue:brawler-bout-night' }],
-        objectives: [{ id: 'corner', text: 'Turn for your corner', interact: 'obj:village-ring-corner', marker: { landmark: 'landmark:knuckletown-village-ring' } }],
+        objectives: [{ id: 'corner', text: 'Turn for your corner of the ring', interact: 'obj:village-ring-corner', marker: { landmark: 'landmark:knuckletown-village-ring' } }],
         next: 'pops',
       },
       {
-        id: 'pops', journal: 'It was not the round bell. You are flat on the canvas, something is singing in your chest, and a small old man is fanning you with a noodle menu.',
+        id: 'pops', journal: 'It was not the round bell. You are flat on the canvas, something is singing in your chest, and Pops, the old man with the noodle cart, is fanning you with his menu.',
         objectives: [{ id: 'pops', text: 'Get up, and talk to Pops', talk: TK, marker: { landmark: 'landmark:knuckletown-village-ring' } }],
         onComplete: [{ setFlag: 'brawler.bell_heard', value: true }],
         next: 'cart',
@@ -41,7 +41,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'stock', journal: 'Pops’s cart, parked in its alley for the night. The stock-pot is still simmering, the way it has every night since before you were born. He has put out two bowls.',
-        objectives: [{ id: 'pops', text: 'Eat a midnight bowl with Pops', talk: TK, marker: { landmark: 'landmark:pops-noodle-cart' } }],
+        objectives: [{ id: 'pops', text: 'Eat a midnight bowl with Pops at his cart', talk: TK, marker: { landmark: 'landmark:pops-noodle-cart' } }],
         onComplete: [{ startQuest: 'quest:brawler-noodles-and-debts' }],
         end: { status: 'completed' },
       },

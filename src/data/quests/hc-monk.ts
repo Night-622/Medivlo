@@ -36,7 +36,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'climb', journal: 'Shirin wants to see the bell that rang itself, tonight, before anybody else can tell her what it means. She has set off up the Stairs to the Bell Courts with her lantern, faster than her knees should allow.',
-        objectives: [{ id: 'bell', text: 'Climb with the Abbess to the great bell', reach: 'landmark:great-bell', marker: { landmark: 'landmark:great-bell' } }],
+        objectives: [{ id: 'bell', text: 'Climb with the Abbess to the great bell in the Bell Courts', reach: 'landmark:great-bell', marker: { landmark: 'landmark:great-bell' } }],
         next: 'bell',
       },
       {
@@ -54,7 +54,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:monk-the-bell-on-the-stair')), firstStage: 'cups',
     stages: [
       {
-        id: 'cups', journal: 'One cup on every landing for whoever keeps the tea stall there. Half the stalls are shuttered. Their keepers have gone up the mountain to the King.',
+        id: 'cups', journal: 'One cup on every landing for whoever keeps the tea stall there. Half the stalls are shuttered. Their keepers have gone up to the Mountain King.',
         objectives: [{ id: 'cups', text: 'Pour a cup of tea on each landing', interact: 'obj:landing-cup-*', count: 6, marker: { place: Z1 } }],
         next: 'monks',
       },

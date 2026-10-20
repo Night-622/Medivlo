@@ -13,7 +13,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:shade-bridges-night', name: 'I-1 the night lift', scope: 'party',
     entries: [{ node: 'bridges' }],
     nodes: {
-      bridges: { speaker: 'narrator', text: 'Night in the Veilwarrens: a maze of tunnels and rope bridges strung across the dark, a lantern on every post. Halfway across the third bridge a fat merchant is counting his change. Grey Mab is leaning on the far rail, pretending to be a heap of washing. It is your first lift alone.', next: 'bell' },
+      bridges: { speaker: 'narrator', text: 'Night in the Veilwarrens: a maze of tunnels and rope bridges strung across the dark, a lantern on every post. Halfway across the third bridge a fat merchant is counting his change. Grey Mab, the old thief who taught you everything, is leaning on the far rail, pretending to be a heap of washing. It is your first lift alone.', next: 'bell' },
       bell: { speaker: 'narrator', text: 'Somewhere very far away a bell rings once. Every lantern in the warrens gutters at the same moment. And on the planks at your feet, your shadow stands up.', next: 'leave' },
       leave: { speaker: 'narrator', text: 'It stands up off the boards, the shape of you, and stretches, and turns to you, and bows, very politely. Then it walks away across the bridge without you, and round the corner of the tunnel, and is gone. Where it used to be, in your chest, something has begun to sing.', next: null },
     },
@@ -49,7 +49,7 @@ const dialogues: DialogueDef[] = [
       },
       walked: { speaker: GM, mood: 'afraid', text: 'Bowed? (For a moment the oldest thief in the warrens looks old.) Polite of it. That’s worse. A rude shadow comes back. A polite one’s gone to do something.', next: 'stone' },
       stone: {
-        speaker: GM, text: 'And you’re humming. Don’t tell me what it is, I know what it is. The Veil half’s woken up in the deepest hole in the warrens, and it’s chosen my worst apprentice, and your shadow’s run off in the same breath. That’s not luck. Luck doesn’t come in pairs.',
+        speaker: GM, text: 'And you’re humming. Don’t tell me what it is, I know what it is. Half the Umbral Stone, the Veil half, has woken up in the deepest hole in the warrens, and it’s chosen my worst apprentice, and your shadow’s run off in the same breath. That’s not luck. Luck doesn’t come in pairs.',
         choices: [
           { text: 'Your worst apprentice?', to: 'worst' },
           { text: 'What do I do?', to: 'do' },

@@ -32,8 +32,8 @@ const quests: QuestDef[] = [
         next: 'ragna',
       },
       {
-        id: 'ragna', journal: 'The harpies are gone. Something under your ribs is still singing, and in the Saga Hall a lamp has been lit.',
-        objectives: [{ id: 'ragna', text: 'Go to Ragna at her hearth', talk: RG, marker: HEARTH }],
+        id: 'ragna', journal: 'The harpies are gone. Something under your ribs is still singing, and at the end of the steads a lamp has come on in the window of Ragna Saga-Keeper, who raised you.',
+        objectives: [{ id: 'ragna', text: 'Go to Ragna at her hearth, at the end of the steads', talk: RG, marker: HEARTH }],
         onComplete: [{ setFlag: 'skald.bell_heard', value: true }],
         next: 'hall',
       },

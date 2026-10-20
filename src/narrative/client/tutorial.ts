@@ -19,6 +19,7 @@ import { HC_RUNES, HC_TOMES } from '@/data/items/hc/build-items';
 import { shopByNpc } from '@/data/items/hc/shops';
 import { HC_MASTERY } from '@/data/skilltrees/hc/mastery';
 import { hybridSchools, weaponBase } from '@/systems/rules/gear';
+import { allNodes } from '@/systems/rules/tree';
 import { isUnlocked, unlockLore } from '../engine/codex';
 
 const me = (): string => Services.tryGet('net')?.localPlayer ?? 'local';
@@ -146,7 +147,12 @@ function installBuildHints(): void {
   });
   // a merchant's "Let me see your wares." sets shop.open = the merchant; the capital smiths keep the Runeforges
   bus.on('flag:changed', ({ key, value }) => { if (key === 'shop.open' && typeof value === 'string' && shopByNpc(value)?.runeforge) build('runeforge'); });
-  // keystones: Claude 3's tree emits tree:allocated when a node is learned (ks_* = a shared keystone)
-  bus.on('tree:allocated', ({ nodeId }) => { if (nodeId.startsWith('ks_')) build('keystone'); });
+  // keystones: Claude 3's learn() emits tree:allocated with the TREE NODE id; a shared keystone is a node marked shared
+  bus.on('tree:allocated', ({ treeId, nodeId }) => {
+    const cls = treeId.replace(/^skilltree:/, '');
+    if (allNodes(cls).find((n) => n.id === nodeId)?.shared === true) build('keystone');
+  });
   bus.on('game:loaded', () => { const c = myChar(); if (c?.freeRespec && Object.keys(c.tree).length) build('respec'); });
+  // by mid Act I Embershards pile up unspent; point at the Runeforge unless the player has already found one
+  bus.on('player:levelup', ({ playerId, level }) => { if (mine(playerId) && level >= 6 && !getFlag('hint.runeforge')) build('upgrade'); });
 }

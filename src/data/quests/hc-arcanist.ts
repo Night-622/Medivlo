@@ -243,7 +243,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A1, id: 'quest:arcanist-the-heart-of-the-kiln', name: 'The Heart of the Kiln', type: 'main', region: L3, giver: 'npc:coalby-thrane',
-    summary: 'Morrow means to set the Kiln half of the Ash stone in his own chest and become a living kiln. He has gone down to the Heart of the Kiln to take it.',
+    summary: 'Morrow means to set the Kiln half of the Ash Stone in his own chest and become a living kiln. He has gone down to the Heart of the Kiln to take it.',
     requires: req(done('quest:arcanist-what-the-provost-burned')), firstStage: 'descend',
     stages: [
       {

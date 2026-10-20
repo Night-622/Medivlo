@@ -49,7 +49,7 @@ const dialogues: DialogueDef[] = [
           { text: 'It’s like a scent. It pulls the way a trail pulls.', to: 'scent', school: 'hunt' },
         ],
       },
-      hall: { speaker: BN, mood: 'afraid', text: 'The Hall. (He sets his cup down.) The Ashbys have hung heads on those walls for three hundred years. Whatever’s in there was bought, and the Barons don’t sell back. Don’t go knocking at her gates at night again. Not yet.', next: 'count' },
+      hall: { speaker: BN, mood: 'afraid', text: 'The Hall. (He sets his cup down.) The Ashbys have hung heads on those walls for three hundred years. Whatever’s in there was bought, and the Barons don’t sell back. Don’t go knocking at Lady Ashby’s gates at night again. Not yet.', next: 'count' },
       dunno: { speaker: BN, text: 'No. Neither do I. That’s honest, at least. Honest is a good start. Most of the Lodge never gets past it.', next: 'count' },
       scent: { speaker: BN, mood: 'happy', text: '(He very nearly smiles.) Then you’ll follow it whatever I say. Good. A hunter who can be talked off a trail isn’t one. Only mind whose land it crosses.', next: 'count' },
       count: {

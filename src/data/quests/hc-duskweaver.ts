@@ -19,23 +19,23 @@ const quests: QuestDef[] = [
   // ======================= ACT I: main (I-1 … I-10)
   {
     ...A1, id: 'quest:duskweaver-the-bell-at-dusk', name: 'The Bell at Dusk', type: 'main', region: Z1, giver: NX,
-    summary: 'A bell rang over Duskmere from very far away, and the moon rippled like a pond someone had dropped a stone in. Every bottled shadow in the city turned to face the Obelisk. So did something in your chest.',
+    summary: 'A bell rang over Duskmere from very far away, and the moon rippled like a pond someone had dropped a stone in. Every bottled shadow in the city turned to face the Moon Obelisk. So did something in your chest.',
     requires: DUS, autoStart: true, firstStage: 'street',
     stages: [
       {
         id: 'street', journal: 'You woke with a song in your chest and the moon wobbling overhead. The song is pulling you up the street, towards the Keepers’ Lodge.',
         onEnter: [{ openDialogue: 'dialogue:duskweaver-bell-at-dusk' }],
-        objectives: [{ id: 'lodge', text: 'Follow the song up the Lanternless Streets', reach: 'landmark:keepers-lodge', marker: { landmark: 'landmark:keepers-lodge' } }],
+        objectives: [{ id: 'lodge', text: 'Follow the song up the street to the Keepers’ Lodge', reach: 'landmark:keepers-lodge', marker: { landmark: 'landmark:keepers-lodge' } }],
         next: 'jars',
       },
       {
         id: 'jars', journal: 'The bottled shadows in the windows have all turned round to stare at the Obelisk, pressing against the glass. Weave them back to face the room before they crack the jars.',
-        objectives: [{ id: 'jars', text: 'Weave the bottled shadows back round', interact: 'obj:dusk-shadow-jar-*', count: 3, marker: { landmark: 'landmark:keepers-lodge' } }],
+        objectives: [{ id: 'jars', text: 'Weave the bottled shadows in the windows by the Lodge back round', interact: 'obj:dusk-shadow-jar-*', count: 3, marker: { landmark: 'landmark:keepers-lodge' } }],
         next: 'nyx',
       },
       {
         id: 'nyx', journal: 'There is an old woman in a nightgown in the middle of the street, holding a candle, calling a name that isn’t yours.',
-        objectives: [{ id: 'nyx', text: 'Speak to the woman in the street', talk: NX, marker: { landmark: 'landmark:keepers-lodge' } }],
+        objectives: [{ id: 'nyx', text: 'Speak to the woman outside the Keepers’ Lodge', talk: NX, marker: { landmark: 'landmark:keepers-lodge' } }],
         onComplete: [{ setFlag: 'duskweaver.bell_heard', value: true }],
         next: 'cocoa',
       },
@@ -54,8 +54,8 @@ const quests: QuestDef[] = [
     requires: req(done('quest:duskweaver-the-bell-at-dusk')), firstStage: 'doors',
     stages: [
       {
-        id: 'doors', journal: 'Five households have woken up outside the wrong doors. Chalk their used names back where they belong.',
-        objectives: [{ id: 'doors', text: 'Chalk the names back on the doors', interact: 'obj:umbral-door-*', count: 5, marker: { place: Z1 } }],
+        id: 'doors', journal: 'Five households have woken up outside the wrong doors. Chalk their own names back where they belong.',
+        objectives: [{ id: 'doors', text: 'Chalk the names back on the doors of the Lanternless Streets', interact: 'obj:umbral-door-*', count: 5, marker: { place: Z1 } }],
         next: 'wisps',
       },
       {

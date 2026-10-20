@@ -51,7 +51,7 @@ const dialogues: DialogueDef[] = [
       },
       pin: { speaker: HV, text: 'Your hour-pin. I cut it for you when you were small enough to fit in a filing drawer. The hour-walkers are the only people in Glacierhome who can move inside the hold. There are eleven of us. There were twelve.', next: 'do' },
       do: {
-        speaker: HV, text: 'Tonight the whole hold shook, and so did your pin. Look at it. (There is a crack across the ice at your collar, fine as a hair.) An hour-pin cracks, and then it fails, and then you are a statue with opinions. Up to my study. Now.',
+        speaker: HV, text: 'Tonight the whole hold shook, the held hour this city lives in, and so did your hour-pin. Look at it. (There is a crack across the ice at your collar, fine as a hair.) An hour-pin cracks, and then it fails, and then you are a statue with opinions. Up to my study. Now.',
         choices: [
           { text: 'I’m right behind you.', to: 'end', trust: 1 },
           { text: 'Can’t it wait until morning?', to: 'self' },

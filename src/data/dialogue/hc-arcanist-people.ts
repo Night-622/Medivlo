@@ -39,7 +39,7 @@ const dialogues: DialogueDef[] = [
     nodes: {
       start: { speaker: TH, text: 'Read them out. Slowly. Mm. Mm-hm. Carry the ember… Oh. Oh, that’s it. That’s been it all along.', next: 'song' },
       song: {
-        speaker: TH, mood: 'happy', text: 'The Kiln was never built to burn wood. The heat doesn’t add up, it never could. For a thousand years it burned the Ash stone’s song. Thirty years ago the song left, and we have been feeding it furniture ever since.',
+        speaker: TH, mood: 'happy', text: 'The Kiln was never built to burn wood. The heat doesn’t add up, it never could. For a thousand years it burned the Ash Stone’s song. Thirty years ago the song left, and we have been feeding it furniture ever since.',
         choices: [{ text: 'Then the half-stone could feed it.', to: 'end', insight: 'kiln_song', trust: 1 }],
       },
       end: { speaker: TH, text: 'For a night, at least. Remember that, if they ever ask you what fire is for.', next: null },

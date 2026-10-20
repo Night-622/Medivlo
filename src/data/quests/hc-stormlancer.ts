@@ -29,13 +29,13 @@ const quests: QuestDef[] = [
       },
       {
         id: 'odran', journal: 'The herd has turned. Something in your chest is singing, and Lancemaster Odran Gale is arriving, last, on foot, at a stroll.',
-        objectives: [{ id: 'odran', text: 'Talk to Odran Gale', talk: OG, marker: { landmark: 'landmark:chime-yard' } }],
+        objectives: [{ id: 'odran', text: 'Talk to Odran Gale at the Chime Yard', talk: OG, marker: { landmark: 'landmark:chime-yard' } }],
         onComplete: [{ setFlag: 'stormlancer.bell_heard', value: true }],
         next: 'strays',
       },
       {
         id: 'strays', journal: 'Three rams broke from the herd at the first chime and ran the wrong way, towards the storm. Odran wants them home before they find the edge of the Heights.',
-        objectives: [{ id: 'strays', text: 'Bring back the three stray rams', interact: 'obj:stormlancer-stray-ram-*', count: 3, marker: { place: Z1 } }],
+        objectives: [{ id: 'strays', text: 'Bring back the three stray rams before they reach the edge of the Heights', interact: 'obj:stormlancer-stray-ram-*', count: 3, marker: { place: Z1 } }],
         next: 'steading',
       },
       {
@@ -54,7 +54,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'stones', journal: 'The pattern-stones on the open Heights show where the strikes have fallen for a thousand years. Read them.',
-        objectives: [{ id: 'stones', text: 'Read the lightning pattern-stones', interact: 'obj:lightning-pattern-stones', marker: { place: Z2 } }],
+        objectives: [{ id: 'stones', text: 'Read the lightning pattern-stones on the open Heights', interact: 'obj:lightning-pattern-stones', marker: { place: Z2 } }],
         next: 'wisps',
       },
       {

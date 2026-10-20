@@ -18,7 +18,7 @@ const quests: QuestDef[] = [
   // ======================= ACT I: main (I-1 … I-10)
   {
     ...A1, id: 'quest:reaver-the-bell-on-the-fields', name: 'The Bell on the Fields', type: 'main', region: Z1, giver: BR,
-    summary: 'A night attack on the Red Muster’s palisade. Magma Hounds out of the Fields, a hundred of them, and Hask is not on the line.',
+    summary: 'A night attack on the Red Muster’s palisade. Magma Hounds out of the Fields, a hundred of them, and Hask, your shield-sibling, is not on the line.',
     requires: REV, autoStart: true, firstStage: 'palisade',
     stages: [
       {
@@ -30,7 +30,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'brenna', journal: 'The Bell rang. Every Reaver on the line lowered their axe. The hounds did not. And Hask was not on the line.',
-        objectives: [{ id: 'brenna', text: 'Find Brenna at the palisade', talk: BR, marker: { landmark: 'landmark:muster-palisade' } }],
+        objectives: [{ id: 'brenna', text: 'Find Brenna, the Muster’s war-chief, at the palisade', talk: BR, marker: { landmark: 'landmark:muster-palisade' } }],
         onComplete: [{ setFlag: 'reaver.bell_heard', value: true }],
         next: 'wounded',
       },
@@ -41,7 +41,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'dawn', journal: 'Brenna has gone up the watchtower to keep the dawn watch, as her grandmother did.',
-        objectives: [{ id: 'brenna', text: 'Keep the dawn watch with Brenna', talk: BR, marker: { landmark: 'landmark:reaver-watchtower' } }],
+        objectives: [{ id: 'brenna', text: 'Keep the dawn watch with Brenna on the watchtower', talk: BR, marker: { landmark: 'landmark:reaver-watchtower' } }],
         onComplete: [{ startQuest: 'quest:reaver-count-the-fallen' }],
         end: { status: 'completed' },
       },
@@ -219,7 +219,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A1, id: 'quest:reaver-the-old-battle-kiln', name: 'The Old Battle-Kiln', type: 'main', region: L3, giver: BR,
-    summary: 'The Field half of the Ash stone lies in the Old Battle-Kiln at the heart of the Fields. Hask is there first.',
+    summary: 'The Field half of the Ash Stone lies in the Old Battle-Kiln at the heart of the Fields. Hask is there first.',
     requires: req(done('quest:reaver-the-unburnt')), firstStage: 'kiln',
     stages: [
       {

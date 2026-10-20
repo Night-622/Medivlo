@@ -29,7 +29,7 @@ const quests: QuestDef[] = [
         next: 'yarrow',
       },
       {
-        id: 'yarrow', journal: 'On the next bough over, in her slippers, Mother Yarrow is telling the Elder Tree to hush.',
+        id: 'yarrow', journal: 'On the next bough over, in her slippers, your old teacher Mother Yarrow is telling the Elder Tree to hush.',
         objectives: [{ id: 'yarrow', text: 'Climb across to Mother Yarrow', talk: YA, marker: { landmark: 'landmark:yarrow-bower' } }],
         onComplete: [{ setFlag: 'hedgewitch.bell_heard', value: true }],
         next: 'trunk',
@@ -55,7 +55,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'stalls', journal: 'Cut five stalls free on the Bough Markets. Gently. Yarrow says the tree feels it.',
-        objectives: [{ id: 'stalls', text: 'Prune the market stalls free', interact: 'obj:verdant-stall-*', count: 5, marker: { place: Z1 } }],
+        objectives: [{ id: 'stalls', text: 'Prune the stalls free on the Bough Markets', interact: 'obj:verdant-stall-*', count: 5, marker: { place: Z1 } }],
         next: 'lantern',
       },
       {

@@ -34,8 +34,8 @@ const quests: QuestDef[] = [
         next: 'oath',
       },
       {
-        id: 'oath', journal: 'Ser Beatrix Holm is standing in the doorway. She has not said a word. She is waiting for you to finish.',
-        objectives: [{ id: 'beatrix', text: 'Finish the oath before Ser Beatrix', talk: BH, marker: { landmark: 'landmark:hall-of-broken-swords' } }],
+        id: 'oath', journal: 'Ser Beatrix Holm, Marshal of Oathkeep, is standing in the doorway. She has not said a word. She is waiting for you to finish.',
+        objectives: [{ id: 'beatrix', text: 'Go to Ser Beatrix in the doorway and finish the oath', talk: BH, marker: { landmark: 'landmark:hall-of-broken-swords' } }],
         onComplete: [{ setFlag: 'oathbound.bell_heard', value: true }],
         next: 'bracket',
       },
@@ -50,7 +50,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A1, id: 'quest:oathbound-no-village-alone', name: 'No Village Alone', type: 'main', region: Z2, giver: BH,
-    summary: '“No village of the March shall stand alone,” says the Oath. The Dimming has reached the wheat at Haybright, and Haybright is panicking at its own shadow.',
+    summary: '“No village of the March shall stand alone,” says the Oath. The Dimming, the first real night in thirty years, has reached the wheat at Haybright, and Haybright is panicking at its own shadow.',
     requires: req(done('quest:oathbound-the-vigil')), firstStage: 'reeve',
     stages: [
       {

@@ -28,8 +28,8 @@ const quests: QuestDef[] = [
         next: 'halla',
       },
       {
-        id: 'halla', journal: 'Archivist-Superior Halla Vint is standing behind you in her dressing-gown, looking more delighted than you have ever seen her.',
-        objectives: [{ id: 'halla', text: 'Talk to Halla Vint', talk: HV, marker: { landmark: 'landmark:halla-vint-study' } }],
+        id: 'halla', journal: 'Your mentor, Archivist-Superior Halla Vint, is standing behind you in her dressing-gown and night-cap, looking more delighted than you have ever seen her.',
+        objectives: [{ id: 'halla', text: 'Talk to Halla Vint by the lamp post', talk: HV, marker: { landmark: 'landmark:spire-stair-lamplighter' } }],
         onComplete: [{ setFlag: 'rimecaller.bell_heard', value: true }],
         next: 'stair',
       },
@@ -54,7 +54,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'gauges', journal: 'Five ice hourglasses stand on the Spire Stair. Each should be dry. Read them all.',
-        objectives: [{ id: 'gauges', text: 'Read the hold-gauges', interact: 'obj:hold-gauge-*', count: 5, marker: { place: Z1 } }],
+        objectives: [{ id: 'gauges', text: 'Read the hold-gauges on the Spire Stair', interact: 'obj:hold-gauge-*', count: 5, marker: { place: Z1 } }],
         next: 'wraiths',
       },
       {

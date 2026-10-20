@@ -52,7 +52,7 @@ const dialogues: DialogueDef[] = [
       shrine: { speaker: 'narrator', text: 'The Lantern Shrine stands at the top of the Temple Road: a hundred stone lanterns on the steps, one for every abbot of Hushpine, kept lit for a thousand years. Tonight the Bell blew every one of them out at once. The pines round it stand bare.', next: 'taper' },
       taper: { speaker: 'narrator', text: 'Kanemori kneels at the first lantern, and lights it from a taper, and moves to the next. He does not ask you to help. He leaves a second taper on the step beside you.', next: 'help' },
       help: {
-        speaker: 'narrator', text: 'Your half-stone is singing, loud as a struck bell on the silent mountain. Every time it swells, the flames he has just lit lean towards you.',
+        speaker: 'narrator', text: 'Every novice knows the story: when the crown broke, half of the Blade Stone fell on this mountain. Now that half-stone is singing in your chest, loud as a struck bell in the silence. Every time it swells, the flames he has just lit lean towards you.',
         choices: [
           { text: '(Take the taper and light lanterns with him, in silence.)', to: 'light', trust: 1, trustNpc: HK },
           { text: '(Draw your blade a finger’s width, and let the stone’s song run down it.)', to: 'draw', school: 'blade' },

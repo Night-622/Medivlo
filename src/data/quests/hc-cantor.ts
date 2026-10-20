@@ -30,18 +30,18 @@ const quests: QuestDef[] = [
       },
       {
         id: 'lamps', journal: 'The Bell blew out three of the Close lamps. In Dawnspire an unlit lamp is a confession. Sing them alight before anyone notices.',
-        objectives: [{ id: 'lamps', text: 'Sing the guttered Close lamps alight', interact: 'obj:close-lamp-*', count: 3, marker: { landmark: 'landmark:close-steps' } }],
+        objectives: [{ id: 'lamps', text: 'Sing the guttered lamps on the Close steps alight', interact: 'obj:close-lamp-*', count: 3, marker: { landmark: 'landmark:close-steps' } }],
         next: 'celestine',
       },
       {
-        id: 'celestine', journal: 'Mother Celestine is coming down the steps very fast, and so is a sergeant of the Brightwatch.',
+        id: 'celestine', journal: 'Mother Celestine, the Choir-mistress, is coming down the steps very fast, and so is a sergeant of the Brightwatch.',
         objectives: [{ id: 'celestine', text: 'Speak to Mother Celestine', talk: CH, marker: { landmark: 'landmark:close-steps' } }],
         onComplete: [{ setFlag: 'cantor.bell_heard', value: true }],
         next: 'cell',
       },
       {
-        id: 'cell', journal: 'The Hour of Lamps is over. Celestine told you to come to her cell after Lauds, with your mouth shut and your collar done up.',
-        objectives: [{ id: 'celestine', text: 'Go to Mother Celestine’s cell after Lauds', talk: CH, marker: { landmark: 'landmark:celestine-cell' } }],
+        id: 'cell', journal: 'The Hour of Lamps is over, and so is Lauds. Celestine told you to come to her cell in the Choir Cloisters, with your mouth shut and your collar done up.',
+        objectives: [{ id: 'celestine', text: 'Go to Mother Celestine’s cell in the Choir Cloisters', talk: CH, marker: { landmark: 'landmark:celestine-cell' } }],
         onComplete: [{ startQuest: 'quest:cantor-the-sleepers-census' }],
         end: { status: 'completed' },
       },
@@ -55,7 +55,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'novices', journal: 'Six novices are asleep in corners of the Cathedral Close. Wake them gently. Wake them quickly.',
-        objectives: [{ id: 'novices', text: 'Wake the sleeping novices', interact: 'obj:sleeping-novice-*', count: 6, marker: { place: Z1 } }],
+        objectives: [{ id: 'novices', text: 'Wake the sleeping novices round the Cathedral Close', interact: 'obj:sleeping-novice-*', count: 6, marker: { place: Z1 } }],
         next: 'lightbearers',
       },
       {

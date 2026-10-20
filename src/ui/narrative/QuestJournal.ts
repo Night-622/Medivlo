@@ -211,7 +211,7 @@ export class QuestJournal extends Phaser.GameObjects.Container {
     this.keep(sc.add.text(chip.x + chip.width + 10, 108, `${ACT_LABEL[q.act] ?? ''} · ${placeLabel(q)}${p.completed ? ' · Completed' : p.failed ? ' · Failed' : ''}`, { ...typeStyle('caption', C.text300), fontStyle: '600' }));
     const title = this.keep(sc.add.text(624, 130, q.name, { fontFamily: '"Jersey 10"', fontSize: '44px', color: C.text, wordWrap: { width: 584 } }).setLineSpacing(-6));
     if (title.height > 80) title.setFontSize(34);
-    this.keep(sc.add.text(624, title.y + title.height + 4, giver ? `Given by ${giver.name}` : 'The story itself', { ...typeStyle('body', color), fontStyle: '600' }));
+    this.keep(sc.add.text(624, title.y + title.height + 4, giver ? `Given by ${giver.name}` : q.chapter === 'tutorial' ? 'Worth knowing before the road gets long' : 'The story itself', { ...typeStyle('body', color), fontStyle: '600' }));
 
     // left column (scrolls with the wheel): summary, the current stage's journal paragraph, objectives, then the diary
     // of past stages newest first. The stage journals are most of the quest prose (Claude 7: never shown before).

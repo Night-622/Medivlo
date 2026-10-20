@@ -52,6 +52,7 @@ export const TIPS: Tip[] = [
   { tag: 'systems', text: 'Codex entries unlock as you meet people and find places. Some come in parts.' },
   { tag: 'systems', text: 'Night changes things. Some scenes only happen after dark.' },
   { tag: 'systems', text: 'Merchants who like you charge less. Merchants who love you charge less and tell you things.' },
+  { tag: 'systems', text: 'Embershards do the most good at a Runeforge. Every capital has a smith who will make a favourite piece stronger.' },
 
   // ---------- co-op
   { tag: 'coop', text: 'In co-op, guests play the host’s story. Your own codex and portable quests still come home with you.' },

@@ -18,7 +18,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:ranger-watch-night', name: 'I-1 night watch at Wayfarer’s Rest', scope: 'party',
     entries: [{ node: 'watch' }],
     nodes: {
-      watch: { speaker: 'narrator', text: 'Night watch on the lookout above Wayfarer’s Rest. Pine-smoke, owls, and the whole dark Thornwilds below. Holt Barrow is sitting beside you with his knees up, which means he is about to tell the joke.', next: 'joke' },
+      watch: { speaker: 'narrator', text: 'Night watch on the lookout above Wayfarer’s Rest. Pine-smoke, owls, and the whole dark Thornwilds below. Holt Barrow, the old Wayfarer who taught you the paths, is sitting beside you with his knees up, which means he is about to tell the joke.', next: 'joke' },
       joke: { speaker: HB, text: 'So. A beetle, a boar and a Circle witch walk into the Thornwilds. And the beetle says to the boar…', next: 'bell' },
       bell: { speaker: 'narrator', text: 'Somewhere very far away a bell rings once. Below you every path in the Thornwilds moves at once, with a sound like a rug being shaken out. Trees step sideways. A trail that ran north now runs east. And up the camp’s rope-ladders come the Thorn Beetles, hundreds of them, clicking.', next: 'holt' },
       holt: { speaker: HB, mood: 'angry', text: 'Every time. Every single time. Ladders! Knock them off the ladders!', next: null },

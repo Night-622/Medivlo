@@ -56,7 +56,7 @@ const quests: QuestDef[] = [
     stages: [
       {
         id: 'bars', journal: 'Five buskers, five bars. Hear each one play, and keep the notes in your head before the wisps can get at them.',
-        objectives: [{ id: 'bars', text: 'Learn the five bars of the overture', interact: 'obj:busker-bar-*', count: 5, marker: { place: Z1 } }],
+        objectives: [{ id: 'bars', text: 'Learn the five bars from the buskers in the Opera Quarter', interact: 'obj:busker-bar-*', count: 5, marker: { place: Z1 } }],
         next: 'wisps',
       },
       {

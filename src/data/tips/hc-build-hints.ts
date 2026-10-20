@@ -3,7 +3,7 @@
  * when the player first meets the system; each also opens its Codex entry (src/data/lore/hc-craft.ts). Triggers live in
  * narrative/client/tutorial.ts. `{key:<action>}` tokens show the player's bindings. No tuned numbers.
  */
-export type BuildHintId = 'rune' | 'tome' | 'enchanted' | 'socket' | 'unique' | 'runeforge' | 'hybrid' | 'keystone' | 'mastery' | 'respec';
+export type BuildHintId = 'rune' | 'tome' | 'enchanted' | 'socket' | 'unique' | 'runeforge' | 'hybrid' | 'keystone' | 'mastery' | 'respec' | 'upgrade';
 
 export interface BuildHint { text: string; lore: `lore:${string}` }
 
@@ -26,6 +26,9 @@ export const BUILD_HINTS: Record<BuildHintId, BuildHint> = {
     text: 'A keystone. It changes the rules of how you fight, often at a price, and you can hold only two.' },
   mastery: { lore: 'lore:hc-craft-mastery',
     text: 'Weapon mastery: your class fights a little differently with this weapon while it is in your main hand.' },
+  // the Embershards nudge (Claude 3 / Claude 5's gear-curve audit): gold sits idle until a player finds the Runeforge
+  upgrade: { lore: 'lore:hc-craft-runeforge',
+    text: 'Embershards piling up? A smith at any capital’s Runeforge can make a piece you like stronger.' },
   respec: { lore: 'lore:hc-craft-unlearning',
     text: 'Your Skills tree has changed, so one reset of every branch is free. Find it in Skills ({key:skills}).' },
 };

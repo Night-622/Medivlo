@@ -61,7 +61,7 @@ const dialogues: DialogueDef[] = [
       still: { speaker: 'narrator', text: 'You sink into the stance. The hum in the bronze slows, as if it were listening to your breathing, and steadies, and holds. Shirin opens her eyes and looks at you for a long moment with an expression you have never seen on her before.', next: 'answer' },
       answer: { speaker: ST, text: 'The Fist stone fled the crown thirty years ago and cracked in two as it fell, and half of it came home to the summit. The bell remembers it. Bells remember everything they have been rung for. That is why we keep them.', next: 'summit' },
       summit: {
-        speaker: ST, text: 'It is at the very top, past the King’s empty throne. You will have to climb to it. Not tonight. The Stairs are not kind to people who climb them at midnight with their heads full of singing.',
+        speaker: ST, text: 'It is at the very top, past the Mountain King’s empty throne. You will have to climb to it. Not tonight. The Stairs are not kind to people who climb them at midnight with their heads full of singing.',
         choices: [
           { text: 'Will you come with me?', to: 'come' },
           { text: 'What happens when I reach it?', to: 'reach' },

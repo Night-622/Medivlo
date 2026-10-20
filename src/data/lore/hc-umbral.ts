@@ -13,7 +13,7 @@ const entries: LoreEntry[] = [
   },
   {
     id: 'lore:hc-moon-obelisk', name: 'The Moon Obelisk', category: 'places', source: 'the lower register, page two',
-    body: 'A tall black stone at the heart of Duskmere, banded with iron and taller than any building in the city, where every memory in Nocturne is kept. The Obelisk half of the Umbral stone lay at its foot for thirty years, in the one shadow the moon has never seen. Without the whole stone the Obelisk leaks, like a bucket with no bottom.',
+    body: 'A tall black stone at the heart of Duskmere, banded with iron and taller than any building in the city, where every memory in Nocturne is kept. The Obelisk half of the Umbral Stone lay at its foot for thirty years, in the one shadow the moon has never seen. Without the whole stone the Obelisk leaks, like a bucket with no bottom.',
   },
   {
     id: 'lore:hc-obelisk-keepers', name: 'The Obelisk Keepers', category: 'factions', source: 'the Keepers’ oldest law',

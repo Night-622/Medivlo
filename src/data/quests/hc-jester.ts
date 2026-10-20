@@ -28,8 +28,8 @@ const quests: QuestDef[] = [
         next: 'fennick',
       },
       {
-        id: 'fennick', journal: 'Old Fennick Pantaloon has fallen flat across the gangplank, on purpose, and the whole masque is laughing at him instead of looking at you.',
-        objectives: [{ id: 'fennick', text: 'Help Fennick up', talk: FE, marker: { landmark: 'landmark:masque-gangplank' } }],
+        id: 'fennick', journal: 'Old Fennick Pantaloon, the old fool who taught you to fall over, has fallen flat across the gangplank, on purpose, and the whole masque is laughing at him instead of looking at you.',
+        objectives: [{ id: 'fennick', text: 'Help Fennick up off the gangplank', talk: FE, marker: { landmark: 'landmark:masque-gangplank' } }],
         onComplete: [{ setFlag: 'jester.bell_heard', value: true }],
         next: 'attic',
       },
@@ -49,7 +49,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A1, id: 'quest:jester-fennicks-pawn-ticket', name: 'Fennick’s Pawn Ticket', type: 'main', region: Z1, giver: FE,
-    summary: 'Fennick pawned his cap-bells to Tuttle on the Docks eleven years ago and wants them back for the Jubilee. He has kept the ticket in his shoe ever since, which is why it smells like that.',
+    summary: 'Fennick pawned his cap-bells to Tuttle on the Docks eleven years ago, and now he wants them back. He has kept the ticket in his shoe ever since, which is why it smells like that.',
     requires: req(done('quest:jester-the-bell-at-the-masque')), firstStage: 'tuttle',
     stages: [
       {

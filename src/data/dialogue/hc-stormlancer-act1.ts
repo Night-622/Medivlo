@@ -32,7 +32,7 @@ const dialogues: DialogueDef[] = [
         speaker: OG, text: 'Singing. (He takes a long time over the next bit.) Half the Storm Stone came down in the Eye of the storm, the night the crown broke. The old riders said it would call somebody, one day. Didn’t think it’d call somebody who rides without a bridle.',
         choices: [
           { text: 'What do I do?', to: 'do', trust: 1 },
-          { text: 'Is it calling Cass too?', to: 'cass' },
+          { text: 'Is it calling Cass too, wherever she’s got to?', to: 'cass' },
         ],
       },
       cass: { speaker: OG, mood: 'sad', text: 'Cass rode into that storm a month ago and her ram came home without her. If it was calling her, she didn’t hear it right. (A pause.) Sorry, pup. I know.', next: 'do' },

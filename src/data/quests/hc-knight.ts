@@ -41,7 +41,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'quarters', journal: 'Ser Gideon’s quarters: a bare room, a cold hearth, a pot of paint, and a kettle. He is putting the kettle on, which seems to be the first thing anybody in Ironhold does in a crisis.',
-        objectives: [{ id: 'gideon', text: 'Hear Ser Gideon out in his quarters', talk: GM, marker: { landmark: 'landmark:gideon-quarters' } }],
+        objectives: [{ id: 'gideon', text: 'Hear Ser Gideon out in his quarters by the breach', talk: GM, marker: { landmark: 'landmark:gideon-quarters' } }],
         onComplete: [{ startQuest: 'quest:knight-forty-gates' }],
         end: { status: 'completed' },
       },

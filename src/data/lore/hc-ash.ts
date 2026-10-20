@@ -126,7 +126,7 @@ const entries: LoreEntry[] = [
   },
   {
     id: 'lore:hc-kiln-heart', name: 'The Heart of the Kiln', category: 'places', source: 'a handprint in the oldest brick', hidden: true,
-    body: 'At the bottom of the Great Kiln is the cradle where the Ash stone’s song came up through the floor for a thousand years, singing the fire into the brick, and where the Kiln half fell home, silent, thirty years ago. The Conclave forgot it was there. The stokers never did; they call the deepest grate “the cradle” to this day, without knowing why.',
+    body: 'At the bottom of the Great Kiln is the cradle where the Ash Stone’s song came up through the floor for a thousand years, singing the fire into the brick, and where the Kiln half fell home, silent, thirty years ago. The Conclave forgot it was there. The stokers never did; they call the deepest grate “the cradle” to this day, without knowing why.',
   },
   {
     id: 'lore:hc-drake-riders', name: 'The Drake Riders', category: 'history', source: 'a saddle in the Drake Roost', hidden: true,

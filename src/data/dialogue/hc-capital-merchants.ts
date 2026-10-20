@@ -12,12 +12,20 @@ function talk(school: SchoolId, kind: Kind, greet: string, more: string): Dialog
   const npc = `npc:${school}-${kind}` as const;
   const wares = { text: 'Let me see your wares.', to: null, effects: [{ setFlag: 'shop.open', value: npc }] };
   const bye = { text: 'Farewell.', to: null, tag: 'leave' as const };
+  // smiths offer A Smith’s Eye (quests/hc-smiths-eye.ts) until the player's first upgrade, one quest at a time
+  const eye = {
+    text: 'Make something of mine stronger.', to: 'eye', quest: true,
+    when: { all: [{ not: { flag: 'builds.upgraded' } }, { not: { flag: 'builds.smith_quest' } }] },
+    effects: [{ setFlag: 'builds.smith_quest', value: true }, { startQuest: `quest:${school}-smiths-eye` }],
+  };
+  const smith = kind === 'smith' ? [eye] : [];
   return {
     id: `dialogue:merchant-${school}-${kind}`, name: `${school} capital ${kind}`,
     entries: [{ node: 'start' }],
     nodes: {
-      start: { speaker: npc, text: greet, choices: [wares, { text: ASK[kind], to: 'more' }, bye] },
-      more: { speaker: npc, text: more, choices: [wares, bye] },
+      start: { speaker: npc, text: greet, choices: [wares, { text: ASK[kind], to: 'more' }, ...smith, bye] },
+      more: { speaker: npc, text: more, choices: [wares, ...smith, bye] },
+      eye: { speaker: npc, text: 'Pick something you like, bring it to the bench with the Embershards and a couple of Iron Ingots, and choose Upgrade. Do it once and you’ll never let good coin sit in your pack again.', choices: [wares, bye] },
     },
   } as DialogueDef;
 }

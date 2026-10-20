@@ -48,7 +48,7 @@ const dialogues: DialogueDef[] = [
           { text: 'Where’s Hask?', to: 'hask' },
         ],
       },
-      sing: { speaker: BR, text: 'Then it’s the stone. Granny Thorn always said half of the Ash stone fell on the Fields when the crown broke. Said one day it would call someone. Didn’t think it’d be my own pup.', next: 'hask' },
+      sing: { speaker: BR, text: 'Then it’s the stone. Granny Thorn always said half of the Ash Stone fell on the Fields when the crown broke. Said one day it would call someone. Didn’t think it’d be my own pup.', next: 'hask' },
       hask: { speaker: BR, mood: 'afraid', text: 'He went out past the line before the attack. Alone. He does that. He always comes back. Three of ours didn’t, tonight. See to the wounded, then come up the tower with me at dawn. The Muster buries its own, and we go out for them together.', next: null },
     },
   },
