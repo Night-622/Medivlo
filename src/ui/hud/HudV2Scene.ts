@@ -113,22 +113,32 @@ export class HudV2Scene extends Phaser.Scene {
     // FADES: panels in their own scenes, so the HUD fades under them (map + Claude 3's panels draw inside this scene).
     const SELF_ESC = new Set(['journal', 'codex', 'book', 'people', 'inventory', 'skills', 'spells', 'map', 'shop']);
     const FADES = new Set(['journal', 'codex', 'book', 'people']);
-    let fading = 0;
+    let pauseFade = 0;
     // Dialogue and the full-screen panels that live in other scenes are their own screens in the handoff: the HUD
     // fades out under them (the map and Claude 3's panels draw inside this scene, so they don't fade it).
     let dlgOpen = false;
-    const fade = () => this.tweens.add({ targets: this.cameras.main, alpha: dlgOpen || fading > 0 ? 0 : 1, duration: 180 });
     const open = new Set<string>();
+    const fade = () => this.tweens.add({ targets: this.cameras.main, alpha: dlgOpen || pauseFade > 0 || [...open].some((p) => FADES.has(p)) ? 0 : 1, duration: 180 });
+    // Tabs of one screen: switching tabs announces only one side (Pack → Skills opens Skills but never closes the
+    // Pack; Journal → Codex by key announces neither), and closing names only the current tab. So a group member
+    // opening replaces the group, and any member closing closes the whole group, or a stale tab would keep
+    // panelOpen true and Esc would stop pausing (and the HUD stay faded) after the screen closed.
+    const GROUPS = [['inventory', 'skills', 'spells'], ['journal', 'codex', 'book']];
+    const groupOf = (p: string) => GROUPS.find((g) => g.includes(p)) ?? [p];
     // Pause is a full-screen screen too (its menu would sit on the hotbar), but it handles its own Esc: fade only
     const FADE_ONLY = new Set(['pause']);
     bus.onScene(this, 'ui:open', ({ panel }) => {
-      if (FADE_ONLY.has(panel)) { fading++; fade(); return; }
-      if (!SELF_ESC.has(panel)) return; open.add(panel); this.panelOpen = true; if (FADES.has(panel)) { fading++; fade(); }
+      if (FADE_ONLY.has(panel)) { pauseFade++; fade(); return; }
+      if (!SELF_ESC.has(panel)) return;
+      for (const p of groupOf(panel)) open.delete(p);
+      open.add(panel); this.panelOpen = true; fade();
     });
     bus.onScene(this, 'ui:close', ({ panel }) => {
-      if (FADE_ONLY.has(panel)) { fading = Math.max(0, fading - 1); fade(); return; }
-      if (!open.delete(panel)) return;
-      if (FADES.has(panel)) { fading = Math.max(0, fading - 1); fade(); }
+      if (FADE_ONLY.has(panel)) { pauseFade = Math.max(0, pauseFade - 1); fade(); return; }
+      let was = false;
+      for (const p of groupOf(panel)) was = open.delete(p) || was;
+      if (!was) return;
+      fade();
       this.time.delayedCall(0, () => { this.panelOpen = open.size > 0; });
     });
     const offDlg = dialogueClient.subscribe((v) => { dlgOpen = !!v; fade(); });

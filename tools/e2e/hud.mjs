@@ -105,6 +105,18 @@ try {
   const back = await waitFor(async () => (await hud())?.alpha === 1, 3000);
   check('HUD fades under the Journal and returns', !!faded && !!back);
 
+  // ── switching tabs inside one screen, then closing it, must not leave Esc dead (user report 2026-10-21:
+  //    "every so often it won't let me pause"): Pack → Skills → Spells, and Journal → Codex by key ──
+  for (const [label, keys] of [['Pack → Skills → Spells', ['KeyI', 'KeyK', 'KeyB']], ['Journal → Codex', ['KeyJ', 'KeyL']]]) {
+    for (const k of keys) { await page.press(k, 60); await sleep(600); }
+    await page.press('Escape', 60); await sleep(700); // closes the screen
+    const alpha = (await hud())?.alpha; // before Pause, which fades the HUD on purpose
+    await page.press('Escape', 60);
+    const ok = await waitFor(() => scene('Pause'), 3000);
+    check(`after ${label} and close, Esc pauses and the HUD is visible`, !!ok && alpha === 1, `paused ${!!ok}, hud alpha ${alpha}`);
+    if (ok) { await page.press('Escape', 60); await waitFor(async () => !(await scene('Pause')), 3000); }
+  }
+
   // ── rebinding: the button label and the key both follow Settings ──
   const old = await core(`const k = c.Settings.key('inventory'); c.Settings.bind('inventory', 'U'); return k;`);
   await sleep(400);
