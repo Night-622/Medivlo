@@ -18,7 +18,8 @@ export class QuestTracker extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene) {
     super(scene, 0, 0);
     const refresh = () => this.refresh();
-    for (const ev of ['quest:started', 'quest:advanced', 'quest:objective', 'quest:completed', 'quest:failed', 'item:picked', 'flag:changed'] as const) {
+    // ui:close: tracking a quest in the Journal (T) changes only state, so redraw when the Journal (or any panel) closes
+    for (const ev of ['quest:started', 'quest:advanced', 'quest:objective', 'quest:completed', 'quest:failed', 'item:picked', 'flag:changed', 'ui:close'] as const) {
       bus.onScene(scene, ev, refresh);
     }
     this.refresh();
