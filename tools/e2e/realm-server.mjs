@@ -56,6 +56,36 @@ try {
   const seated = (await (await fetch(`${BASE}/realms`)).json()).find((r) => r.id === 'brindlecross-peaceful').players;
   check('same account joining twice replaces the older connection', !!d2.welcome && !!kicked && seated === 1, `kick "${kicked}", players ${seated}`);
   d2.ws.close(); await sleep(300);
+  // ID token in the hello, not the URL (request logs keep URLs); the query string still works for older clients
+  const caps = await (await fetch(`${BASE}/caps`)).json().catch(() => null);
+  check('server advertises hello tokens', caps?.helloToken === true, JSON.stringify(caps));
+  const raw = (query, hello) => new Promise((resolve) => {
+    const ws = new WebSocket(`ws://localhost:${PORT}/realm/brindlecross-peaceful${query}`);
+    const r = { ws, welcome: null, kick: null, chats: [] };
+    ws.onopen = () => ws.send(JSON.stringify({ type: 'hello', playerId: '', classId: 'warden', level: 3, firstVisit: false, ...hello }));
+    ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.type === 'welcome') { r.welcome = m; resolve(r); } if (m.type === 'kick') { r.kick = m.reason; resolve(r); } if (m.type === 'chat') r.chats.push(m.text); };
+    ws.onclose = () => resolve(r);
+    setTimeout(() => resolve(r), 8000);
+  });
+  const e1 = await raw('', { name: 'Eve', token: 'dev:uid-e:Eve' });
+  check('token in the hello joins', e1.welcome?.you === 'uid-e', e1.kick ?? '');
+  const n1 = await raw('', { name: 'Nobody' });
+  check('no token at all is refused', !n1.welcome && /sign in/i.test(n1.kick ?? ''), n1.kick ?? 'no kick');
+  const long = await raw('', { name: 'Lux', token: 'dev:uid-l:Lux', classId: 'x'.repeat(5000), level: 1e9 });
+  const me = long.welcome?.session.members.find((x) => x.playerId === 'uid-l');
+  check('hello fields are bounded', me && me.classId.length <= 32 && me.level <= 99, JSON.stringify({ cls: me?.classId.length, lvl: me?.level }));
+  // chat flood: every line goes to everyone, so one player's burst is capped
+  for (let i = 0; i < 15; i++) long.ws.send(JSON.stringify({ type: 'chat', text: `spam ${i}` }));
+  await sleep(800);
+  const got = e1.chats.filter((t) => t.startsWith('spam')).length;
+  check('a chat flood is capped (burst of 5)', got >= 1 && got <= 6, `${got} of 15 delivered`);
+  e1.ws.close(); long.ws.close(); await sleep(400);
+  // gone while the token verified: no ghost seat
+  const g = new WebSocket(`ws://localhost:${PORT}/realm/brindlecross-peaceful?token=dev:uid-g:Gus:1200`);
+  g.onopen = () => { g.send(JSON.stringify({ type: 'hello', playerId: '', name: 'Gus', classId: 'warden', level: 1, firstVisit: false })); setTimeout(() => g.close(), 100); };
+  await sleep(2200);
+  const ghost = (await (await fetch(`${BASE}/realms`)).json()).find((r) => r.id === 'brindlecross-peaceful').players;
+  check('leaving during a slow verify leaves no ghost seat', ghost === 0, `players ${ghost}`);
 } catch (e) { check('harness', false, String(e)); }
 finally {
   srv.kill(); const f = results.filter((x) => !x).length;

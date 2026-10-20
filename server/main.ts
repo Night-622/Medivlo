@@ -93,6 +93,8 @@ async function verify(token: string): Promise<{ uid: string; name?: string }> {
 const http = createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.url === '/health') { res.end('ok'); return; }
+  // what this server understands; clients ask first, so a new client still works against an older deployed server
+  if (req.url === '/caps') { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify({ helloToken: true })); return; }
   if (req.url === '/realms') {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(REALMS.map((r) => ({ id: r.id, name: r.name, rule: r.rule, space: r.space, players: live.get(r.id)?.api.count() ?? 0, max: r.maxPlayers }))));
@@ -110,7 +112,11 @@ http.on('upgrade', (req, socket, head) => {
   wss.handleUpgrade(req, socket, head, (ws) => void onJoin(ws, def, url.searchParams.get('token') ?? ''));
 });
 
-async function onJoin(ws: WebSocket, def: RealmDef, token: string): Promise<void> {
+/**
+ * The Firebase ID token comes in the hello (`token`), so it never sits in a URL (request logs keep URLs). Older
+ * clients put it in the query string (`?token=`); both are accepted.
+ */
+async function onJoin(ws: WebSocket, def: RealmDef, queryToken: string): Promise<void> {
   const kick = (reason: string) => { if (ws.readyState === ws.OPEN) ws.send(JSON.stringify({ type: 'kick', reason })); ws.close(); };
   // Listen before any await: the client sends its hello on open, and a cold JWKS fetch in verify() can take longer
   // than that (the hello used to be emitted with no listener and the join hung). The first message is the hello;
@@ -128,18 +134,27 @@ async function onJoin(ws: WebSocket, def: RealmDef, token: string): Promise<void
   });
   const helloTimer = setTimeout(() => onHello(null), 10_000);
   ws.once('close', () => onHello(null));
-  let who: { uid: string; name?: string };
-  try { who = await verify(token); } catch { clearTimeout(helloTimer); kick('Sign in again to play online'); return; }
+  // a query token starts verifying at once (a cold JWKS fetch overlaps the wait for the hello)
+  const early = queryToken ? verify(queryToken) : null;
+  early?.catch(() => undefined); // awaited below
   const helloMsg = await first;
   clearTimeout(helloTimer);
   if (helloMsg === null) { kick('The realm did not hear from you in time'); return; }
-  let hello: { name?: string; classId?: string; level?: number };
+  let hello: { name?: unknown; classId?: unknown; level?: unknown; token?: unknown };
   try { hello = JSON.parse(helloMsg); } catch { kick('Bad hello'); return; }
+  if (!hello || typeof hello !== 'object') { kick('Bad hello'); return; }
+  let who: { uid: string; name?: string };
+  try { who = await (early ?? verify(typeof hello.token === 'string' ? hello.token : '')); }
+  catch { kick('Sign in again to play online'); return; }
+  // gone while we verified: its 'close' already fired, so attaching now would leave a ghost seat nobody frees
+  if (ws.readyState !== ws.OPEN) return;
   seats.get(who.uid)?.('You joined from another window'); // detaches the old seat before the new one attaches
   let api: RealmApi;
   try { api = live.get(def.id)?.api ?? spawnRealm(def); }
   catch (e) { console.error(`[realm] ${def.id}: failed to start`, e); kick('That realm is unavailable right now'); return; }
-  const ok = api.attach({ playerId: who.uid, name: String(hello.name ?? who.name ?? 'Wanderer').slice(0, 16), classId: String(hello.classId ?? ''), level: Number(hello.level ?? 1) }, (json) => { if (ws.readyState === ws.OPEN) ws.send(json); });
+  // bounded: these go to every player in the realm in each session update
+  const level = Math.max(1, Math.min(99, Math.floor(Number(hello.level)) || 1));
+  const ok = api.attach({ playerId: who.uid, name: String(hello.name ?? who.name ?? 'Wanderer').slice(0, 16), classId: String(hello.classId ?? '').slice(0, 32), level }, (json) => { if (ws.readyState === ws.OPEN) ws.send(json); });
   if (!ok) { kick('That realm is full'); return; }
   console.log(`[realm] ${def.id}: + ${who.uid} (${api.count()} in)`);
   let budget = 120; // messages per second, per player

@@ -89,7 +89,7 @@ export abstract class AuthorityNet extends NetBase implements NetService {
     if (!this.remotes.has(playerId)) return;
     this.remotes.delete(playerId);
     this.pending.delete(playerId);
-    this.stateAsked.delete(playerId);
+    this.stateAsked.delete(playerId); // (chatBucket is kept: reconnecting must not refill a flooder's bucket)
     this.info.members = this.role === 'server'
       ? this.info.members.filter((m) => m.playerId !== playerId)
       : this.info.members.map((m) => (m.playerId === playerId ? { ...m, connected: false } : m));
@@ -116,6 +116,8 @@ export abstract class AuthorityNet extends NetBase implements NetService {
       return;
     }
     if (msg.type === 'chat' && typeof msg.text === 'string') {
+      // every line goes to everyone: a flood from one remote (120 msgs/s fit the realm budget) is dropped
+      if (from !== this.localPlayer && !this.chatToken(from)) return;
       const text = this.filterChat(msg.text.slice(0, 240));
       if (!text) return;
       const name = this.info.members.find((m) => m.playerId === from)?.name ?? '?';
@@ -143,6 +145,19 @@ export abstract class AuthorityNet extends NetBase implements NetService {
   // ───────── internals ─────────
 
   private stateAsked = new Map<PlayerId, number>();
+  private chatBucket = new Map<PlayerId, { n: number; at: number }>();
+
+  /** Chat rate: a burst of 5 lines, then one every 1.5 s. */
+  private chatToken(from: PlayerId): boolean {
+    const now = Date.now();
+    const b = this.chatBucket.get(from) ?? { n: 5, at: now };
+    b.n = Math.min(5, b.n + (now - b.at) / 1500);
+    b.at = now;
+    this.chatBucket.set(from, b);
+    if (b.n < 1) return false;
+    b.n -= 1;
+    return true;
+  }
 
   /** Every state block, to one remote player (on join, and when it asks after registering a late sync). */
   private sendState(playerId: PlayerId): void {

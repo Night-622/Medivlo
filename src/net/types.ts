@@ -65,7 +65,8 @@ export type ClientMsg =
   | { type: 'input'; frames: InputFrame[] }
   | { type: 'vote'; voteId: string; choice: number }
   | { type: 'chat'; text: string }
-  | { type: 'hello'; playerId: PlayerId; name: string; classId: string; level: number; firstVisit: boolean }
+  /** `token`: public realms only, the Firebase ID token (kept out of the URL: request logs record URLs) */
+  | { type: 'hello'; playerId: PlayerId; name: string; classId: string; level: number; firstVisit: boolean; token?: string }
   | { type: 'bye' }
   /** a client registered a state sync after joining (e.g. a scene restart): send the current blocks again */
   | { type: 'state:request' }

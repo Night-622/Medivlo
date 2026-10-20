@@ -41,6 +41,8 @@ class FakeWS {
   close() { if (this.readyState === 3) return; this.readyState = 3; setTimeout(() => this.onclose?.({ code: 1000 }), 1); }
 }
 globalThis.WebSocket = FakeWS;
+let realmCaps = null; // what GET /caps answers (null = an older server without it)
+globalThis.fetch = async (url) => (String(url).endsWith('/caps') && realmCaps ? { ok: true, json: async () => realmCaps } : { ok: false, json: async () => null });
 
 const { fakeAuth, fakeDb } = await import(pathToFileURL(fake).href);
 const m = await import(pathToFileURL(out).href);
@@ -142,6 +144,19 @@ check('ensureUser signs a new player in as a guest', u.isAnonymous && fakeAuth.s
   await tick();
   check('a dropped realm connection still raises net:kicked', kicks === 1, `kicks ${kicks}`);
   off();
+  const tokenAt = async () => {
+    const n = await m.RealmNet.connect('http://realm.test', 'r', 'secret-id-token', { name: 'A', classId: 'warden', level: 1 });
+    const hello = FakeWS.last.sent.map((s) => JSON.parse(s)).find((x) => x.type === 'hello');
+    const where = { url: FakeWS.last.url.includes('secret-id-token'), hello: hello?.token === 'secret-id-token' };
+    n.leave();
+    return where;
+  };
+  realmCaps = { helloToken: true };
+  const now = await tokenAt();
+  check('the realm ID token goes in the hello, not the URL', now.hello && !now.url, JSON.stringify(now));
+  realmCaps = null;
+  const old = await tokenAt();
+  check('an older realm server (no /caps) still gets the token in the URL', old.url && !old.hello, JSON.stringify(old));
 }
 
 // ───────── 5. state syncs registered after the join (guest world clock) ─────────
