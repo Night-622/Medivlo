@@ -18,7 +18,7 @@ import { chooseSlot } from './builds-fight';
 
 const args = process.argv.slice(3); // node run.mjs fight [level] [class]
 const CAMPAIGN = args[0] === 'campaign';
-// node run.mjs fight vs <creature> <creatureLevel> <class> <playerLevel> [starter] [n=3]
+// node run.mjs fight vs <creature> <creatureLevel> <class> <playerLevel> [starter|bare] [n=3]
 const VS = args[0] === 'vs';
 // node run.mjs fight lair <realm> <level> [class] [rooms=5]: lairWaves() wave by wave (fresh HP per wave), total combat time
 const LAIR = args[0] === 'lair';
@@ -44,6 +44,8 @@ const ports: SimPorts = {
       const h = payload as { sourceId: string; targetId: string; amount: number; kind?: string };
       if (h.kind === 'dmg' && (h.sourceId === 'p:bot' || h.sourceId.startsWith('pet:'))) meter.dealt += h.amount;
       if (h.kind === 'dmg' && h.targetId === 'p:bot') meter.taken += h.amount;
+      if (process.env.HITS && h.kind === 'dmg' && h.targetId === 'p:bot') { const k = 'taken:' + (payload as { type: string }).type; events[k] = (events[k] ?? 0) + Math.round(h.amount); }
+      if (process.env.HITS && h.targetId === 'p:bot' && h.kind && h.kind !== 'dmg') events['hit:' + h.kind] = (events['hit:' + h.kind] ?? 0) + 1;
       if (process.env.HITS && h.kind === 'dmg' && h.sourceId === 'p:bot' && h.amount > 300) console.log('  big hit', h.amount, (payload as { type: string }).type);
     }
   },
@@ -186,8 +188,8 @@ if (VS) {
   const [, creature, cl, cls, pl, flag] = args;
   const n = Number(args[6] ?? 3);
   for (let i = 0; i < n; i++) {
-    const r = fight(cls, `${creature}#${i}`, [{ creature, x: 200, y: 0 }], Number(pl), { creatureLevel: Number(cl), starter: flag === 'starter', seed: 7 + i });
-    console.log(`${cls} L${pl}${flag === 'starter' ? ' (starter kit)' : ''} vs ${creature} L${cl}: ${r.won ? 'WIN ' : 'LOSS'} ${r.secs}s hp ${r.hpLeft}% dps ${r.dps} taken/s ${r.dtps} maxHp ${r.maxHp}`);
+    const r = fight(cls, `${creature}#${i}`, [{ creature, x: 200, y: 0 }], Number(pl), { creatureLevel: Number(cl), starter: flag === 'starter', bare: flag === 'bare', seed: 7 + i });
+    console.log(`${cls} L${pl}${flag === 'starter' ? ' (starter kit)' : flag === 'bare' ? ' (bare kit)' : ''} vs ${creature} L${cl}: ${r.won ? 'WIN ' : 'LOSS'} ${r.secs}s hp ${r.hpLeft}% dps ${r.dps} taken/s ${r.dtps} maxHp ${r.maxHp}`);
   }
   console.log('events', JSON.stringify(events));
   process.exit(0);

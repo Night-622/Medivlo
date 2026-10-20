@@ -59,7 +59,9 @@ export const HC_KITS: HcKit[] = [
   kit('samurai', ['sword'], { mods: [f('critd', 0.4), f('lifesteal', 0.04), f('crit', 0.1, { c: 'targetHpAbove', pct: 0.8 })] }),
   // Iron
   kit('knight', ['sword', 'mace', 'spear'], { mods: [f('block', 0.15), { stat: 'armor', op: 'pct', value: 0.15 }] }, { canBlock: true }),
-  kit('juggernaut', ['mace', 'axe'], { mods: [{ stat: 'hp', op: 'pct', value: 0.15 }, f('stunTaken', -0.5), f('moveSpeed', -0.05)] }),
+  // juggernaut +15% armour and 5% life steal (2026-10-21): with no block or i-frame spell, a never-geared L8 juggernaut
+  // lost its lair-2 boss at 10 damage taken/s (knight 5/s); with Spiked Hide's −30% damage taken it wins 6/6
+  kit('juggernaut', ['mace', 'axe'], { mods: [{ stat: 'hp', op: 'pct', value: 0.15 }, { stat: 'armor', op: 'pct', value: 0.15 }, f('lifesteal', 0.05), f('stunTaken', -0.5), f('moveSpeed', -0.05)] }),
   // Fist
   kit('monk', ['staff', 'spear'], { mods: [f('dashCharges', 1)], procs: [momentum] }),
   kit('brawler', ['mace', 'dagger'], { mods: [{ stat: 'hp', op: 'pct', value: 0.1 }], procs: [momentum] }, { basic: { form: 'melee', range: 52, interval: 500, visual: 'fist' } }),

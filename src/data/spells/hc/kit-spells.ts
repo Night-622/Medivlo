@@ -68,7 +68,8 @@ export const HC_KIT_SPELLS: HcSpell[] = [
     cost: 14, cd: 9, range: 170, aim: 'direction', tags: ['move'],
     actions: [{ a: 'buff', id: 'unstoppable', dur: 2000, to: 'self', flags: ['unstoppable'] }, { a: 'move', mode: 'charge', dist: 170, path: [dmg(0.9, line(170, 36), undefined, undefined, { flags: ['knockback'] })] }],
   }),
-  k('juggernaut', 2, { cost: 20, cd: 16, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'buff', id: 'spiked-hide', dur: 8000, to: 'self', flags: ['reflect'], mods: [mod('armor', 0.2, 'pct')] }] }),
+  // Spiked Hide also takes 30% less damage (bare-kit juggernaut died to its lair-2 boss: no block, no i-frames, slow)
+  { ...k('juggernaut', 2, { cost: 20, cd: 16, range: 0, aim: 'self', tags: ['buff'], actions: [{ a: 'buff', id: 'spiked-hide', dur: 8000, to: 'self', flags: ['reflect'], mods: [mod('armor', 0.2, 'pct'), mod('dmgTaken', -0.3)] }] }), desc: 'For 8 s: take 30% less damage and gain 20% armour, and melee attackers take damage back.' },
   // ── Fist ──
   k('monk', 0, { cost: 8, cd: 2, range: 70, aim: 'enemy', tags: [], actions: [{ a: 'repeat', n: 6, every: 100, then: [dmg(0.25, single)] }, { a: 'resource', momentum: 1 }] }),
   k('monk', 1, { cost: 14, cd: 6, range: 0, aim: 'self', tags: ['area', 'control'], actions: [dmg(1.1, self(84), undefined, [st('knockdown', 1000)])] }),
