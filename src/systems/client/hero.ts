@@ -145,8 +145,17 @@ function installDevHandle(scene: Phaser.Scene, view: CombatView, space: () => st
       const e = systemsAuthority()?.sim.w.enemies.get(id);
       const ab = e && [...e.cdef.abilities, ...e.cdef.phases.flat()].find((a) => a.text.toLowerCase().includes(text.toLowerCase()));
       if (!e || !ab) return false;
-      e.cdef = { ...e.cdef, abilities: [{ ...ab, cd: 1500 }], phases: [], ai: { ...e.cdef.ai, speed: 0, immobile: true, attackMs: 1e9 } };
+      // no basic attack at all (attackRange 0, not ranged): a skipped ability roll must not park it behind a basic
+      // one strike per rig (60 s cooldown) with a 1.2 s wind-up: time for a real key press to step out of it
+      e.cdef = { ...e.cdef, abilities: [{ ...ab, cd: 60000, windup: Math.max(ab.windup, 1200) }], phases: [], ai: { ...e.cdef.ai, speed: 0, immobile: true, ranged: false, attackRange: 0 } };
       e.abilityReadyAt.clear();
+      return true;
+    },
+    /** a creature that stands still and never notices anyone (a click target) */
+    freeze: (id: string) => {
+      const e = systemsAuthority()?.sim.w.enemies.get(id);
+      if (!e) return false;
+      e.cdef = { ...e.cdef, abilities: [], phases: [], ai: { ...e.cdef.ai, speed: 0, immobile: true, aggro: 0, attackRange: 0, ranged: false } };
       return true;
     },
     /** put an item in the local pack (the authority's copy is the same save in solo) */

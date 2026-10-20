@@ -9,6 +9,9 @@ import { compile, evalCond, type CondCtx } from '@/systems/rules/stats';
 import type { Passive } from '@/systems/rules/types';
 import type { Combatant, EnemyEnt, LootEnt, PlayerEnt, ProjectileEnt, Vec, ZoneEnt } from './state';
 
+/** a hero's body: about 85% of the 26–32 px class sprites (hitboxes art check) */
+export const HERO_RADIUS = 12;
+
 export type ZoneRule = 'safe' | 'arena' | 'wild';
 
 /** Everything the sim needs from outside. Production wires these to Services/bus; tests stub them. */
@@ -176,7 +179,7 @@ export function freeSpot(w: SimWorld, space: string, x: number, y: number, self?
     for (let i = 0; i < 8; i++) {
       const a = (i / 8) * Math.PI * 2 + (r % 2 ? 0.4 : 0);
       const want = { x: x + Math.cos(a) * r, y: y + Math.sin(a) * r };
-      const got = w.ports.move(space, x, y, want.x - x, want.y - y, 10);
+      const got = w.ports.move(space, x, y, want.x - x, want.y - y, HERO_RADIUS);
       if ((got.x - want.x) ** 2 + (got.y - want.y) ** 2 > 6 * 6) continue; // blocked on the way
       if (!taken(got.x, got.y)) return { space, x: got.x, y: got.y };
     }

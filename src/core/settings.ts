@@ -7,11 +7,11 @@ import { bus } from './EventBus';
 
 export type Action =
   | 'up' | 'down' | 'left' | 'right' | 'dash' | 'cast1' | 'cast2' | 'cast3' | 'cast4' | 'potionQ' | 'potionE'
-  | 'interact' | 'inventory' | 'skills' | 'spells' | 'journal' | 'codex' | 'map' | 'people' | 'pause';
+  | 'interact' | 'inventory' | 'skills' | 'spells' | 'journal' | 'track' | 'codex' | 'map' | 'people' | 'pause';
 
 export const DEFAULT_KEYS: Record<Action, string> = {
   up: 'W', down: 'S', left: 'A', right: 'D', dash: 'SPACE', cast1: 'ONE', cast2: 'TWO', cast3: 'THREE', cast4: 'FOUR',
-  potionQ: 'Q', potionE: 'E', interact: 'F', inventory: 'I', skills: 'K', spells: 'B', journal: 'J', codex: 'L', map: 'M', people: 'P', pause: 'ESC',
+  potionQ: 'Q', potionE: 'E', interact: 'F', inventory: 'I', skills: 'K', spells: 'B', journal: 'J', track: 'T', codex: 'L', map: 'M', people: 'P', pause: 'ESC',
 };
 
 export interface SettingsData {

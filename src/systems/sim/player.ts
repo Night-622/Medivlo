@@ -15,7 +15,8 @@ import { motionStep, motionTick, runActions } from './actions';
 import { tickKeystones } from './keystones';
 import { basicCast, consumeCharge, dealDamage, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
 import { newCombatantBase, type CastCtx, type Combatant, type PlayerEnt } from './state';
-import { dist, dist2, isBehind, norm, type SimWorld } from './world';
+import { dist, dist2, HERO_RADIUS, isBehind, norm, type SimWorld } from './world';
+export { HERO_RADIUS };
 
 const BASE_SPEED = 130;
 const DASH = { dist: 72, ms: 220, cost: 25, gap: 400, recharge: 1000 };
@@ -33,8 +34,6 @@ export const BASIC: Record<WeaponType, BasicAttack> = {
 };
 const CLEAVE: WeaponType[] = ['axe', 'spear'];
 
-/** a hero's body: about 85% of the 26–32 px class sprites (hitboxes art check) */
-export const HERO_RADIUS = 12;
 
 export function createPlayer(w: SimWorld, playerId: string, save: CharacterSave, space: string, x: number, y: number): PlayerEnt {
   const kit = kitFor(save.classId);

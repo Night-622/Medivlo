@@ -160,9 +160,10 @@ export class HudV2Scene extends Phaser.Scene {
       fitW(cls, 370 - cls.x);
     }
     this.hp = new HCBar(this, 108, 48, 'hp');
-    this.hpT = this.add.text(108 + 260 - 6, 58, '', typeStyle('caption', C.text)).setOrigin(1, 0.5);
+    // bar values in Jersey: small Pixelify digits blur ("265" read as "26S"); Jersey's numerals stay distinct
+    this.hpT = this.add.text(108 + 260 - 6, 57, '', { fontFamily: '"Jersey 10"', fontSize: '18px', color: C.text, stroke: C.ink, strokeThickness: 3 }).setOrigin(1, 0.5);
     this.em = new HCBar(this, 108, 74, 'ember');
-    this.emT = this.add.text(108 + 260 - 6, 81, '', typeStyle('badge', C.text)).setOrigin(1, 0.5);
+    this.emT = this.add.text(108 + 260 - 6, 80, '', { fontFamily: '"Jersey 10"', fontSize: '15px', color: C.text, stroke: C.ink, strokeThickness: 3 }).setOrigin(1, 0.5);
     this.st = new HCBar(this, 108, 94, 'stamina');
   }
 

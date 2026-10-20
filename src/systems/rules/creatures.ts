@@ -15,7 +15,13 @@ import { HC_BODY_WIDTH } from '@/data/enemies/hc/bodies.gen';
  * borrowed body (campaign bosses, regional rank-and-file) is drawn at its tier's size, scaled 0.5–3× from that body
  * (CombatView does the same), so its radius scales with it. */
 export const FIT = 0.85;
+// caps from Claude 2's clearance check (tools/playthrough/clearance.ts): lair corridors are 2 tiles, so anything but a
+// boss stays r ≤ 40; bosses r ≤ 60 (two lair-3 arenas are tighter, r 40 / 52; the current bosses there fit)
+const MAX_R: Record<CreatureTier, number> = { enemy: 40, mini: 40, boss: 60 };
 function bodyRadius(id: string, body: string, tier: CreatureTier, scale: number): number {
+  return Math.min(MAX_R[tier], fit(id, body, tier, scale));
+}
+function fit(id: string, body: string, tier: CreatureTier, scale: number): number {
   const tierR = Math.round((tier === 'boss' ? 34 : tier === 'mini' ? 22 : 10) * Math.max(0.8, Math.min(1.4, scale || 1)));
   const fitted = (b: string) => (HC_BODY_WIDTH[b] ? Math.max(8, Math.round((HC_BODY_WIDTH[b] * FIT) / 2)) : undefined);
   if (body === id) return fitted(id) ?? tierR;

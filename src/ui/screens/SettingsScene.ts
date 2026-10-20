@@ -12,7 +12,7 @@ type Row =
 const ACTION_LABEL: Record<Action, string> = {
   up: 'Move up', down: 'Move down', left: 'Move left', right: 'Move right', dash: 'Dash', cast1: 'Spell 1', cast2: 'Spell 2',
   cast3: 'Spell 3', cast4: 'Spell 4', potionQ: 'Health potion', potionE: 'Ember potion', interact: 'Talk / interact',
-  inventory: 'Inventory', skills: 'Skill tree', spells: 'Spellbook', journal: 'Journal', codex: 'Codex', map: 'World map', people: 'People', pause: 'Pause',
+  inventory: 'Inventory', skills: 'Skill tree', spells: 'Spellbook', journal: 'Journal', track: 'Track quest (Journal)', codex: 'Codex', map: 'World map', people: 'People', pause: 'Pause',
 };
 
 const ROWS: Record<Tab, Row[]> = {
@@ -118,10 +118,12 @@ export class SettingsScene extends Phaser.Scene {
         });
       } else {
         const waiting = this.rebinding === r.action;
-        const key = this.add.text(right - 70, y + h / 2, waiting ? 'press a key…' : keyLabel(r.action), { ...typeStyle('h3', waiting ? C.gold : C.text), backgroundColor: C.panel600, padding: { x: 10, y: 1 } }).setOrigin(1, 0.5);
+        // the key box is centred on the row; the letter sits 2 px up inside it (Pixelify rides low in its line box)
+        const key = this.add.text(right - 80, y + h / 2 - 2, waiting ? 'press a key…' : keyLabel(r.action), typeStyle('h3', waiting ? C.gold : C.text)).setOrigin(1, 0.5);
+        const box = this.add.rectangle(right - 70, y + h / 2, key.width + 20, Math.min(h - 2, 24), parseInt(C.panel600.slice(1), 16)).setOrigin(1, 0.5);
         const rebind = this.add.text(right, y + h / 2, 'Rebind', typeStyle('badge', C.teal)).setOrigin(1, 0.5).setInteractive({ useHandCursor: true });
         rebind.on('pointerup', () => { this.rebinding = r.action; this.render(); });
-        this.body.add([key, rebind]);
+        this.body.add([box, key, rebind]);
       }
     });
   }
