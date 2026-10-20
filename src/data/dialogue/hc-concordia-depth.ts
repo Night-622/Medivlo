@@ -58,7 +58,9 @@ const dialogues: DialogueDef[] = [
         ],
       },
       others: { speaker: GO, text: 'From other schools, through other arches. You will meet them. Some of you will not get on. All of you will need each other. Bearers always have.', next: 'do' },
-      do: { speaker: GO, text: 'Tonight, eat. Wil Crane at the Gilded Goose has a bed for you. Tomorrow, help Maren with the wolves, and then come back to me. There is something under the lake I would like you to look at.', next: null },
+      // every path passes here: name the Sentinels before any class thread asks after its school’s (04-concordia)
+      do: { speaker: GO, text: 'And mind the Sentinels. Each school had a great guardian once, to walk the crown along the Turning Road. The tears touched them first. They sit hollow at the old embassies now, and sooner or later yours will want a word with you.', next: 'eat' },
+      eat: { speaker: GO, text: 'Tonight, eat. Wil Crane at the Gilded Goose has a bed for you. Tomorrow, help Maren with the wolves, and then come back to me. There is something under the lake I would like you to look at.', next: null },
     },
   },
 
