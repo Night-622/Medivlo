@@ -26,6 +26,8 @@ const TURN_ROOMS = new Set(['cb_volta-sterne', 'cb_konrad', 'cb_seraphine-cold']
  * rolls its school's, a Morvane cave's the Morvane one; a rare side room the lair one (the citadel: every side room the Heart's) */
 const caveTable = (inst: string) => { const m = /^inst:([a-z]+)-(?:capital|frontier)-cave$/.exec(inst); return m ? `tbl:${m[1]}-cave` : 'tbl:morvane-cave'; };
 const rareTable = (inst: string) => (inst === 'inst:concord-citadel' ? 'tbl:heart-cache' : 'tbl:lair-rare');
+/** a Morvane cave's or story instance's chests roll at its first pack's band in force (interact.ts chestLevel), as its packs fight */
+const caveBand = (inst: string): Record<string, string> => (/^inst:([a-z]+-cave|sentinel-[a-z]+|varric-barrow|drowned-abbey)$/.test(inst) ? { band: `pack:${inst.slice(5)}:1` } : {});
 
 export interface InstanceDef {
   id: string;
@@ -270,14 +272,14 @@ export class InstanceGen implements SpaceGen {
       if (i > 0 && i < this.rooms.length - 1 && hash01(i, r.w, 9) < 0.45) {
         const at = this.spotIn(r, [r.x + r.w - 2, r.y + 1]);
         this.art(at[0], at[1], 'd_chest', `ch${i}`);
-        this.obj({ id: `obj:${d.id.slice(5)}-chest-${i}`, kind: 'chest', at: [at[0], at[1] + 1], props: { name: 'Chest', label: 'Open', level: this.lootLevel, rarity: 'common' } });
+        this.obj({ id: `obj:${d.id.slice(5)}-chest-${i}`, kind: 'chest', at: [at[0], at[1] + 1], props: { name: 'Chest', label: 'Open', level: this.lootLevel, rarity: 'common', ...caveBand(d.id) } });
       }
     });
     // side rooms: a chest each, the first one a codex find (Claude 4: dialogue:obj-<slug>-codex)
     this.branches.forEach((r, i) => {
       const [cx, cy] = this.spotIn(r, [r.x + (r.w >> 1), r.y + 1]);
       this.art(cx, cy, i === 0 ? 'd_chest_rare' : 'd_chest', `side-ch${i}`);
-      this.obj({ id: `obj:${d.id.slice(5)}-side-${i + 1}`, kind: 'chest', at: [cx, cy + 1], props: { name: 'Chest', label: 'Open', level: this.lootLevel, rarity: i === 0 ? 'rare' : 'common', ...(i === 0 || d.id === 'inst:concord-citadel' ? { loot: rareTable(d.id) } : {}) } });
+      this.obj({ id: `obj:${d.id.slice(5)}-side-${i + 1}`, kind: 'chest', at: [cx, cy + 1], props: { name: 'Chest', label: 'Open', level: this.lootLevel, rarity: i === 0 ? 'rare' : 'common', ...caveBand(d.id), ...(i === 0 || d.id === 'inst:concord-citadel' ? { loot: rareTable(d.id) } : {}) } });
       if (i === 0) {
         const [kx, ky] = this.spotIn(r, [r.x + 1, r.y + r.h - 2]);
         this.art(kx, ky, 'f_runestone', 'codex');
@@ -297,7 +299,7 @@ export class InstanceGen implements SpaceGen {
       // an optional cave's end: what it was hiding, no altar
       const [ax, ay] = this.spotIn(b, [cx - 2, cy]), [fx, fy] = this.spotIn(b, [cx + 4, cy + 2]);
       this.art(ax, ay, 'd_chest_rare', 'cache');
-      this.obj({ id: `obj:${d.finale.base}-cache`, kind: 'chest', at: [ax, ay + 1], props: { name: 'Chest', label: 'Open', level: this.lootLevel, rarity: 'rare', loot: caveTable(d.id) } });
+      this.obj({ id: `obj:${d.finale.base}-cache`, kind: 'chest', at: [ax, ay + 1], props: { name: 'Chest', label: 'Open', level: this.lootLevel, rarity: 'rare', loot: caveTable(d.id), ...caveBand(d.id) } });
       this.art(fx, fy, 'f_runestone', 'find');
       this.obj({ id: `obj:${d.finale.base}-find`, kind: 'interactable', at: [fx, fy + 1], props: { name: d.finale.name, label: 'Search' } });
       return;

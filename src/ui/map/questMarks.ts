@@ -75,7 +75,7 @@ export function placeLabel(place: string, at: { space: string; x: number; y: num
   return n;
 }
 
-/** The open objectives, resolved; unresolvable ones are dropped (see unresolvedMarkers). Tracked first. */
+/** The open objectives, resolved; unresolvable ones are dropped (reach.ts checks they all resolve). Tracked first. */
 export function questMarks(npcAt?: NpcAt, here?: string): QuestMark[] {
   const out: QuestMark[] = [];
   for (const m of source()) {
@@ -83,11 +83,6 @@ export function questMarks(npcAt?: NpcAt, here?: string): QuestMark[] {
     if (at) out.push({ key: `${m.quest}#${m.objective}#${m.place}`, place: m.place, ...at, tracked: m.tracked, side: m.side, label: m.label, name: m.tracked ? placeLabel(m.place, at) : '' });
   }
   return out.sort((a, b) => Number(b.tracked) - Number(a.tracked));
-}
-
-/** Objectives whose place the world can't resolve (for Claude 4). */
-export function unresolvedMarkers(npcAt?: NpcAt, here?: string): string[] {
-  return source().filter((m) => !resolvePlace(m.place, npcAt, here)).map((m) => `${m.quest}#${m.objective} ${m.place}`);
 }
 
 /**

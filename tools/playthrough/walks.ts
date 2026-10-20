@@ -6,6 +6,7 @@
  *                XP projection (walks-export.ts → out/act2-walks.json, act3-walks.json)
  * Needs the content Registry: bundle with tools/playthrough/build.mjs.
  */
+import { existsSync, readFileSync } from 'node:fs';
 import { Game, Registry, createNewGameState, type NpcDef, type QuestDef } from '@/core';
 import { AREAS, allWaystones, spaceRuntime } from '@/world/hc/spaces';
 import { spawnZones, type SpawnZoneDef } from '@/world/hc/spawns';
@@ -16,6 +17,15 @@ import { doorInto, where, whereCreature, type Spot } from './places';
 export const AGGRO_TILES = 7.5;
 /** expected hero level while doing Act I main quest i (1-based): L1 at the first, ~L13 at the gate */
 export const expectedLevel = (main: number): number => 1 + 1.3 * (main - 1);
+/**
+ * Measured hero levels (Claude 5's gear-curve typical player, median over seeds): { class: { quest: level at its
+ * start } } in out/hero-levels.json (or HERO_LEVELS). Acts II/III use them as the expected level where present (the
+ * linear model below lagged the real hero by ~3.5 levels at L21–30); without the file, the model alone.
+ */
+const MEASURED: Record<string, Record<string, number>> = (() => {
+  const f = process.env.HERO_LEVELS ?? 'tools/playthrough/out/hero-levels.json';
+  try { return existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : {}; } catch { return {}; }
+})();
 /** Act II and III level bands (Act I ends L13–14, II L26–28, III L38–40) */
 const ACT_BAND: Record<'act2' | 'act3', [number, number]> = { act2: [14, 27], act3: [28, 39] };
 
@@ -209,7 +219,7 @@ export function actWalks(act: 'act2' | 'act3', only?: string[], keepPaths = fals
     out.push({
       cls,
       quests: order.map((qd, i) => {
-        const expected = +(lo + ((hi - lo) * before) / Math.max(1, mains)).toFixed(1);
+        const expected = MEASURED[cls]?.[qd.id] ?? +(lo + ((hi - lo) * before) / Math.max(1, mains)).toFixed(1);
         if (isMain(qd)) before++;
         return { quest: qd.id, type: qd.type, campaign: String(qd.campaign), order: i + 1, expected, ...walked[i] };
       }),

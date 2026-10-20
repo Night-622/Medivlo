@@ -14,23 +14,23 @@ import { actWalks } from './walks';
 const [which = 'both', only] = process.argv.slice(2);
 const zones = new Map(spawnZones('concordia').map((z) => [z.id, z]));
 mkdirSync('tools/playthrough/out', { recursive: true });
-// mains (main + class quests) done before each quest, counted through Act II then Act III, per class
-const isMain = (t: string) => t === 'main' || t === 'class';
-const act2Mains = new Map<string, number>();
+// quests done before each quest, counted through Act II then Act III, per class: every quest is a band step
+// (concordiaBands.ts ACT23_MAINS lists them all in play order)
+const act2Count = new Map<string, number>();
 for (const act of (which === 'both' ? ['act2', 'act3'] : [which]) as ('act2' | 'act3')[]) {
   const t0 = Date.now();
   const out: Record<string, unknown[]> = {};
   for (const w of actWalks(act, only?.split(','))) {
-    let before = act === 'act3' ? act2Mains.get(w.cls) ?? actWalks('act2', [w.cls])[0].quests.filter((q) => isMain(q.type)).length : 0;
+    let before = act === 'act3' ? act2Count.get(w.cls) ?? actWalks('act2', [w.cls])[0].quests.length : 0;
     out[w.cls] = w.quests.map((q) => {
       const done = (_c: string | undefined, step: number) => step <= before;
       const band = (id: string) => { const z = zones.get(id)!; return { id, level: zoneLevelAt(z, done, w.cls), elite: zoneEliteAt(z, done, w.cls), cap: z.cap }; };
       const { ftZones, ...rest } = q;
       const row = { ...rest, zones: ftZones.map(band), zonesWalk: q.zones.map(band) };
-      if (isMain(q.type)) before++;
+      before++;
       return row;
     });
-    if (act === 'act2') act2Mains.set(w.cls, before);
+    if (act === 'act2') act2Count.set(w.cls, before);
   }
   const file = `tools/playthrough/out/${act}-walks.json`;
   writeFileSync(file, JSON.stringify(out, null, 1) + '\n');

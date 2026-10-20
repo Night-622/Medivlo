@@ -6,7 +6,7 @@ import { mkdtempSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-const FAST = ['unplaced', 'pieces', 'instances', 'bands', 'class-objects', 'clearance', 'merchants', 'loot', 'labels', 'reach'];
+const FAST = ['unplaced', 'pieces', 'instances', 'bands', 'class-objects', 'clearance', 'merchants', 'loot', 'labels', 'quest-bands', 'reach'];
 const checks = process.argv.includes('--full') ? [...FAST, 'bands-concordia'] : FAST;
 const out = join(mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'world-suite-')), 'checks.mjs');
 execFileSync(process.execPath, ['tools/playthrough/build.mjs'], { env: { ...process.env, ENTRY: 'tools/playthrough/checks.ts', OUT: out }, stdio: 'ignore' });

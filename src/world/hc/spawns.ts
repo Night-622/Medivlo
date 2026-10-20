@@ -21,6 +21,7 @@ import { regionLevels, type ConcordiaGen } from './concordiaGen';
 import { objectsAround, tileDist } from './interact';
 import { REALMS, spaceRuntime } from './spaces';
 import { banded, concordiaBanded, eliteAt, levelAt, stepDone, zoneFloor, type Banded, type LevelTier } from './bands';
+import { INSTANCE_BANDS } from '@/data/regions/hc/concordiaBands.gen';
 
 export { levelAt as zoneLevelAt, eliteAt as zoneEliteAt };
 
@@ -117,11 +118,17 @@ function lairZones(space: string): SpawnZoneDef[] {
   const main = gen.packs.filter((p) => !p.id.includes(':side-'));
   const seed = [...space].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 7);
   const rooms = school ? lairWaves(school, lv, main.length, 1, seed) : [];
+  // a Morvane cave fights at its region's band for this host (campaign order), not the old fixed handoff level
+  const mreg = /^inst:([a-z]+)-cave$/.exec(space)?.[1];
+  // a story instance (Sentinel lair, the barrow, the abbey) at the level each host class's hero enters it
+  const story = INSTANCE_BANDS[space];
+  const band = mreg ? concordiaBanded(`region:${mreg}`, lv, 'camp')
+    : story ? { track: 'act23' as const, byClass: Object.fromEntries(Object.entries(story).map(([c, f]) => [c, { level: [f, f + 1] as [number, number] }])) } : null;
   return gen.packs.map((p, k) => {
     const waves = !school ? undefined : p.id.includes(':side-') ? [elitePack(school, lv, 1, seed + k)] : rooms[main.indexOf(p)]?.waves;
     return {
       id: p.id, space, at: [p.room.x + (p.room.w >> 1), p.room.y + (p.room.h >> 1)] as [number, number], r: Math.max(3, Math.min(p.room.w, p.room.h) / 2 - 1),
-      level: [lv, lv + 1] as [number, number], pool, cap: waves ? 999 : p.cap, once: true, elite: p.elite, waves: waves?.length ? waves : undefined,
+      level: [lv, lv + 1] as [number, number], ...band, pool, cap: waves ? 999 : p.cap, once: true, elite: p.elite, waves: waves?.length ? waves : undefined,
       rect: waves?.length || p.ambush ? [p.room.x, p.room.y, p.room.w, p.room.h] as [number, number, number, number] : undefined,
     };
   });
@@ -471,13 +478,16 @@ export class SpawnDirector {
     const i = st.wave ?? 0, list = z.waves![i];
     if (!list || (i > 0 && st.alive.size > 0 && this.t - (st.waveAt ?? 0) < WAVE_MS)) return;
     const combat = Services.get('combat');
+    // a banded lair (by host class): its waves move with the band in force, keeping their own mix
+    const host = hostClass();
+    const shift = z.tiers || z.byClass ? levelAt(z, stepDone(host, (q) => evalCondition({ questCompleted: q })), host)[0] - z.level[0] : 0;
     const n = Math.max(1, Math.round(list.length * mult));
     let made = 0;
     for (let k = 0; k < n; k++) {
       const e = list[k % list.length];
       const spot = this.spot(z, here, 4);
       if (!spot) continue;
-      const id = combat.spawn({ creature: e.creature, level: e.level, space: z.space, x: spot[0], y: spot[1], zoneId: z.id, tier: e.tier ?? 'enemy', ...(e.elite ? { elite: true } : {}) });
+      const id = combat.spawn({ creature: e.creature, level: Math.max(1, e.level + shift), space: z.space, x: spot[0], y: spot[1], zoneId: z.id, tier: e.tier ?? 'enemy', ...(e.elite ? { elite: true } : {}) });
       if (id) { st.alive.add(id); st.spawned++; made++; }
     }
     if (made) { st.wave = i + 1; st.waveAt = this.t; }

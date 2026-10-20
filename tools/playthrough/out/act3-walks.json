@@ -5,7 +5,7 @@
    "type": "side",
    "campaign": "arcanist",
    "order": 1,
-   "expected": 28,
+   "expected": 28.6,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -15,7 +15,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 28,
+   "expected": 28.8,
    "zones": [
     {
      "id": "camp:morvane-0-1",
@@ -81,7 +81,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 29.5,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -111,7 +111,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 30.2,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -243,13 +243,13 @@
    "type": "side",
    "campaign": "arcanist",
    "order": 6,
-   "expected": 30.8,
+   "expected": 31.5,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -257,8 +257,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -269,8 +269,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -278,8 +278,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -291,13 +291,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 30.8,
+   "expected": 31.9,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -308,8 +308,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -321,7 +321,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 32.4,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -369,13 +369,13 @@
    "type": "class",
    "campaign": "arcanist",
    "order": 9,
-   "expected": 32.1,
+   "expected": 33,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -383,8 +383,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -395,8 +395,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -404,8 +404,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -417,7 +417,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 10,
-   "expected": 33.5,
+   "expected": 34.5,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -429,7 +429,7 @@
    "type": "side",
    "campaign": "arcanist",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -439,7 +439,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 37.3,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -451,7 +451,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -461,7 +461,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -473,13 +473,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 27.3,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -487,8 +487,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -508,8 +508,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -517,8 +517,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -539,7 +539,7 @@
    "type": "side",
    "campaign": "reaver",
    "order": 2,
-   "expected": 29.4,
+   "expected": 28.2,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -553,8 +553,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -574,8 +574,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -587,7 +587,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 29,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -635,7 +635,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 29.8,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -649,8 +649,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -670,8 +670,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -679,8 +679,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -692,7 +692,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 30.4,
    "zones": [
     {
      "id": "camp:morvane-0-1",
@@ -767,13 +767,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 31.2,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -781,8 +781,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -793,8 +793,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -802,8 +802,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -815,13 +815,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 31.8,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -829,8 +829,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -841,8 +841,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -850,8 +850,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -863,7 +863,7 @@
    "type": "side",
    "campaign": "reaver",
    "order": 8,
-   "expected": 32.1,
+   "expected": 32.4,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -911,13 +911,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 33,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -930,8 +930,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -943,7 +943,7 @@
    "type": "class",
    "campaign": "reaver",
    "order": 10,
-   "expected": 33.5,
+   "expected": 36,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -953,7 +953,7 @@
    "type": "side",
    "campaign": "reaver",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37.2,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -963,7 +963,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 37.5,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -975,7 +975,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -985,7 +985,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -997,13 +997,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 27.7,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -1011,8 +1011,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -1032,8 +1032,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -1041,8 +1041,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -1063,7 +1063,7 @@
    "type": "side",
    "campaign": "rimecaller",
    "order": 2,
-   "expected": 29.4,
+   "expected": 28.6,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -1093,7 +1093,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 29.1,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -1123,7 +1123,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 29.8,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -1137,8 +1137,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -1158,8 +1158,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -1167,8 +1167,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -1180,7 +1180,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 30.4,
    "zones": [
     {
      "id": "camp:morvane-0-1",
@@ -1255,13 +1255,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 31.1,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -1269,8 +1269,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -1281,8 +1281,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -1290,8 +1290,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -1303,13 +1303,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 31.7,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -1317,8 +1317,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -1329,8 +1329,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -1338,8 +1338,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -1351,7 +1351,7 @@
    "type": "side",
    "campaign": "rimecaller",
    "order": 8,
-   "expected": 32.1,
+   "expected": 32.4,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -1399,7 +1399,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 32.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -1431,7 +1431,7 @@
    "type": "class",
    "campaign": "rimecaller",
    "order": 10,
-   "expected": 33.5,
+   "expected": 36,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -1441,13 +1441,13 @@
    "type": "side",
    "campaign": "rimecaller",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37.2,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -1455,8 +1455,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -1467,8 +1467,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -1476,8 +1476,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -1489,7 +1489,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 37.7,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -1501,7 +1501,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -1511,7 +1511,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -1523,13 +1523,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 26.8,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -1537,8 +1537,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -1558,8 +1558,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -1567,8 +1567,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -1589,13 +1589,13 @@
    "type": "side",
    "campaign": "warden",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27.7,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -1615,8 +1615,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -1637,7 +1637,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 28.6,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -1667,7 +1667,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 29.3,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -1681,8 +1681,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -1702,8 +1702,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -1711,8 +1711,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -1724,13 +1724,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 29.9,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -1738,8 +1738,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -1759,8 +1759,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -1768,8 +1768,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -1777,8 +1777,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -1799,7 +1799,7 @@
    "type": "side",
    "campaign": "warden",
    "order": 6,
-   "expected": 30.8,
+   "expected": 30.7,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -1847,13 +1847,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 30.8,
+   "expected": 31.2,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -1864,8 +1864,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -1877,13 +1877,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 31.6,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -1891,8 +1891,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -1903,8 +1903,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -1912,8 +1912,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -1925,7 +1925,7 @@
    "type": "side",
    "campaign": "warden",
    "order": 9,
-   "expected": 32.1,
+   "expected": 32.3,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -1973,13 +1973,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 10,
-   "expected": 32.1,
+   "expected": 33,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -1987,8 +1987,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2001,8 +2001,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -2010,8 +2010,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2023,7 +2023,7 @@
    "type": "class",
    "campaign": "warden",
    "order": 11,
-   "expected": 33.5,
+   "expected": 36.1,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -2033,7 +2033,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 37.4,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -2045,7 +2045,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -2055,7 +2055,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -2067,13 +2067,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 30.1,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -2081,8 +2081,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -2102,8 +2102,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -2111,8 +2111,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -2133,7 +2133,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 30.7,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -2163,13 +2163,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 31.4,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -2177,8 +2177,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -2189,8 +2189,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -2198,8 +2198,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -2207,8 +2207,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -2220,13 +2220,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 31.9,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -2234,8 +2234,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -2243,8 +2243,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -2255,8 +2255,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -2264,8 +2264,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -2273,8 +2273,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -2282,8 +2282,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -2295,13 +2295,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 32.5,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -2309,8 +2309,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -2321,8 +2321,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -2330,8 +2330,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -2343,13 +2343,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 32.1,
+   "expected": 33,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2357,8 +2357,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      33,
+      34
      ],
      "elite": false,
      "cap": 3
@@ -2369,8 +2369,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2378,8 +2378,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -2391,13 +2391,13 @@
    "type": "side",
    "campaign": "sparkwright",
    "order": 7,
-   "expected": 32.1,
+   "expected": 33.5,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -2405,8 +2405,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2417,8 +2417,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -2426,8 +2426,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2439,13 +2439,13 @@
    "type": "side",
    "campaign": "sparkwright",
    "order": 8,
-   "expected": 32.1,
+   "expected": 34,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -2453,8 +2453,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -2465,8 +2465,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -2474,8 +2474,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -2487,13 +2487,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 34.4,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -2501,8 +2501,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -2515,8 +2515,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -2524,8 +2524,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -2537,7 +2537,7 @@
    "type": "class",
    "campaign": "sparkwright",
    "order": 10,
-   "expected": 33.5,
+   "expected": 37.1,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -2547,7 +2547,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 38.5,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -2559,13 +2559,13 @@
    "type": "side",
    "campaign": "sparkwright",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -2573,8 +2573,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -2585,8 +2585,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -2594,8 +2594,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -2607,7 +2607,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -2617,7 +2617,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -2629,13 +2629,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 30,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -2643,8 +2643,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -2664,8 +2664,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -2673,8 +2673,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -2695,7 +2695,7 @@
    "type": "side",
    "campaign": "stormlancer",
    "order": 2,
-   "expected": 29.4,
+   "expected": 30.6,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -2709,8 +2709,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -2730,8 +2730,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -2743,13 +2743,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 31.1,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -2757,8 +2757,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -2769,8 +2769,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -2778,8 +2778,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -2791,13 +2791,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 31.8,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -2805,8 +2805,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -2814,8 +2814,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -2826,8 +2826,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -2835,8 +2835,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -2844,8 +2844,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -2857,13 +2857,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 32.4,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -2871,8 +2871,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -2880,8 +2880,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -2892,8 +2892,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -2901,8 +2901,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -2910,8 +2910,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -2919,8 +2919,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -2932,13 +2932,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 33,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -2946,8 +2946,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2958,8 +2958,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -2967,8 +2967,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2980,13 +2980,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 33.4,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -2994,8 +2994,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      33,
+      34
      ],
      "elite": false,
      "cap": 3
@@ -3006,8 +3006,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -3015,8 +3015,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -3028,13 +3028,13 @@
    "type": "side",
    "campaign": "stormlancer",
    "order": 8,
-   "expected": 32.1,
+   "expected": 34,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -3042,8 +3042,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -3054,8 +3054,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -3063,8 +3063,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -3076,13 +3076,13 @@
    "type": "side",
    "campaign": "stormlancer",
    "order": 9,
-   "expected": 32.1,
+   "expected": 34.5,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -3090,8 +3090,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -3102,8 +3102,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -3111,8 +3111,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -3124,13 +3124,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 10,
-   "expected": 32.1,
+   "expected": 34.9,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -3138,8 +3138,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -3152,8 +3152,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 6
@@ -3161,8 +3161,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -3174,7 +3174,7 @@
    "type": "class",
    "campaign": "stormlancer",
    "order": 11,
-   "expected": 33.5,
+   "expected": 37.4,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -3184,7 +3184,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 38.7,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -3196,7 +3196,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -3206,7 +3206,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -3218,13 +3218,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 27.2,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -3232,8 +3232,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -3253,8 +3253,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -3262,8 +3262,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -3284,7 +3284,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 28.1,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -3314,7 +3314,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 28.8,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -3328,8 +3328,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -3349,8 +3349,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -3358,8 +3358,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -3371,13 +3371,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 29.5,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -3385,8 +3385,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -3406,8 +3406,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -3415,8 +3415,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -3424,8 +3424,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -3446,7 +3446,7 @@
    "type": "side",
    "campaign": "cantor",
    "order": 5,
-   "expected": 30.8,
+   "expected": 30.3,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -3494,7 +3494,7 @@
    "type": "side",
    "campaign": "cantor",
    "order": 6,
-   "expected": 30.8,
+   "expected": 30.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -3524,13 +3524,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 30.8,
+   "expected": 31.2,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -3541,8 +3541,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -3554,13 +3554,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 31.7,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -3568,8 +3568,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -3580,8 +3580,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -3589,8 +3589,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -3602,7 +3602,7 @@
    "type": "class",
    "campaign": "cantor",
    "order": 9,
-   "expected": 32.1,
+   "expected": 32.3,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -3650,7 +3650,7 @@
    "type": "side",
    "campaign": "cantor",
    "order": 10,
-   "expected": 33.5,
+   "expected": 33.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -3698,13 +3698,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 33.5,
+   "expected": 34.5,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      33,
-      35
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -3717,8 +3717,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      33,
-      35
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -3730,7 +3730,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 37.2,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -3742,7 +3742,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -3752,7 +3752,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -3764,13 +3764,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 26.1,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -3778,8 +3778,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -3799,8 +3799,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -3808,8 +3808,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -3830,7 +3830,7 @@
    "type": "side",
    "campaign": "oathbound",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27.1,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -3844,8 +3844,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -3865,8 +3865,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -3878,13 +3878,13 @@
    "type": "side",
    "campaign": "oathbound",
    "order": 3,
-   "expected": 29.4,
+   "expected": 27.9,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -3904,8 +3904,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -3926,7 +3926,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 4,
-   "expected": 29.4,
+   "expected": 28.6,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -3956,7 +3956,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 29.3,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -3970,8 +3970,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -3991,8 +3991,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -4000,8 +4000,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -4013,13 +4013,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 29.9,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -4027,8 +4027,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -4048,8 +4048,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -4057,8 +4057,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -4066,8 +4066,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -4088,7 +4088,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 30.8,
+   "expected": 30.7,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -4136,13 +4136,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 31.3,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -4150,8 +4150,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -4162,8 +4162,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -4171,8 +4171,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -4184,7 +4184,7 @@
    "type": "side",
    "campaign": "oathbound",
    "order": 9,
-   "expected": 32.1,
+   "expected": 32,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -4232,7 +4232,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 10,
-   "expected": 32.1,
+   "expected": 32.5,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -4244,7 +4244,7 @@
    "type": "class",
    "campaign": "oathbound",
    "order": 11,
-   "expected": 33.5,
+   "expected": 35.6,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -4254,7 +4254,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 36.9,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -4266,7 +4266,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -4276,7 +4276,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -4288,13 +4288,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 27.6,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -4302,8 +4302,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -4323,8 +4323,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -4332,8 +4332,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -4354,7 +4354,7 @@
    "type": "side",
    "campaign": "duskweaver",
    "order": 2,
-   "expected": 29.4,
+   "expected": 28.4,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -4368,8 +4368,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -4389,8 +4389,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -4402,7 +4402,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 29.1,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -4450,7 +4450,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 29.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -4464,8 +4464,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -4473,8 +4473,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -4494,8 +4494,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -4503,8 +4503,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -4516,7 +4516,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 30.7,
    "zones": [
     {
      "id": "camp:morvane-0-1",
@@ -4591,13 +4591,13 @@
    "type": "side",
    "campaign": "duskweaver",
    "order": 6,
-   "expected": 30.8,
+   "expected": 31.4,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -4605,8 +4605,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -4617,8 +4617,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -4626,8 +4626,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -4639,13 +4639,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 30.8,
+   "expected": 31.8,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -4653,8 +4653,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -4665,8 +4665,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -4674,8 +4674,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -4687,7 +4687,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 32.4,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -4735,13 +4735,13 @@
    "type": "class",
    "campaign": "duskweaver",
    "order": 9,
-   "expected": 32.1,
+   "expected": 33,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -4749,8 +4749,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -4761,8 +4761,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -4770,8 +4770,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -4783,7 +4783,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 10,
-   "expected": 33.5,
+   "expected": 34.5,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -4795,13 +4795,13 @@
    "type": "side",
    "campaign": "duskweaver",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -4809,8 +4809,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -4821,8 +4821,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -4830,8 +4830,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -4843,13 +4843,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 37.5,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -4857,8 +4857,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -4871,8 +4871,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -4880,8 +4880,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -4893,7 +4893,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -4903,7 +4903,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -4915,13 +4915,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 26,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -4929,8 +4929,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -4950,8 +4950,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -4959,8 +4959,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -4981,7 +4981,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -5011,7 +5011,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 27.8,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -5025,8 +5025,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -5046,8 +5046,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5055,8 +5055,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -5068,13 +5068,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 28.5,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -5082,8 +5082,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -5103,8 +5103,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -5112,8 +5112,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -5121,8 +5121,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -5143,13 +5143,13 @@
    "type": "side",
    "campaign": "shade",
    "order": 5,
-   "expected": 30.8,
+   "expected": 29.4,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -5160,8 +5160,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -5173,13 +5173,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 29.8,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -5199,8 +5199,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -5221,13 +5221,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 30.5,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -5235,8 +5235,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -5247,8 +5247,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -5256,8 +5256,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -5269,13 +5269,13 @@
    "type": "side",
    "campaign": "shade",
    "order": 8,
-   "expected": 32.1,
+   "expected": 31.2,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -5283,8 +5283,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -5295,8 +5295,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -5304,8 +5304,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -5317,13 +5317,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 31.9,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -5331,8 +5331,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -5345,8 +5345,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -5354,8 +5354,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -5367,7 +5367,7 @@
    "type": "class",
    "campaign": "shade",
    "order": 10,
-   "expected": 33.5,
+   "expected": 35.5,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -5377,13 +5377,13 @@
    "type": "side",
    "campaign": "shade",
    "order": 11,
-   "expected": 34.9,
+   "expected": 36.7,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 6
@@ -5394,8 +5394,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 6
@@ -5407,13 +5407,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 37.1,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -5421,8 +5421,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -5435,8 +5435,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -5444,8 +5444,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -5457,7 +5457,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -5467,7 +5467,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -5479,13 +5479,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 26.5,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -5493,8 +5493,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -5514,8 +5514,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -5523,8 +5523,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -5545,13 +5545,13 @@
    "type": "side",
    "campaign": "hedgewitch",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27.5,
    "zones": [
     {
      "id": "pack:frost-ruin",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": true,
      "cap": 3
@@ -5559,8 +5559,8 @@
     {
      "id": "region:frost#4",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5568,8 +5568,8 @@
     {
      "id": "region:frost#0",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5577,8 +5577,8 @@
     {
      "id": "region:briar#2",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5586,8 +5586,8 @@
     {
      "id": "region:gloam#3",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5595,8 +5595,8 @@
     {
      "id": "camp:route-act2-ranger-1",
      "level": [
-      29,
-      30
+      27,
+      28
      ],
      "elite": false,
      "cap": 4
@@ -5604,8 +5604,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5613,8 +5613,8 @@
     {
      "id": "region:briar#6",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5625,8 +5625,8 @@
     {
      "id": "pack:frost-ruin",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": true,
      "cap": 3
@@ -5634,8 +5634,8 @@
     {
      "id": "region:frost#4",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5643,8 +5643,8 @@
     {
      "id": "region:frost#0",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5652,8 +5652,8 @@
     {
      "id": "region:briar#2",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5661,8 +5661,8 @@
     {
      "id": "region:gloam#3",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5670,8 +5670,8 @@
     {
      "id": "camp:route-act2-ranger-1",
      "level": [
-      29,
-      30
+      27,
+      28
      ],
      "elite": false,
      "cap": 4
@@ -5679,8 +5679,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5688,8 +5688,8 @@
     {
      "id": "region:briar#6",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -5701,7 +5701,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 29.3,
    "zones": [
     {
      "id": "region:briar#2",
@@ -5803,7 +5803,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 30.6,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -5860,13 +5860,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 31.1,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -5874,8 +5874,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -5883,8 +5883,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -5895,8 +5895,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -5904,8 +5904,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -5913,8 +5913,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -5922,8 +5922,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -5935,13 +5935,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 31.8,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -5949,8 +5949,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -5961,8 +5961,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -5970,8 +5970,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -5983,7 +5983,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 32.4,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -6031,13 +6031,13 @@
    "type": "side",
    "campaign": "hedgewitch",
    "order": 8,
-   "expected": 32.1,
+   "expected": 33,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -6045,8 +6045,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -6057,8 +6057,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -6066,8 +6066,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -6079,7 +6079,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 33.5,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -6091,7 +6091,7 @@
    "type": "class",
    "campaign": "hedgewitch",
    "order": 10,
-   "expected": 33.5,
+   "expected": 36.2,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -6101,13 +6101,13 @@
    "type": "side",
    "campaign": "hedgewitch",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37.6,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -6115,8 +6115,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -6127,8 +6127,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -6136,8 +6136,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -6149,7 +6149,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 38,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -6161,7 +6161,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -6171,7 +6171,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -6183,13 +6183,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 26.2,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -6197,8 +6197,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -6218,8 +6218,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -6227,8 +6227,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -6249,13 +6249,13 @@
    "type": "side",
    "campaign": "ranger",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27.2,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -6275,8 +6275,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -6297,7 +6297,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 27.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -6327,7 +6327,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 28.7,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -6341,8 +6341,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -6362,8 +6362,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -6371,8 +6371,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -6384,13 +6384,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 29.3,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -6398,8 +6398,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -6419,8 +6419,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -6428,8 +6428,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -6437,8 +6437,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -6459,7 +6459,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 30.2,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -6507,13 +6507,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 30.8,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -6521,8 +6521,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -6533,8 +6533,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -6542,8 +6542,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -6555,13 +6555,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 31.5,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -6569,8 +6569,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -6583,8 +6583,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -6592,8 +6592,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -6605,7 +6605,7 @@
    "type": "class",
    "campaign": "ranger",
    "order": 9,
-   "expected": 33.5,
+   "expected": 35.2,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -6615,13 +6615,13 @@
    "type": "side",
    "campaign": "ranger",
    "order": 10,
-   "expected": 34.9,
+   "expected": 36.4,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 7
@@ -6629,8 +6629,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 6
@@ -6641,8 +6641,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 7
@@ -6650,8 +6650,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 6
@@ -6663,7 +6663,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -6675,13 +6675,13 @@
    "type": "side",
    "campaign": "ranger",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -6689,8 +6689,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -6701,8 +6701,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -6710,8 +6710,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -6723,7 +6723,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -6733,7 +6733,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -6745,13 +6745,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 29.1,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -6759,8 +6759,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -6780,8 +6780,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -6789,8 +6789,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -6811,7 +6811,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 29.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -6841,7 +6841,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 30.5,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -6898,13 +6898,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 31.1,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -6912,8 +6912,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -6921,8 +6921,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -6933,8 +6933,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -6942,8 +6942,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -6951,8 +6951,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -6960,8 +6960,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -6973,13 +6973,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 31.8,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -6987,8 +6987,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -6999,8 +6999,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -7008,8 +7008,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -7021,7 +7021,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 32.1,
+   "expected": 32.3,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -7069,7 +7069,7 @@
    "type": "side",
    "campaign": "swordsman",
    "order": 7,
-   "expected": 32.1,
+   "expected": 32.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -7099,13 +7099,13 @@
    "type": "side",
    "campaign": "swordsman",
    "order": 8,
-   "expected": 32.1,
+   "expected": 33.3,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -7113,8 +7113,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -7125,8 +7125,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -7134,8 +7134,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -7147,7 +7147,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 33.8,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -7159,7 +7159,7 @@
    "type": "class",
    "campaign": "swordsman",
    "order": 10,
-   "expected": 33.5,
+   "expected": 36.5,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -7169,7 +7169,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37.8,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -7181,13 +7181,13 @@
    "type": "side",
    "campaign": "swordsman",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -7198,8 +7198,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -7211,7 +7211,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -7221,7 +7221,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -7233,13 +7233,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 26.1,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -7247,8 +7247,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -7268,8 +7268,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -7277,8 +7277,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -7299,7 +7299,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27.1,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -7329,7 +7329,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 27.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -7343,8 +7343,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -7364,8 +7364,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -7373,8 +7373,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -7386,13 +7386,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 28.6,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -7400,8 +7400,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -7421,8 +7421,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -7430,8 +7430,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -7439,8 +7439,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -7461,13 +7461,13 @@
    "type": "side",
    "campaign": "samurai",
    "order": 5,
-   "expected": 30.8,
+   "expected": 29.5,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -7478,8 +7478,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -7491,13 +7491,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 29.8,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -7517,8 +7517,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -7539,13 +7539,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 30.5,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -7553,8 +7553,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -7565,8 +7565,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -7574,8 +7574,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -7587,13 +7587,13 @@
    "type": "side",
    "campaign": "samurai",
    "order": 8,
-   "expected": 32.1,
+   "expected": 31.2,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -7601,8 +7601,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -7613,8 +7613,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -7622,8 +7622,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -7635,13 +7635,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 31.9,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -7654,8 +7654,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -7667,7 +7667,7 @@
    "type": "class",
    "campaign": "samurai",
    "order": 10,
-   "expected": 33.5,
+   "expected": 35.3,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -7677,7 +7677,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 36.5,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -7689,13 +7689,13 @@
    "type": "side",
    "campaign": "samurai",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -7703,8 +7703,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -7715,8 +7715,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -7724,8 +7724,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -7737,7 +7737,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -7747,7 +7747,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -7759,13 +7759,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 29.4,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -7773,8 +7773,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -7794,8 +7794,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -7803,8 +7803,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -7825,7 +7825,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 30.1,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -7912,13 +7912,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 31.3,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -7926,8 +7926,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -7935,8 +7935,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -7947,8 +7947,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -7956,8 +7956,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -7965,8 +7965,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -7974,8 +7974,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -7987,13 +7987,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 32,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -8001,8 +8001,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -8013,8 +8013,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -8022,8 +8022,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -8035,7 +8035,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 32.1,
+   "expected": 32.5,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -8083,13 +8083,13 @@
    "type": "side",
    "campaign": "knight",
    "order": 7,
-   "expected": 32.1,
+   "expected": 33.1,
    "zones": [
     {
      "id": "camp:morvane-1-1",
      "level": [
-      32,
-      33
+      33,
+      34
      ],
      "elite": false,
      "cap": 3
@@ -8097,8 +8097,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -8106,8 +8106,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -8118,8 +8118,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      32,
-      33
+      33,
+      34
      ],
      "elite": false,
      "cap": 3
@@ -8127,8 +8127,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -8136,8 +8136,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -8149,13 +8149,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 33.6,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -8168,8 +8168,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -8181,7 +8181,7 @@
    "type": "class",
    "campaign": "knight",
    "order": 9,
-   "expected": 33.5,
+   "expected": 36.5,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -8191,13 +8191,13 @@
    "type": "side",
    "campaign": "knight",
    "order": 10,
-   "expected": 34.9,
+   "expected": 37.8,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -8205,8 +8205,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -8217,8 +8217,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -8226,8 +8226,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -8239,13 +8239,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 38.2,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -8253,8 +8253,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -8267,8 +8267,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -8276,8 +8276,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -8289,13 +8289,13 @@
    "type": "side",
    "campaign": "knight",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -8303,8 +8303,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -8315,8 +8315,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -8324,8 +8324,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -8337,7 +8337,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -8347,7 +8347,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -8359,13 +8359,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 29.4,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -8373,8 +8373,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -8394,8 +8394,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -8403,8 +8403,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -8425,7 +8425,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 30.1,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -8512,13 +8512,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 31.3,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -8526,8 +8526,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -8535,8 +8535,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -8547,8 +8547,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -8556,8 +8556,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -8565,8 +8565,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -8574,8 +8574,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -8587,13 +8587,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 32,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -8601,8 +8601,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -8613,8 +8613,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -8622,8 +8622,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -8635,7 +8635,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 32.1,
+   "expected": 32.5,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -8683,13 +8683,13 @@
    "type": "side",
    "campaign": "juggernaut",
    "order": 7,
-   "expected": 32.1,
+   "expected": 33.1,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -8697,8 +8697,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -8709,8 +8709,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -8718,8 +8718,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -8731,13 +8731,13 @@
    "type": "side",
    "campaign": "juggernaut",
    "order": 8,
-   "expected": 32.1,
+   "expected": 33.7,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -8745,8 +8745,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -8757,8 +8757,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -8766,8 +8766,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -8779,13 +8779,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 34.2,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -8798,8 +8798,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -8811,7 +8811,7 @@
    "type": "class",
    "campaign": "juggernaut",
    "order": 10,
-   "expected": 33.5,
+   "expected": 36.9,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -8821,7 +8821,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 38.1,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -8833,7 +8833,7 @@
    "type": "side",
    "campaign": "juggernaut",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -8843,7 +8843,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -8853,7 +8853,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -8865,13 +8865,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 30.2,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -8879,8 +8879,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -8900,8 +8900,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -8909,8 +8909,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -8931,7 +8931,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 30.8,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -8961,13 +8961,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 31.5,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -8975,8 +8975,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -8987,8 +8987,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -8996,8 +8996,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -9005,8 +9005,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -9018,13 +9018,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 32,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -9032,8 +9032,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -9041,8 +9041,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -9053,8 +9053,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -9062,8 +9062,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -9071,8 +9071,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -9080,8 +9080,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -9093,13 +9093,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 32.6,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -9107,8 +9107,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -9119,8 +9119,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -9128,8 +9128,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -9141,13 +9141,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 32.1,
+   "expected": 33.1,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -9155,8 +9155,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      33,
+      34
      ],
      "elite": false,
      "cap": 3
@@ -9167,8 +9167,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -9176,8 +9176,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -9189,13 +9189,13 @@
    "type": "side",
    "campaign": "monk",
    "order": 7,
-   "expected": 32.1,
+   "expected": 33.6,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -9203,8 +9203,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -9215,8 +9215,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -9224,8 +9224,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -9237,13 +9237,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 34.1,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -9256,8 +9256,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      34,
+      36
      ],
      "elite": false,
      "cap": 7
@@ -9269,7 +9269,7 @@
    "type": "class",
    "campaign": "monk",
    "order": 9,
-   "expected": 33.5,
+   "expected": 36.8,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -9279,13 +9279,13 @@
    "type": "side",
    "campaign": "monk",
    "order": 10,
-   "expected": 34.9,
+   "expected": 38,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -9293,8 +9293,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -9305,8 +9305,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -9314,8 +9314,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -9327,13 +9327,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 38.3,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -9341,8 +9341,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -9355,8 +9355,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -9364,8 +9364,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -9377,13 +9377,13 @@
    "type": "side",
    "campaign": "monk",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -9391,8 +9391,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -9403,8 +9403,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -9412,8 +9412,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -9425,7 +9425,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -9435,7 +9435,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -9447,13 +9447,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 27.1,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -9461,8 +9461,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -9482,8 +9482,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -9491,8 +9491,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -9513,7 +9513,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -9543,7 +9543,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 28.7,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -9557,8 +9557,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -9578,8 +9578,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -9587,8 +9587,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -9600,13 +9600,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 29.4,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -9614,8 +9614,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -9635,8 +9635,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -9644,8 +9644,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -9653,8 +9653,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -9675,7 +9675,7 @@
    "type": "side",
    "campaign": "brawler",
    "order": 5,
-   "expected": 30.8,
+   "expected": 30.2,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -9753,13 +9753,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 30.8,
+   "expected": 31.2,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -9770,8 +9770,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -9783,13 +9783,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 31.7,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -9797,8 +9797,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -9809,8 +9809,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -9818,8 +9818,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -9831,7 +9831,7 @@
    "type": "class",
    "campaign": "brawler",
    "order": 9,
-   "expected": 32.1,
+   "expected": 32.3,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -9879,7 +9879,7 @@
    "type": "side",
    "campaign": "brawler",
    "order": 10,
-   "expected": 33.5,
+   "expected": 33.9,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -9889,7 +9889,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 33.5,
+   "expected": 34,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -9901,7 +9901,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 36.6,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -9913,7 +9913,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -9923,7 +9923,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -9935,13 +9935,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 25.9,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      25,
+      26
      ],
      "elite": false,
      "cap": 3
@@ -9949,8 +9949,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      25,
+      27
      ],
      "elite": false,
      "cap": 6
@@ -9970,8 +9970,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      25,
+      27
      ],
      "elite": false,
      "cap": 6
@@ -9979,8 +9979,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      25,
+      26
      ],
      "elite": false,
      "cap": 3
@@ -10001,7 +10001,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 26.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -10031,7 +10031,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 27.7,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -10045,8 +10045,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -10066,8 +10066,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -10075,8 +10075,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -10088,13 +10088,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 28.4,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -10102,8 +10102,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -10123,8 +10123,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -10132,8 +10132,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -10141,8 +10141,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -10163,13 +10163,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 29.3,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -10189,8 +10189,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -10211,13 +10211,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 32.1,
+   "expected": 30,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -10225,8 +10225,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -10237,8 +10237,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -10246,8 +10246,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -10259,13 +10259,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 30.7,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -10273,8 +10273,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -10287,8 +10287,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -10296,8 +10296,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -10309,7 +10309,7 @@
    "type": "class",
    "campaign": "huntsman",
    "order": 8,
-   "expected": 33.5,
+   "expected": 34.5,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -10319,13 +10319,13 @@
    "type": "side",
    "campaign": "huntsman",
    "order": 9,
-   "expected": 34.9,
+   "expected": 35.7,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      35,
+      37
      ],
      "elite": false,
      "cap": 7
@@ -10333,8 +10333,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      35,
+      37
      ],
      "elite": false,
      "cap": 6
@@ -10345,8 +10345,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      35,
+      37
      ],
      "elite": false,
      "cap": 7
@@ -10354,8 +10354,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      35,
+      37
      ],
      "elite": false,
      "cap": 6
@@ -10367,13 +10367,13 @@
    "type": "side",
    "campaign": "huntsman",
    "order": 10,
-   "expected": 34.9,
+   "expected": 36.3,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 6
@@ -10381,8 +10381,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 7
@@ -10393,8 +10393,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 6
@@ -10402,8 +10402,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 7
@@ -10415,13 +10415,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 36.8,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 6
@@ -10429,8 +10429,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 7
@@ -10443,8 +10443,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 6
@@ -10452,8 +10452,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      36,
+      38
      ],
      "elite": false,
      "cap": 7
@@ -10465,13 +10465,13 @@
    "type": "side",
    "campaign": "huntsman",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -10479,8 +10479,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -10491,8 +10491,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -10500,8 +10500,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -10513,7 +10513,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -10523,7 +10523,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -10535,13 +10535,13 @@
    "type": "side",
    "campaign": "falconer",
    "order": 1,
-   "expected": 28,
+   "expected": 29.3,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -10561,8 +10561,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -10583,13 +10583,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 28,
+   "expected": 29.8,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -10597,8 +10597,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -10618,8 +10618,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -10627,8 +10627,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -10649,7 +10649,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 30.5,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -10679,13 +10679,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 31.2,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -10693,8 +10693,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -10705,8 +10705,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -10714,8 +10714,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -10723,8 +10723,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -10736,13 +10736,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 31.7,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -10750,8 +10750,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -10759,8 +10759,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -10771,8 +10771,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -10780,8 +10780,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -10789,8 +10789,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -10798,8 +10798,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -10811,13 +10811,13 @@
    "type": "side",
    "campaign": "falconer",
    "order": 6,
-   "expected": 30.8,
+   "expected": 32.3,
    "zones": [
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -10825,8 +10825,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -10834,8 +10834,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -10846,8 +10846,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -10855,8 +10855,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -10864,8 +10864,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -10877,13 +10877,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 30.8,
+   "expected": 32.9,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -10891,8 +10891,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -10903,8 +10903,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -10912,8 +10912,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -10925,13 +10925,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 33.4,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -10939,8 +10939,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      33,
+      34
      ],
      "elite": false,
      "cap": 3
@@ -10951,8 +10951,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -10960,8 +10960,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -10973,13 +10973,13 @@
    "type": "class",
    "campaign": "falconer",
    "order": 9,
-   "expected": 32.1,
+   "expected": 33.9,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -10987,8 +10987,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -10999,8 +10999,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -11008,8 +11008,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -11021,13 +11021,13 @@
    "type": "side",
    "campaign": "falconer",
    "order": 10,
-   "expected": 33.5,
+   "expected": 35.4,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      33,
-      35
+      35,
+      37
      ],
      "elite": false,
      "cap": 6
@@ -11035,8 +11035,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      33,
-      35
+      35,
+      37
      ],
      "elite": false,
      "cap": 7
@@ -11047,8 +11047,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      33,
-      35
+      35,
+      37
      ],
      "elite": false,
      "cap": 6
@@ -11056,8 +11056,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      33,
-      35
+      35,
+      37
      ],
      "elite": false,
      "cap": 7
@@ -11069,13 +11069,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 33.5,
+   "expected": 35.9,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      33,
-      35
+      35,
+      37
      ],
      "elite": false,
      "cap": 6
@@ -11083,8 +11083,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      33,
-      35
+      35,
+      37
      ],
      "elite": false,
      "cap": 7
@@ -11097,8 +11097,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      33,
-      35
+      35,
+      37
      ],
      "elite": false,
      "cap": 6
@@ -11106,8 +11106,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      33,
-      35
+      35,
+      37
      ],
      "elite": false,
      "cap": 7
@@ -11119,7 +11119,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 38.2,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -11131,7 +11131,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -11141,7 +11141,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -11153,7 +11153,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 28.5,
    "zones": [
     {
      "id": "camp:morvane-0-1",
@@ -11219,7 +11219,7 @@
    "type": "side",
    "campaign": "jester",
    "order": 2,
-   "expected": 29.4,
+   "expected": 29.3,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -11267,13 +11267,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 29.4,
+   "expected": 30,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -11293,8 +11293,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      29,
-      31
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -11372,13 +11372,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 31.3,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -11386,8 +11386,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -11395,8 +11395,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -11407,8 +11407,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -11416,8 +11416,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -11425,8 +11425,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -11434,8 +11434,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -11447,13 +11447,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 32,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -11461,8 +11461,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -11473,8 +11473,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -11482,8 +11482,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -11495,7 +11495,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 7,
-   "expected": 32.1,
+   "expected": 32.5,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -11543,13 +11543,13 @@
    "type": "side",
    "campaign": "jester",
    "order": 8,
-   "expected": 32.1,
+   "expected": 33.1,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -11557,8 +11557,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -11569,8 +11569,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -11578,8 +11578,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -11591,13 +11591,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 33.6,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -11610,8 +11610,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -11623,7 +11623,7 @@
    "type": "class",
    "campaign": "jester",
    "order": 10,
-   "expected": 33.5,
+   "expected": 36.5,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -11633,7 +11633,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37.8,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -11645,13 +11645,13 @@
    "type": "side",
    "campaign": "jester",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -11659,8 +11659,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -11671,8 +11671,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -11680,8 +11680,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -11693,7 +11693,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -11703,7 +11703,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -11715,13 +11715,13 @@
    "type": "side",
    "campaign": "corsair",
    "order": 1,
-   "expected": 28,
+   "expected": 29,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -11741,8 +11741,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -11763,7 +11763,7 @@
    "type": "side",
    "campaign": "corsair",
    "order": 2,
-   "expected": 28,
+   "expected": 29.7,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -11777,8 +11777,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -11798,8 +11798,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -11811,13 +11811,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 3,
-   "expected": 28,
+   "expected": 30.2,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -11825,8 +11825,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -11855,8 +11855,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -11864,8 +11864,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -11877,7 +11877,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 4,
-   "expected": 29.4,
+   "expected": 30.8,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -11907,13 +11907,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 31.5,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -11921,8 +11921,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -11933,8 +11933,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -11942,8 +11942,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -11951,8 +11951,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      31,
+      32
      ],
      "elite": false,
      "cap": 3
@@ -11964,13 +11964,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 30.8,
+   "expected": 32,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -11978,8 +11978,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -11987,8 +11987,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -11999,8 +11999,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -12008,8 +12008,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      32,
+      33
      ],
      "elite": false,
      "cap": 3
@@ -12017,8 +12017,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -12026,8 +12026,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -12039,13 +12039,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 7,
-   "expected": 30.8,
+   "expected": 32.6,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -12053,8 +12053,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -12065,8 +12065,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 6
@@ -12074,8 +12074,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      32,
+      34
      ],
      "elite": false,
      "cap": 7
@@ -12087,13 +12087,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 8,
-   "expected": 32.1,
+   "expected": 33.1,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -12101,8 +12101,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      33,
+      34
      ],
      "elite": false,
      "cap": 3
@@ -12113,8 +12113,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -12122,8 +12122,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -12135,13 +12135,13 @@
    "type": "class",
    "campaign": "corsair",
    "order": 9,
-   "expected": 32.1,
+   "expected": 33.6,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -12149,8 +12149,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -12161,8 +12161,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 6
@@ -12170,8 +12170,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      33,
+      35
      ],
      "elite": false,
      "cap": 7
@@ -12183,7 +12183,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 10,
-   "expected": 33.5,
+   "expected": 35.1,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -12195,13 +12195,13 @@
    "type": "side",
    "campaign": "corsair",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37.4,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -12209,8 +12209,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -12221,8 +12221,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -12230,8 +12230,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -12243,13 +12243,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 37.7,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -12257,8 +12257,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -12271,8 +12271,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 6
@@ -12280,8 +12280,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      34,
-      36
+      37,
+      39
      ],
      "elite": false,
      "cap": 7
@@ -12293,7 +12293,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -12303,7 +12303,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -12315,13 +12315,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 27,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -12329,8 +12329,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -12350,8 +12350,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      27,
+      29
      ],
      "elite": false,
      "cap": 6
@@ -12359,8 +12359,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      27,
+      28
      ],
      "elite": false,
      "cap": 3
@@ -12381,7 +12381,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27.9,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -12411,7 +12411,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 28.7,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -12425,8 +12425,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -12446,8 +12446,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -12455,8 +12455,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -12468,13 +12468,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 29.3,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -12482,8 +12482,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -12503,8 +12503,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -12512,8 +12512,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -12521,8 +12521,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -12543,7 +12543,7 @@
    "type": "side",
    "campaign": "bard",
    "order": 5,
-   "expected": 30.8,
+   "expected": 30.2,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -12639,13 +12639,13 @@
    "type": "side",
    "campaign": "bard",
    "order": 7,
-   "expected": 30.8,
+   "expected": 31.3,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -12653,8 +12653,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -12665,8 +12665,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -12674,8 +12674,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      30,
-      32
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -12687,7 +12687,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 8,
-   "expected": 30.8,
+   "expected": 31.9,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -12697,7 +12697,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 32.2,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -12745,7 +12745,7 @@
    "type": "class",
    "campaign": "bard",
    "order": 10,
-   "expected": 32.1,
+   "expected": 32.8,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -12793,7 +12793,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 33.5,
+   "expected": 34.4,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -12805,7 +12805,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 12,
-   "expected": 34.9,
+   "expected": 36.9,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -12817,7 +12817,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -12827,7 +12827,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -12839,13 +12839,13 @@
    "type": "main",
    "campaign": "shared",
    "order": 1,
-   "expected": 28,
+   "expected": 26.8,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -12853,8 +12853,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -12874,8 +12874,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      28,
-      30
+      26,
+      28
      ],
      "elite": false,
      "cap": 6
@@ -12883,8 +12883,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      28,
-      29
+      26,
+      27
      ],
      "elite": false,
      "cap": 3
@@ -12905,7 +12905,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 2,
-   "expected": 29.4,
+   "expected": 27.7,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -12935,7 +12935,7 @@
    "type": "side",
    "campaign": "shared",
    "order": 3,
-   "expected": 30.8,
+   "expected": 28.5,
    "zones": [
     {
      "id": "zone:legion-camp",
@@ -12949,8 +12949,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -12970,8 +12970,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      28,
+      30
      ],
      "elite": false,
      "cap": 6
@@ -12979,8 +12979,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      28,
+      29
      ],
      "elite": false,
      "cap": 3
@@ -12992,13 +12992,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 4,
-   "expected": 30.8,
+   "expected": 29.1,
    "zones": [
     {
      "id": "camp:morvane-0-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -13006,8 +13006,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -13027,8 +13027,8 @@
     {
      "id": "camp:morvane-2-8",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -13036,8 +13036,8 @@
     {
      "id": "camp:morvane-1-1",
      "level": [
-      30,
-      31
+      29,
+      30
      ],
      "elite": false,
      "cap": 3
@@ -13045,8 +13045,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      30,
-      32
+      29,
+      31
      ],
      "elite": false,
      "cap": 6
@@ -13067,7 +13067,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 5,
-   "expected": 30.8,
+   "expected": 30,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -13115,13 +13115,13 @@
    "type": "side",
    "campaign": "shared",
    "order": 6,
-   "expected": 32.1,
+   "expected": 30.6,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -13129,8 +13129,8 @@
     {
      "id": "camp:morvane-0-1",
      "level": [
-      32,
-      33
+      30,
+      31
      ],
      "elite": false,
      "cap": 3
@@ -13141,8 +13141,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 7
@@ -13150,8 +13150,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      30,
+      32
      ],
      "elite": false,
      "cap": 6
@@ -13163,13 +13163,13 @@
    "type": "side",
    "campaign": "skald",
    "order": 7,
-   "expected": 32.1,
+   "expected": 31.3,
    "zones": [
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -13177,8 +13177,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -13189,8 +13189,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 6
@@ -13198,8 +13198,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      32,
-      34
+      31,
+      33
      ],
      "elite": false,
      "cap": 7
@@ -13259,7 +13259,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 9,
-   "expected": 32.1,
+   "expected": 32.7,
    "zones": [
     {
      "id": "region:gloam#5",
@@ -13309,7 +13309,7 @@
    "type": "class",
    "campaign": "skald",
    "order": 10,
-   "expected": 33.5,
+   "expected": 35.9,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -13319,7 +13319,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 11,
-   "expected": 34.9,
+   "expected": 37.2,
    "zones": [],
    "lairs": [
     "inst:concord-citadel"
@@ -13331,13 +13331,13 @@
    "type": "side",
    "campaign": "skald",
    "order": 12,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -13345,8 +13345,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -13357,8 +13357,8 @@
     {
      "id": "zone:legion-camp",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 7
@@ -13366,8 +13366,8 @@
     {
      "id": "region:gloam#5",
      "level": [
-      36,
-      38
+      38,
+      40
      ],
      "elite": false,
      "cap": 6
@@ -13379,7 +13379,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 13,
-   "expected": 36.3,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []
@@ -13389,7 +13389,7 @@
    "type": "main",
    "campaign": "shared",
    "order": 14,
-   "expected": 37.6,
+   "expected": 40,
    "zones": [],
    "lairs": [],
    "zonesWalk": []

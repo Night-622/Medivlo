@@ -1,8 +1,10 @@
 /**
  * Concordia spawn bands by campaign order (Claude 2, with Claude 1 and Claude 3, 2026-10-20). Each class's Act II
  * then Act III quests (walks.ts actWalks), walked across Concordia; a Morvane region's tiers start at the expected
- * level of the host's first quest whose walk passes it and step up at later visits, each from when the host's last
- * main or class quest before that visit is done (sides are optional, so only those count as steps).
+ * level of the host's first quest whose walk passes it and step up at later visits, each from when the host's quest
+ * before that visit is done. Expected levels are Claude 5's measured typical player (out/hero-levels.json, walks.ts),
+ * which climbs through the side quests too, so every quest in play order is a step: a skipped side's tier just never
+ * applies, and the next quest's does (src/world/hc/bands.ts takes the last tier whose step is done).
  *   ENTRY=tools/playthrough/concordiaBands.ts OUT=<file> node tools/playthrough/build.mjs && node <file> <gen|check> [classes]
  *   gen    writes src/data/regions/hc/concordiaBands.gen.ts (all classes; deterministic)
  *   check  every Act II/III walk: band top at that point ≤ expected + 2, and for main quests ≥ expected − 4
@@ -25,22 +27,28 @@ const classes = only?.split(',');
 const zones = spawnZones('concordia');
 const regionOf = new Map(zones.map((z) => [z.id, z.id === 'zone:legion-camp' ? 'region:heart' : morvaneRegionAt(z.at[0] / MORVANE_SCALE, z.at[1] / MORVANE_SCALE)?.id ?? '']));
 const isMain = (q: ActQuestWalk) => q.type === 'main' || q.type === 'class';
-const ACT_TOP: Record<'act2' | 'act3', number> = { act2: 26, act3: 38 }; // floor caps: band tops ≤ 28 / 40
+const ACT_TOP: Record<'act2' | 'act3', number> = { act2: 28, act3: 38 }; // floor caps: band tops ≤ 30 / 40 (the measured hero ends Act II ~L28)
 
-interface Played { cls: string; quests: (ActQuestWalk & { act: 'act2' | 'act3'; mainsBefore: number })[]; mains: string[] }
+interface Played { cls: string; quests: (ActQuestWalk & { act: 'act2' | 'act3'; stepsBefore: number })[]; steps: string[] }
 function played(): Played[] {
   const a2 = actWalks('act2', classes), a3 = actWalks('act3', classes);
   return a2.map((w) => {
     const all = [...w.quests.map((q) => ({ ...q, act: 'act2' as const })), ...(a3.find((x) => x.cls === w.cls)?.quests ?? []).map((q) => ({ ...q, act: 'act3' as const }))];
-    let m = 0;
-    const quests = all.map((q) => { const r = { ...q, mainsBefore: m }; if (isMain(q)) m++; return r; });
-    return { cls: w.cls, quests, mains: all.filter(isMain).map((q) => q.quest) };
+    const quests = all.map((q, i) => ({ ...q, stepsBefore: i }));
+    return { cls: w.cls, quests, steps: all.map((q) => q.quest) };
   });
 }
 
 const walks = played();
 if (mode === 'gen') {
   const table: Record<string, Record<string, { floor: number; step?: number }[]>> = {};
+  // story instances (Sentinel lairs, the barrow, the abbey): fought at the level a class's hero enters them (first
+  // entry); Morvane caves follow their region and the citadel keeps its finale level
+  const inst: Record<string, Record<string, number>> = {};
+  for (const w of walks) for (const q of w.quests) for (const id of q.lairs) {
+    if (!/^inst:(sentinel-[a-z]+|varric-barrow|drowned-abbey)$/.test(id) || inst[id]?.[w.cls] !== undefined) continue;
+    (inst[id] ??= {})[w.cls] = Math.max(1, Math.min(ACT_TOP[q.act], Math.floor(q.expected)));
+  }
   for (const w of walks) {
     const visits = new Map<string, { floor: number; step: number }[]>();
     for (const q of w.quests) for (const id of new Set([...q.zones, ...q.ftZones])) {
@@ -48,12 +56,12 @@ if (mode === 'gen') {
       if (!region) continue;
       let floor = Math.min(ACT_TOP[q.act], Math.floor(q.expected));
       if (region === 'region:heart') floor = Math.max(30, floor);
-      visits.set(region, [...(visits.get(region) ?? []), { floor, step: q.mainsBefore }]);
+      visits.set(region, [...(visits.get(region) ?? []), { floor, step: q.stepsBefore }]);
     }
     table[w.cls] = {};
     for (const [region, v] of [...visits].sort(([a], [b]) => a.localeCompare(b))) {
       // visits in play order (floors only rise): the first holds from the start; each later one that is higher
-      // and comes after a later main becomes a tier from that main (a visit after the same main keeps the lower floor)
+      // and comes after a later quest becomes a tier from that quest (a visit during the same quest keeps the lower floor)
       const list: { floor: number; step?: number }[] = [];
       let lastStep = -1;
       for (const x of v) {
@@ -67,11 +75,11 @@ if (mode === 'gen') {
   }
   const tier = (t: { floor: number; step?: number }) => (t.step ? `{ floor: ${t.floor}, step: ${t.step} }` : `{ floor: ${t.floor} }`);
   const rows = Object.keys(table).sort().map((c) => `  ${c}: {\n${Object.entries(table[c]).map(([r, t]) => `    '${r}': [${t.map(tier).join(', ')}],`).join('\n')}\n  },`);
-  const mains = [...walks].sort((a, b) => a.cls.localeCompare(b.cls)).map((w) => `  ${w.cls}: [${w.mains.map((m) => `'${m}'`).join(', ')}],`);
+  const mains = [...walks].sort((a, b) => a.cls.localeCompare(b.cls)).map((w) => `  ${w.cls}: [${w.steps.map((m) => `'${m}'`).join(', ')}],`);
   writeFileSync('src/data/regions/hc/concordiaBands.gen.ts', `/**
  * GENERATED by tools/playthrough/concordiaBands.ts gen (Claude 2): do not edit. Concordia spawn bands by campaign
- * order: host class → Morvane region → tiers (\`floor\`; a later tier applies once the host's Act II/III main quest
- * \`step\` is done, counting in ACT23_MAINS). Zones spawn at floor…floor+2, road camps and guards floor…floor+1,
+ * order: host class → Morvane region → tiers (\`floor\`; a later tier applies once the host's Act II/III quest
+ * \`step\` is done, counting in ACT23_MAINS: every quest in play order, the measured hero climbs through the sides too). Zones spawn at floor…floor+2, road camps and guards floor…floor+1,
  * ruin packs floor+1…floor+2 (elite). See src/world/hc/bands.ts.
  */
 import type { ZoneTier } from './zoneBands.gen';
@@ -80,7 +88,13 @@ export const CONCORDIA_BANDS: Record<string, Record<string, ZoneTier[]>> = {
 ${rows.join('\n')}
 };
 
-/** Each class's Act II then Act III main and class-thread quests, in play order (step n = the n-th). */
+/** Story instances (Sentinel lairs, the barrow, the abbey) → class → the level its packs fight at for that host (the
+ * measured hero level on first entry); hosts that never enter keep the instance's own level. */
+export const INSTANCE_BANDS: Record<string, Record<string, number>> = {
+${Object.keys(inst).sort().map((i) => `  '${i}': { ${Object.entries(inst[i]).sort(([a], [b]) => a.localeCompare(b)).map(([c, f]) => `${c}: ${f}`).join(', ')} },`).join('\n')}
+};
+
+/** Each class's Act II then Act III quests, in play order (step n = the n-th; mains, class thread and sides alike). */
 export const ACT23_MAINS: Record<string, string[]> = {
 ${mains.join('\n')}
 };
@@ -93,7 +107,7 @@ ${mains.join('\n')}
   for (const w of walks) {
     let worstHigh = { m: -99, what: '' }, worstLow = { m: 99, what: '' }, over = 0, under = 0;
     for (const q of w.quests) {
-      const done: StepDone = (_c, step) => step <= q.mainsBefore;
+      const done: StepDone = (_c, step) => step <= q.stepsBefore;
       for (const id of new Set([...q.zones, ...q.ftZones])) {
         const z = byId.get(id);
         if (!z) continue;

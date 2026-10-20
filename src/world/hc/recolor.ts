@@ -64,10 +64,3 @@ export function recolorPixels(a: Uint8ClampedArray, R: RecolorRules): void {
     a[i] = r; a[i + 1] = g; a[i + 2] = b;
   }
 }
-
-/** Recolour a single 0xRRGGBB colour (minimap and map palettes). */
-export function recolorColor(c: number, R: RecolorRules): number {
-  const px = new Uint8ClampedArray([(c >> 16) & 255, (c >> 8) & 255, c & 255, 255]);
-  recolorPixels(px, R);
-  return (px[0] << 16) | (px[1] << 8) | px[2];
-}

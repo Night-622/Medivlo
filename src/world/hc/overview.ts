@@ -2,7 +2,7 @@
  * Map-screen data (pure): school realm overview images built from the generator, map markers per space,
  * and Morvane hit-testing. The map UI (src/ui/map) only draws what this returns.
  */
-import { MORVANE_REGIONS, MORVANE_SCALE, MORVANE_VILLAGES } from '@/data/regions/hc/morvane';
+import { MORVANE_REGIONS, MORVANE_VILLAGES } from '@/data/regions/hc/morvane';
 import { CHUNK_TILES } from '@/core';
 import { CORNER_MINI } from './theme';
 import { AREAS, allWaystones, placeName, realmOf, spaceRuntime } from './spaces';
@@ -85,8 +85,6 @@ export function morvaneRegionAt(mx: number, my: number): MorvaneRegionDef | null
   for (const r of MORVANE_REGIONS) if (r.polys.some((p) => inPoly(mx, my, p))) return r;
   return null;
 }
-
-export const morvaneTileToMap = (tx: number, ty: number): [number, number] => [tx / MORVANE_SCALE, ty / MORVANE_SCALE];
 
 function inPoly(x: number, y: number, p: [number, number][]): boolean {
   let inside = false;
