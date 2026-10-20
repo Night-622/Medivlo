@@ -450,7 +450,7 @@ const dialogues: DialogueDef[] = [
     id: 'dialogue:obj-nave-name-drum', name: 'C-2 drumming the names on the water', scope: 'party',
     entries: [{ when: stage('quest:skald-under-the-lake', 'drum'), node: 'drum' }, { node: 'water' }],
     nodes: {
-      water: { speaker: 'narrator', text: 'Green water over the drowned bell-tower, and the reeds moving with no wind.', next: null },
+      water: { speaker: 'narrator', text: 'From the end of the boat landing, green water runs out to the drowned bell-tower, and the reeds move with no wind.', next: null },
       drum: { speaker: 'narrator', text: 'You lay your drum flat on the water and drum the choir’s names into it, all forty, the three in their right places. The water takes each beat down. At the fortieth name the reeds part, and far below, the north door of the nave swings open.', next: null },
     },
   },

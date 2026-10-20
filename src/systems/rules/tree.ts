@@ -8,6 +8,7 @@ import { HC_KIT_SPELLS_NEW, NEW_KIT } from '@/data/spells/hc/kit-spells-new';
 import { HC_SCHOOL_PERKS } from '@/data/skilltrees/hc';
 import { HC_SHARED_KEYSTONES, KEYSTONE_OFFERS } from '@/data/skilltrees/hc/keystones';
 import type { PerkDef, SchoolPerks } from './perkTypes';
+import { displayName, flavourOf } from './buildText';
 import { slug } from '@/data/spells/hc/build';
 import { SCHOOL_NAME } from '@/data/classes/hc';
 import type { Modifier, Passive, SchoolId, StatKey, TreeBranch, TreeNode } from './types';
@@ -20,7 +21,7 @@ const pct = (stat: StatKey, value: number): Modifier => ({ stat, op: 'pct', valu
 const pc = (v: number) => `${Math.round(v * 100)}%`;
 
 /** A node spec: per-rank text + passive builders. */
-interface Spec { name: string; icon: string; max?: number; text: (r: number) => string; fx: (r: number) => Passive; spell?: string; free?: boolean; label?: string; shared?: boolean }
+interface Spec { name: string; icon: string; max?: number; text: (r: number) => string; fx: (r: number) => Passive; spell?: string; free?: boolean; label?: string; shared?: boolean; flavour?: string }
 const one = (name: string, icon: string, text: string, fx: Passive, spell?: string): Spec => ({ name, icon, text: () => text, fx: () => fx, spell });
 const ranks = (name: string, icon: string, max: number, text: (r: number) => string, fx: (r: number) => Passive): Spec => ({ name, icon, max, text, fx });
 
@@ -29,7 +30,7 @@ const PERK_LABEL: Record<PerkDef['kind'], string> = {
   conversion: 'Perk · conversion', trigger: 'Perk · trigger', resource: 'Perk · resource', aura: 'Perk · aura', tradeoff: 'Perk · trade-off', power: 'Perk',
 };
 const perk = (p: PerkDef, icon: string, label?: string): Spec =>
-  ({ name: p.name, icon: p.icon ?? icon, max: p.ranks, text: (r) => p.text[r - 1], fx: (r) => p.effects[r - 1], label: label ?? PERK_LABEL[p.kind] });
+  ({ name: displayName('perk', p.id, p.name), flavour: flavourOf('perk', p.id), icon: p.icon ?? icon, max: p.ranks, text: (r) => p.text[r - 1], fx: (r) => p.effects[r - 1], label: label ?? PERK_LABEL[p.kind] });
 function schoolPerks(school: SchoolId): SchoolPerks {
   const sp = HC_SCHOOL_PERKS.find((x) => x.school === school);
   if (!sp) throw new Error(`[tree] no perk table for ${school}`);
@@ -57,8 +58,8 @@ function spellsBranch(classId: string, school: SchoolId): BranchSpec {
   const paths = kitIds.map((sp, i): PathSpec => {
     const nw = HC_KIT_SPELLS_NEW.find((s) => s.id === fresh[i]);
     return {
-      a: { ...one(sp.name, sp.icon, sp.desc, {}, sp.id), free: true },
-      m1: nw ? { ...one(nw.name, nw.icon, nw.desc, {}, nw.id), label: 'New spell' } : one(`+8% ${sp.name} damage`, sp.icon, `+8% ${sp.name} damage`, { spellMods: [{ spell: sp.id, dmg: 0.08 }] }),
+      a: { ...one(displayName('spell', sp.id, sp.name), sp.icon, sp.desc, {}, sp.id), free: true },
+      m1: nw ? { ...one(displayName('spell', nw.id, nw.name), nw.icon, nw.desc, {}, nw.id), label: 'New spell', flavour: flavourOf('spell', nw.id) } : one(`+8% ${sp.name} damage`, sp.icon, `+8% ${sp.name} damage`, { spellMods: [{ spell: sp.id, dmg: 0.08 }] }),
       m2: perk(sig[4 * i], sp.icon),
       b: perk(sig[4 * i + 1], sp.icon),
       c1: perk(sig[4 * i + 2], sp.icon, 'Perk · pick one of two'),
@@ -202,7 +203,7 @@ function nodesFor(spec: BranchSpec, branch: TreeBranch): TreeNode[] {
     out.push({
       id: p + id, branch, kind, name: s.name, icon: s.icon, x, y, size, maxRank: max,
       text: Array.from({ length: max }, (_, i) => s.text(i + 1)), effects: Array.from({ length: max }, (_, i) => s.fx(i + 1)),
-      grantsSpell: s.spell, req: [], free: s.free, typeLabel: s.label ?? spec.labels[kind], ...(s.shared ? { shared: true } : {}), ...extra,
+      grantsSpell: s.spell, req: [], free: s.free, typeLabel: s.label ?? spec.labels[kind], ...(s.shared ? { shared: true } : {}), ...(s.flavour ? { flavour: s.flavour } : {}), ...extra,
     });
   };
   N('root', 410, 476, 52, 'root', spec.root);

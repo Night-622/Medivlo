@@ -28,7 +28,7 @@ export const HC_ITEM_FLAVOUR: Record<string, string> = {
   lg_fist_5: 'The Mountain King wore it for every bout, and took it off for every apology. It is very well worn.',
   lg_hunt_5: 'Wear it and every creature of the Greywilds knows your name. Not all of them like it.',
   lg_guile_5: 'It slips off any finger it likes, usually into somebody else’s pocket.',
-  lg_song_5: 'The Maestro never spoke. The pendant hums, softly, the one tune he never finished.',
+  lg_song_5: 'The Maestro never spoke. The tear hums, softly, the one tune he never finished.',
   lg_concord_5: 'Forged from what was left when the Concord broke. It cuts both ways, and argues about it.',
 
   // ---------- armour sets: Ash (Cinderreach)

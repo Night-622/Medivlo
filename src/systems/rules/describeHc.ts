@@ -1,9 +1,10 @@
 /** Human-readable text for Hollow Crown stats, modifiers and items (Claude 3). Pure. */
 import { SCHOOL_NAME } from '@/data/classes/hc';
 import { HC_WEAPON_TYPES } from '@/data/items/hc/weapons.gen';
-import { armourPiece, armourSet, gemsOf, hasHybrid, itemInfo, itemMods, itemWeaponDamage, legendary, setProgress, upgradeOf, weaponBase, GEMS } from './gear';
+import { armourPiece, armourSet, gemsOf, hasHybrid, hybridFor, hybridSchools, itemInfo, itemMods, itemWeaponDamage, legendary, setProgress, upgradeOf, weaponBase, GEMS } from './gear';
 import { affixDef, affixPassive, itemRarity, socketCount } from './affixes';
 import { uniqueDef } from './uniques';
+import { affixLabel, flavourOf } from './buildText';
 import { spellDef } from './spells';
 import { HC_ITEM_FLAVOUR } from '@/data/lore/hc-item-flavour';
 import { campaignItem } from '@/data/items/hc/campaign-items';
@@ -53,7 +54,7 @@ export function itemTooltip(it: ItemInstance, equipped: ItemInstance[], classSch
   const info = itemInfo(it.base);
   if (!info) return [{ text: it.base }];
   const up = upgradeOf(it), rar = itemRarity(it);
-  const out: TipLine[] = [{ text: info.name + (up ? ` +${up}` : '') + (it.qty > 1 ? ` ×${it.qty}` : ''), color: 'rarity', size: 'h' }];
+  const out: TipLine[] = [{ text: affixedName(it, info.name) + (up ? ` +${up}` : '') + (it.qty > 1 ? ` ×${it.qty}` : ''), color: 'rarity', size: 'h' }];
   const kind = info.weaponType ? HC_WEAPON_TYPES.includes(info.weaponType) ? cap(info.weaponType) : 'Weapon' : info.slot ? cap(info.slot) : cap(info.kind);
   out.push({ text: `${kind} · ${rarityLabel(rar)}${info.slot ? ` · Item level ${it.ilvl}` : ''}`, color: 'dim', size: 's' });
   if (info.weaponType) {
@@ -69,7 +70,7 @@ export function itemTooltip(it: ItemInstance, equipped: ItemInstance[], classSch
   if (moved) out.push({ text: `Bound effect: ${'text' in moved ? moved.text : moved.fx}`, color: 'gold', size: 's' });
   if (it.imbue) out.push({ text: `Imbued: ${SCHOOL_NAME[it.imbue]} (half of its attacks deal ${SCHOOL_NAME[it.imbue]} damage)`, color: 'school', size: 's' });
   const lg = legendary(it.base);
-  if (lg) out.push({ text: lg.fx, color: 'gold', size: 's' });
+  if (lg && !uq) out.push({ text: lg.fx, color: 'gold', size: 's' }); // a bespoke effect replaced the generic one
   const piece = armourPiece(it.base);
   if (piece) {
     const set = armourSet(piece.set)!;
@@ -78,7 +79,10 @@ export function itemTooltip(it: ItemInstance, equipped: ItemInstance[], classSch
     out.push({ text: `2: ${set.twoPiece}`, color: count >= 2 ? 'good' : 'dim', size: 's' });
     out.push({ text: `4: ${set.ability.name}. ${set.ability.desc}`, color: count >= 4 ? 'good' : 'dim', size: 's' });
     out.push({ text: `Attuned (${SCHOOL_NAME[set.school]}): ${set.attuned}`, color: count >= 4 && set.school === classSchool ? 'school' : 'dim', size: 's' });
-    out.push({ text: 'Hybrid: 2 of this set + 2 of another school’s set: both 4-piece effects at half strength.', color: count >= 2 && count < 4 && hasHybrid(equipped) ? 'good' : 'dim', size: 's' });
+    const hs = hybridSchools(equipped), hy = hs ? hybridFor(hs[0], hs[1]) : undefined;
+    out.push(hy && count >= 2 && count < 4
+      ? { text: `Hybrid: ${hy.name}. ${hy.text}`, color: 'good', size: 's' }
+      : { text: 'Hybrid: 2 of this set + 2 of another school’s set: a two-school bonus.', color: count >= 2 && count < 4 && hasHybrid(equipped) ? 'good' : 'dim', size: 's' });
   }
   const gems = gemsOf(it), sockets = socketCount(it);
   for (const g of gems) out.push({ text: `Socket: ${itemInfo(g)?.name} (${GEMS[g].label})`, color: 'good', size: 's' });
@@ -88,7 +92,7 @@ export function itemTooltip(it: ItemInstance, equipped: ItemInstance[], classSch
   // in-world flavour (Claude 4) wins over the handoff line: legendaries by id, armour by set, weapons by base
   const wb = weaponBase(it.base);
   const story = campaignItem(it.base);
-  const flavour = (story && story.kind !== 'relic' ? story.desc : undefined) ?? HC_ITEM_FLAVOUR[it.base] ?? (piece ? HC_ITEM_FLAVOUR[piece.set] : undefined) ?? (wb && !lg ? HC_ITEM_FLAVOUR[wb.id] : undefined);
+  const flavour = (story && story.kind !== 'relic' ? story.desc : undefined) ?? flavourOf('unique', it.base) ?? flavourOf('item', it.base) ?? HC_ITEM_FLAVOUR[it.base] ?? (piece ? HC_ITEM_FLAVOUR[piece.set] : undefined) ?? (wb && !lg ? HC_ITEM_FLAVOUR[wb.id] : undefined);
   if (flavour) out.push({ text: flavour, color: 'dim', size: 's' });
   else if (lg) out.push({ text: lg.lore, color: 'dim', size: 's' });
   else if (piece) out.push({ text: armourSet(piece.set)!.lore, color: 'dim', size: 's' });
@@ -142,4 +146,16 @@ function flatStats(x: ItemInstance): Record<string, number> {
   const mods = [...itemMods(x), ...(x.affixes ?? []).flatMap((r) => affixPassive(r, x.ilvl, x.upgrade ?? 0)?.mods ?? [])];
   for (const mod of mods) if (mod.op === 'flat' && !mod.when) m[mod.stat] = (m[mod.stat] ?? 0) + mod.value;
   return m;
+}
+
+/** "<prefix label> <name> <suffix label>" from the rolled affixes' words (Claude 4's overlay). */
+export function affixedName(it: ItemInstance, name: string): string {
+  let pre = '', suf = '';
+  for (const r of it.affixes ?? []) {
+    const d = affixDef(r.id), label = affixLabel(r.id);
+    if (!d || !label) continue;
+    if (d.kind === 'prefix' && !pre) pre = label;
+    if (d.kind === 'suffix' && !suf) suf = label;
+  }
+  return [pre, name, suf].filter(Boolean).join(' ');
 }

@@ -9,7 +9,9 @@ import { HC_MATERIALS, HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { HC_BESTIARY } from '@/data/enemies/hc/bestiary.gen';
 import { campaignItem } from '@/data/items/hc/campaign-items';
 import { HC_BUILD_ITEMS } from '@/data/items/hc/build-items';
+import { HC_HYBRIDS, type HybridSet } from '@/data/items/hc/hybrid-sets';
 import { uniqueDef } from './uniques';
+import { displayName } from './buildText';
 import { P } from './curves';
 import { scalePassive } from './scale';
 import type {
@@ -58,7 +60,7 @@ export function itemInfo(id: string): ItemInfo | undefined {
   }
   // uniques (u_*): their base's shape, their own name, gold like a legendary
   const u = id.startsWith('u_') ? uniqueDef(id) : undefined;
-  if (u) { const b = itemInfo(u.base); return b && { ...b, id, name: u.name, kind: 'legendary', rarity: 'spark', desc: u.text, value: Math.max(b.value * 3, 1500), stackable: false, questItem: false }; }
+  if (u) { const b = itemInfo(u.base); return b && { ...b, id, name: displayName('unique', id, u.name), kind: 'legendary', rarity: 'spark', desc: u.text, value: Math.max(b.value * 3, 1500), stackable: false, questItem: false }; }
   const w = WEAPON.get(id);
   if (w) return { id, name: w.name, kind: 'weapon', rarity: w.rarity, value: w.value, slot: 'weapon', weaponType: w.type, stackable: false, questItem: false };
   const p = PIECE.get(id);
@@ -67,7 +69,7 @@ export function itemInfo(id: string): ItemInfo | undefined {
   if (l) {
     const base = WEAPON.get(l.base);
     return {
-      id, name: l.name, kind: 'legendary', rarity: 'spark', value: l.value, desc: l.fx, stackable: false, questItem: false,
+      id, name: displayName('unique', id, l.name), kind: 'legendary', rarity: 'spark', value: l.value, desc: uniqueDef(id)?.text ?? l.fx, stackable: false, questItem: false,
       slot: l.slot === 'main' ? 'weapon' : l.slot, weaponType: base?.type,
     };
   }
@@ -75,7 +77,7 @@ export function itemInfo(id: string): ItemInfo | undefined {
   if (!it) {
     // deeper-builds items: runes, rune dust, Essences, tomes (stackable, no slot)
     const b = BUILD.get(id);
-    return b && { id, name: b.name, kind: b.cat, rarity: b.rarity, value: b.value, desc: b.desc, stackable: true, questItem: false };
+    return b && { id, name: displayName('item', id, b.name), kind: b.cat, rarity: b.rarity, value: b.value, desc: b.desc, stackable: true, questItem: false };
   }
   const ring = RING_IDS.includes(id), amulet = AMULET_IDS.includes(id);
   return {
@@ -285,12 +287,23 @@ export function hybridBonus(equipped: ItemInstance[]): Passive[] {
   const pair = halves.find((a) => halves.some((b) => b.set.school !== a.set.school));
   if (!pair) return [];
   const other = halves.find((b) => b.set.school !== pair.set.school)!;
+  // a curated pair (Claude 5's 12, data/items/hc/hybrid-sets.ts) replaces the generic half-and-half
+  const curated = hybridFor(pair.set.school, other.set.school);
+  if (curated) return [curated.passive];
   return [pair, other].map(({ set }) => {
     const t = STYLE_TRIGGER[set.style];
     return scalePassive({ procs: [{ on: t.on, every: t.every, icd: t.icd ?? 1000, do: SCHOOL_EFFECT[set.school] }] }, 0.5);
   });
 }
 export const hasHybrid = (equipped: ItemInstance[]): boolean => hybridBonus(equipped).length > 0;
+/** The curated hybrid for two schools (either order), if any. */
+export const hybridFor = (a: SchoolId, b: SchoolId): HybridSet | undefined => HC_HYBRIDS.find((h) => (h.schools[0] === a && h.schools[1] === b) || (h.schools[0] === b && h.schools[1] === a));
+/** The two schools of a worn hybrid, if one is active. */
+export function hybridSchools(equipped: ItemInstance[]): [SchoolId, SchoolId] | null {
+  const halves = setProgress(equipped).filter((p) => p.count >= 2 && p.count < 4);
+  const a = halves[0], b = halves.find((x) => a && x.set.school !== a.set.school);
+  return a && b ? [a.set.school, b.set.school] : null;
+}
 
 // ───────────── legendaries ─────────────
 /** Boss element → damage kind of its shockwave / echo, and its signature status for the immunity effect. */

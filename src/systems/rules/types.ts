@@ -242,5 +242,7 @@ export interface TreeNode {
   diamond?: boolean;
   /** a shared keystone (BUILDS.md §3): a character holds at most MAX_SHARED_KEYSTONES of them */
   shared?: boolean;
+  /** in-world line (Claude 4's overlay), shown in italics under the mechanics */
+  flavour?: string;
 }
 
