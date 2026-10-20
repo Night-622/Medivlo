@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 export const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const DIRS = ['src', 'public'];
-const FILES = ['index.html', 'vite.config.ts', 'tsconfig.json', 'package.json', 'package-lock.json', 'firebase.json', '.env.local'];
+const FILES = ['index.html', 'vite.config.ts', 'tsconfig.json', 'package.json', 'package-lock.json', 'firebase.json', '.env.local', '.env.production'];
 
 function walk(dir, out) {
   for (const name of readdirSync(dir)) {

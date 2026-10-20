@@ -9,7 +9,7 @@ Firebase project for The Hollow Crown: **`medivlo`** (`.firebaserc` default; sit
 
 ---
 
-## 1. Turn on sign-in methods (Firebase console, 2 min)
+## 1. Turn on sign-in methods (Firebase console, 2 min). DONE 2026-10-20 (Email/Password + Anonymous verified)
 Console → **Authentication → Sign-in method**:
 - **Email/Password**: Enable. Leave "Email link" off. Used by both email accounts and username accounts.
 - **Anonymous**: Enable. Used for guest play, co-op signalling and saves for players who haven't signed up.
@@ -36,7 +36,18 @@ What's new in the rules:
 - Co-op signalling: `rooms`.
 - Chat `reports` (create-only).
 
-## 4. Install the Google Cloud CLI (once)
+## 4. Install the Google Cloud CLI (once). DONE 2026-10-20 on the home PC
+On Windows (cmd), the CLI is already installed and logged in; its default project is another one, so every
+command names `--project medivlo` instead of changing the default:
+```
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com --project medivlo
+```
+New projects need the build service account to be allowed to build (the first deploy fails with PERMISSION_DENIED
+on `…-compute@developer.gserviceaccount.com` otherwise):
+```
+gcloud projects add-iam-policy-binding medivlo --member=serviceAccount:265149536784-compute@developer.gserviceaccount.com --role=roles/cloudbuild.builds.builder
+```
+Mac (original):
 ```bash
 brew install --cask google-cloud-sdk
 gcloud auth login
@@ -44,7 +55,16 @@ gcloud config set project medivlo
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
 ```
 
-## 5. Deploy the public-realm server (Cloud Run)
+## 5. Deploy the public-realm server (Cloud Run). DONE 2026-10-20
+Live: **https://hollow-crown-realms-265149536784.australia-southeast1.run.app** (/health ok, /realms lists 4; a real
+anonymous Firebase token joins and gets snapshots). The URL is in `.env.production` (committed; production builds
+only, so dev servers and tests keep the local realm server on :8080).
+Redeploy after server changes (Windows cmd, from the project folder):
+```
+node serveruild.mjs
+gcloud run deploy hollow-crown-realms --source dist-server --region australia-southeast1 --project medivlo --set-env-vars FIREBASE_PROJECT_ID=medivlo --min-instances 0 --max-instances 2 --concurrency 64 --memory 1Gi --cpu 1 --timeout 3600 --session-affinity --allow-unauthenticated
+```
+Mac (original):
 ```bash
 cd ~/Desktop/Medival
 node server/build.mjs                    # writes a self-contained dist-server/ (bundle + Dockerfile + package.json)
@@ -53,7 +73,7 @@ gcloud run deploy hollow-crown-realms --source dist-server --region australia-so
   --min-instances 0 --max-instances 2 --concurrency 64 --memory 1Gi --cpu 1 \
   --timeout 3600 --session-affinity --allow-unauthenticated
 ```
-Copy the service URL it prints (e.g. `https://hollow-crown-realms-xxxx-ts.a.run.app`) into `.env.local`:
+The service URL goes in `.env.production` (not `.env.local`, which dev servers read too):
 ```
 VITE_REALM_SERVER=https://hollow-crown-realms-xxxx-ts.a.run.app
 ```
