@@ -4,7 +4,7 @@
  */
 import type { CreatureAbility } from '@/data/enemies/hc/abilities';
 import type { Action, Area } from '@/systems/rules/types';
-import { motionTick, runActions } from './actions';
+import { motionStep, motionTick, runActions } from './actions';
 import { refreshCover } from './hazards';
 import { addBuff, basicCast, dealDamage, incapacitated, rooted } from './combat';
 import { spawnSummon } from './spawn';
@@ -157,8 +157,8 @@ function walk(w: SimWorld, e: EnemyEnt, dir: Vec, speed: number, dt: number): vo
 }
 
 export function moveMotion(w: SimWorld, c: Combatant, dt: number): void {
-  const m = c.motion!, s = dt / 1000, ended = w.t >= m.until;
-  const n = w.ports.move(c.space, c.x, c.y, m.vx * s, m.vy * s, c.r);
+  const m = c.motion!, s = dt / 1000, k = motionStep(m, s), ended = w.t >= m.until || (m.left !== undefined && m.left <= 0.01);
+  const n = w.ports.move(c.space, c.x, c.y, m.vx * s * k, m.vy * s * k, c.r);
   c.x = n.x; c.y = n.y; c.movedAt = w.t;
   motionTick(w, c, ended);
   if (ended && c.motion === m) c.motion = null;
@@ -189,17 +189,30 @@ function available(e: EnemyEnt): CreatureAbility[] {
 
 function chooseAbility(w: SimWorld, e: EnemyEnt, d: number): CreatureAbility | undefined {
   if (e.ownerId) return undefined;
-  const ready = available(e).filter((a) => w.t >= (e.abilityReadyAt.get(a) ?? 0) && (a.use === 'self' || d <= Math.max(a.range, e.cdef.ai.attackRange)));
+  // d is edge to edge; an area centred on the creature reaches only (its size − the creature's radius) past its edge,
+  // so never start one on a hero standing outside it
+  const reach = (a: CreatureAbility) => {
+    const ar = areaOf(a.actions), use = Math.max(a.range, e.cdef.ai.attackRange);
+    if (!ar || ar.at !== 'self' || ar.shape === 'ring' || ar.shape === 'single') return use;
+    return Math.min(use, Math.max(8, (ar.shape === 'line' ? ar.len ?? 100 : ar.r ?? 40) - e.r));
+  };
+  const ready = available(e).filter((a) => w.t >= (e.abilityReadyAt.get(a) ?? 0) && (a.use === 'self' || d <= reach(a)));
   if (!ready.length || w.rng.chance(e.tier === 'enemy' ? 0.3 : 0.15)) return undefined;
   return w.rng.pick(ready);
 }
 
+/** The area an ability's telegraph shows: where it resolves (single, chain, blink: the locked target spot). */
 function areaOf(actions: Action[]): Area | undefined {
   for (const a of actions) {
+    if (a.a === 'chain') return { shape: 'single', at: 'target', r: 12 };
     if ('area' in a && a.area) return a.area as Area;
     if (a.a === 'zone') return a.area;
     if (a.a === 'repeat' || a.a === 'delay') { const x = areaOf(a.then); if (x) return x; }
-    if (a.a === 'move') return { shape: 'line', at: 'self', len: a.dist, width: 36 };
+    if (a.a === 'move') {
+      if (a.mode === 'blink' || a.mode === 'behind') return { shape: 'single', at: 'target', r: 28 };
+      if (a.mode === 'leap') { const land = a.land ? areaOf(a.land) : undefined; return { shape: 'circle', at: 'target', r: land?.r ?? 40 }; }
+      return { shape: 'line', at: 'self', len: a.dist, width: 36 };
+    }
   }
   return undefined;
 }
@@ -209,14 +222,18 @@ function useAbility(w: SimWorld, e: EnemyEnt, ab: CreatureAbility, t: Combatant)
   e.attackReadyAt = w.t + Math.max(600, e.cdef.ai.attackMs * 0.8);
   const lockAim = { x: t.x, y: t.y };
   e.face = norm(t.x - e.x, t.y - e.y);
-  const cast: CastCtx = { ...basicCast(w, e, t, true), power: e.dmg, aim: lockAim, dir: e.face };
   const area = areaOf(ab.actions);
+  // a telegraphed ability resolves where it was drawn: stepping out of the red shape is a dodge
+  const cast: CastCtx = { ...basicCast(w, e, t, true), power: e.dmg, aim: lockAim, dir: e.face, locked: !!area && ab.windup > 0 };
   if (area && ab.windup > 0) {
     const at = area.at === 'self' ? e : lockAim;
+    // a single-target strike shows the circle it really lands in: the target's body plus the lock slack
+    const r = area.shape === 'line' ? area.len ?? 100 : area.shape === 'single' ? (area.r ?? 0) + 12 + t.r : area.r ?? 40;
     w.emit('enemy:telegraph', {
       id: e.id, shape: area.shape === 'single' ? 'circle' : area.shape, x: Math.round(at.x), y: Math.round(at.y),
-      r: Math.round(area.shape === 'line' ? area.len ?? 100 : area.r ?? 40), w: area.width ?? 0,
+      r: Math.round(r), w: area.width ?? 0,
       angle: Math.round((Math.atan2(e.face.y, e.face.x) * 180) / Math.PI), ms: ab.windup,
+      ...(area.shape === 'cone' ? { arc: ((area.angle ?? 90) * Math.PI) / 360 } : {}),
     });
   }
   e.anim = 'cast'; e.animUntil = w.t + ab.windup + 200;

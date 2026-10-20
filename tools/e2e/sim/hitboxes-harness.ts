@@ -20,8 +20,8 @@ export function check(ok: boolean, what: string, detail: string[] = []): boolean
   if (!ok) tally.fails++;
   console.log(ok ? 'ok  ' : 'FAIL', what);
   // details are indented and never start with "FAIL" (the pre-deploy runner reads line starts)
-  if (!ok) for (const d of detail.slice(0, 14)) console.log(`       - ${d}`);
-  if (!ok && detail.length > 14) console.log(`       - … and ${detail.length - 14} more`);
+  if (!ok) for (const d of detail.slice(0, Number(process.env.HB_DETAIL ?? 14))) console.log(`       - ${d}`);
+  if (!ok && detail.length > Number(process.env.HB_DETAIL ?? 14)) console.log(`       - … and ${detail.length - Number(process.env.HB_DETAIL ?? 14)} more`);
   return ok;
 }
 

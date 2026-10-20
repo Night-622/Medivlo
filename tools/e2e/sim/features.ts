@@ -5,13 +5,14 @@
  * Seeded and deterministic: asserts on events and state, never on damage rolls.
  * Output (tools/release/predeploy-check.mjs): failing lines start with "FAIL", the run time is the second-to-last
  * line and the last line is "N/M passed"; process.exitCode = 1 on any failure.
- * Run: node tools/e2e/sim/run.mjs features [section] [classId]   (sections: casts, tree, gear, progress)
+ * Run: node tools/e2e/sim/run.mjs features [section] [classId]   (sections: casts, tree, gear, progress, hooks)
  */
 import { castChecks } from './features-casts';
 import { gearChecks } from './features-gear';
 import { check, tally } from './features-harness';
 import { progressChecks } from './features-progress';
 import { treeChecks } from './features-tree';
+import { hookChecks } from './features-hooks';
 
 const t0 = Date.now();
 const [section, only] = process.argv.slice(3);
@@ -27,6 +28,7 @@ run('casts', () => castChecks(only));
 run('tree', () => treeChecks(only));
 run('gear', () => gearChecks());
 run('progress', () => progressChecks());
+run('hooks', () => hookChecks());
 
 const { checks, fails } = tally();
 if (fails) process.exitCode = 1;

@@ -112,7 +112,9 @@ export function openChest(w: SimWorld, p: PlayerEnt, objectId: string, props: Re
   const gold = Math.round(GOLD.mini * (rare ? 1.5 : 0.5) * Math.pow(P(level), 0.6) * w.rng.range(0.8, 1.2) * (1 + (p.stats.stats.gold ?? 0)));
   drop(w, p.space, p.x, p.y, undefined, gold, p.id);
   const pieces = rare ? (w.rng.chance(0.4) ? 2 : 1) : w.rng.chance(0.6) ? 1 : 0;
-  for (let i = 0; i < pieces; i++) drop(w, p.space, p.x, p.y, { ...rollGear(w, level, undefined, luck, forWho), qty: 1 }, undefined, p.id);
+  // Lucky (hook chestExtra, 0.1): a chance of one more item
+  const extra = w.rng.chance(p.stats.hooks.get('chestExtra') ?? 0) ? 1 : 0;
+  for (let i = 0; i < pieces + extra; i++) drop(w, p.space, p.x, p.y, { ...rollGear(w, level, undefined, luck, forWho), qty: 1 }, undefined, p.id);
   if (!rare || w.rng.chance(0.5)) drop(w, p.space, p.x, p.y, { base: w.rng.pick(['i_hp_s', 'i_hp_s', 'i_em_s', 'i_st']), ilvl: level, qty: 1 }, undefined, p.id);
   w.emit('chest:opened', { playerId: p.playerId, objectId });
   return true;

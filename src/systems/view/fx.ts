@@ -77,11 +77,11 @@ export class CombatFx {
     this.scene.tweens.add({ targets: t, alpha: 0, delay: 600, duration: 300, onComplete: () => t.destroy() });
   }
 
-  private telegraph(e: { shape: string; x: number; y: number; r: number; w?: number; angle: number; ms: number }): void {
+  private telegraph(e: { shape: string; x: number; y: number; r: number; w?: number; angle: number; arc?: number; ms: number }): void {
     if (!this.visible(e.x, e.y)) return;
     const g = this.scene.add.graphics().setDepth(Depth.GroundDecor + 60);
     const start = this.scene.time.now;
-    const a = Phaser.Math.DegToRad(e.angle);
+    const a = Phaser.Math.DegToRad(e.angle), arc = e.arc ?? 0.6; // cone half-angle from the sim
     const draw = (k: number) => {
       g.clear();
       g.lineStyle(2, 0xff3d5a, 0.9);
@@ -93,8 +93,8 @@ export class CombatFx {
           g.fillPoints(pts, true);
           if (scale === 1) g.strokePoints(pts, true);
         } else if (e.shape === 'cone') {
-          g.slice(e.x, e.y, e.r * scale, a - 0.6, a + 0.6, false); g.fillPath();
-          if (scale === 1) { g.beginPath(); g.slice(e.x, e.y, e.r, a - 0.6, a + 0.6, false); g.strokePath(); }
+          g.slice(e.x, e.y, e.r * scale, a - arc, a + arc, false); g.fillPath();
+          if (scale === 1) { g.beginPath(); g.slice(e.x, e.y, e.r, a - arc, a + arc, false); g.strokePath(); }
         } else if (e.shape === 'ring') {
           g.lineStyle(Math.max(8, 200 * scale), 0xff3d5a, alpha); g.strokeCircle(e.x, e.y, e.r + 100);
         } else {

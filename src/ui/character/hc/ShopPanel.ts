@@ -145,8 +145,9 @@ export class ShopPanel {
     root.add(hud.add.text(676, 652, this.mode === 'forge' ? 'Click a piece to work on it' : 'Click to sell', typeStyle('caption', C.text500)));
     // close: the same slate ✕ button as the Pack / Skills / Spells bar, in the same place
     const close = hud.add.container(GAME_WIDTH - 92, 20);
-    close.add([hud.add.nineslice(0, 0, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0), hud.add.text(22, 22, '✕', typeStyle('h3', C.text)).setOrigin(0.5)]);
-    close.setSize(44, 44).setInteractive(new Phaser.Geom.Rectangle(0, 0, 44, 44), Phaser.Geom.Rectangle.Contains).on('pointerup', () => this.close(false));
+    const closeBg = hud.add.nineslice(0, 0, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0);
+    close.add([closeBg, hud.add.text(22, 22, '✕', typeStyle('h3', C.text)).setOrigin(0.5)]);
+    closeBg.setInteractive({ useHandCursor: true }).on('pointerup', () => this.close(false));
     root.add(close);
   }
 

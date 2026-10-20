@@ -6,6 +6,7 @@ import { MAGIC_SCHOOLS } from '@/core/constants';
 import { hook, moreWith, statWith } from '@/systems/rules/stats';
 import type { Action, DamageKind, HitFlag, Proc, StatusApply, StatusId, Trigger } from '@/systems/rules/types';
 import { runActions } from './actions';
+import { spendStormCharge } from './keystones';
 import { onCombatantZero } from './death';
 import { hazardDamageMult } from './hazards';
 import type { BuffInst, CastCtx, Combatant, EnemyEnt, PlayerEnt, StatusInst } from './state';
@@ -38,7 +39,7 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
   if (src && src !== tgt && !w.hostile(src, tgt) && !o.dot) return 0;
   // scripted damage (no source) finishes a yielded boss: the story chose "destroy"
   if (!src && tgt.kind === 'enemy' && (tgt as EnemyEnt).yielded) { tgt.hp = 0; tgt.buffs = []; onCombatantZero(w, tgt, null); return raw; }
-  if ((tgt.motion?.iframes && !o.dot) || flagged(tgt, 'invulnerable')) {
+  if (((tgt.motion?.iframes || (tgt.iframesUntil ?? 0) > w.t) && !o.dot) || flagged(tgt, 'invulnerable')) {
     consumeCharge(w, tgt, 'invulnerable');
     w.emit('combat:hit', { ...hitInfo, amount: 0, crit: false, kind: 'immune' });
     return 0;
@@ -67,6 +68,8 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
     const berserk = hook(src.stats, 'berserker');
     if (berserk) amount *= 1 + berserk * Math.floor((1 - ctx.hpFrac) * 10);
     if (hook(src.stats, 'armorToDamage')) amount += (src.stats.stats.armor ?? 0) * 0.15;
+    // Eye of the Storm: charges built standing still go into the next real hit
+    if (src.kind === 'player' && !o.dot && hook(src.stats, 'stormCharge')) amount *= spendStormCharge(src as PlayerEnt);
     if (!o.dot) {
       const forced = flags.includes('alwaysCrit') || consumeCharge(w, src, 'nextHitsCrit');
       const chance = statWith(src.stats, 'crit', ctx) + (forced ? 1 : 0);
@@ -177,6 +180,13 @@ export function addShield(w: SimWorld, c: Combatant, amount: number, dur: number
 export function applyStatus(w: SimWorld, src: Combatant | null, tgt: Combatant, s: StatusApply, cast?: CastCtx): void {
   if (tgt.dead || (s.chance !== undefined && !w.rng.chance(s.chance))) return;
   if (hook(tgt.stats, `immune:${s.id}`)) return;
+  // Sure Footed: no slow lands while you are dashing
+  if ((s.id === 'slow' || s.id === 'chill') && tgt.motion && hook(tgt.stats, 'dashNoSlow')) return;
+  // Pyromaniac's price: every burn you set singes you too (1% of your max HP, at most every 0.5 s)
+  if (s.id === 'burn' && src && src !== tgt && src.kind === 'player' && hook(src.stats, 'selfSinge') && w.t >= ((src as PlayerEnt).singeAt ?? 0)) {
+    (src as PlayerEnt).singeAt = w.t + 500;
+    dealDamage(w, src, src, src.maxHp * 0.01, 'ash', { dot: true, noProc: true });
+  }
   const boss = tgt.kind === 'enemy' && (tgt as EnemyEnt).tier === 'boss';
   const hard = HARD_CC.includes(s.id);
   if (hard && (w.t < tgt.ccImmuneUntil || flagged(tgt, 'unstoppable') || hook(tgt.stats, 'unstoppable'))) return;

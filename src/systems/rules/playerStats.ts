@@ -20,8 +20,10 @@ export function playerPassives(s: CharacterSave): { passives: Passive[]; spells:
     const story = campaignItem(it.base)?.passive;
     if (story) out.push(story);
   }
-  out.push(...setBonuses(eq, cls.school));
   const tree = treePassives(s.classId, s.tree);
+  // Set Mastery (hook setMastery, value 0.25): Attuned armour bonuses are that much stronger
+  const mastery = tree.passives.reduce((v, p) => v + (p.hooks?.find((h) => h.id === 'setMastery')?.value ?? 0), 0);
+  out.push(...setBonuses(eq, cls.school, 1 + mastery));
   out.push(...tree.passives);
   return { passives: out, spells: tree.spells };
 }

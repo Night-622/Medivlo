@@ -45,6 +45,9 @@ export class BuffRow extends Phaser.GameObjects.Container {
 }
 
 /** Boss frame: name, phase pips and a long HP bar at the top centre while a boss is near. */
+/** bar width: the frame (bar + 12 px each side) stays inside x 386–894, clear of the unit frame (to 370) and minimap (1048) */
+const BOSS_W = 484;
+
 export class BossBar extends Phaser.GameObjects.Container {
   private unsub: () => void;
   private bg: Phaser.GameObjects.NineSlice;
@@ -53,7 +56,7 @@ export class BossBar extends Phaser.GameObjects.Container {
   private bossId = '';
   constructor(scene: Phaser.Scene) {
     super(scene, GAME_WIDTH / 2, 24);
-    const w = 520;
+    const w = BOSS_W;
     this.bg = panel(scene, -w / 2 - 12, -8, w + 24, 64, 'panel');
     this.title = scene.add.text(0, 0, '', typeStyle('h3', C.text)).setOrigin(0.5, 0);
     this.bar = scene.add.graphics();
@@ -67,7 +70,7 @@ export class BossBar extends Phaser.GameObjects.Container {
     if (!boss) { this.setVisible(false); this.bossId = ''; return; }
     if (boss.id !== this.bossId) { this.bossId = boss.id; this.title.setText(creature(boss.def)?.name ?? boss.def); }
     this.setVisible(true);
-    const w = 520, frac = Math.max(0, (boss.hp ?? 0) / Math.max(1, boss.maxHp ?? 1));
+    const w = BOSS_W, frac = Math.max(0, (boss.hp ?? 0) / Math.max(1, boss.maxHp ?? 1));
     const phases = Math.max(1, creature(boss.def)?.phases.length ?? 1), ph = Number(boss.data?.ph ?? 1);
     this.bar.clear();
     this.bar.fillStyle(0x1a1230, 1).fillRect(-w / 2 - 2, 28, w + 4, 18);

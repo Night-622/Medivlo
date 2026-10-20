@@ -23,7 +23,7 @@ import { HC_STORY_PETS } from '@/data/items/hc/campaign-items';
 import { eliteAffix } from '@/data/enemies/hc/elites';
 import type { Combatant, EnemyEnt, PlayerEnt } from './state';
 import { dist2, facing4, freeSpot, SimWorld, type SimPorts } from './world';
-import { xpToNext } from '@/systems/rules/curves';
+import { resetCost, xpToNext } from '@/systems/rules/curves';
 import { sanitizeLoadout } from '@/systems/rules/validate';
 import { lookKey, paperdoll, type HeroLookLite } from '@/systems/rules/paperdoll';
 
@@ -34,6 +34,8 @@ const DUEL_ASK_MS = 30_000;
 export class Sim implements CombatService {
   readonly w: SimWorld;
   private members = new Set<PlayerId>();
+  /** display names from the party / realm member list (duel prompts) */
+  private names = new Map<PlayerId, string>();
   /** pending duel challenges: challenger → { target, when } (expire after DUEL_ASK_MS) */
   private duelAsks = new Map<PlayerId, { to: PlayerId; at: number }>();
 
@@ -128,6 +130,7 @@ export class Sim implements CombatService {
   /** net.onMembers: drop players who left (joiners appear with their first `loadout`). */
   syncMembers(members: PartyMember[]): void {
     const now = new Set(members.filter((m) => m.connected).map((m) => m.playerId));
+    for (const m of members) this.names.set(m.playerId, m.name);
     for (const id of this.members) if (!now.has(id)) this.removePlayer(id);
     this.members = now;
   }
@@ -177,7 +180,8 @@ export class Sim implements CombatService {
           this.w.emit('duel:started', { a: msg.target, b: from });
         } else {
           this.duelAsks.set(from, { to: msg.target, at: this.w.t });
-          this.w.emit('duel:asked', { from, to: msg.target });
+          // names ride along: in a public realm the other player is not in the client's own session list
+          this.w.emit('duel:asked', { from, to: msg.target, fromName: this.names.get(from), toName: this.names.get(msg.target) });
         }
         return;
       }
@@ -266,9 +270,21 @@ function mergeRemote(prev: CharacterSave, next: CharacterSave): CharacterSave {
   const inventory = next.inventory.map(keep).filter((x): x is NonNullable<typeof x> => !!x && !used.has(x.uid));
   // anything the client dropped from its lists stays in the pack (no silent deletion either)
   for (const it of known.values()) if (!used.has(it.uid) && !inventory.some((x) => x.uid === it.uid)) inventory.push(it);
+  // a branch that lost ranks was reset: the authority charges for it (the client already paid its own copy);
+  // a guest who cannot pay keeps the old branch
+  let gold = prev.gold;
+  const tree: CharacterSave['tree'] = { ...next.tree };
+  for (const pre of ['sp_', 'sk_', 'up_']) {
+    const ranks = (t: CharacterSave['tree']) => Object.entries(t).reduce((n, [id, r]) => n + (id.startsWith(pre) ? r : 0), 0);
+    if (ranks(next.tree) >= ranks(prev.tree)) continue;
+    const cost = resetCost(prev.level);
+    if (gold >= cost) { gold -= cost; continue; }
+    for (const id of Object.keys(tree)) if (id.startsWith(pre)) delete tree[id];
+    for (const [id, r] of Object.entries(prev.tree)) if (id.startsWith(pre)) tree[id] = r;
+  }
   return {
-    ...next, inventory, equipment,
-    level: prev.level, xp: prev.xp, gold: prev.gold, bonusPoints: prev.bonusPoints, legendariesSeen: prev.legendariesSeen,
+    ...next, inventory, equipment, tree,
+    level: prev.level, xp: prev.xp, gold, bonusPoints: prev.bonusPoints, legendariesSeen: prev.legendariesSeen,
     chests: [...chestsOf(prev)], // authority-owned: a client can not forget a chest to loot it again
   } as CharacterSave;
 }

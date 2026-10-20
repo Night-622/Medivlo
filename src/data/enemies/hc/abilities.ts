@@ -110,10 +110,11 @@ const RULES: Rule[] = [
   [/chain lightning/i, (x) => A('attack', 6000, 240, 500, [{ a: 'chain', coef: 1.0 * big(x), kind: 'storm', jumps: 3, range: 140 }])],
   [/calls (bolts|lightning)/i, (x) => A('attack', 7000, 300, 900, [dmg(1.4 * big(x), atT(48), 'storm', [st('shock', 1500)])])],
   // hazards
-  [/pools|leaves|sets the ground|floods|lava|tears|rain|ice behind|webs (the room|the whole)|lays traps|sap/i, (x, t) => A('attack', 9000, 260, 700, [{
-    a: 'zone', kind: 'field', area: atT(/whole|floods|lava|room/i.test(t) ? 120 : 56), dur: 6000, tick: 500,
-    each: [dmg(0.25 * big(x), atT(56), x.kind, /web|ice/i.test(t) ? [st('slow', 800, 0.4)] : /fire|burning|lava/i.test(t) ? [st('burn', 2000)] : undefined)],
-  }])],
+  // the ground hazard ticks over its whole area (centred on the zone, so the telegraph is exactly where it hurts)
+  [/pools|leaves|sets the ground|floods|lava|tears|rain|ice behind|webs (the room|the whole)|lays traps|sap/i, (x, t) => { const zr = /whole|floods|lava|room/i.test(t) ? 120 : 56; return A('attack', 9000, 260, 700, [{
+    a: 'zone', kind: 'field', area: atT(zr), dur: 6000, tick: 500,
+    each: [dmg(0.25 * big(x), { shape: 'circle', at: 'aim', r: zr }, x.kind, /web|ice/i.test(t) ? [st('slow', 800, 0.4)] : /fire|burning|lava/i.test(t) ? [st('burn', 2000)] : undefined)],
+  }]); }],
   [/ring of lanterns/i, (x) => A('attack', 18000, 0, 1500, [dmg(1.2 * big(x), { shape: 'ring', at: 'self', r: 140 }, x.kind)])],
   // statuses
   [/spores|sleeping|sleep/i, () => A('attack', 10000, 140, 800, [{ a: 'status', status: st('sleep', 2500), area: self(110) }])],
@@ -123,7 +124,7 @@ const RULES: Rule[] = [
   [/marks you/i, () => A('attack', 10000, 300, 400, [{ a: 'status', status: st('mark', 6000, 0.25), area: single }])],
   [/curses you/i, () => A('attack', 9000, 260, 500, [{ a: 'buff', id: 'curse', dur: 6000, to: 'target', mods: [{ stat: 'healingTaken', op: 'flat', value: -0.5 }] }])],
   [/drains|swarm/i, (x) => A('attack', 6000, 200, 500, [dmg(1.0 * big(x), single, x.kind, undefined, ['lifesteal'])])],
-  [/steals/i, (_x, t) => A('attack', 9000, 40, 300, [{ a: 'steal', gold: /embershards|coins/i.test(t) ? 10 : 0, buffs: /buff/i.test(t), area: single }])],
+  [/steals/i, (_x, t) => A('attack', 9000, 40, 300, [{ a: 'steal', gold: /embershards|coins/i.test(t) ? 10 : 0, buffs: /buff/i.test(t), item: /consumable|potion|food/i.test(t), area: single }])],
   // ranged
   [/fires|volley|bolt|hurls|spits|throws|knives|gear blades|antler/i, (x, t) => A('attack', 3500, 300, 500, [{
     a: 'projectile', coef: 1.0 * big(x), kind: x.kind, speed: 300, range: 320,

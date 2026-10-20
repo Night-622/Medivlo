@@ -52,8 +52,11 @@ function hooksAreRead(): void {
   const dirs = ['src/systems/sim', 'src/systems/rules'];
   const skip = new Set(['tree.ts', 'gear.ts', 'types.ts', 'describeHc.ts', 'spellText.ts']); // where hooks are authored or only described
   const src = dirs.flatMap((d) => readdirSync(path.join(process.cwd(), d)).filter((f) => f.endsWith('.ts') && !skip.has(f)).map((f) => readFileSync(path.join(process.cwd(), d, f), 'utf8'))).join('\n');
+  // the authoring files can read a hook too (tree.ts scales a keystone by keystonePower): count real reads there
+  const authored = dirs.flatMap((d) => readdirSync(path.join(process.cwd(), d)).filter((f) => skip.has(f)).map((f) => readFileSync(path.join(process.cwd(), d, f), 'utf8'))).join('\n');
+  const readIn = (s: string, id: string) => [`id === '${id}'`, `hooks.get('${id}')`, `, '${id}')`].some((x) => s.includes(x));
   const read = (id: string): boolean => {
-    if (src.includes(`'${id}'`) || src.includes(`"${id}"`)) return true;
+    if (src.includes(`'${id}'`) || src.includes(`"${id}"`) || readIn(authored, id)) return true;
     const i = id.indexOf(':');
     return i > 0 && src.includes(`\`${id.slice(0, i + 1)}\${`) || (i > 0 && src.includes(`'${id.slice(0, i + 1)}'`));
   };
@@ -182,18 +185,27 @@ function branchReset(): void {
   }
   // spells-branch reset on a remote hero: the learned ultimate leaves the hotbar and can no longer be cast
   const w = world();
-  w.sim.addPlayer('a', save('warden', 12), { space: 't', x: 0, y: 0 });
+  w.sim.addPlayer('a', { ...save('warden', 12), gold: 500 }, { space: 't', x: 0, y: 0 });
   const ult = buildTree('warden', 'spells').find((n) => n.id === 'sp_u')!.grantsSpell!;
   learnViaLoadout(w, 'a', ULT_PATH, ult);
   const p = w.player('a');
   const had = p.spells.has(ult) && p.save.hotbar[3] === ult;
   const s = JSON.parse(JSON.stringify(p.save)) as CharacterSave;
+  s.gold -= resetCost(12); // what the client's resetTree() pays
   s.tree = resetBranch(s.tree, 'spells');
   w.sim.receive({ type: 'loadout', data: s as unknown as Record<string, unknown> }, 'a');
   const n0 = w.events.length, em0 = p.ember;
   w.press('a', Btn.CAST4);
   const cast = w.since(n0, 'ability:cast').some((e) => e.p.ability === ult);
-  check(had && !p.spells.has(ult) && p.save.hotbar[3] === null && !cast && p.ember >= em0, 'spells reset: the ultimate leaves the hotbar and slot 4 casts nothing');
+  check(had && !p.spells.has(ult) && p.save.hotbar[3] === null && !cast && p.ember >= em0 && p.save.gold === 500 - resetCost(12), 'spells reset: the ultimate leaves the hotbar and slot 4 casts nothing (authority charged)');
+  // a guest who cannot pay keeps the branch (the real client refuses the reset; a forged one changes nothing)
+  const w2 = world();
+  w2.sim.addPlayer('b', save('warden', 12), { space: 't', x: 0, y: 0 });
+  learnViaLoadout(w2, 'b', ULT_PATH, ult);
+  const p2 = w2.player('b'), s2 = JSON.parse(JSON.stringify(p2.save)) as CharacterSave, g2 = p2.save.gold;
+  s2.tree = resetBranch(s2.tree, 'spells');
+  w2.sim.receive({ type: 'loadout', data: s2 as unknown as Record<string, unknown> }, 'b');
+  check(g2 < resetCost(12) && p2.spells.has(ult) && p2.save.gold === g2, 'an unpaid guest reset keeps the branch and costs nothing', `gold ${g2} → ${p2.save.gold}, ultimate kept ${p2.spells.has(ult)}`);
 }
 
 export function treeChecks(only?: string): void {

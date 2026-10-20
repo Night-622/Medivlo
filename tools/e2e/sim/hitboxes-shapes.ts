@@ -12,7 +12,7 @@ export type Cat = 'core' | 'range' | 'edge' | 'dodge';
 /** which bodies a shape can affect: any, only the aimed-at primary, or only the others (chain jumps) */
 export type Applies = 'all' | 'primary' | 'others';
 
-interface Base { label: string; applies: Applies; tol: number; outCat: Cat; inCat?: Cat }
+interface Base { label: string; applies: Applies; tol: number; outCat: Cat; inCat?: Cat; noProbe?: boolean }
 export type Shape = Base & (
   | { k: 'circle'; c: V; r: number; centreOnly?: boolean }
   | { k: 'cone'; o: V; dir: V; r: number; angle: number }
@@ -66,8 +66,10 @@ export function expected(shapes: Shape[], bodies: ProbeBody[], R: number): boole
   for (const s of shapes) {
     const idx = bodies.map((b, i) => ({ b, i })).filter(({ b }) => (s.applies === 'all' || (s.applies === 'primary') === (b.role === 'primary')) && margin(s, b.at, R) <= 0);
     if (s.k === 'capsule' && !s.pierce && idx.length > 1) {
-      const dir = unit(add(s.b, s.a, -1));
-      idx.sort((x, y) => dot(add(x.b.at, s.a, -1), dir) - dot(add(y.b.at, s.a, -1), dir));
+      // first contact along the line: projection minus the half-chord of the touching band
+      const dir = unit(add(s.b, s.a, -1)), reach = s.half + R;
+      const contact = (p: V) => { const q = add(p, s.a, -1), lat = Math.abs(dot(q, perp(dir))); return dot(q, dir) - Math.sqrt(Math.max(0, reach * reach - lat * lat)); };
+      idx.sort((x, y) => contact(x.b.at) - contact(y.b.at));
       idx.length = 1;
     }
     for (const { i } of idx) hit[i] = true;
@@ -84,6 +86,13 @@ export function ambiguous(shapes: Shape[], bodies: ProbeBody[], R: number, own?:
     // a cone's angular edge: centre outside but body overlapping is the 'edge' question, not the shape's own probe
     const coneBand = s.k === 'cone' && s !== own ? R : 0;
     if (m > -AMB - coneBand && m < tol + AMB) return true;
+  }
+  // a shot that would reach two bodies within one 12 px sub-step may strike either first
+  for (const s of shapes) {
+    if (s.k !== 'capsule' || s.pierce) continue;
+    const dir = unit(add(s.b, s.a, -1)), reach = s.half + R;
+    const cs = bodies.filter((b) => margin(s, b.at, R) <= 0).map((b) => { const q = add(b.at, s.a, -1), lat = Math.abs(dot(q, perp(dir))); return dot(q, dir) - Math.sqrt(Math.max(0, reach * reach - lat * lat)); }).sort((x, y) => x - y);
+    if (cs.length > 1 && cs[1] - cs[0] < 14) return true;
   }
   return false;
 }

@@ -134,7 +134,8 @@ function build(b: HcCreatureBase): CreatureDef {
     realm: HC_REALMS.find((r) => r.name === b.region)?.id,
     kind, elements, resist,
     hpShape: Math.max(0.6, Math.min(1.6, b.hp / MEDIAN_HP[b.tier])),
-    radius: Math.round((b.tier === 'boss' ? 26 : b.tier === 'mini' ? 16 : 10) * Math.max(0.8, Math.min(1.4, b.scale || 1))),
+    // minis and bosses are drawn ×2 / ×3 (MV art): their bodies follow, so the hitbox is about the sprite's size
+    radius: Math.round((b.tier === 'boss' ? 34 : b.tier === 'mini' ? 22 : 10) * Math.max(0.8, Math.min(1.4, b.scale || 1))),
     scale: b.scale,
     ai: { ...base, attackMs: base.attackMs * (b.tier === 'boss' ? 1.6 : b.tier === 'mini' ? 1.2 : 1), ranged, immobile, flee: hooks.some((h) => h.id === 'flee'), attackRange: ranged ? Math.max(base.attackRange, 240) : base.attackRange, speed: immobile ? 0 : base.speed },
     abilities: free.filter((a) => a.use === 'attack' || a.use === 'self'),

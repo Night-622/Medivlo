@@ -9,6 +9,7 @@ import { HC_MATERIALS, HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { HC_BESTIARY } from '@/data/enemies/hc/bestiary.gen';
 import { campaignItem } from '@/data/items/hc/campaign-items';
 import { P } from './curves';
+import { scalePassive } from './scale';
 import type {
   Action, GearSlot, HcArmourPiece, HcArmourSet, HcLegendaryBase, HcWeaponBase, ItemCat, Modifier, Passive, Proc, Rarity,
   SchoolId, StatKey, StyleId, Trigger, WeaponType,
@@ -214,7 +215,8 @@ export function setProgress(equipped: ItemInstance[]): SetProgress[] {
   return [...by.values()];
 }
 
-export function setBonuses(equipped: ItemInstance[], classSchool: SchoolId): Passive[] {
+/** attuned: Attuned strength (Set Mastery makes it 25% stronger: 1.25) */
+export function setBonuses(equipped: ItemInstance[], classSchool: SchoolId, attuned = 1): Passive[] {
   const out: Passive[] = [];
   for (const { set, count, ilvl } of setProgress(equipped)) {
     if (count >= 2) out.push({ mods: twoPiece(set.style, ilvl) });
@@ -223,7 +225,7 @@ export function setBonuses(equipped: ItemInstance[], classSchool: SchoolId): Pas
       const proc: Proc = { on: t.on, every: t.every, icd: t.icd, do: SCHOOL_EFFECT[set.school] };
       if (set.style === 'scale') proc.when = { c: 'hpBelow', pct: 0.5 };
       out.push({ procs: [proc] });
-      if (set.school === classSchool) out.push(ATTUNED[set.school]);
+      if (set.school === classSchool) out.push(scalePassive(ATTUNED[set.school], attuned));
     }
   }
   return out;

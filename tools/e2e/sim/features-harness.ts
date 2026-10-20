@@ -118,10 +118,10 @@ export function expectedEffects(spell: HcSpell): Expect {
   return out;
 }
 
-/** Watches one cast: call before() just before the cast, sample() after every tick, then missing(). */
+/** Watches one cast: construct it just before the cast, sample() after every tick, then missing(). */
 export class EffectWatch {
   private ev0: number;
-  private hp0: number; private st0: number; private gold0: number; private em0: number;
+  private st0: number; private gold0: number; private em0: number;
   private x0: number; private y0: number;
   private dummy0: Map<string, { x: number; y: number }>;
   private buffs = new Set<string>();
@@ -130,7 +130,7 @@ export class EffectWatch {
 
   constructor(private w: World, private p: PlayerEnt, private dummies: EnemyEnt[], private ally?: PlayerEnt) {
     this.ev0 = w.events.length;
-    this.hp0 = p.hp; this.st0 = p.stamina; this.gold0 = p.save.gold; this.em0 = p.ember;
+    this.st0 = p.stamina; this.gold0 = p.save.gold; this.em0 = p.ember;
     this.x0 = p.x; this.y0 = p.y;
     this.dummy0 = new Map(dummies.map((d) => [d.id, { x: d.x, y: d.y }]));
   }
@@ -183,5 +183,5 @@ export class EffectWatch {
 }
 
 export const CAST_BTN = [Btn.CAST1, Btn.CAST2, Btn.CAST3, Btn.CAST4] as const;
-export const describe = (e: Expect): string => [...e.effects].filter((x) => x !== 'status' && x !== 'buff')
+export const describe = (e: Expect): string => [...e.effects].map(String).filter((x) => x !== 'status' && x !== 'buff')
   .concat([...e.statuses].map((s) => `status:${s}`), [...e.buffs].map((b) => `buff:${b}`)).join('+') || 'none';

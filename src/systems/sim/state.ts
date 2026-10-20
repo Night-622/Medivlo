@@ -63,10 +63,12 @@ export interface Combatant {
   procReadyAt: Map<Proc, number>;
   inCombatUntil: number;
   movedAt: number;
+  /** dash i-frames run for a fixed time (DASH.ms), however far the dash actually got */
+  iframesUntil?: number;
   anim: string;
   animUntil: number;
   /** forced movement (dash / leap / knockback) */
-  motion: { vx: number; vy: number; until: number; iframes: boolean; path?: Action[]; pathCast?: CastCtx; hitIds?: Set<string>; land?: Action[] } | null;
+  motion: { vx: number; vy: number; until: number; iframes: boolean; /** px still to travel: a move never overshoots its stated distance */ left?: number; path?: Action[]; pathCast?: CastCtx; hitIds?: Set<string>; land?: Action[] } | null;
   /** cast / ability wind-up in progress */
   windup: { until: number; then: () => void; label: string } | null;
   /** bosses: no new hard control until then */
@@ -100,6 +102,10 @@ export interface PlayerEnt extends Combatant {
   stealth: boolean;
   duelWith: string | null;
   spawnProtectUntil: number;
+  /** rate limit for the "Too far away." notice */
+  farNoticeAt?: number;
+  /** keystone clocks (keystones.ts): Eye of the Storm charges and when the last one came, the 1 s keystone tick, the Pyromaniac singe */
+  stormCharge?: number; stormAt?: number; keystoneAt?: number; singeAt?: number;
   attackCount: number;
   /** last creature/player that damaged us (Death screen) */
   lastHitBy: string | null;
@@ -159,6 +165,10 @@ export interface CastCtx {
   durMult: number;
   flags: HitFlag[];
   depth: number;
+  /** a telegraphed creature cast: it resolves where the telegraph was drawn (aim), not where its target walked to */
+  locked?: boolean;
+  /** a hero spell cast at a target beyond its range: the parts that land on that target do nothing */
+  unreachable?: boolean;
 }
 
 export interface ProjectileEnt {

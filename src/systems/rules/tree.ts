@@ -7,6 +7,7 @@ import { HC_KIT_SPELLS } from '@/data/spells/hc/kit-spells';
 import { slug } from '@/data/spells/hc/build';
 import { SCHOOL_NAME } from '@/data/classes/hc';
 import type { Modifier, Passive, SchoolId, StatKey, TreeBranch, TreeNode } from './types';
+import { scalePassive } from './scale';
 
 const PREFIX: Record<TreeBranch, string> = { spells: 'sp_', skills: 'sk_', upgrades: 'up_' };
 const X = [200, 410, 620];
@@ -243,10 +244,15 @@ export function canLearn(classId: string, nodeId: string, T: TreeRanks, availabl
 /** Passives and granted spells for the learned ranks. */
 export function treePassives(classId: string, T: TreeRanks): { passives: Passive[]; spells: string[] } {
   const passives: Passive[] = [], spells: string[] = [];
-  for (const n of allNodes(classId)) {
+  const nodes = allNodes(classId);
+  // Avatar of <School> (sk_u): "your keystone … is 50% stronger" (hook keystonePower)
+  const cap = nodes.find((n) => n.id === 'sk_u');
+  const capPower = cap && rankOf(cap, T) > 0 ? (cap.effects[0].hooks?.find((h) => h.id === 'keystonePower')?.value ?? 0) : 0;
+  for (const n of nodes) {
     const r = rankOf(n, T);
     if (r <= 0) continue;
-    passives.push(n.effects[r - 1]);
+    const fx = n.effects[r - 1];
+    passives.push(capPower && (n.id === 'sk_t0' || n.id === 'sk_t1') ? scalePassive(fx, 1 + capPower) : fx);
     if (n.grantsSpell) spells.push(n.grantsSpell);
   }
   return { passives, spells };

@@ -10,8 +10,9 @@ import { weaponBase, weaponDamage } from '@/systems/rules/gear';
 import { playerPassives } from '@/systems/rules/playerStats';
 import { compile, hook } from '@/systems/rules/stats';
 import { spellDef } from '@/systems/rules/spells';
-import type { BasicAttack, CharacterSave, HcSpell, SpellMod, WeaponType } from '@/systems/rules/types';
-import { motionTick, runActions } from './actions';
+import type { Action, Area, BasicAttack, CharacterSave, HcSpell, SpellMod, WeaponType } from '@/systems/rules/types';
+import { motionStep, motionTick, runActions } from './actions';
+import { tickKeystones } from './keystones';
 import { basicCast, consumeCharge, dealDamage, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
 import { newCombatantBase, type CastCtx, type Combatant, type PlayerEnt } from './state';
 import { dist, dist2, isBehind, norm, type SimWorld } from './world';
@@ -101,6 +102,7 @@ export function stepPlayer(w: SimWorld, p: PlayerEnt, frames: InputFrame[], dt: 
     if (pressed & Btn.POTION_E) potion(w, p, 'e');
   }
   if (p.dead) return;
+  tickKeystones(w, p);
   regen(w, p, dt);
   move(w, p, dt);
   if (p.downed || w.frozen) return;
@@ -152,8 +154,8 @@ function speedOf(w: SimWorld, p: Combatant): number {
 function move(w: SimWorld, p: PlayerEnt, dt: number): void {
   const s = dt / 1000;
   if (p.motion) {
-    const m = p.motion, ended = w.t >= m.until;
-    const n = w.ports.move(p.space, p.x, p.y, m.vx * s, m.vy * s, p.r);
+    const m = p.motion, k = motionStep(m, s), ended = w.t >= m.until || (m.left !== undefined && m.left <= 0.01);
+    const n = w.ports.move(p.space, p.x, p.y, m.vx * s * k, m.vy * s * k, p.r);
     p.x = n.x; p.y = n.y; p.movedAt = w.t;
     motionTick(w, p, ended);
     if (ended && p.motion === m) p.motion = null;
@@ -185,7 +187,8 @@ function dash(w: SimWorld, p: PlayerEnt): void {
   p.dashReadyAt = w.t;
   const d = p.move.x || p.move.y ? norm(p.move.x, p.move.y) : norm(p.aim.x - p.x, p.aim.y - p.y);
   const v = (DASH.dist / DASH.ms) * 1000;
-  p.motion = { vx: d.x * v, vy: d.y * v, until: w.t + DASH.ms, iframes: true };
+  p.motion = { vx: d.x * v, vy: d.y * v, until: w.t + DASH.ms, iframes: true, left: DASH.dist };
+  p.iframesUntil = w.t + DASH.ms;
   p.face = d;
   p.anim = 'dash'; p.animUntil = w.t + DASH.ms;
   fireProcs(w, p, 'dash');
@@ -238,7 +241,9 @@ function autoAttack(w: SimWorld, p: PlayerEnt): void {
 const inArc = (p: Combatant, x: Combatant, range: number, arc: number) => {
   const dx = x.x - p.x, dy = x.y - p.y, d = Math.hypot(dx, dy);
   if (d > range + x.r) return false;
-  return d < x.r + p.r || (dx * p.face.x + dy * p.face.y) / d >= Math.cos((arc * Math.PI) / 360);
+  // a body overlapping the arc's edge is struck: widen the half-angle by the angle the body covers
+  const half = (arc * Math.PI) / 360 + Math.asin(Math.min(1, x.r / Math.max(1, d)));
+  return d < x.r + p.r || half >= Math.PI || (dx * p.face.x + dy * p.face.y) / d >= Math.cos(half);
 };
 
 // ───────────── spells ─────────────
@@ -255,6 +260,21 @@ export function spellView(p: PlayerEnt, spell: HcSpell): SpellView {
   };
 }
 
+/** A spell's working actions, looking through repeat / delay wrappers. */
+function flatParts(actions: Action[]): Action[] {
+  return actions.flatMap((a) => (a.a === 'repeat' || a.a === 'delay' ? flatParts(a.then) : [a]));
+}
+/** Resources, and buffs / heals / shields on yourself. */
+const selfSide = (a: Action): boolean => a.a === 'resource' || ((a.a === 'buff' || a.a === 'heal' || a.a === 'shield') && (a as { to?: string }).to === 'self');
+/** Does this action land on the cast's target itself (single hit, target-centred area, chain, blink / leap)? */
+function targetBound(a: Action): boolean {
+  if (a.a === 'chain') return true;
+  if (a.a === 'move') return a.mode === 'blink' || a.mode === 'behind' || a.mode === 'leap';
+  if (a.a === 'resource' || a.a === 'buff' || a.a === 'heal' || a.a === 'shield') return false;
+  const area = 'area' in a ? (a.area as Area | undefined) : undefined;
+  return !!area && (area.shape === 'single' || area.at === 'target');
+}
+
 export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: HcSpell): boolean {
   const id = spellOverride?.id ?? p.save.hotbar[slot];
   const spell = spellOverride ?? (id ? p.spells.get(id) : undefined);
@@ -269,6 +289,18 @@ export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: Hc
   let target: Combatant | null = null;
   const t = w.combatant(p.target);
   if (spell.aim === 'enemy') target = t && w.hostile(p, t) ? t : w.nearestHostile({ ...p, x: p.aim.x, y: p.aim.y } as Combatant, 160) ?? null;
+  // a spell aimed at an enemy reaches it only within its range (caster to the target's edge). Parts that land on the
+  // target itself do nothing beyond it; a spell made only of such parts is not cast at all (nothing paid)
+  let unreachable = false;
+  if (spell.aim === 'enemy' && target && spell.range > 0 && Math.sqrt(dist2(p, target)) - target.r > spell.range) {
+    // (self-side extras like Momentum or a buff on yourself do not make a whiff worth casting)
+    const parts = flatParts(spell.actions).filter((a) => !selfSide(a));
+    if (parts.every(targetBound)) {
+      if (w.t >= (p.farNoticeAt ?? 0)) { p.farNoticeAt = w.t + 1500; w.emit('systems:notice', { playerId: p.playerId, text: 'Too far away.', kind: 'error' }); }
+      return false;
+    }
+    unreachable = parts.some(targetBound);
+  }
   if (spell.aim === 'ally') target = nearestAlly(w, p, p.aim, spell.range) ?? p;
   const aimPt = spell.aim === 'ground' ? clampTo(p, p.aim, spell.range) : target ? { x: target.x, y: target.y } : p.aim;
   const dir = norm(aimPt.x - p.x, aimPt.y - p.y);
@@ -280,7 +312,7 @@ export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: Hc
   const power = scaling === 'spell' ? (p.stats.stats.sp ?? 0) + wAvg * 0.25 : wAvg + (p.stats.stats.sp ?? 0) * 0.25;
   const ctx: CastCtx = {
     caster: p, spellId: spell.id, kind: spell.kind, power, isSpell: true, target, aim: aimPt, dir,
-    dmgMult: v.dmg, areaMult: v.area, durMult: v.dur, flags: [], depth: 0,
+    dmgMult: v.dmg, areaMult: v.area, durMult: v.dur, flags: [], depth: 0, ...(unreachable ? { unreachable: true } : {}),
   };
   const actions = v.split ? spell.actions.map((a) => (a.a === 'projectile' ? { ...a, count: (a.count ?? 1) * 3, spread: (a.spread ?? 0) + 30, coef: a.coef * 0.4 } : a)) : spell.actions;
   const go = () => {

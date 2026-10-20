@@ -119,7 +119,7 @@ export type Action =
   | { a: 'delay'; ms: number; then: Action[] }
   | { a: 'repeat'; n: number; every: number; then: Action[] }
   | { a: 'revive'; pctMax: number; r: number }
-  | { a: 'steal'; gold: number; buffs: boolean; area: Area };
+  | { a: 'steal'; gold: number; buffs: boolean; area: Area; /** take one potion or food from a hero's pack */ item?: boolean };
 
 export type BuffFlag =
   | 'stealth' | 'untargetable' | 'invulnerable' | 'unstoppable' | 'parry' | 'nextHitsCrit' | 'nextHitsChain'

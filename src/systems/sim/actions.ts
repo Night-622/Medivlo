@@ -9,22 +9,35 @@ import { shadedBy } from './hazards';
 import { spawnDecoy, spawnSummon } from './spawn';
 import type { CastCtx, Combatant, PlayerEnt, Vec } from './state';
 import { dist2, norm, type SimWorld } from './world';
+import { itemInfo } from '@/systems/rules/gear';
 
 const SCREEN = 420;
 
 /** Where an area is centred. */
 export function origin(area: Area, c: CastCtx): Vec {
   if (area.at === 'self') return { x: c.caster.x, y: c.caster.y };
-  if (area.at === 'target' && c.target && !c.target.dead) return { x: c.target.x, y: c.target.y };
+  if (area.at === 'target' && !c.locked && c.target && !c.target.dead) return { x: c.target.x, y: c.target.y };
   return c.aim;
+}
+
+/** The cast's target, unless the cast is locked (telegraphed) and the target has stepped out of reach of the aim. */
+export function lockedTarget(c: CastCtx, slack: number): Combatant | null {
+  const t = c.target;
+  if (!t || t.dead || c.unreachable) return null;
+  if (!c.locked) return t;
+  return Math.hypot(t.x - c.aim.x, t.y - c.aim.y) <= t.r + slack ? t : null;
 }
 
 /** Combatants inside an area. hostile=true picks foes of the caster, false picks allies (self included). */
 export function inArea(w: SimWorld, area: Area, c: CastCtx, hostile: boolean, max?: number): Combatant[] {
   const o = origin(area, c), caster = c.caster, mult = c.areaMult;
   const pick = (x: Combatant) => (hostile ? w.hostile(caster, x) && w.targetable(x) : w.ally(caster, x) && !x.dead);
+  // out of the spell's range: whatever lands on the target (or around it) does nothing
+  if (c.unreachable && hostile && (area.shape === 'single' || area.at === 'target')) return [];
   if (area.shape === 'single') {
-    if (c.target && pick(c.target)) return [c.target];
+    const tgt = lockedTarget(c, (area.r ?? 0) + 12);
+    if (tgt && pick(tgt)) return [tgt];
+    if (c.locked) return hostile ? [] : [caster]; // dodged: a telegraphed bite never jumps to someone else
     const near = w.nearestHostile(caster, Math.max(area.r ?? 0, 140));
     return hostile && near ? [near] : hostile ? [] : [caster];
   }
@@ -41,8 +54,10 @@ export function inArea(w: SimWorld, area: Area, c: CastCtx, hostile: boolean, ma
       case 'ring': inside = dd > r && dd <= SCREEN; break;
       case 'cone': {
         if (dd > r + reach) break;
+        // a body overlapping the cone's edge counts: widen the half-angle by the angle the body covers at that distance
         const cos = dd < 1 ? 1 : (dx * d.x + dy * d.y) / dd;
-        inside = cos >= Math.cos(((area.angle ?? 90) * Math.PI) / 360) || dd < reach + 8;
+        const half = ((area.angle ?? 90) * Math.PI) / 360 + Math.asin(Math.min(1, reach / Math.max(1, dd)));
+        inside = half >= Math.PI || cos >= Math.cos(half) || dd < reach + 8;
         break;
       }
       case 'line': {
@@ -80,7 +95,7 @@ function hitPush(w: SimWorld, c: CastCtx, t: Combatant, flags: HitFlag[] | undef
   const push = (dx: number, dy: number, dist: number) => {
     // bosses shrug off knockback, except the ones whose set piece is being knocked into an anchor
     if (t.kind === 'enemy' && (t as { tier?: string }).tier === 'boss' && !t.stats.hooks.get('anchorStun')) return;
-    t.motion = { vx: (dx * dist) / 0.2, vy: (dy * dist) / 0.2, until: w.t + 200, iframes: false };
+    t.motion = { vx: (dx * dist) / 0.2, vy: (dy * dist) / 0.2, until: w.t + 200, iframes: false, left: dist };
   };
   if (flags.includes('knockback')) push(away.x, away.y, 60);
   if (flags.includes('launch')) push(away.x, away.y, 110);
@@ -116,7 +131,8 @@ function run(w: SimWorld, a: Action, c: CastCtx): void {
       return;
     }
     case 'chain': {
-      let from: Vec = caster, cur = c.target && w.hostile(caster, c.target) && w.targetable(c.target) ? c.target : w.nearestHostile(caster, 280);
+      const first = lockedTarget(c, 24);
+      let from: Vec = caster, cur = first && w.hostile(caster, first) && w.targetable(first) ? first : c.locked || c.unreachable ? null : w.nearestHostile(caster, 280);
       const hit = new Set<string>();
       const jumps = a.jumps + (caster.stats.stats.chains ?? 0);
       for (let i = 0; i <= jumps && cur; i++) {
@@ -184,7 +200,8 @@ function run(w: SimWorld, a: Action, c: CastCtx): void {
       for (const t of a.to === 'self' ? [caster] : recipients(w, 'allies', c, a.r ?? 400)) {
         if (t.kind !== 'player') continue;
         const p = t as PlayerEnt;
-        for (const [k, v] of p.cds) p.cds.set(k, a.reduceMs === 'all' ? w.t : Math.max(w.t, v - a.reduceMs));
+        // a cooldown reset (Encore) never refunds the very spell that cast it
+        for (const [k, v] of p.cds) if (!(t === caster && k === c.spellId)) p.cds.set(k, a.reduceMs === 'all' ? w.t : Math.max(w.t, v - a.reduceMs));
       }
       return;
     case 'cleanse':
@@ -207,8 +224,18 @@ function pinToZone(acts: Action[]): Action[] {
 /** Dash / leap / charge / blink / behind. Path actions hit each foe crossed once; land actions run on arrival. */
 function startMove(w: SimWorld, a: Extract<Action, { a: 'move' }>, c: CastCtx): void {
   const me = c.caster;
+  // blink / behind / leap onto a target beyond the spell's range: no move at all
+  if (c.unreachable && (a.mode === 'blink' || a.mode === 'behind' || a.mode === 'leap')) return;
   if (a.mode === 'blink' || a.mode === 'behind') {
-    const t = c.target && !c.target.dead ? c.target : w.nearestHostile(me, a.dist);
+    const t = c.locked ? lockedTarget(c, 40) : c.target && !c.target.dead ? c.target : w.nearestHostile(me, a.dist);
+    if (!t && c.locked) {
+      // the target stepped away from the telegraph: blink to the marked spot and land there
+      const p = w.ports.move(me.space, me.x, me.y, c.aim.x - me.x, c.aim.y - me.y, me.r);
+      w.emit('ability:cast', { casterId: me.id, ability: 'blink', x: Math.round(me.x), y: Math.round(me.y), tx: Math.round(p.x), ty: Math.round(p.y), ms: 0 });
+      me.x = p.x; me.y = p.y;
+      if (a.land) runActions(w, a.land, { ...c, target: null, depth: c.depth + 1 });
+      return;
+    }
     if (!t) return;
     const off = a.mode === 'behind' ? { x: -t.face.x * (t.r + me.r + 4), y: -t.face.y * (t.r + me.r + 4) } : norm(me.x - t.x, me.y - t.y);
     const dest = a.mode === 'behind' ? { x: t.x + off.x, y: t.y + off.y } : { x: t.x + off.x * (t.r + me.r + 4), y: t.y + off.y * (t.r + me.r + 4) };
@@ -221,12 +248,14 @@ function startMove(w: SimWorld, a: Extract<Action, { a: 'move' }>, c: CastCtx): 
   }
   const speed = a.mode === 'dash' ? 620 : a.mode === 'leap' ? 460 : 420;
   let dist = a.dist;
-  if (a.mode === 'leap' && c.target) dist = Math.min(a.dist, Math.sqrt(dist2(me, c.target)));
+  // a leap lands on its target, or on the telegraphed spot when the cast is locked
+  const goal: Vec | null = a.mode !== 'leap' ? null : c.locked ? c.aim : c.target;
+  if (goal) dist = Math.min(a.dist, Math.sqrt(dist2(me, goal)));
   const ms = (dist / speed) * 1000;
-  const d = a.mode === 'leap' && c.target ? norm(c.target.x - me.x, c.target.y - me.y) : c.dir;
+  const d = goal ? norm(goal.x - me.x, goal.y - me.y) : c.dir;
   me.face = d;
   me.motion = {
-    vx: d.x * speed, vy: d.y * speed, until: w.t + ms, iframes: !!a.iframes || a.mode === 'leap',
+    vx: d.x * speed, vy: d.y * speed, until: w.t + ms, iframes: !!a.iframes || a.mode === 'leap', left: dist,
     path: a.path, pathCast: { ...c, depth: c.depth + 1 }, hitIds: new Set(), land: a.land,
   };
   me.anim = a.mode === 'leap' ? 'leap' : 'dash';
@@ -239,13 +268,41 @@ function braced(w: SimWorld, p: Combatant): boolean {
 }
 
 /** Called by movement each tick while a motion with path/land is active. */
+/** The share (0..1) of this tick's step a motion still has to travel; it uses that distance up. */
+export function motionStep(m: NonNullable<Combatant['motion']>, s: number): number {
+  if (m.left === undefined) return 1;
+  const step = Math.hypot(m.vx, m.vy) * s;
+  const k = step > 0 ? Math.max(0, Math.min(1, m.left / step)) : 0;
+  m.left -= step * k;
+  return k;
+}
+
+/** How far from the mover's centre a path action reaches: its lane (a creature charge: half the 36 px telegraph
+ * past its body; a hero move: 14 px), or a bigger area it carries around itself. */
+function pathReach(path: Action[], r: number, lane: number, areaMult: number): number {
+  let reach = r + lane;
+  const walk = (acts: Action[]): void => {
+    for (const a of acts) {
+      if (a.a === 'repeat' || a.a === 'delay') walk(a.then);
+      const area = 'area' in a ? (a.area as Area | undefined) : undefined;
+      if (area?.at === 'self' && (area.shape === 'circle' || area.shape === 'cone')) reach = Math.max(reach, (area.r ?? 0) * areaMult);
+      // a path line with a stated width: that lane (Unstoppable is line(170, 36))
+      if (area?.shape === 'line' && area.width) reach = Math.max(reach, r + (area.width * areaMult) / 2);
+    }
+  };
+  walk(path);
+  return reach;
+}
+
 export function motionTick(w: SimWorld, me: Combatant, ended: boolean): void {
   const m = me.motion;
   if (!m) return;
   if (m.path && m.pathCast) {
+    // what the move sweeps: the 36 px lane its telegraph shows, or a bigger area it carries around itself (Blade Dance)
+    const reach = pathReach(m.path, me.r, me.kind === 'enemy' ? 18 : 14, m.pathCast.areaMult);
     for (const t of w.combatants(me.space)) {
       if (m.hitIds!.has(t.id) || !w.hostile(me, t) || !w.targetable(t)) continue;
-      if (dist2(me, t) > (me.r + t.r + 14) ** 2) continue;
+      if (dist2(me, t) > (reach + t.r) ** 2) continue;
       m.hitIds!.add(t.id);
       if (me.kind === 'enemy' && me.stats.hooks.get('reflectCharge') && t.kind === 'player' && braced(w, t)) {
         // "stop, brace and let her come": the charge breaks on the hero and turns back on the boss
@@ -258,7 +315,8 @@ export function motionTick(w: SimWorld, me: Combatant, ended: boolean): void {
         return;
       }
       const single: Action[] = m.path.map((p) => (p.a === 'damage' ? { ...p, area: { shape: 'single', at: 'target', r: 0 } } : p));
-      runActions(w, single, { ...m.pathCast, target: t });
+      // contact is already established by the lane: no lock re-check against the telegraph spot
+      runActions(w, single, { ...m.pathCast, target: t, locked: false });
     }
   }
   if (ended) {
@@ -275,6 +333,16 @@ function steal(w: SimWorld, a: Extract<Action, { a: 'steal' }>, c: CastCtx): voi
       t.statsDirty = true;
       c.caster.buffs.push({ ...b, sourceId: c.caster.id });
       c.caster.statsDirty = true;
+    }
+    // a thief takes one potion or food from a hero's pack (item:used keeps a guest's own copy in step)
+    if (a.item && t.kind === 'player' && c.caster.kind !== 'player') {
+      const p = t as PlayerEnt;
+      const it = p.save.inventory.find((x) => { const k = itemInfo(x.base)?.kind; return k === 'potion' || k === 'food'; });
+      if (it) {
+        if (--it.qty <= 0) p.save.inventory.splice(p.save.inventory.indexOf(it), 1);
+        w.emit('item:used', { playerId: p.playerId, uid: it.uid, def: it.base });
+        w.emit('systems:notice', { playerId: p.playerId, text: `Something snatched your ${itemInfo(it.base)?.name ?? 'supplies'}!`, kind: 'error' });
+      }
     }
     if (!a.gold) continue;
     if (c.caster.kind === 'player') {

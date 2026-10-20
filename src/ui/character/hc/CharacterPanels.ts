@@ -8,6 +8,7 @@
 import Phaser from 'phaser';
 import { GAME_HEIGHT, GAME_WIDTH, SceneKeys } from '@/core/constants';
 import { bus } from '@/core/EventBus';
+import { keyLabel, type Action } from '@/core/settings';
 import { sim } from '@/net/SimLoop';
 import { C, T, typeStyle } from '@/ui/kit/hc';
 import type { HeroInput } from '@/systems/input/HeroInput';
@@ -17,7 +18,8 @@ import { TreePanel } from './TreePanel';
 type Which = 'inventory' | 'skills' | 'spells';
 type Target = Which | 'journal' | 'map';
 const MINE: Which[] = ['inventory', 'skills', 'spells'];
-const TABS: [string, string, Target][] = [['Pack', 'I', 'inventory'], ['Skills', 'K', 'skills'], ['Spells', 'B', 'spells'], ['Journal', 'J', 'journal'], ['Map', 'M', 'map']];
+/** [label, action whose binding is shown, panel] — the key letter follows Settings › Controls */
+const TABS: [string, Action, Target][] = [['Pack', 'inventory', 'inventory'], ['Skills', 'skills', 'skills'], ['Spells', 'spells', 'spells'], ['Journal', 'journal', 'journal'], ['Map', 'map', 'map']];
 
 export class CharacterPanels {
   private root: Phaser.GameObjects.Container | null = null;
@@ -67,7 +69,8 @@ export class CharacterPanels {
     this.tabs.forEach((t) => t.destroy());
     const w = T.component.tab.width, h = T.component.tab.height, gap = 8;
     const x0 = GAME_WIDTH / 2 - (TABS.length * w + (TABS.length - 1) * gap) / 2;
-    this.tabs = TABS.map(([label, key, target], i) => {
+    this.tabs = TABS.map(([label, action, target], i) => {
+      const key = keyLabel(action);
       const active = this.which === target;
       const c = hud.add.container(x0 + i * (w + gap), 20);
       const bg = hud.add.nineslice(0, 0, active ? 'ui:tab_active' : 'ui:tab', undefined, w, h, 8, 8, 8, 8).setOrigin(0);
@@ -76,13 +79,14 @@ export class CharacterPanels {
       lt.x = (w - (lt.width + 6 + kt.width)) / 2;
       kt.x = lt.x + lt.width + 6;
       c.add([bg, lt, kt]);
-      c.setSize(w, h).setInteractive(new Phaser.Geom.Rectangle(0, 0, w, h), Phaser.Geom.Rectangle.Contains).on('pointerup', () => this.pick(target));
+      // the nineslice takes the clicks: a Container hit area is offset by its display origin (only a quarter worked)
+      bg.setInteractive({ useHandCursor: true }).on('pointerup', () => this.pick(target));
       return c;
     });
     const close = hud.add.container(GAME_WIDTH - 92, 20);
     const bg = hud.add.nineslice(0, 0, 'ui:btn_slate', undefined, 44, 44, 8, 8, 8, 8).setOrigin(0);
     close.add([bg, hud.add.text(22, 22, '✕', typeStyle('h3', C.text)).setOrigin(0.5)]);
-    close.setSize(44, 44).setInteractive(new Phaser.Geom.Rectangle(0, 0, 44, 44), Phaser.Geom.Rectangle.Contains).on('pointerup', () => this.close());
+    bg.setInteractive({ useHandCursor: true }).on('pointerup', () => this.close());
     this.tabs.push(close);
     this.root!.add(this.tabs);
   }

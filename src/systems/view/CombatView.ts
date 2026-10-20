@@ -114,6 +114,9 @@ export class CombatView implements SnapshotConsumer {
         else if (body) { try { key = bakeBeast(this.scene, body); } catch { key = 'bestiary:wolf'; } }
         obj = npcKey ? this.scene.add.sprite(e.x, e.y, key, 0).setOrigin(0.5, 38 / 40) : this.scene.add.sprite(e.x, e.y, key).setOrigin(0.5, 0.95);
         if (this.scene.anims.exists(`${key}:idle`)) (obj as Phaser.GameObjects.Sprite).play(`${key}:idle`);
+        // a creature on a borrowed body (campaign bosses, regional rank-and-file) is drawn at its own size
+        const own = creature(e.def), lent = body && body !== e.def ? creature(body) : undefined;
+        if (!npcKey && own && lent && lent.radius > 0) obj.setScale(Math.max(0.5, Math.min(3, own.radius / lent.radius)));
         if (e.def.startsWith('class:')) obj.setAlpha(0.6);
         break;
       }
