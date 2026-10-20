@@ -20,7 +20,7 @@ export async function launch({ port = 9340, width = 1280, height = 720, profileR
   const releaseChrome = await acquireChrome('cdp'); // one headless Chrome at a time across all agents
   const profile = mkdtempSync(join(profileRoot, 'e2e-chrome-'));
   const chrome = spawn(CHROME, [
-    '--headless=new', `--remote-debugging-port=${port}`,
+    '--headless=new', '--mute-audio', `--remote-debugging-port=${port}`,
     `--user-data-dir=${profile}`, `--window-size=${width},${height}`, '--autoplay-policy=no-user-gesture-required',
     // keep rAF and timers at full rate in headless (same as Puppeteer defaults)
     '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--disable-backgrounding-occluded-windows',

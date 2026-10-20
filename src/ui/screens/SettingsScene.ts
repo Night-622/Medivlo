@@ -32,6 +32,7 @@ const ROWS: Record<Tab, Row[]> = {
     { label: 'Damage numbers', hint: 'Show floating damage in combat', opts: { key: 'damageNumbers', values: [['All', 'all'], ['Mine', 'mine'], ['Off', 'off']] } },
     { label: 'Control hints', hint: 'Show key prompts on screen', opts: { key: 'showHints', values: [['Off', false], ['On', true]] } },
     { label: 'Auto-collect Embershards', hint: 'Pick up coins by walking over them', opts: { key: 'autoLootGold', values: [['Off', false], ['On', true]] } },
+    { label: 'Slash aim (martial)', hint: 'Facing: swing where you face, on the slash key · Mouse: swing at the cursor, on left click', opts: { key: 'slashAim', values: [['Facing', 'facing'], ['Mouse', 'mouse']] } },
   ],
   accessibility: [
     { label: 'Text size', hint: 'Bigger interface text', opts: { key: 'textSize', values: [['Normal', 'normal'], ['Large', 'large']] } },

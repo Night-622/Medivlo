@@ -6,7 +6,7 @@
 import { CLASS_SCHOOL } from '@/core/constants';
 import { Btn } from '@/net/types';
 import { newCharacter } from '@/systems/rules/character';
-import { SLASH, SLASH_ID, hasSlash } from '@/systems/rules/slash';
+import { SLASH, SLASH_ID, hasSlash, slashAimPoint } from '@/systems/rules/slash';
 import { check, DT, dummy, hero, world } from './features-harness';
 
 function slashCase(classId: string): void {
@@ -58,6 +58,35 @@ function slashCase(classId: string): void {
   check(early === 0 && again === 1, `${classId}: ${name} can't be pressed again until its cooldown ends`, `inside cooldown ${early}, after ${again}`);
 }
 
+/** Slash aim (Settings › Gameplay): the client rule (slashAimPoint) and the sim following the frame's aim only. */
+function aimModes(): void {
+  // client rule: facing mode aims ahead of the hero whatever the mouse does; mouse mode aims at the cursor
+  const hero0 = { x: 500, y: 300 }, mouse = { x: 100, y: 300 };
+  const f = slashAimPoint('facing', hero0, { x: 1, y: 0 }, mouse), m = slashAimPoint('mouse', hero0, { x: 1, y: 0 }, mouse);
+  check(f.x === 600 && f.y === 300 && m.x === 100 && m.y === 300, 'slash aim: facing mode swings ahead of the hero (mouse ignored), mouse mode toward the cursor', `facing → ${f.x},${f.y}; mouse → ${m.x},${m.y}`);
+  const d = slashAimPoint('facing', hero0, { x: 1, y: 1 }, mouse);
+  check(d.x > 500 && d.y > 300 && Math.abs(d.x - d.y - 200) < 2, 'slash aim: facing follows an 8-way (diagonal) walking direction', `${d.x},${d.y}`);
+  // sim: a facing slash hits the creature ahead and not the one behind, even when the one behind is click-targeted
+  const w = world(), p = hero(w, 'a', { ...newCharacter('swordsman'), level: 10 });
+  w.run(500);
+  const ahead = dummy(w, 40, 0), behind = dummy(w, -40, 0);
+  // the auto-attack would swing at the click target too: hold it off so only the slash can hit
+  p.attackReadyAt = Number.POSITIVE_INFINITY;
+  const n0 = w.events.length;
+  w.press('a', Btn.SLASH, { aim: slashAimPoint('facing', { x: p.x, y: p.y }, { x: 1, y: 0 }, { x: -300, y: 0 }), target: behind.id });
+  w.run(200);
+  const hit = (id: string) => w.since(n0, 'combat:hit').some((e) => e.p.sourceId === p.id && e.p.targetId === id);
+  check(hit(ahead.id) && !hit(behind.id), 'slash aim: facing mode hits the creature ahead, not a click-targeted one behind', `ahead ${hit(ahead.id)}, behind ${hit(behind.id)}`);
+  // mouse mode: the swing follows the aim (the click point), here behind the hero
+  while (w.sim.w.t < (p.cds.get(SLASH_ID) ?? 0) + DT) w.tick();
+  const n1 = w.events.length;
+  w.press('a', Btn.SLASH, { aim: slashAimPoint('mouse', { x: p.x, y: p.y }, { x: 1, y: 0 }, { x: -300, y: 0 }) });
+  w.run(200);
+  const hit1 = (id: string) => w.since(n1, 'combat:hit').some((e) => e.p.sourceId === p.id && e.p.targetId === id);
+  check(hit1(behind.id) && !hit1(ahead.id), 'slash aim: mouse mode swings toward the click point', `behind ${hit1(behind.id)}, ahead ${hit1(ahead.id)}`);
+}
+
 export function slashChecks(only?: string): void {
   for (const classId of Object.keys(CLASS_SCHOOL)) if (!only || only === classId) slashCase(classId);
+  if (!only) aimModes();
 }

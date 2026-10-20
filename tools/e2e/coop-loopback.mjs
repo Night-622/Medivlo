@@ -9,7 +9,7 @@ import { acquireChrome, CHROME_PATH } from './chrome-lock.mjs';
 const BASE = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'http://localhost:5199';
 const PORT = 9339;
 await acquireChrome('coop-loopback'); // one headless Chrome at a time across all agents (tools/e2e/chrome-lock.mjs)
-const chrome = spawn(CHROME_PATH, ['--headless=new', '--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'cdp-'))}`, 'about:blank'], { stdio: 'ignore' });
+const chrome = spawn(CHROME_PATH, ['--headless=new', '--mute-audio', '--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'cdp-'))}`, 'about:blank'], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function page(url) {
   const t = await (await fetch(`http://127.0.0.1:${PORT}/json/new?${encodeURIComponent(url)}`, { method: 'PUT' })).json();

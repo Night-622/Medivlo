@@ -83,6 +83,9 @@ export class CombatView implements SnapshotConsumer {
   }
 
   /** Click picking: the creature or player under a world point. */
+  /** Where the local hero is drawn (world px): HeroInput aims a facing slash from here. */
+  heroAt(): { x: number; y: number } | null { return this.local.visible ? { x: this.local.x, y: this.local.y } : null; }
+
   pick(x: number, y: number): string | null {
     let best: string | null = null, bd = 28 * 28;
     for (const r of this.recs.values()) {

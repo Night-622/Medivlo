@@ -78,8 +78,14 @@ async function targeting(cls) {
   const outside = await ev('window.__hc.local().target');
   check(inside === id, `${cls}: clicking near the edge of a creature's sprite targets it`, `target ${inside}, want ${id}`);
   check(outside !== id, `${cls}: clicking just outside its sprite does not`, `target ${outside}`);
-  // keys 1–3 cast with real key presses (the target is in front of us)
-  await page.click(Math.round(cx), cy); await sleep(300);
+  // keys 1–3 cast with real key presses, at a target within every kit spell's reach (enemy-aimed spells refuse a
+  // target beyond their range, e.g. Oathblade's 80 px: the edge-click wolf stands 150 px away)
+  await ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(id)}); return 1; })()`);
+  const [near] = await ev(`window.__hc.spawn('bx_wolf', 1, 1, 50)`);
+  await ev(`window.__hc.freeze(${JSON.stringify(near)})`);
+  await sleep(700);
+  const nat = await ev(`window.__hc.screenOf(${JSON.stringify(near)})`);
+  await page.click(Math.round(nat.x), Math.round(nat.y)); await sleep(300);
   for (const [i, key] of ['Digit1', 'Digit2', 'Digit3'].entries()) {
     await ev('(window.__casts = [], window.__hc.heal(), 1)');
     await page.press(key, 70); await sleep(900);
@@ -87,26 +93,44 @@ async function targeting(cls) {
     check(!!casts.want && casts.got.includes(casts.want), `${cls}: key ${i + 1} casts ${casts.want}`, JSON.stringify(casts.got));
     await sleep(400);
   }
-  await ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(id)}); return 1; })()`);
+  await ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(near)}); return 1; })()`);
 }
 
 const MARTIAL = ['swordsman', 'samurai', 'knight', 'juggernaut', 'monk', 'brawler', 'huntsman', 'falconer', 'corsair', 'jester', 'bard', 'skald'];
 async function slashKey(cls) {
-  // martial classes: a real R press (aimed by the real mouse) swings at a creature in front; magic classes: nothing
-  const [id] = await ev(`window.__hc.spawn('bx_wolf', 1, 1, 46)`);
+  // Settings › Gameplay › Slash aim. 'facing' (default): a real R while walking right hits a creature on the right with
+  // the mouse parked on the LEFT. 'mouse': a real left click on a creature slashes it. Magic classes: R does nothing.
+  const me = await ev(`(async () => 'p:' + (await import('/src/core/index.ts')).Services.get('net').localPlayer)()`);
+  const listen = () => ev(`(async () => { const c = await import('/src/core/index.ts'); window.__hits = []; c.bus.on('combat:hit', (e) => window.__hits.push(e)); window.__casts = []; return 1; })()`);
+  const swungBy = () => waitFor(`(window.__casts || []).some((e) => e.casterId === ${JSON.stringify(me)} && (e.ability === 'slash' || e.ability === 'quickshot'))`, 2500);
+  const hitOn = (id) => waitFor(`(window.__hits || []).some((e) => e.sourceId === ${JSON.stringify(me)} && e.targetId === ${JSON.stringify(id)})`, 2500);
+  const despawn = (id) => ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(id)}); return 1; })()`);
+  const setAim = (mode) => ev(`(async () => { (await import('/src/core/settings.ts')).Settings.set('slashAim', ${JSON.stringify(mode)}); return 1; })()`);
+  await setAim('facing');
+  const [id] = await ev(`window.__hc.spawn('bx_wolf', 1, 1, 46)`); // spawned straight to the hero's right (+x)
   await ev(`window.__hc.freeze(${JSON.stringify(id)})`);
   await sleep(700);
   const at = await ev(`window.__hc.screenOf(${JSON.stringify(id)})`);
-  await page.mouseMove(Math.round(at.x), Math.round(at.y)); await sleep(300);
-  await ev(`(async () => { const c = await import('/src/core/index.ts'); window.__hits = []; c.bus.on('combat:hit', (e) => window.__hits.push(e)); window.__casts = []; return 1; })()`);
-  await page.press('KeyR', 70);
-  const me = await ev(`(async () => 'p:' + (await import('/src/core/index.ts')).Services.get('net').localPlayer)()`);
-  const swung = await waitFor(`(window.__casts || []).some((e) => e.casterId === ${JSON.stringify(me)} && (e.ability === 'slash' || e.ability === 'quickshot'))`, 2500);
-  const hit = await waitFor(`(window.__hits || []).some((e) => e.sourceId === ${JSON.stringify(me)} && e.targetId === ${JSON.stringify(id)})`, 2500);
+  await page.mouseMove(Math.max(5, Math.round(at.x - 220)), Math.round(at.y)); await sleep(300); // the mouse on the LEFT
+  await listen();
+  await page.keyDown('KeyD'); await sleep(200); await page.press('KeyR', 70); await sleep(100); await page.keyUp('KeyD');
+  const swung = await swungBy(), hit = await hitOn(id);
   const slot = (await hudTexts()).includes('R');
-  if (MARTIAL.includes(cls)) check(swung && hit && slot, `${cls}: a real R press slashes the creature in front (hotbar shows R)`, JSON.stringify({ swung, hit, slot }));
-  else check(!swung && !slot, `${cls}: R does nothing for a magic class (no slash, no slot)`, JSON.stringify({ swung, slot }));
-  await ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(id)}); return 1; })()`);
+  await despawn(id);
+  if (!MARTIAL.includes(cls)) { check(!swung && !slot, `${cls}: R does nothing for a magic class (no slash, no slot)`, JSON.stringify({ swung, slot })); return; }
+  check(swung && hit && slot, `${cls}: facing aim: a real R while walking right hits the creature on the right, mouse on the left (hotbar shows R)`, JSON.stringify({ swung, hit, slot }));
+  // mouse aim: a real left click on a creature slashes toward the click point
+  await setAim('mouse');
+  const [id2] = await ev(`window.__hc.spawn('bx_wolf', 1, 1, 46)`);
+  await ev(`window.__hc.freeze(${JSON.stringify(id2)})`);
+  await sleep(700);
+  const at2 = await ev(`window.__hc.screenOf(${JSON.stringify(id2)})`);
+  await listen();
+  await page.click(Math.round(at2.x), Math.round(at2.y));
+  const swung2 = await swungBy(), hit2 = await hitOn(id2);
+  check(swung2 && hit2, `${cls}: mouse aim: a real left click on a creature slashes it`, JSON.stringify({ swung: swung2, hit: hit2 }));
+  await despawn(id2);
+  await setAim('facing');
 }
 
 async function sideWalk(cls) {

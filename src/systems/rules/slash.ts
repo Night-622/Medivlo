@@ -41,3 +41,15 @@ export const hasSlash = (classId: string): boolean => {
   const s = CLASS_SCHOOL[classId.replace(/^class:/, '')];
   return !!s && MARTIAL_SCHOOLS.includes(s);
 };
+
+export type SlashAim = 'facing' | 'mouse';
+
+/**
+ * The aim point the client sends with Btn.SLASH (Settings › Gameplay › Slash aim). 'facing' (default): 100 px ahead of
+ * the hero along its current or last walking direction, whatever the mouse is doing. 'mouse': the cursor / click point.
+ */
+export function slashAimPoint(mode: SlashAim, hero: { x: number; y: number } | null, facing: { x: number; y: number }, mouse: { x: number; y: number }): { x: number; y: number } {
+  if (mode === 'mouse' || !hero) return { x: Math.round(mouse.x), y: Math.round(mouse.y) };
+  const l = Math.hypot(facing.x, facing.y) || 1;
+  return { x: Math.round(hero.x + (facing.x / l) * 100), y: Math.round(hero.y + (facing.y / l) * 100) };
+}

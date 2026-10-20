@@ -10,7 +10,7 @@ const CHROME = CHROME_PATH;
 const PORT = 9333;
 const profile = mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'cdp-'));
 await acquireChrome('save-roundtrip'); // one headless Chrome at a time across all agents (tools/e2e/chrome-lock.mjs)
-const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--use-angle=swiftshader', `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`, '--window-size=1280,720', 'about:blank'], { stdio: 'ignore' });
+const chrome = spawn(CHROME, ['--headless=new', '--mute-audio', '--disable-gpu', '--use-angle=swiftshader', `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`, '--window-size=1280,720', 'about:blank'], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 let ws, id = 0;

@@ -129,10 +129,19 @@ try {
   // while a conversation is up (Space and 1–4 belong to it), exactly as a new player plays it: finish the scene first
   await endDialogue();
   const moveBefore = await flag('tut.move');
-  await page.hold([await keyOf('up')], 400); await sleep(500);
+  await waitFor(async () => (await hud())?.alpha === 1, 4000); // the scene's HUD fade-out has to lift before keys count
+  await page.hold([await keyOf('up')], 400);
+  // every check below polls with a timeout instead of reading once: under the 24-suite load a single read can land
+  // before the HUD has faded back in or the tracker has refreshed (a flake that cost a deploy run)
+  const moved = await waitFor(async () => (await flag('tut.move')) === true, 3000);
   const fs = await quest('quest:warden-first-steps');
-  check('First Steps: a real move key ticks the move step', !!fs && !moveBefore && (await flag('tut.move')) === true, `quest ${!!fs}, flag ${moveBefore} → ${await flag('tut.move')}`);
-  check('First Steps shows in the HUD tracker', (await hud())?.texts.some((t) => t.text === 'FIRST STEPS'));
+  check('First Steps: a real move key ticks the move step', !!fs && !moveBefore && !!moved, `quest ${!!fs}, flag ${moveBefore} → ${await flag('tut.move')}`);
+  // two right ways to show it (QuestTracker): riding along under another tracked quest with a 'FIRST STEPS' caption,
+  // or, when First Steps is itself the tracked quest (whichever of it and I-1 started first), as the main block
+  // under its own name ("Feet on the Ice" for the Warden). Accept either.
+  const fsName = await page.eval(`(async () => (await import('/src/narrative/engine/quests.ts')).questDef('quest:warden-first-steps')?.name ?? '')()`);
+  const fsHud = await waitFor(async () => { const x = await hud(); return x?.alpha === 1 && x.texts.some((t) => t.text === 'FIRST STEPS' || (!!fsName && t.text === fsName)) ? x : null; }, 5000);
+  check('First Steps shows in the HUD tracker', !!fsHud, fsHud ? '' : `alpha ${(await hud())?.alpha}; ${((await hud())?.texts ?? []).map((t) => t.text).slice(0, 10).join(' | ')}`);
 
   // ── [School] and INSIGHT options for the party (a Warden alone: Rime yes, Radiance/Song not offered) ──
   await page.eval(`(async () => (await import('/src/narrative/engine/dialogue.ts')).openDialogue('dialogue:sentinel-release-rime'))()`);
@@ -140,7 +149,7 @@ try {
   const rime = v?.choices.find((c) => c.school === 'rime');
   check('[School] option of the hero’s school is offered and can be picked', !!rime && rime.enabled, JSON.stringify(v?.choices.map((c) => [c.school, c.enabled])));
   if (rime) await pick((c) => c.school === 'rime');
-  check('picking it by number key follows it', (await dlg())?.node === 'keep', (await dlg())?.node);
+  check('picking it by number key follows it', !!(await waitFor(async () => (await dlg())?.node === 'keep', 3000)), (await dlg())?.node);
   await endDialogue();
   await page.eval(`(async () => (await import('/src/narrative/engine/dialogue.ts')).openDialogue('dialogue:sentinel-release-morwen'))()`);
   v = await continueUntil((x) => x.choices.length > 0);
@@ -151,7 +160,7 @@ try {
   await N('testVote()');
   v = await continueUntil((x) => x.choices.length > 0);
   await pick(() => true);
-  check('a party vote in solo resolves on the first pick', (await flag('dev.test_vote')) != null, `dev.test_vote=${await flag('dev.test_vote')}`);
+  check('a party vote in solo resolves on the first pick', !!(await waitFor(async () => (await flag('dev.test_vote')) != null, 3000)), `dev.test_vote=${await flag('dev.test_vote')}`);
   await endDialogue();
 
   // ── into Concordia (Act II): the Brindlecross people ──
@@ -172,16 +181,16 @@ try {
   const faded = await waitFor(async () => ((await hud())?.alpha ?? 1) < 0.05, 3000);
   check('the HUD fades under the dialogue', !!faded);
   await pick((c) => /wake them/.test(c.text));
-  v = await dlg();
+  v = await waitFor(async () => { const d = await dlg(); return d?.node === 'wake' ? d : null; }, 3000) ?? await dlg();
   check('a choice by number key advances (Teach me to wake them)', v?.node === 'wake', v?.node);
-  check('the quest offer starts the quest', !!(await quest('quest:cc-waystones')));
+  check('the quest offer starts the quest', !!(await waitFor(() => quest('quest:cc-waystones'), 3000)));
   await endDialogue();
   check('the HUD returns when the dialogue ends', !!(await waitFor(async () => (await hud())?.alpha === 1, 3000)));
   v = await talk('npc:sela', 'dialogue:cc-sela');
   const compass = v?.choices.find((c) => /compass/i.test(c.text));
   const clicked = compass ? await clickChoice(compass.text) : false;
   const seen = clicked ? '' : (await nui()).filter((o) => o.x > 600 && o.y > 400).map((o) => o.text.slice(0, 30)).join(' | ');
-  check('a choice by mouse click advances (compass)', clicked && (await dlg())?.node === 'compass', `${clicked} ${(await dlg())?.node} ${seen}`);
+  check('a choice by mouse click advances (compass)', clicked && !!(await waitFor(async () => (await dlg())?.node === 'compass', 3000)), `${clicked} ${(await dlg())?.node} ${seen}`);
   await endDialogue();
   const opened = await talk('npc:sela', 'dialogue:cc-sela');
   const bye = opened && await pick((c) => c.text === 'Farewell.');
@@ -204,7 +213,7 @@ try {
   const atStone = await walkTo('ws:brind', 'landmark:brind-waystone');
   if (atStone) { await pressAction('interact'); }
   const st = await waitFor(async () => ((await quest('quest:cc-waystones'))?.stage === 'wood' ? 'wood' : null), 6000);
-  h = await hud();
+  h = await waitFor(async () => { const x = await hud(); return inTracker(x, 'Gloamwood Glade') ? x : null; }, 4000) ?? await hud();
   check('waking the waystone with [F] completes the stage', st === 'wood', `focus ok ${atStone}, stage ${(await quest('quest:cc-waystones'))?.stage}`);
   check('the tracker shows the next stage', inTracker(h, 'Gloamwood Glade'));
   await pressAction('journal');
@@ -217,9 +226,9 @@ try {
   if (await walkTo('npc:sela')) { await talk('npc:sela', 'dialogue:cc-sela-report'); await endDialogue(); }
   await N(`flag('cc.waystone_heart', true)`);
   const done = await waitFor(async () => (await quest('quest:cc-waystones'))?.completed === true, 6000);
-  await sleep(800);
-  const h2 = await hud();
-  check('completing it pays XP (bar or level rises)', !!done && (Number(h2.text.lvl) > Number(xpBefore.text.lvl) || h2.bars.xp > xpBefore.bars.xp), `lvl ${xpBefore.text.lvl}→${h2.text.lvl} xp ${xpBefore.bars.xp}→${h2.bars.xp}`);
+  const paid = (x) => !!x && (Number(x.text.lvl) > Number(xpBefore.text.lvl) || x.bars.xp > xpBefore.bars.xp);
+  const h2 = await waitFor(async () => { const x = await hud(); return paid(x) ? x : null; }, 4000) ?? await hud();
+  check('completing it pays XP (bar or level rises)', !!done && paid(h2), `lvl ${xpBefore.text.lvl}→${h2.text.lvl} xp ${xpBefore.bars.xp}→${h2.bars.xp}`);
   await pressAction('journal');
   const doneTab = await clickText((s) => /^Done\b/.test(s));
   const doneSeen = await waitFor(async () => (await nui()).some((t) => t.text.includes('Wake the Waystones')), 3000);
@@ -235,10 +244,10 @@ try {
   v = await continueUntil((x) => x.choices.length > 0);
   const t0 = v?.trust;
   await pick((c) => /warning you/.test(c.text));
-  await sleep(500);
-  v = await dlg();
+  const trusted = await waitFor(async () => (await flag('trust.sela')) === 4, 3000);
+  v = await waitFor(async () => { const d = await dlg(); return d?.trust === 4 ? d : null; }, 3000) ?? await dlg();
   const evs = await events();
-  check('a TRUST choice raises trust', (await flag('trust.sela')) === 4, `trust ${await flag('trust.sela')}`);
+  check('a TRUST choice raises trust', !!trusted, `trust ${await flag('trust.sela')}`);
   check('the trust diamonds update in the dialogue', t0 === 3 && v?.trust === 4, `${t0} → ${v?.trust}`);
   const trustToast = evs.find((e) => e.n === 'narrative:toast' && e.kind === 'trust');
   // the HUD is faded under the dialogue, so the toast has to be readable once the conversation closes
@@ -262,16 +271,19 @@ try {
   v = await waitFor(() => dlg(), 5000);
   check('[F] on a placed object plays its scene', atFind && v?.id === 'dialogue:obj-alder-view-find', `focus ${atFind}, ${v?.id}`);
   await endDialogue();
-  const ev2 = await events();
-  const unlocked = await core(`return c.Game.state.narrative.codexUnlocked.includes('lore:hc-alder-rise');`);
-  check('the codex unlock toasts', unlocked && ev2.some((e) => e.n === 'narrative:toast' && e.kind === 'codex'), ev2.filter((e) => e.n === 'narrative:toast').map((e) => `${e.kind}:${e.text}`).join(' | '));
+  const ev2 = [];
+  const unlocked = await waitFor(async () => { ev2.push(...(await events()));
+    return ev2.some((e) => e.n === 'narrative:toast' && e.kind === 'codex') && (await core(`return c.Game.state.narrative.codexUnlocked.includes('lore:hc-alder-rise');`)); }, 4000);
+  check('the codex unlock toasts', !!unlocked, ev2.filter((e) => e.n === 'narrative:toast').map((e) => `${e.kind}:${e.text}`).join(' | '));
   await pressAction('codex');
   await waitFor(async () => (await nui()).some((t) => t.text === 'Codex'), 4000);
-  let entry = (await nui()).find((t) => t.text === 'Bellwether Rise');
-  if (!entry) { const cat = (await nui()).find((t) => t.text === 'Places'); if (cat) { await page.click(cat.x, cat.y); await sleep(600); } entry = (await nui()).find((t) => t.text === 'Bellwether Rise'); }
-  if (entry) { await page.click(entry.x, entry.y); await sleep(600); }
+  const findEntry = async () => (await nui()).find((t) => t.text === 'Bellwether Rise' && t.alpha > 0.5);
+  let entry = await waitFor(findEntry, 1500);
+  if (!entry) { const cat = (await nui()).find((t) => t.text === 'Places'); if (cat) await page.click(cat.x, cat.y); entry = await waitFor(findEntry, 3000); }
+  if (entry) await page.click(entry.x, entry.y);
+  const entryText = !!entry && await waitFor(async () => (await nui()).some((t) => t.text.includes('highest point on the Alder moor')), 3000);
   await page.screenshot(`${OUT}/features-codex.png`);
-  check('the Codex shows the entry with its text', !!entry && (await nui()).some((t) => t.text.includes('highest point on the Alder moor')), entry ? 'entry found' : 'entry missing');
+  check('the Codex shows the entry with its text', !!entryText, entry ? 'entry found, text missing' : 'entry missing');
   await page.press('Escape', 60); await sleep(400);
 
   check('no console errors', errors.length === 0, errors.slice(0, 3).join(' | '));

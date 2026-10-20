@@ -14,7 +14,7 @@ mkdirSync(OUT, { recursive: true });
 const PORT = 9800 + Math.floor(Math.random() * 100);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 await acquireChrome('realm-duel');
-const chrome = spawn(CHROME_PATH, ['--headless=new', `--remote-debugging-port=${PORT}`,
+const chrome = spawn(CHROME_PATH, ['--headless=new', '--mute-audio', `--remote-debugging-port=${PORT}`,
   `--user-data-dir=${mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'cdp-'))}`, '--window-size=1280,720',
   // both tabs must keep their game loops running
   '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--disable-backgrounding-occluded-windows',

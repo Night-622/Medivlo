@@ -9,6 +9,8 @@ screenshot. Deploy steps are in docs/DEPLOY.md.
 - [x] Every campaign object placed in the world (validator WORLD unplaced 0) (Claude 2 + Claude 4)
 - [x] All creatures, bosses, items and legendaries defined. Every class beats its lair-2, nemesis and Act III boss in the fight sim (Claude 3, `tools/e2e/sim/run.mjs fight campaign`)
 - [x] Onboarding (First Steps), contextual hints and 60 loading tips (Claude 4)
+- [ ] Cutscenes (handoff "Medival Cutscenes.dc.html": cinematic player with panning backdrops, actor sprites, letterbox, typed captions, title cards; ~8 shared + 24 class openings reusing existing lines; core: NarrativeEffect { cutscene } + a replicated event). Never built; story moments play in the dialogue box today. USER DECISION 2026-10-20: LATER, after the user has played (Claude 4: a few hours for a first pass)
+- [x] Ash dialogue top-up (Arcanist/Reaver ~8,000 words vs 11,000–15,300 for the others): USER DECISION 2026-10-20: leave as is
 - [ ] **Playthrough testing: the USER plays the campaigns** (user's decision, 2026-10-20). The agents build and report; bugs from play come in through Claude 1. The bot harness `tools/playthrough` stays as a tool, with no campaign runs
 - [ ] Campaign length feels like 15–20 h when the user plays. The last bot estimate (Ash/Rime Act I 2.6–4.0 est. h) is in docs/PACING.md
 - [ ] Level bands hold: Act I ends at L13–14, Act II at L26–28, Act III at L38–40 (Claude 3 tunes from the playthrough XP split)

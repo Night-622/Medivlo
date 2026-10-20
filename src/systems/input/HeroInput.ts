@@ -8,8 +8,9 @@ import { bus } from '@/core/EventBus';
 import { Services } from '@/core/services';
 import { Settings, type Action } from '@/core/settings';
 import { Btn, type InputFrame } from '@/net/types';
+import { slashAimPoint } from '@/systems/rules/slash';
 
-export interface TargetPicker { pick(x: number, y: number): string | null }
+export interface TargetPicker { pick(x: number, y: number): string | null; heroAt?(): { x: number; y: number } | null }
 
 const HELD: [Action, number][] = [
   ['cast1', Btn.CAST1], ['cast2', Btn.CAST2], ['cast3', Btn.CAST3], ['cast4', Btn.CAST4], ['dash', Btn.DASH], ['slash', Btn.SLASH],
@@ -58,11 +59,18 @@ export class HeroInput {
     }
   }
 
+  /** last movement direction (8-way): a facing-mode slash swings this way; down until the hero first moves */
+  private lastDir = { x: 0, y: 1 };
+  /** mouse-mode slash: a left click queues one Btn.SLASH frame toward the click point */
+  private clickSlash = false;
+
   private onDown(p: Phaser.Input.Pointer): void {
     if (!this.enabled || !p.leftButtonDown()) return;
     const hit = this.picker.pick(p.worldX, p.worldY);
     this.target = hit;
     this.attackHeld = !hit;
+    // Settings › Gameplay › Slash aim = mouse: left click also slashes toward the cursor (a creature clicked is still targeted)
+    if (Settings.get().slashAim === 'mouse') this.clickSlash = true;
   }
   private onUp(): void { this.attackHeld = false; }
 
@@ -83,10 +91,16 @@ export class HeroInput {
     const mx = on ? Number(this.down('right')) - Number(this.down('left')) : 0;
     const my = on ? Number(this.down('down')) - Number(this.down('up')) : 0;
     const len = Math.hypot(mx, my) || 1;
+    if (mx || my) this.lastDir = { x: mx / len, y: my / len };
     ptr.updateWorldPoint(this.scene.cameras.main);
+    let aim = { x: Math.round(ptr.worldX), y: Math.round(ptr.worldY) };
+    if (on && this.clickSlash) b |= Btn.SLASH;
+    this.clickSlash = false;
+    // Slash aim = facing (default): the slash key swings the way the hero is walking (or last walked), not at the mouse
+    if (b & Btn.SLASH) aim = slashAimPoint(Settings.get().slashAim, this.picker.heroAt?.() ?? null, this.lastDir, aim);
     const frame: InputFrame = {
       seq: ++this.seq, t: Math.round(this.scene.time.now), move: { x: mx / len, y: my / len },
-      aim: { x: Math.round(ptr.worldX), y: Math.round(ptr.worldY) }, buttons: b, target: this.target,
+      aim, buttons: b, target: this.target,
     };
     net.send({ type: 'input', frames: [frame] });
   }

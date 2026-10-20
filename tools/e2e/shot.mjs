@@ -9,7 +9,7 @@ const [url, out, wait = '20000'] = process.argv.slice(2);
 const PORT = 9300 + Math.floor(Math.random() * 600);
 await acquireChrome('shot'); // one headless Chrome at a time across all agents (tools/e2e/chrome-lock.mjs)
 setTimeout(() => { console.log('TIMEOUT'); try { chrome.kill(); } catch {} process.exit(2); }, +wait + 90000).unref();
-const chrome = spawn(CHROME_PATH, ['--headless=new', '--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'cdp-'))}`, 'about:blank'], { stdio: 'ignore' });
+const chrome = spawn(CHROME_PATH, ['--headless=new', '--mute-audio', '--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(process.env.SCRATCH ?? tmpdir(), 'cdp-'))}`, 'about:blank'], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let ws, id = 0; const pending = new Map();
 const send = (method, params = {}) => { const i = ++id; ws.send(JSON.stringify({ id: i, method, params })); return new Promise((r) => pending.set(i, r)); };
