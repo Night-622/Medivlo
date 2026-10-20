@@ -539,12 +539,12 @@ const quests: QuestDef[] = [
   // ======================= ACT II: the class thread (C-1 … C-6) + featured bearers
   {
     ...A2, id: 'quest:jester-lanternford', name: 'Lanternford', type: 'class', region: 'vil:ford', giver: 'npc:hester-glimmer',
-    summary: 'Pell Odd says there are Tidecourt folk in Concordia, out in Morvane Marsh, selling lanterns that lead you only slightly into the water.',
+    summary: 'Pell Odd, the peddler of the Morvane Road, says there are Tidecourt folk in Concordia, out in Morvane Marsh, selling lanterns that lead you only slightly into the water.',
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'ford',
     stages: [
       {
-        id: 'ford', journal: 'Lanternford, on the edge of Morvane Marsh. The Guile exiles drink at the Will-o’-Wisp.',
-        objectives: [{ id: 'hester', text: 'Find the Tidecourt folk at the Will-o’-Wisp', talk: 'npc:hester-glimmer', marker: { landmark: 'landmark:ford-will-o-wisp' } }],
+        id: 'ford', journal: 'You made the Velvet King laugh, honestly, and came through the Pawned Gate with the Court half singing. Now: Lanternford, on the edge of Morvane Marsh. The Guile exiles drink at the Will-o’-Wisp.',
+        objectives: [{ id: 'hester', text: 'Find the Tidecourt folk at the Will-o’-Wisp in Lanternford', talk: 'npc:hester-glimmer', marker: { landmark: 'landmark:ford-will-o-wisp' } }],
         next: 'wall',
       },
       {
@@ -737,7 +737,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs waits the Union Chimera, a patchwork beast of every school. Its face is a white mask, and it is laughing with every laugh Harlequin Sorrow ever sold.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'The Hollow King has bound Sorrow into the Chimera as its heart. Every laugh he ever sold on credit is being called in at once.', objectives: [{ id: 'herald', text: 'Face the Last Laugh', kill: 'cb_the-last-laugh', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:jester-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'At the Eve, Harlequin Sorrow, the Velvet King’s fool, took the Corsair’s Reef half and ran into the Heart. Now the Hollow King has bound him into the Chimera as its heart. Every laugh he ever sold on credit is being called in at once.', objectives: [{ id: 'herald', text: 'Face the Last Laugh', kill: 'cb_the-last-laugh', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:jester-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera is down on the stair, still laughing. Behind the white mask, somebody is trying very hard not to cry.', objectives: [{ id: 'fate', text: 'Decide Sorrow’s fate', when: { flag: 'jester.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

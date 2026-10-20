@@ -546,7 +546,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'chapel',
     stages: [
       {
-        id: 'chapel', journal: 'Ysolde says the Radiance diaspora keeps the Shore Chapel at Abbeyshore, on the edge of the drowned Abbey’s lake.',
+        id: 'chapel', journal: 'You came through the Dawn Gate with the Altar half singing in your chest and Lucan’s thin line of light gone on ahead. Ysolde Fenn, the archivist in Brindlecross, says the Radiance diaspora keeps the Shore Chapel at Abbeyshore, on the edge of the drowned Abbey’s lake.',
         objectives: [{ id: 'ysmay', text: 'Find the Shore Chapel at Abbeyshore', talk: 'npc:ysmay-penhallow', marker: { landmark: 'landmark:shore-chapel' } }],
         next: 'escort',
       },
@@ -734,7 +734,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald, in a robe of white fire and a crown of rays, ringing a bell that rings noon and never stops. It is Lucan Brightwater, and he has brought too many loaves.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Lucan has become the Herald of Noon: a light that never sets, so that nobody ever has to grieve.', objectives: [{ id: 'herald', text: 'Face the Herald of Noon', kill: 'cb_herald-of-noon', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:cantor-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Lucan, the Inquisitor who has not slept since Dawnspire’s last night, has become the Herald of Noon: a light that never sets, so that nobody ever has to grieve.', objectives: [{ id: 'herald', text: 'Face the Herald of Noon at the top of the Twelve Stairs', kill: 'cb_herald-of-noon', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:cantor-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Lucan is kneeling on the stair, blazing, with his hands pressed over his eyes.', objectives: [{ id: 'fate', text: 'Decide Lucan’s fate', when: { flag: 'cantor.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

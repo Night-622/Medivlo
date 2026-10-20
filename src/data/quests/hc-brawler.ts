@@ -541,8 +541,8 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'cellar',
     stages: [
       {
-        id: 'cellar', journal: 'Nan Briar says there is a great deal of thumping under the Briar & Kettle in Thornhollow on Saturdays.',
-        objectives: [{ id: 'moll', text: 'Find the cellar ring under the Briar & Kettle', talk: 'npc:moll-treadwell', marker: { landmark: 'landmark:thorn-briar-kettle' } }],
+        id: 'cellar', journal: 'You went the distance with the Mountain King and came through the Stair Gate with the Pit half singing. Now Nan Briar, the hedge-witch of the Briar Path, says there is a great deal of thumping under the Briar & Kettle in Thornhollow on Saturdays.',
+        objectives: [{ id: 'moll', text: 'Find the cellar ring under the Briar & Kettle in Thornhollow', talk: 'npc:moll-treadwell', marker: { landmark: 'landmark:thorn-briar-kettle' } }],
         next: 'escort',
       },
       {
@@ -740,14 +740,14 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs the Union Chimera is fighting, and a voice in its chest is calling the rounds. You would know that voice anywhere. It once offered you a purse.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Silas Gaunt has been bound into the Union Chimera as its chest and its voice. He calls the rounds, and it fights them.', objectives: [{ id: 'herald', text: 'Face the Promoter’s Corner', kill: 'cb_promoters-corner', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:brawler-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'At the Eve, Silas Gaunt, the Promoter, took the Monk’s Summit half and ran into the Heart. Now he is bound into the Union Chimera as its chest and its voice. He calls the rounds, and it fights them.', objectives: [{ id: 'herald', text: 'Face the Promoter’s Corner', kill: 'cb_promoters-corner', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:brawler-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera is down, and Silas is still calling rounds that nobody is fighting.', objectives: [{ id: 'fate', text: 'Decide Silas’s fate', when: { flag: 'brawler.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
   },
   {
     ...A3, id: 'quest:brawler-pops-stock', name: 'Pops’s Stock', type: 'side', region: 'region:heart', giver: TK,
-    summary: 'Tin-Can Tilly has come through again, against instructions, with a very heavy pot on a very small cart. It is Pops’s stock. He wants the hollowed to smell it.',
+    summary: 'Tin-Can Tilly, who carried Pops’s letter on the back of a noodle menu, has come through again, against instructions, with a very heavy pot on a very small cart. It is Pops’s stock. He wants the hollowed to smell it.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'tilly',
     stages: [
       { id: 'tilly', journal: 'Tilly is at the Heart camp, sitting on a stock-pot so that nobody can take it off her.', objectives: [{ id: 'tilly', text: 'Find Tilly at the Heart camp', talk: 'npc:tilly-concordia', marker: { landmark: 'landmark:heart-camp' } }], next: 'embers' },

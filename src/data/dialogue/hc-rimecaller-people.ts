@@ -452,7 +452,7 @@ const dialogues: DialogueDef[] = [
       loaf: { speaker: 'npc:mina-snell', mood: 'happy', text: 'Pomfrey Dunn! I remember Pomfrey Dunn! I remember her as taller. The bread is perfect. Thirty years in the oven and not a burnt edge. Everyone is weeping into it.', next: 'colossus' },
       teal: { speaker: 'npc:mina-snell', mood: 'happy', text: 'He got here two days ago and went straight up the watchtower with a register under his arm. He’s recorded eleven kinds of drizzle. The Wardens are frightened of him.', next: 'colossus' },
       colossus: {
-        speaker: 'npc:mina-snell', text: 'The Rimeheart Colossus. It held the pass for the crown’s road, every Turning, for a thousand years. I remember it as kind. Ingeborg remembers it as rude. Nobody’s gone up in thirty years. The road’s gone strange. People on it, standing still, under the snow.',
+        speaker: 'npc:mina-snell', text: 'The Rimeheart Colossus. It held the pass for the crown’s road, every Turning, for a thousand years. I remember it as kind. Ingeborg, who runs the Wardens’ drill yard, remembers it as rude. Nobody’s gone up in thirty years. The road’s gone strange. People on it, standing still, under the snow.',
         choices: [{ text: 'Standing still. Held.', to: 'held', school: 'rime' }, { text: 'I’ll go up.', to: null }],
       },
       held: { speaker: 'npc:mina-snell', mood: 'afraid', text: 'Held. Yes. Like home. I remember thinking that, and I remember not saying it, because I didn’t want it to be true. Go carefully.', next: null },

@@ -579,7 +579,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'lodge',
     stages: [
       {
-        id: 'lodge', journal: 'Hollis Lodge stands in the Gloamwood east of Brindlecross. Maren’s great-uncle Thaddeus keeps it.',
+        id: 'lodge', journal: 'You ran the Great Hunt to a standstill at the Antler Gate and came through with the Lodge half singing. Hollis Lodge stands in the Gloamwood east of Brindlecross. Maren’s great-uncle Thaddeus keeps it.',
         objectives: [{ id: 'thaddeus', text: 'Find Thaddeus Hollis at Hollis Lodge', talk: 'npc:thaddeus-hollis', marker: { landmark: 'landmark:lodge-hunters-lodge' } }],
         next: 'law',
       },
@@ -773,7 +773,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs waits the Union Chimera, crowned with antlers of black tears. Riding in them, sighting down them, is Lady Corva Ashby. She has never missed.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'The Hollow King’s smiths bound Corva into the Chimera as its antlers and its aim. Every charge it makes, she has sighted first.', objectives: [{ id: 'herald', text: 'Face the Antlered Chimera', kill: 'cb_antlered-chimera', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:huntsman-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'At the Eve, Lady Corva Ashby, the Trophy Baron, took the Falconer’s Moor half and ran into the Heart. The Hollow King’s smiths have bound her into the Chimera as its antlers and its aim. Every charge it makes, she has sighted first.', objectives: [{ id: 'herald', text: 'Face the Antlered Chimera', kill: 'cb_antlered-chimera', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:huntsman-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The antlers have come off her. Corva is sitting on the top stair with her crossbow across her knees, still loaded, waiting for you to decide.', objectives: [{ id: 'fate', text: 'Decide Corva’s fate', when: { flag: 'huntsman.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

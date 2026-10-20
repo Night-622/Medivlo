@@ -571,7 +571,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'hedge',
     stages: [
       {
-        id: 'hedge', journal: 'The Hedge House is at Thornhollow, in Briar Hollow, if it’s still standing.',
+        id: 'hedge', journal: 'You came through the Thorn Gate with the Rot half in your chest and Holt’s joke still unfinished. The old Wayfarer waystation, the Hedge House, is at Thornhollow, in Briar Hollow, if it’s still standing.',
         objectives: [{ id: 'teasel', text: 'Find the Hedge House at Thornhollow', talk: 'npc:teasel-gammon', marker: { landmark: 'landmark:thorn-hedge-house' } }],
         next: 'loft',
       },
@@ -581,7 +581,7 @@ const quests: QuestDef[] = [
         next: 'nan',
       },
       {
-        id: 'nan', journal: 'Teasel says Nan Briar knew Holt’s grandfather, and that she has been waiting more than fifty years for a Barrow to return her ladder.',
+        id: 'nan', journal: 'Teasel says Nan Briar, the old hedge-witch at Briar Cottage, knew Holt’s grandfather, and that she has been waiting more than fifty years for a Barrow to return her ladder.',
         objectives: [{ id: 'nan', text: 'Call on Nan Briar at Briar Cottage', talk: 'npc:nanbriar', marker: { landmark: 'landmark:thorn-briar-cottage' } }],
         onComplete: [{ startQuest: 'quest:ranger-stags-rest' }],
         end: { status: 'completed' },
@@ -768,7 +768,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald in a skirt of shelf-fungus, ringing a bell of hollow wood. It is Aldo Mire, and he has brought supper.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Aldo has become the Herald of Rot: a hunger that eats everything and feeds nothing.', objectives: [{ id: 'herald', text: 'Face the Herald of Rot', kill: 'cb_herald-of-rot', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:ranger-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Aldo Mire, the Rotking, Holt’s oldest friend, who took the other half of your stone at the Eve, has become the Herald of Rot: a hunger that eats everything and feeds nothing.', objectives: [{ id: 'herald', text: 'Face the Herald of Rot', kill: 'cb_herald-of-rot', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:ranger-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Aldo is sitting on the stair in his own grey leaf-mould, like a man in a bath, and he is still hungry.', objectives: [{ id: 'fate', text: 'Decide Aldo’s fate', when: { flag: 'ranger.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

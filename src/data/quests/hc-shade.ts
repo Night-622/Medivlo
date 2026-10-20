@@ -562,8 +562,8 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'rat',
     stages: [
       {
-        id: 'rat', journal: 'Ysolde says the only Umbral folk on the Morvane Road drink at the Drowned Rat, and don’t like being asked why.',
-        objectives: [{ id: 'constance', text: 'Find Constance Gentle at the Drowned Rat', talk: CG, marker: { landmark: 'landmark:coach-drowned-rat' } }],
+        id: 'rat', journal: 'You came through the Dusk Gate with the Veil half singing where your shadow used to be. Ysolde Fenn, the Brindlecross archivist, says the only Umbral folk on the Morvane Road drink at the Drowned Rat, and don’t like being asked why.',
+        objectives: [{ id: 'constance', text: 'Find Constance Gentle at the Drowned Rat, at the Old Coach Inn', talk: CG, marker: { landmark: 'landmark:coach-drowned-rat' } }],
         next: 'room',
       },
       {
@@ -762,7 +762,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands someone solid in the Herald’s robe, ringing a bell in your own voice. On the stone behind it lies your shadow. It is casting you.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Your Shadow has become the Hollow King’s Herald: the real one, in the light, with you on the floor behind it.', objectives: [{ id: 'herald', text: 'Face the Herald of Shadows', kill: 'cb_herald-of-shadows', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:shade-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Your Shadow, which walked off without you the night the Bell rang and took the other half of your stone at the Eve, has become the Hollow King’s Herald: the real one, in the light, with you on the floor behind it.', objectives: [{ id: 'herald', text: 'Face the Herald of Shadows', kill: 'cb_herald-of-shadows', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:shade-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Herald kneels on the top stair in its robe, beaten, and the bell in its hem is still saying your name.', objectives: [{ id: 'fate', text: 'Decide your Shadow’s fate', when: { flag: 'shade.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
@@ -792,7 +792,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:shade-bryns-flock', name: 'Bryn’s Flock', type: 'side', region: 'region:heart', giver: BTH,
-    summary: 'Bryn Tallow’s sheep followed the Bell all the way off the Stalker Moors to the edge of the Heart. Bryn followed his sheep. Nobody can find the sheep.',
+    summary: 'The sheep of Bryn Tallow, the shepherd with no shadow, followed the Bell all the way off the Stalker Moors to the edge of the Heart. Bryn followed his sheep. Nobody can find the sheep.',
     requires: req(done('quest:heart-wall')), autoStart: true, firstStage: 'bryn',
     stages: [
       { id: 'bryn', journal: 'Bryn Tallow is at the Heart camp, with a crook, a pipe, and no sheep at all.', objectives: [{ id: 'bryn', text: 'Talk to Bryn Tallow at the Heart camp', talk: BTH, marker: { landmark: 'landmark:heart-camp' } }], next: 'sheep' },

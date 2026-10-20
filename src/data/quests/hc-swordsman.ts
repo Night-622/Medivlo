@@ -555,13 +555,13 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'watch',
     stages: [
       {
-        id: 'watch', journal: 'The Watch House is on the Brindlecross green. Listen for the sound of chalk and arguing.',
+        id: 'watch', journal: 'You came through the Edge Gate with the Hall half ringing in your chest and Vellacourt’s “Again!” still in your ears. The Watch House is on the Brindlecross green. Listen for the sound of chalk and arguing.',
         objectives: [{ id: 'basilio', text: 'Find the Blade folk at the Watch House', talk: 'npc:basilio-trento', marker: { landmark: 'landmark:brind-watch-house' } }],
         next: 'rook',
       },
       {
         id: 'rook', journal: 'Old Ser Basilio says the captain knows where Blade’s Sentinel lies. She is the one with the eyepatch and the halberd.',
-        objectives: [{ id: 'rook', text: 'Speak to Captain Rook Harrow', talk: 'npc:rook', marker: { landmark: 'landmark:brind-watch-house' } }],
+        objectives: [{ id: 'rook', text: 'Speak to Captain Rook Harrow at the Watch House', talk: 'npc:rook', marker: { landmark: 'landmark:brind-watch-house' } }],
         next: 'ladder',
       },
       {
@@ -747,7 +747,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs the Union Chimera waits, and its sword-arm is a man in white and gold who is still smiling. It is Vellacourt, and he is calling “Again.”',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Vellacourt has been bound into the Union Chimera as its champion: a duel that will never end, with a whole beast behind it.', objectives: [{ id: 'herald', text: 'Face the Chimera’s Champion', kill: 'cb_chimeras-champion', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:swordsman-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Ser Auguste Vellacourt, champion of the Ladder, who took the other half of your stone at the Eve, has been bound into the Union Chimera as its champion: a duel that will never end, with a whole beast behind it.', objectives: [{ id: 'herald', text: 'Face the Chimera’s Champion', kill: 'cb_chimeras-champion', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:swordsman-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera is down on the stair. Vellacourt hangs from its shoulder, bound to the elbow, and his sword is coming up into guard again.', objectives: [{ id: 'fate', text: 'Decide Vellacourt’s fate', when: { flag: 'swordsman.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
@@ -766,7 +766,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:swordsman-the-kept-opponents', name: 'The Kept Opponents', type: 'side', region: 'region:heart', giver: LF,
-    summary: 'Everyone Vellacourt ever beat walked out of the Old Armoury behind him. They have been marched all the way to the Legion camp, still fencing.',
+    summary: 'Everyone Ser Auguste Vellacourt ever beat on the Ladder walked out of the Old Armoury behind him. They have been marched all the way to the Legion camp, still fencing.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'rank',
     stages: [
       { id: 'rank', journal: 'The Revenants from Vellacourt’s gallery stand in their own rank in the Legion camp, still in guard.', objectives: [{ id: 'rank', text: 'Find Vellacourt’s kept opponents in the Legion camp', interact: 'obj:swordsman-kept-opponents', marker: { landmark: 'landmark:legion-camp' } }], next: 'boy' },
@@ -777,7 +777,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:swordsman-percys-thousandth', name: 'Percy’s Thousandth', type: 'side', region: 'region:heart', giver: 'npc:percy-thimble-concordia',
-    summary: 'Percy Thimble has followed you all the way to the Heart in his good coat. He would like one more bout, at the edge of the world, against the most frightening thing he can find.',
+    summary: 'Percy Thimble, the Ladder’s cheerful tailor and its lowest rung, has followed you all the way to the Heart in his good coat. He would like one more bout, at the edge of the world, against the most frightening thing he can find.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'percy',
     stages: [
       { id: 'percy', journal: 'Percy is at the Heart camp, pinning up his sleeves.', objectives: [{ id: 'percy', text: 'Talk to Percy Thimble at the Heart camp', talk: 'npc:percy-thimble-concordia', marker: { landmark: 'landmark:heart-camp' } }], next: 'bout' },

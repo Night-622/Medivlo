@@ -16,7 +16,7 @@ const quests: QuestDef[] = [
     summary: 'The Bell has rung and the Weeping Wall has parted. Sela Moth says the old waystone at the Heart’s edge can take the bearers through before it closes again.',
     requires: ACT3, autoStart: true, firstStage: 'sela',
     stages: [
-      { id: 'sela', journal: 'The bearers are making camp at the edge of the Heart. Sela is there with her compass, pointing in.', objectives: [{ id: 'sela', text: 'Find Sela at the Heart camp', talk: 'npc:sela', marker: { landmark: 'landmark:heart-camp' } }], next: 'fires' },
+      { id: 'sela', journal: 'The Bell has rung and the Weeping Wall has parted. The bearers are making camp at the edge of the Heart, and Sela Moth, the waystone-keeper from Brindlecross, is there with her compass, pointing in.', objectives: [{ id: 'sela', text: 'Find Sela at the Heart camp', talk: 'npc:sela', marker: { landmark: 'landmark:heart-camp' } }], next: 'fires' },
       { id: 'fires', journal: 'The Wall can wait for morning. The bearers have lit a ring of small fires at the camp, one for every school that came.', objectives: [{ id: 'fires', text: 'Spend the night at the bearers’ fires', interact: 'obj:heart-camp-fire', marker: { landmark: 'landmark:heart-camp' } }], next: 'through' },
       { id: 'through', journal: 'Sela woke the waystone. Beyond it the black tears hang in the air like a curtain somebody is holding open.', objectives: [{ id: 'in', text: 'Go through the Weeping Wall', reach: H, marker: { region: H } }], onComplete: [{ startQuest: 'quest:heart-legion' }], end: { status: 'completed' } },
     ],

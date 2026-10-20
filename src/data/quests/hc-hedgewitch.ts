@@ -595,8 +595,8 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'hedge',
     stages: [
       {
-        id: 'hedge', journal: 'The Verdant folk of Concordia keep the Hedge House at Thornhollow, in Briar Hollow.',
-        objectives: [{ id: 'teasel', text: 'Find the Verdant folk of Thornhollow', talk: 'npc:teasel-gammon', marker: { landmark: 'landmark:thorn-hedge-house' } }],
+        id: 'hedge', journal: 'You came through the Thorn Gate with the Heartwood half beating slow and green in your chest, and no Yarrow to tell the trees who you are. The Verdant folk of Concordia keep the Hedge House at Thornhollow, in Briar Hollow.',
+        objectives: [{ id: 'teasel', text: 'Find the Verdant folk at the Hedge House in Thornhollow', talk: 'npc:teasel-gammon', marker: { landmark: 'landmark:thorn-hedge-house' } }],
         next: 'pots',
       },
       {
@@ -605,7 +605,7 @@ const quests: QuestDef[] = [
         next: 'nan',
       },
       {
-        id: 'nan', journal: 'Teasel Gammon says that if you want to know about the Willow, you ask Nan Briar, and you bring her something for the kettle.',
+        id: 'nan', journal: 'Teasel Gammon says that if you want to know about the Willow, you ask Nan Briar, the old hedge-witch at Briar Cottage, and you bring her something for the kettle.',
         objectives: [{ id: 'nan', text: 'Call on Nan Briar at Briar Cottage', talk: 'npc:nanbriar', marker: { landmark: 'landmark:thorn-briar-cottage' } }],
         onComplete: [{ startQuest: 'quest:hedgewitch-the-willows-roots' }],
         end: { status: 'completed' },
@@ -792,7 +792,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald in a robe of living hedge, ringing a seed-pod bell. Everything it rings over grows. It has Ostara’s smile.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Ostara has become the Herald of Bloom: a garden that will never stop growing, and never let anything go.', objectives: [{ id: 'herald', text: 'Face the Herald of Bloom', kill: 'cb_herald-of-bloom', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:hedgewitch-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Bramblewife Ostara, who fed the Elder Tree tears so nobody need ever die, and took the other half of your stone at the Eve, has become the Herald of Bloom: a garden that will never stop growing, and never let anything go.', objectives: [{ id: 'herald', text: 'Face the Herald of Bloom', kill: 'cb_herald-of-bloom', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:hedgewitch-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Ostara kneels on the stair in her own leaves, beaten, and the hedge of her robe is still growing.', objectives: [{ id: 'fate', text: 'Decide Ostara’s fate', when: { flag: 'hedgewitch.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

@@ -550,12 +550,12 @@ const quests: QuestDef[] = [
   // ======================= ACT II: the class thread (C-1 … C-6) + featured bearers
   {
     ...A2, id: 'quest:falconer-the-cormorant-boats', name: 'The Cormorant Boats', type: 'class', region: 'vil:shore', giver: 'npc:prudence-gannet',
-    summary: 'Tamsin Reed says a few Hawkmoor folk fish the Wend from under her ferry with cormorants, and have done since the arches shut.',
+    summary: 'Tamsin Reed, the ferrywoman of the Wend, says a few Hawkmoor folk fish the Wend from under her ferry with cormorants, and have done since the arches shut.',
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'boats',
     stages: [
       {
-        id: 'boats', journal: 'Under the ferry at Abbeyshore, three flat boats, each with a line of black birds along the gunwale.',
-        objectives: [{ id: 'prudence', text: 'Find the cormorant fishers under Tamsin’s ferry', talk: 'npc:prudence-gannet', marker: { landmark: 'landmark:shore-ferry-house' } }],
+        id: 'boats', journal: 'Your hawk struck the hood from the Great Hunt, and you came through the Antler Gate with the Moor half singing. Under Tamsin Reed’s ferry at Abbeyshore, three flat boats, each with a line of black birds along the gunwale.',
+        objectives: [{ id: 'prudence', text: 'Find the cormorant fishers under Tamsin’s ferry at Abbeyshore', talk: 'npc:prudence-gannet', marker: { landmark: 'landmark:shore-ferry-house' } }],
         next: 'perches',
       },
       {
@@ -741,7 +741,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs waits the Union Chimera, and its eyes are hooded in black tears. Under the hood, seeing for it, is Teodor Tanager.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'The Hollow King’s smiths fitted Teodor to the Chimera as its eyes. It sees everything he sees, and he has made sure it is never frightened.', objectives: [{ id: 'herald', text: 'Face the Eyes of the Chimera', kill: 'cb_eyes-of-the-chimera', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:falconer-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'At the Eve, the Hooded Man, Wren’s old apprentice Teodor, took the Huntsman’s Lodge half and ran into the Heart. The Hollow King’s smiths have fitted him to the Chimera as its eyes. It sees everything he sees, and he has made sure it is never frightened.', objectives: [{ id: 'herald', text: 'Face the Eyes of the Chimera', kill: 'cb_eyes-of-the-chimera', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:falconer-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera’s hooded eyes have gone dark. Teodor is sitting on the top stair, still hooded, very calm, waiting for you to decide.', objectives: [{ id: 'fate', text: 'Decide Teodor’s fate', when: { flag: 'falconer.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

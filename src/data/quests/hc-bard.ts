@@ -545,13 +545,13 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'goose',
     stages: [
       {
-        id: 'goose', journal: 'Every Song-folk traveller in Concordia used to sign the book at the Gilded Goose. Wil Crane will know where the rest of them went.',
-        objectives: [{ id: 'wil', text: 'Ask Wil Crane about the Song-folk', talk: 'npc:wil', marker: { landmark: 'landmark:brind-gilded-goose' } }],
+        id: 'goose', journal: 'The Silent Maestro fell, the stolen voices flew home, and you came through the Lyre Gate with the Opera half singing. Every Song-folk traveller in Concordia used to sign the book at the Gilded Goose in Brindlecross. Wil Crane will know where the rest of them went.',
+        objectives: [{ id: 'wil', text: 'Ask Wil Crane at the Gilded Goose about the Song-folk', talk: 'npc:wil', marker: { landmark: 'landmark:brind-gilded-goose' } }],
         next: 'chapel',
       },
       {
         id: 'chapel', journal: 'The Song exiles sing to the drowned choir every dusk, so it will not be lonely. Find them at the Shore Chapel.',
-        objectives: [{ id: 'eulalie', text: 'Find the Song exiles at the Shore Chapel', talk: 'npc:eulalie-marchbank', marker: { landmark: 'landmark:shore-chapel' } }],
+        objectives: [{ id: 'eulalie', text: 'Find the Song exiles at the Shore Chapel in Abbeyshore', talk: 'npc:eulalie-marchbank', marker: { landmark: 'landmark:shore-chapel' } }],
         next: 'dusk',
       },
       {
@@ -751,7 +751,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs a beast stitched from every school is playing a perfect song with no ending. It wears a lilac coat across its back, and its tail is a baton.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Marchetti has been bound into the Union Chimera as its heart, and he is conducting from inside it. The song has no last bar.', objectives: [{ id: 'herald', text: 'Face the Last Performance', kill: 'cb_the-last-performance', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:bard-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'At the Eve, Impresario Blaise Marchetti took the Skald’s Fell half and ran into the Heart. Now he is bound into the Union Chimera as its heart, and he is conducting from inside it. The song has no last bar.', objectives: [{ id: 'herald', text: 'Face the Last Performance', kill: 'cb_the-last-performance', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:bard-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera has yielded on the stair, and still the song plays on. Marchetti is waiting for his cue.', objectives: [{ id: 'fate', text: 'Decide Marchetti’s fate', when: { flag: 'bard.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
@@ -792,7 +792,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:bard-tobbles-lullaby', name: 'Tobble’s Lullaby', type: 'side', region: 'region:heart', giver: 'npc:old-tobble',
-    summary: 'Old Tobble has walked from Lyrehaven to the edge of the Heart with his crumhorn, and he says he has worked out whose lullaby it was.',
+    summary: 'Old Tobble, the one-note busker from the Lyrehaven fountain, has walked from Lyrehaven to the edge of the Heart with his crumhorn, and he says he has worked out whose lullaby it was.',
     requires: req(done('quest:heart-legion'), done('quest:bard-the-one-note-busker')), autoStart: true, firstStage: 'tobble',
     stages: [
       { id: 'tobble', journal: 'Old Tobble is at the Heart camp, resting his knees and playing his one note at the Citadel.', objectives: [{ id: 'tobble', text: 'Talk to Old Tobble at the Heart camp', talk: 'npc:old-tobble', marker: { landmark: 'landmark:heart-camp' } }], next: 'legion' },

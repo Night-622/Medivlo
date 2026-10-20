@@ -552,11 +552,11 @@ const quests: QuestDef[] = [
   // ======================= ACT II: the class thread (C-1 … C-6) + featured bearers
   {
     ...A2, id: 'quest:samurai-the-quiet-pew', name: 'The Quiet Pew', type: 'class', region: 'vil:brind', giver: 'npc:hisako',
-    summary: 'In a corner of the Chapel of the Drowned Bell, a handful of Hushpine pilgrims have kept silence for thirty years. Brother Aldous lets them. Nobody knows why they stay.',
+    summary: 'In a corner of the Chapel of the Drowned Bell, a handful of Hushpine pilgrims have kept silence for thirty years. Brother Aldous, who keeps the chapel, lets them. Nobody knows why they stay.',
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'pew',
     stages: [
       {
-        id: 'pew', journal: 'The Hushpine pilgrims sit in the back pew of the Chapel in Brindlecross, very still.',
+        id: 'pew', journal: 'You came through the Edge Gate with the Terrace half quiet in your chest. Here, too, someone keeps a silence: the Hushpine pilgrims sit in the back pew of the Chapel in Brindlecross, very still.',
         objectives: [{ id: 'hisako', text: 'Sit with the Hushpine pilgrims in the Chapel', talk: 'npc:hisako', marker: { landmark: 'landmark:brind-chapel' } }],
         next: 'floor',
       },
@@ -576,7 +576,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A2, id: 'quest:samurai-the-silent-muster', name: 'The Silent Muster', type: 'class', region: 'region:alder', giver: 'npc:hisako',
-    summary: 'Under the Chapel, under the churchyard, Varric’s dead muster drills in silence. The pilgrims have been sitting over it for thirty years without knowing why.',
+    summary: 'Under the Chapel, under the churchyard, the dead muster of Bonelord Varric, Blade’s Sentinel, drills in silence. The pilgrims have been sitting over it for thirty years without knowing why.',
     requires: req(done('quest:samurai-the-quiet-pew')), firstStage: 'barrow',
     stages: [
       {
@@ -743,7 +743,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs the Union Chimera waits, and its sword-arm is a bare blade with a man still holding it. Ikeda Shun has found a master at last.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Ikeda has been bound into the Union Chimera as its blade: a sword that serves no one, in the hand of something that serves the Hollow King.', objectives: [{ id: 'herald', text: 'Face the Chimera’s Blade', kill: 'cb_chimeras-blade', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:samurai-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Lord Ikeda Shun, warlord of the Ronin Companies, who took the other half of your stone at the Eve, has been bound into the Union Chimera as its blade: a sword that serves no one, in the hand of something that serves the Hollow King.', objectives: [{ id: 'herald', text: 'Face the Chimera’s Blade', kill: 'cb_chimeras-blade', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:samurai-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera is down on the stair. Ikeda kneels in what is left of its grip, and his hand has still not left the hilt.', objectives: [{ id: 'fate', text: 'Decide Ikeda’s fate', when: { flag: 'samurai.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
@@ -761,7 +761,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:samurai-the-masterless', name: 'The Masterless', type: 'side', region: 'region:heart', giver: HK,
-    summary: 'Ikeda’s hollow ronin followed him through the Edge Gate and into the Heart. Now they stand in the Legion camp with their swords drawn, and nobody left to serve.',
+    summary: 'The hollow ronin of Lord Ikeda Shun, the warlord who served no one, followed him through the Edge Gate and into the Heart. Now they stand in the Legion camp with their swords drawn, and nobody left to serve.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'watch',
     stages: [
       { id: 'watch', journal: 'Ikeda’s ronin stand in a corner of the Legion camp, swords drawn, pointing at nothing.', objectives: [{ id: 'watch', text: 'Find Ikeda’s ronin in the Legion camp', interact: 'obj:samurai-masterless', marker: { landmark: 'landmark:legion-camp' } }], next: 'cages' },

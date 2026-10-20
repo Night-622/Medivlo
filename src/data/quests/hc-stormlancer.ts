@@ -547,7 +547,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'crake',
     stages: [
       {
-        id: 'crake', journal: 'Ysolde says the Storm-folk of Concordia keep a village called Cliffstair on the Stormcliffs, with a Wind Yard where lancers train.',
+        id: 'crake', journal: 'You came through the Copper Gate with the Eye half quiet in your chest and Cass’s scorched footprints running on ahead. Ysolde Fenn, the archivist in Brindlecross, says the Storm-folk of Concordia keep a village called Cliffstair on the Stormcliffs, with a Wind Yard where lancers train.',
         objectives: [{ id: 'hamlin', text: 'Find the lancers of the Wind Yard', talk: 'npc:hamlin-crake', marker: { landmark: 'landmark:cliff-wind-yard' } }],
         next: 'board',
       },
@@ -726,7 +726,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs a bell rings a moment before anything arrives. Then she arrives: the Hollow King’s Herald, in a robe that streams behind her like a storm’s tail. It is Cass.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Cass has become the Swift Herald: so fast that nothing will ever catch her, not even an ending.', objectives: [{ id: 'herald', text: 'Face the Swift Herald', kill: 'cb_swift-herald', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:stormlancer-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Cass, who rode into Skyrender’s storm alone and came out laughing and far too fast, has become the Swift Herald: so fast that nothing will ever catch her, not even an ending.', objectives: [{ id: 'herald', text: 'Face the Swift Herald at the top of the Twelve Stairs', kill: 'cb_swift-herald', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:stormlancer-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Cass is down on one knee on the stair, shaking, because she cannot stop.', objectives: [{ id: 'fate', text: 'Decide Cass’s fate', when: { flag: 'stormlancer.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

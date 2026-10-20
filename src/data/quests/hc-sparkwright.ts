@@ -545,11 +545,11 @@ const quests: QuestDef[] = [
   // round Gildport, the seat in the Engine's crown, and a reply down the wire
   {
     ...A2, id: 'quest:sparkwright-cliffstair', name: 'Cliffstair', type: 'class', region: 'vil:cliff', giver: 'npc:prudence-spindle',
-    summary: 'Somewhere in Concordia there are Storm-folk who were stranded here when the arches shut. They will know where Storm’s Sentinel nests.',
+    summary: 'Somewhere in Concordia there are Storm-folk who were stranded here when the arches shut. They will know where Storm’s Sentinel nests: one of the old guardians of the crown’s Turning Road.',
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'spindle',
     stages: [
       {
-        id: 'spindle', journal: 'Ysolde says the Storm-folk of Concordia keep a village on the Stormcliffs, called Cliffstair, under a Storm Spire that has never been switched on.',
+        id: 'spindle', journal: 'You came through the Copper Gate with the Tower half crackling in your chest and Volta’s scorched lightning-line running on ahead. Ysolde Fenn, the archivist in Brindlecross, says the Storm-folk of Concordia keep a village on the Stormcliffs, called Cliffstair, under a Storm Spire that has never been switched on.',
         objectives: [{ id: 'prudence', text: 'Find the Storm-folk of Cliffstair', talk: 'npc:prudence-spindle', marker: { landmark: 'landmark:cliff-storm-spire' } }],
         next: 'spire',
       },
@@ -743,7 +743,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald, in a robe of copper wire and a crown of coils, ringing a bell that is a dynamo and never stops turning. It is Volta Sterne, and her cuffs are still clean.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Volta has become the Copper Herald: a switch held down for ever, so that nothing she loves will ever fall again.', objectives: [{ id: 'herald', text: 'Face the Copper Herald', kill: 'cb_copper-herald', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:sparkwright-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Volta, the Chancellor who built a cage round the Tower half to keep Spirehold safe, has become the Copper Herald: a switch held down for ever, so that nothing she loves will ever fall again.', objectives: [{ id: 'herald', text: 'Face the Copper Herald at the top of the Twelve Stairs', kill: 'cb_copper-herald', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:sparkwright-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The dynamo bell is winding down. Volta is on her knees with her hand still clamped round the switch.', objectives: [{ id: 'fate', text: 'Decide Volta’s fate', when: { flag: 'sparkwright.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

@@ -21,13 +21,13 @@ const quests: QuestDef[] = [
     requires: ACT2, autoStart: true, firstStage: 'arch',
     stages: [
       {
-        id: 'arch', journal: 'You stepped out of your school’s arch into a ring of twelve stone arches on a green moor at dusk. Every arch but yours is shut, and weeping.',
+        id: 'arch', journal: 'You beat the guardian at {realm}’s gate and broke its seal, and {halfstone} is still singing in your chest. Now you have stepped out of your school’s arch into a ring of twelve stone arches on a green moor at dusk. Every arch but yours is shut, and weeping.',
         objectives: [{ id: 'look', text: 'Look back at your arch', interact: 'obj:arch-*', marker: { landmark: 'landmark:gate-circle' } }],
         next: 'wolves',
       },
       {
         id: 'wolves', journal: 'Wolves came out of the trees, walking towards the light of your arch instead of away from it.',
-        objectives: [{ id: 'wolves', text: 'Drive off the wolves', kill: 'bx_wolf', count: 3 }],
+        objectives: [{ id: 'wolves', text: 'Drive off the wolves around the arches', kill: 'bx_wolf', count: 3 }],
         next: 'maren',
       },
       {

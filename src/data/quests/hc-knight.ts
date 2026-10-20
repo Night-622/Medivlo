@@ -560,7 +560,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'envoy',
     stages: [
       {
-        id: 'envoy', journal: 'Ysolde says the old Ironhold embassy at Gildport is shuttered, but someone still lights a lamp in its window every evening.',
+        id: 'envoy', journal: 'You came through the Iron Gate with the Forge half in your chest, and the Colossus knelt to watch you go. Ysolde Fenn, the Brindlecross archivist, says the old Ironhold embassy at Gildport is shuttered, but someone still lights a lamp in its window every evening.',
         objectives: [{ id: 'envoy', text: 'Find the Ironhold embassy at Gildport', talk: 'npc:perpetua-stannard', marker: { landmark: 'landmark:iron-embassy-gildport' } }],
         next: 'escort',
       },
@@ -758,7 +758,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs waits the Union Chimera. Its iron head wears Queen Berenika’s helm, and under the helm is Konrad’s face.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Konrad asked to be bound, and nobody made him. He is the Chimera’s iron head and shield-arm now, his grandmother’s plate grown into his own.', objectives: [{ id: 'herald', text: 'Face the Iron Head', kill: 'cb_iron-head', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:knight-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Prince-Regent Konrad, who took the other half of your stone at the Eve, asked to be bound, and nobody made him. He is the Chimera’s iron head and shield-arm now, his grandmother’s plate grown into his own.', objectives: [{ id: 'herald', text: 'Face the Iron Head', kill: 'cb_iron-head', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:knight-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera’s iron head is bowed on the stair, beaten. Konrad is still apologising.', objectives: [{ id: 'fate', text: 'Decide Konrad’s fate', when: { flag: 'knight.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
@@ -776,7 +776,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:knight-the-regents-regiment', name: 'The Regent’s Regiment', type: 'side', region: 'region:heart', giver: KB,
-    summary: 'Ironhold knights went through the Iron Gate after Konrad. They are standing in the Legion camp in their colours, with their shields scraped blank.',
+    summary: 'Ironhold knights went through the Iron Gate after Prince-Regent Konrad. They are standing in the Legion camp in their colours, with their shields scraped blank.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'blank',
     stages: [
       { id: 'blank', journal: 'Find the Ironhold knights in the Legion camp.', objectives: [{ id: 'blank', text: 'Find the hollow Ironhold knights in the Legion camp', interact: 'obj:knight-hollow-regiment', marker: { landmark: 'landmark:legion-camp' } }], next: 'case' },

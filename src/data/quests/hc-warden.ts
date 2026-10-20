@@ -550,7 +550,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'tull',
     stages: [
       {
-        id: 'tull', journal: 'Ysolde says the Wardens of Concordia keep their drills at Wardenhold, at the foot of Frostmere Pass.',
+        id: 'tull', journal: 'You came through the White Gate with the Wall half singing in your chest and Torvald somewhere on the road ahead. Ysolde Fenn, the archivist in Brindlecross, says the Wardens of Concordia keep their drills at Wardenhold, at the foot of Frostmere Pass.',
         objectives: [{ id: 'tull', text: 'Find the Wardens of Wardenhold', talk: 'npc:ingeborg-tull', marker: { landmark: 'landmark:warden-drill-yard' } }],
         next: 'log',
       },
@@ -741,7 +741,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald, in a robe of drifted snow and the empty crown’s colours, ringing a bell cut from the Wardwall’s own ice. It is Torvald, and he has saved you a seat.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Torvald has become the Herald of the Wall: no more walls, ever, and a table at the end of it that isn’t there.', objectives: [{ id: 'herald', text: 'Face the Herald of the Wall', kill: 'cb_herald-of-the-wall', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:warden-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Torvald, who taught you to set your feet and then broke the Wardwall for his kin, has become the Herald of the Wall: no more walls, ever, and a table at the end of it that isn’t there.', objectives: [{ id: 'herald', text: 'Face the Herald of the Wall at the top of the Twelve Stairs', kill: 'cb_herald-of-the-wall', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:warden-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Torvald is on his knees on the stair. His tears run like meltwater, and they still won’t freeze.', objectives: [{ id: 'fate', text: 'Decide Torvald’s fate', when: { flag: 'warden.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

@@ -419,7 +419,7 @@ const quests: QuestDef[] = [
     summary: 'There are Ash-folk in Concordia, stranded since the arches shut. Some of them, the Muster says, were Reavers once.',
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'ada',
     stages: [
-      { id: 'ada', journal: 'The Ash-folk of Concordia keep a cold kiln at Kilnmouth, in the Ashfall Kiln.', objectives: [{ id: 'ada', text: 'Find the Ash-folk of Kilnmouth', talk: 'npc:forgewife-ada', marker: { landmark: 'landmark:kiln-great-kiln' } }], next: 'axes' },
+      { id: 'ada', journal: 'You came through the Cinder Gate with the Field half singing in your chest and Hask somewhere on the road ahead, still unburnt. The Ash-folk of Concordia keep a cold kiln at Kilnmouth, in the Ashfall Kiln.', objectives: [{ id: 'ada', text: 'Find the Ash-folk of Kilnmouth', talk: 'npc:forgewife-ada', marker: { landmark: 'landmark:kiln-great-kiln' } }], next: 'axes' },
       {
         id: 'axes', journal: 'Over the hearth of the Cinder Mug hang three Reaver axes, edge up, the Muster’s way of saying “gone home”. The old smith who hung them is watching you look.',
         objectives: [{ id: 'axes', text: 'Look at the axes over the Cinder Mug’s hearth', interact: 'obj:reaver-kilnmouth-axes', marker: { landmark: 'landmark:kiln-cinder-mug' } }],
@@ -539,7 +539,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald, ringing a bell of slag. It is Hask, and he is still smiling.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Hask has become the Unburnt Herald: a war that never has to end, wearing your brother’s face.', objectives: [{ id: 'herald', text: 'Face the Unburnt Herald', kill: 'cb_unburnt-herald', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:reaver-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Hask, Brenna’s son, who fell into the lava of the Old Battle-Kiln and walked out smiling, has become the Unburnt Herald: a war that never has to end, wearing your brother’s face.', objectives: [{ id: 'herald', text: 'Face the Unburnt Herald at the top of the Twelve Stairs', kill: 'cb_unburnt-herald', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:reaver-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Hask is on his knees on the stair, laughing, and he still will not burn.', objectives: [{ id: 'fate', text: 'Decide Hask’s fate', when: { flag: 'reaver.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

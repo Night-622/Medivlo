@@ -555,8 +555,8 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'ford',
     stages: [
       {
-        id: 'ford', journal: 'Lanternford, on the edge of Morvane Marsh. The Tidecourt exiles drink at the Will-o’-Wisp.',
-        objectives: [{ id: 'hester', text: 'Find the Tidecourt folk at the Will-o’-Wisp', talk: 'npc:hester-glimmer', marker: { landmark: 'landmark:ford-will-o-wisp' } }],
+        id: 'ford', journal: 'You brought the Velvet King down on his gilded barge and came through the water-arch with the Reef half singing. Now: Lanternford, on the edge of Morvane Marsh. The Tidecourt exiles drink at the Will-o’-Wisp.',
+        objectives: [{ id: 'hester', text: 'Find the Tidecourt folk at the Will-o’-Wisp in Lanternford', talk: 'npc:hester-glimmer', marker: { landmark: 'landmark:ford-will-o-wisp' } }],
         next: 'market',
       },
       {
@@ -566,7 +566,7 @@ const quests: QuestDef[] = [
       },
       {
         id: 'pell', journal: 'Hester says the pearls in the Bog Market come through Pell Odd, and Pell buys his from a man with a white flag.',
-        objectives: [{ id: 'pell', text: 'Ask Pell Odd where he buys his pearls', talk: 'npc:pell', marker: { landmark: 'landmark:brind-market' } }],
+        objectives: [{ id: 'pell', text: 'Ask Pell Odd in Brindlecross where he buys his pearls', talk: 'npc:pell', marker: { landmark: 'landmark:brind-market' } }],
         onComplete: [{ startQuest: 'quest:corsair-the-queens-toll' }],
         end: { status: 'completed' },
       },
@@ -753,7 +753,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs waits the Union Chimera, its hide crusted with pearls and barnacles. Its face is the figurehead of a white flagship, and it smells of lavender.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'The Hollow King has bound Saltmarsh into the Chimera as its heart. Between blows it offers, very politely, to buy your grief.', objectives: [{ id: 'herald', text: 'Face Saltmarsh’s Last Sale', kill: 'cb_saltmarshs-last-sale', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:corsair-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'At the Eve, Admiral Saltmarsh, the black-pearl trader, took the Jester’s Court half and ran into the Heart. Now the Hollow King has bound him into the Chimera as its heart. Between blows it offers, very politely, to buy your grief.', objectives: [{ id: 'herald', text: 'Face Saltmarsh’s Last Sale', kill: 'cb_saltmarshs-last-sale', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:corsair-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera lies on the stair like a wreck on a reef. The figurehead is still smiling, and the pearl in its ear is the size of a fist.', objectives: [{ id: 'fate', text: 'Decide Saltmarsh’s fate', when: { flag: 'corsair.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

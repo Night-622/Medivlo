@@ -569,11 +569,11 @@ const quests: QuestDef[] = [
   // ======================= ACT II: the class thread (C-1 … C-6) + featured bearers
   {
     ...A2, id: 'quest:arcanist-kilnmouth', name: 'Kilnmouth', type: 'class', region: 'vil:kiln', giver: 'npc:forgewife-ada',
-    summary: 'Somewhere in Concordia there are Ash-folk who were stranded here when the arches shut. They will know where Ash’s Sentinel lies.',
+    summary: 'Somewhere in Concordia there are Ash-folk who were stranded here when the arches shut. They will know where Ash’s Sentinel lies: one of the old guardians of the crown’s Turning Road.',
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'ada',
     stages: [
       {
-        id: 'ada', journal: 'Ysolde says the Ash-folk of Concordia keep a cold kiln at Kilnmouth, in the Ashfall Kiln.',
+        id: 'ada', journal: 'You came through the Cinder Gate with the Kiln half singing in your chest and Morrow somewhere on the road ahead. Ysolde Fenn, the archivist in Brindlecross, says the Ash-folk of Concordia keep a cold kiln at Kilnmouth, in the Ashfall Kiln.',
         objectives: [{ id: 'ada', text: 'Find the Ash-folk of Kilnmouth', talk: 'npc:forgewife-ada', marker: { landmark: 'landmark:kiln-great-kiln' } }],
         next: 'kiln',
       },
@@ -754,7 +754,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands a living kiln in the Herald’s robes, ringing a bell of fire. It has Ignace Morrow’s face.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Morrow has become the Hollow King’s Herald: a kiln that will never go out.', objectives: [{ id: 'herald', text: 'Face the Herald of Ash', kill: 'cb_herald-of-ash', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:arcanist-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Morrow, the Provost who fed the Great Kiln on black tears, has become the Hollow King’s Herald: a kiln that will never go out.', objectives: [{ id: 'herald', text: 'Face the Herald of Ash at the top of the Twelve Stairs', kill: 'cb_herald-of-ash', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:arcanist-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Herald kneels in its own fire, beaten, still burning.', objectives: [{ id: 'fate', text: 'Decide Morrow’s fate', when: { flag: 'arcanist.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

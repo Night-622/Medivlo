@@ -419,7 +419,7 @@ const dialogues: DialogueDef[] = [
         ],
       },
       ladder: { speaker: 'npc:basilio-trento', mood: 'happy', text: 'The captain’s. Chalk, every man’s name, who’s on watch and who owes who a pint. It’s the only Ladder in the world where the bottom rung gets the best bunk. Very civilised.', next: 'rook' },
-      rook: { speaker: 'npc:basilio-trento', text: 'The captain knows where Varric is. Captain Harrow, with the eye-patch. Ask her. Don’t mention the eye. She’ll only tell you it improved her looks, and she’ll be right.', next: null },
+      rook: { speaker: 'npc:basilio-trento', text: 'The captain knows where Varric is: Bonelord Varric, our Sentinel. Captain Harrow, with the eye-patch. Ask her. Don’t mention the eye. She’ll only tell you it improved her looks, and she’ll be right.', next: null },
       later: { speaker: 'npc:basilio-trento', text: 'Thirty years on the wrong side of the arch. Still, the beer is good.', next: null },
     },
   },

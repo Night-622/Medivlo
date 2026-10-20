@@ -28,7 +28,7 @@ Test build for medivlo. Everything below is in this build. Default keys are show
 - The tracked quest’s mark shows the place’s name on the map.
 - Map labels no longer overlap, and places are named the way the story names them.
 - Merchants show as coins on the minimap. Village close-ups show the smithy and the trader.
-- Things you’ve already used say “Already searched” or “Already read”. A search that needs several finds counts each object once.
+- Things you’ve already used say “Already read”, “Already searched” or “Already seen”. A search that needs several finds counts each object once.
 - Tall trees and roofs fade when you walk behind them.
 
 ## Co-op and saves

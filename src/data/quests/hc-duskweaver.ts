@@ -572,8 +572,8 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'hobb',
     stages: [
       {
-        id: 'hobb', journal: 'Ysolde says the nearest thing Concordia has to an Obelisk is Old Hobb, the sexton, who keeps everyone’s names.',
-        objectives: [{ id: 'hobb', text: 'Find Old Hobb in the churchyard', talk: 'npc:hobb', marker: { landmark: 'landmark:brind-graveyard' } }],
+        id: 'hobb', journal: 'You came through the Dusk Gate with the Obelisk half humming in your chest, and nobody here has got your name wrong yet. Ysolde Fenn, the Brindlecross archivist, says the nearest thing Concordia has to an Obelisk is Old Hobb, the sexton, who keeps everyone’s names.',
+        objectives: [{ id: 'hobb', text: 'Find Old Hobb in the Brindlecross churchyard', talk: 'npc:hobb', marker: { landmark: 'landmark:brind-graveyard' } }],
         next: [
           { when: { flag: 'duskweaver.mourners', value: 'kept' }, to: 'corner' },
           { to: 'register' },
@@ -772,7 +772,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald, his robe embroidered with every memory he ever took, ringing a bell that plays your own old fights back around you. It is Oriel Vane, and he remembers your name.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Vane has become the Herald of Memory: a shelf that never ends, with nothing on it ever let go.', objectives: [{ id: 'herald', text: 'Face the Herald of Memory', kill: 'cb_herald-of-memory', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:duskweaver-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Oriel Vane, Duskmere’s Mnemosarch, who took the other half of your stone at the Eve, has become the Herald of Memory: a shelf that never ends, with nothing on it ever let go.', objectives: [{ id: 'herald', text: 'Face the Herald of Memory', kill: 'cb_herald-of-memory', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:duskweaver-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Vane is kneeling on the stair while his robe comes unstitched, holding on to every thread.', objectives: [{ id: 'fate', text: 'Decide Vane’s fate', when: { flag: 'duskweaver.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
@@ -790,7 +790,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:duskweaver-the-stolen-hours', name: 'The Stolen Hours', type: 'side', region: 'region:heart', giver: NX,
-    summary: 'Vane’s phials are scattered all through the Legion camp, each one a memory with a label. The hollowed there have nothing left to remember. Give them back.',
+    summary: 'Oriel Vane, the Mnemosarch, kept Duskmere’s memories in phials. They are scattered all through the Legion camp now, each one with a label. The hollowed there have nothing left to remember. Give them back.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'phials',
     stages: [
       { id: 'phials', journal: 'Glass phials in the dust, labelled in Vane’s tidy hand. Beside each one, somebody who has forgotten it.', objectives: [{ id: 'phials', text: 'Give back the stolen memories', interact: 'obj:duskweaver-stolen-phial-*', count: 3, marker: { landmark: 'landmark:legion-camp' } }], next: 'button' },
@@ -801,7 +801,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:duskweaver-the-cat-comes-too', name: 'The Cat Comes Too', type: 'side', region: 'region:heart', giver: 'npc:cat-shadow-heart',
-    summary: 'The cat’s shadow from the Archive has followed you to the Heart. It has also adopted a cat: Nan Briar’s Parson, who has opinions about it.',
+    summary: 'The cat’s shadow from the Archive of Shadows in Duskmere has followed you to the Heart. It has also adopted a cat: Nan Briar’s Parson, who has opinions about it.',
     requires: req(done('quest:heart-wall'), done('quest:duskweaver-the-shadow-of-a-cat')), autoStart: true, firstStage: 'prints',
     stages: [
       { id: 'prints', journal: 'Two sets of paw prints in the ash of the Legion camp, side by side, one of them dark and not quite touching the ground. Something has walked a very long way to get here.', objectives: [{ id: 'prints', text: 'Follow the two sets of paw prints', interact: 'obj:duskweaver-paw-prints', marker: { landmark: 'landmark:legion-camp' } }], next: 'cat' },

@@ -565,7 +565,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'jenks',
     stages: [
       {
-        id: 'jenks', journal: 'Ysolde says there is a digging crew in the Gilded Ruins who speak with Rivet Town accents and swear in shift-whistle.',
+        id: 'jenks', journal: 'You came through the Iron Gate with the Lode half in your chest and nobody to blow end of shift. Ysolde Fenn, the Brindlecross archivist, says there is a digging crew in the Gilded Ruins who speak with Rivet Town accents and swear in shift-whistle.',
         objectives: [{ id: 'jenks', text: 'Find the Deepworks diggers in the Gilded Ruins', talk: 'npc:hobnail-jenks', marker: { landmark: 'landmark:juggernaut-dig-camp' } }],
         next: 'escort',
       },
@@ -774,7 +774,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs waits the Union Chimera, with a furnace for a heart and coin pouring through its ribs. The fire in the furnace is Magda Ruhl.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Magda had herself measured for the Chimera’s furnace, and she was fitted at her convenience. Now she burns at its heart, paying out for ever.', objectives: [{ id: 'herald', text: 'Face the Furnace-Heart', kill: 'cb_furnace-heart', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:juggernaut-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Magda Ruhl, the Smelter, who paid Rivet Town in hollow coin and took the other half of your stone at the Eve, had herself measured for the Chimera’s furnace, and she was fitted at her convenience. Now she burns at its heart, paying out for ever.', objectives: [{ id: 'herald', text: 'Face the Furnace-Heart', kill: 'cb_furnace-heart', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:juggernaut-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera’s furnace hangs open on the stair, beaten. Magda is still burning, and still paying.', objectives: [{ id: 'fate', text: 'Decide Magda’s fate', when: { flag: 'juggernaut.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
@@ -792,7 +792,7 @@ const quests: QuestDef[] = [
   },
   {
     ...A3, id: 'quest:juggernaut-pay-day', name: 'Pay Day', type: 'side', region: 'region:heart', giver: GH,
-    summary: 'The miners Magda’s coin emptied are standing in the Legion camp in their Deepworks leathers, each one holding a wet, bright coin.',
+    summary: 'The miners emptied by Magda Ruhl’s hollow coin are standing in the Legion camp in their Deepworks leathers, each one holding a wet, bright coin.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'shift',
     stages: [
       { id: 'shift', journal: 'Magda’s hollow miners stand in the Legion camp, each with a wet, bright coin in their fist.', objectives: [{ id: 'shift', text: 'Find Magda’s hollow miners in the Legion camp', interact: 'obj:juggernaut-hollow-shift', marker: { landmark: 'landmark:legion-camp' } }], next: 'lamp' },

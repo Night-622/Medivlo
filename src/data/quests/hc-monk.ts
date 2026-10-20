@@ -553,7 +553,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'hall',
     stages: [
       {
-        id: 'hall', journal: 'Nan Briar says there is a cloister half-sunk in the bog at Briar Hollow, where six monks sweep the doorstep every morning.',
+        id: 'hall', journal: 'You left Master Kell, the Mountain King, sitting on the last stair, and came through the Stair Gate with the Summit half singing. Now Nan Briar, the hedge-witch of the Briar Path, says there is a cloister half-sunk in the bog at Briar Hollow, where six monks sweep the doorstep every morning.',
         objectives: [{ id: 'faraj', text: 'Find the Welcome Hall in Briar Hollow', talk: 'npc:faraj-stillwater', marker: { landmark: 'landmark:fist-welcome-hall' } }],
         next: 'sweep',
       },
@@ -740,7 +740,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs the Union Chimera is waiting. Its arms are grey iron, striking with a stolen half-stone, and you know every one of their forms. Kestrel learned them first.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Kestrel has been bound into the Union Chimera as its arms. He always wanted to be good at something.', objectives: [{ id: 'herald', text: 'Face the Arms of the Chimera', kill: 'cb_arms-of-the-chimera', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:monk-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'At the Eve, Kestrel, your foster-brother, took the Brawler’s Pit half and ran into the Heart. Now he is bound into the Union Chimera as its arms. He always wanted to be good at something.', objectives: [{ id: 'herald', text: 'Face the Arms of the Chimera', kill: 'cb_arms-of-the-chimera', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:monk-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Kestrel is on his knees inside the iron arms, beaten, and the arms are still striking at the air.', objectives: [{ id: 'fate', text: 'Decide Kestrel’s fate', when: { flag: 'monk.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
@@ -761,7 +761,7 @@ const quests: QuestDef[] = [
     summary: 'The novices who went up the mountain with Kestrel followed him all the way into the Heart. They are standing in the Legion. Somebody has brought a teapot.',
     requires: req(done('quest:heart-legion')), autoStart: true, firstStage: 'yuen',
     stages: [
-      { id: 'yuen', journal: 'Auntie Yuen has carried her pot all the way to the Heart camp, as she said she would. It is still on the boil.', objectives: [{ id: 'yuen', text: 'Find Auntie Yuen at the Heart camp', talk: 'npc:auntie-yuen', marker: { landmark: 'landmark:heart-camp' } }], next: 'escort' },
+      { id: 'yuen', journal: 'Auntie Yuen, sixty years at the tea stall on landing four hundred, has carried her pot all the way to the Heart camp, as she said she would. It is still on the boil.', objectives: [{ id: 'yuen', text: 'Find Auntie Yuen at the Heart camp', talk: 'npc:auntie-yuen', marker: { landmark: 'landmark:heart-camp' } }], next: 'escort' },
       { id: 'escort', journal: 'Auntie Yuen will not let her pot out of her sight, and she will pour for her children herself. Get her and the pot to the Legion camp. The Heart is not a safe road for an old woman with a brazier.', onEnter: [{ escort: 'npc:auntie-yuen', to: 'landmark:legion-camp' }], objectives: [{ id: 'yuen', text: 'Bring Auntie Yuen and her pot safely to the Legion camp', when: { any: [{ flag: 'escort.auntie-yuen', op: '==', value: 'arrived' }, { flag: 'escort.auntie-yuen', op: '==', value: 'lost' }] }, marker: { landmark: 'landmark:legion-camp' } }], next: [{ when: { flag: 'escort.auntie-yuen', op: '==', value: 'lost' }, to: 'regroup' }, { to: 'novices' }] },
       { id: 'regroup', journal: 'Auntie Yuen went down, pot and all, and the bearers carried her back to the camp. The pot did not spill. She is extremely angry about the whole thing and ready to go again.', onEnter: [{ escort: 'npc:auntie-yuen', to: 'landmark:legion-camp' }], objectives: [{ id: 'yuen', text: 'Try again: bring Auntie Yuen to the Legion camp', when: { any: [{ flag: 'escort.auntie-yuen', op: '==', value: 'arrived' }, { flag: 'escort.auntie-yuen', op: '==', value: 'lost' }] }, marker: { landmark: 'landmark:legion-camp' } }], next: [{ when: { flag: 'escort.auntie-yuen', op: '==', value: 'lost' }, to: 'regroup' }, { to: 'novices' }] },
       { id: 'novices', journal: 'Forty novices in Stonecloister robes, standing hollow in the Legion’s ranks. Bring them back one at a time, by name, with a cup of tea.', objectives: [{ id: 'novices', text: 'Bring the novices back by name', interact: 'obj:monk-legion-novice-*', count: 3, marker: { landmark: 'landmark:legion-camp' } }], end: { status: 'completed' } },

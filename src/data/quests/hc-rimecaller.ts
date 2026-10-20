@@ -568,11 +568,11 @@ const quests: QuestDef[] = [
   // Lanternford, the half-built lantern, and a footnote sent home
   {
     ...A2, id: 'quest:rimecaller-wardenhold', name: 'Wardenhold', type: 'class', region: 'vil:warden', giver: 'npc:mina-snell',
-    summary: 'Somewhere in Concordia there are Rime-folk who were stranded here when the arches shut. They will know where Rime’s Sentinel stands.',
+    summary: 'Somewhere in Concordia there are Rime-folk who were stranded here when the arches shut. They will know where Rime’s Sentinel stands: one of the old guardians of the crown’s Turning Road.',
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'snell',
     stages: [
       {
-        id: 'snell', journal: 'Ysolde says the Rime-folk keep a village at the foot of Frostmere Pass, called Wardenhold.',
+        id: 'snell', journal: 'You came through the White Gate with the Spire half singing in your chest and Glacierhome’s clocks ticking again behind you. Ysolde Fenn, the archivist in Brindlecross, says the Rime-folk keep a village at the foot of Frostmere Pass, called Wardenhold.',
         objectives: [{ id: 'mina', text: 'Find the Rime-folk of Wardenhold', talk: 'npc:mina-snell', marker: { landmark: 'landmark:warden-wardenhold-keep' } }],
         next: 'slate',
       },
@@ -762,7 +762,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald, in a robe of hoarfrost and a crown of icicles, ringing a bell of clear ice that tolls one note and never lets it end. It is Seraphine Cold.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Seraphine has become the Herald of the Held Hour: one note, held for ever, so that nothing after it can begin.', objectives: [{ id: 'herald', text: 'Face the Herald of the Held Hour', kill: 'cb_herald-of-the-held-hour', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:rimecaller-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Seraphine, the Regent who wanted the Spire half set in the hold to keep her husband one breath from the end, has become the Herald of the Held Hour: one note, held for ever, so that nothing after it can begin.', objectives: [{ id: 'herald', text: 'Face the Herald of the Held Hour at the top of the Twelve Stairs', kill: 'cb_herald-of-the-held-hour', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:rimecaller-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Herald kneels on the stair. The note has stopped, and she is listening for the next one, terrified.', objectives: [{ id: 'fate', text: 'Decide Seraphine’s fate', when: { flag: 'rimecaller.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

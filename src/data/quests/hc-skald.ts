@@ -536,13 +536,13 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'goose',
     stages: [
       {
-        id: 'goose', journal: 'Every Song-folk traveller in Concordia used to sign the book at the Gilded Goose, drummers too. Wil Crane will know where the Fells-folk went.',
-        objectives: [{ id: 'wil', text: 'Ask Wil Crane about the Fells-folk', talk: 'npc:wil', marker: { landmark: 'landmark:brind-gilded-goose' } }],
+        id: 'goose', journal: 'You won the echoes back from the Silent Maestro and came through the Lyre Gate with the Fell half singing. Every Song-folk traveller in Concordia used to sign the book at the Gilded Goose in Brindlecross, drummers too. Wil Crane will know where the Fells-folk went.',
+        objectives: [{ id: 'wil', text: 'Ask Wil Crane at the Gilded Goose about the Fells-folk', talk: 'npc:wil', marker: { landmark: 'landmark:brind-gilded-goose' } }],
         next: 'mill',
       },
       {
         id: 'mill', journal: 'The Fells exiles drum the drowned choir’s names from the Old Fish Mill every night, so someone is still saying them.',
-        objectives: [{ id: 'hallgerd', text: 'Find the drummers at the Old Fish Mill', talk: 'npc:old-hallgerd', marker: { landmark: 'landmark:shore-fish-mill' } }],
+        objectives: [{ id: 'hallgerd', text: 'Find the drummers at the Old Fish Mill in Abbeyshore', talk: 'npc:old-hallgerd', marker: { landmark: 'landmark:shore-fish-mill' } }],
         next: 'loft',
       },
       {
@@ -753,7 +753,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs waits a beast stitched from every school, with a war-drum for a chest and black-tear sagas cut into its hide. The drum is beating in the old hand-beat. It is Ulf.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Ulf has been bound into the Union Chimera as its heart. Every saga he ever drummed is cut into its hide in black, and not one of them has his name in.', objectives: [{ id: 'herald', text: 'Face the Unsung Chimera', kill: 'cb_the-unsung-chimera', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:skald-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'At the Eve, Ulf the Unsung, your saga-brother, took the Bard’s Opera half and ran into the Heart. Now he is bound into the Union Chimera as its heart. Every saga he ever drummed is cut into its hide in black, and not one of them has his name in.', objectives: [{ id: 'herald', text: 'Face the Unsung Chimera', kill: 'cb_the-unsung-chimera', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:skald-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'The Chimera has yielded on the stair. The war-drum in its chest is still beating, slower now, waiting for you.', objectives: [{ id: 'fate', text: 'Decide Ulf’s fate', when: { flag: 'skald.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },

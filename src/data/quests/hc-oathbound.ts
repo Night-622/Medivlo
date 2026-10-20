@@ -566,7 +566,7 @@ const quests: QuestDef[] = [
     requires: req(done('quest:cc-through-the-arch')), autoStart: true, firstStage: 'shore',
     stages: [
       {
-        id: 'shore', journal: 'Ysolde says there are Radiance knights at Abbeyshore, standing in the shallows, and that they have been standing there for thirty years.',
+        id: 'shore', journal: 'You came through the Dawn Gate with the March half singing in your chest and Ilsabet’s grey horse somewhere on the road ahead. Ysolde Fenn, the archivist in Brindlecross, says there are Radiance knights at Abbeyshore, standing in the shallows, and that they have been standing there for thirty years.',
         objectives: [{ id: 'cuthbert', text: 'Find the Shorewatch at Abbeyshore', talk: CL, marker: { landmark: 'landmark:oathbound-shorewatch-post' } }],
         next: 'rota',
       },
@@ -757,7 +757,7 @@ const quests: QuestDef[] = [
     summary: 'At the top of the Twelve Stairs stands the Hollow King’s Herald, in a robe of black samite, ringing her bell once for every vow she makes. It is Dame Ilsabet, and she announces every blow before she strikes it.',
     requires: req(done('quest:heart-stairs')), autoStart: true, firstStage: 'herald',
     stages: [
-      { id: 'herald', journal: 'Ilsabet has become the Sorrow Herald: a vow kept so long that nothing is left of her but the keeping.', objectives: [{ id: 'herald', text: 'Face the Sorrow Herald', kill: 'cb_sorrow-herald', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:oathbound-herald-fate' }], next: 'fate' },
+      { id: 'herald', journal: 'Ilsabet, the March’s most famous knight, who swore the Sorrow-Oath to the crown, has become the Sorrow Herald: a vow kept so long that nothing is left of her but the keeping.', objectives: [{ id: 'herald', text: 'Face the Sorrow Herald at the top of the Twelve Stairs', kill: 'cb_sorrow-herald', count: 1, marker: { landmark: 'landmark:twelve-stairs-top' } }], onComplete: [{ openDialogue: 'dialogue:oathbound-herald-fate' }], next: 'fate' },
       { id: 'fate', journal: 'Ilsabet has yielded, formally, before witnesses. She is waiting to hear what you will do with it.', objectives: [{ id: 'fate', text: 'Decide Ilsabet’s fate', when: { flag: 'oathbound.nemesis_fate' } }], end: { status: 'completed' } },
     ],
     reward: { xpTier: 3 },
