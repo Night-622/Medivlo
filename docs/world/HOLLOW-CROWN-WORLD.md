@@ -1,6 +1,6 @@
 # The Hollow Crown: world design
 
-Owner: **Claude 2**. Status: **v2, 2026-10-21**: built and placed for all 24 campaigns. §10 covers the campaign-order systems and §11 the world checks. Source: the Claude Design handoff (`Medieval Browser Action RPG/`: `tiles.js`, `realms.js`, `map.js`, `atlas.json`, `medival-tokens.json`). Where old Morvane lore and the handoff clash, the handoff wins (docs/REBUILD.md). This replaces `WORLD.md`.
+Owner: **Claude 2**. Status: **v3, 2026-10-21**: built and placed for all 24 campaigns; Act II levels tuned to the measured player and frozen. §10 covers the campaign-order systems and §11 the world checks. Source: the Claude Design handoff (`Medieval Browser Action RPG/`: `tiles.js`, `realms.js`, `map.js`, `atlas.json`, `medival-tokens.json`). Where old Morvane lore and the handoff clash, the handoff wins (docs/REBUILD.md). This replaces `WORLD.md`.
 
 ---
 
@@ -150,11 +150,31 @@ Spawn levels follow each campaign's quest order, not the zone number.
 - **Ruin caches** roll at their guarding pack's band in force.
 
 ### 10.2 Concordia bands
-`concordiaBands.ts gen` does the same for Acts II–III across Morvane.
-- The table `concordiaBands.gen.ts` is keyed by host class (the `campaign.class` flag) × region.
-- Tiers step with the host's Act II/III mains.
-- Public realms (no host class) use L20; the Heart uses L30.
-- The check: every main-quest pass is within expected +2 and −4.
+`tools/playthrough/concordiaBands.ts gen` writes `src/data/regions/hc/concordiaBands.gen.ts`: host class (the `campaign.class` flag) × Morvane region → tiers.
+- **Expected level = the measured player.** Acts II–III use Claude 5's typical player (gear-curve sim, median of 5 seeds): the hero's level at the start of each quest, per class. The old linear model (L14→27 by mains done) lagged the real hero 2–3 levels mid-act.
+- **Every quest is a step.** `ACT23_MAINS` lists every Act II/III quest in play order, sides included, because the measured hero climbs through them. A tier set by a visit applies once the quest before that visit is done. A skipped side's tier never applies, but the next one does (`bands.ts` takes the last tier whose step is done).
+- **Floors:** the first visit's floor, rising at later visits, capped at L28 in Act II and L38 in Act III. The Heart keeps an L30 floor (Claude 1's rule).
+- **Off-route ramp:** before a class's first visit, a region ramps with that class's hero at most `RAMP` = 5 over them (band tops +7). Before this, an L16 hero who strayed met L30 enemies next door. Regions visited earlier stay lower, so walking back is easier, never a wall.
+- **Public realms** (no host class): L20; the Heart L30.
+- **Guarded by** `bands-concordia` (`suite.mjs --full`): every Act II/III pass is ≤ expected +2, and every main quest ≥ expected −4.
+
+### 10.2a Pinned hero levels and the deliberate rebase
+- Claude 5 owns `tools/playthrough/out/hero-levels.json` (`node tools/e2e/sim/run.mjs hero-levels`) and may regenerate it at any time.
+- The bands are built from, and checked against, a **pin**: `tools/playthrough/out/hero-levels.bands.json`. `walks.ts` reads the pin by default. So a new `hero-levels.json` never moves the check under bands built from the earlier one; that was the run12 deploy blocker.
+- **Rebase deliberately**, once, when tuning is done:
+  ```
+  ENTRY=tools/playthrough/concordiaBands.ts OUT=<file> node tools/playthrough/build.mjs
+  HERO_LEVELS=tools/playthrough/out/hero-levels.json node <file> gen
+  ```
+  `gen` copies the source into the pin. Then refresh the walk exports (`walks-export.ts both`) and `questBands.ts gen`, and run `suite.mjs --full`.
+- **Feedback loop:** higher bands mean more XP, so the hero climbs a little. One rebase moved the Act II end ~0.8 levels; accept rather than iterate. The bands are frozen as of 2026-10-21.
+
+### 10.2b Story instances per host
+- The Sentinel lairs, Varric's barrow and the Drowned Abbey fight at the measured level each host class's hero enters them (first entry): `INSTANCE_BANDS` in `concordiaBands.gen.ts`, used by `spawns.ts lairZones`. For example, sentinel-storm is L22 for the storm pair, 25 for monk and 26 for falconer. Hosts that never enter keep the instance's own level.
+- Lair waves shift with the band in force and keep their own mix. Boss levels stay Claude 3's.
+- The 10 Morvane caves fight at their region's band per host; they were fixed at the old handoff levels, L8–27.
+- Chests in all of these roll at the band in force: chest `band` prop → `interact.ts chestLevel` → `zoneTopNow`.
+- **Guarded by** `bands-concordia` (the walks enter them) and `loot`.
 
 ### 10.3 Class story objects
 Each class's story objects are usable only in that class's own campaign. Gating is derived from the quest data (`src/world/hc/classGate.ts`, `classObjects.gen.ts`). Other hosts see the objects, but they are inert.
@@ -196,9 +216,26 @@ Bosses roll their own tables; boss triggers carry no `loot` prop.
 - **See-through props:** tall props drawn over the local hero fade to 0.45 and ease back once the hero is clear (`src/world/render/Occlusion.ts`, testing the 3×3 chunks round the hero).
 - **Used search objects:** once an active objective has counted an object, its prompt says "Already searched" or "Already read", dimmed (Claude 4's `objectUsed`).
 
+### 10.8 Quest bands (for quest XP)
+- `src/data/regions/hc/questBands.ts` is generated by `tools/playthrough/questBands.ts gen` from the walk exports. It is pure data, with no imports, because the sim on the realm server reads it.
+- `QUEST_BANDS[quest]` = `[lo, hi]`, the median band in force over the zones the quest's walk passes and the lairs it enters (median across classes for shared quests). It is `null` where the walk meets no fights; those quests stay unscaled. Claude 3's `questXpMult` scales quest XP toward it.
+- `QUEST_ACT[quest]` = 1 | 2 | 3: the quest's own `act`, else the act whose walk lists it. It feeds Claude 3's per-class Act II XP table.
+- Regenerate after any band change.
+- **Guarded by** `quest-bands`: every quest has a band entry and an act, and no entry names a missing quest.
+
+### 10.9 Map labels and place names
+- **Label placement** is one pure function, `src/ui/map/labelSpot.ts pickLabelSpot`. It picks the nearest free spot among candidates (beside, above, below, diagonals, further rows), clear of markers, the hero, other labels and roads. `MapLabels` draws with it.
+- **Tracked quest label:** the tracked quest's mark is labelled with its place's name (NPC, landmark, object or door: `questMarks.ts placeLabel`). Zones, areas and regions are labelled by the map already.
+- **Place names follow the quest text:**
+  - Realm set-piece names come from their ids (`setPieces.ts title`). Small words stay lowercase ("Hall of Held Hours"), and possessives are spelled as the quests spell them (`POSSESSIVE`, e.g. "Keepers’ Lodge").
+  - Concordia set pieces have explicit names (`concordiaPlaces.ts PIECE_NAMES`).
+  - Waystones are named as the quests call them ("The Heart Camp", "Abbeyshore").
+  - Names use the typographic ’.
+- **Guarded by** `labels`, which replays the placement in Node for 12 realms and Morvane with every optional area found: 0 labels on a marker or another label. Name agreement with the text is checked by a manual scan (Claude 2's naming pass, 2026-10-21), not a gate.
+
 ## 11. World checks
 
-`node tools/playthrough/suite.mjs` runs the fast set in about 25 s and exits 1 on any failure. It is part of the pre-deploy check. Each check also runs alone:
+`node tools/playthrough/suite.mjs` runs the fast set (11 checks) in about 25 s and exits 1 on any failure. It is part of the pre-deploy check. Each check also runs alone:
 
 `ENTRY=tools/playthrough/checks.ts OUT=<file> node tools/playthrough/build.mjs && node <file> <check>`
 
@@ -212,5 +249,7 @@ Bosses roll their own tables; boss triggers carry no `loot` prop.
 | `clearance` | Bodies fit their arenas, lair corridors and story markers |
 | `merchants` | Runeforges, capital smiths and traders, and frontier pedlars stand by their waystone; every shop merchant resolves through `npcPos` |
 | `loot` | Every chest `loot` id is a known table, and every rare chest has one |
+| `labels` | Realm and Morvane map labels, all optional areas found, sit clear of markers and each other |
+| `quest-bands` | Every quest has a `QUEST_BANDS` entry and a `QUEST_ACT`; no entry names a missing quest |
 | `reach` | Walking from where a hero starts (a realm's two start waystones, Concordia's Gate Circle, an instance's entrance), a hero body (r12) reaches every quest objective place of all 24 campaigns, every NPC spot (on open ground), every chest and search object, every waystone and door; fast travel and doors land on reached open ground; every escort has a walk from a start spot of its NPC to its destination |
-| `bands-concordia` (`--full` only, ~4 min) | Every Act II/III main-quest pass is within expected +2 and −4 |
+| `bands-concordia` (`--full` only, ~6 min) | Against the pinned hero levels, every Act II/III pass is ≤ expected +2 and every main quest ≥ expected −4 (covers the story-instance bands the walks enter) |
