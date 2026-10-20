@@ -17,7 +17,7 @@ const LOGS = join(ROOT, 'tools/e2e/out/predeploy');
 const NODE = process.execPath;
 const BASH = [process.env.SHELL, 'C:/Program Files/Git/bin/bash.exe'].find((p) => p && /bash(\.exe)?$/.test(p) && existsSync(p)) ?? 'bash';
 const tsc = [NODE, 'node_modules/typescript/bin/tsc', '--noEmit'];
-const sim = (name) => [NODE, 'tools/e2e/sim/run.mjs', name];
+const sim = (name, ...args) => [NODE, 'tools/e2e/sim/run.mjs', name, ...args];
 const e2e = (file, ...args) => [NODE, `tools/e2e/${file}`, ...args];
 
 /** what: what the suite proves (shown in the report). needs: servers it uses. file: a test that must exist. */
