@@ -9,6 +9,7 @@ import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, STAMP, sourceHash } from './source-hash.mjs';
+import { reserveChrome } from '../e2e/chrome-lock.mjs';
 
 const BASE = 'http://localhost:5190'; // our own no-HMR test server (other agents use 5196–5199)
 const REALM = 'http://localhost:8080'; // the DEV client looks for the realm server here
@@ -68,7 +69,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function run(cmd, env = {}) {
   return new Promise((resolve) => {
-    const p = spawn(cmd[0], cmd.slice(1), { cwd: ROOT, env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
+    const p = spawn(cmd[0], cmd.slice(1), { cwd: ROOT, env: { ...process.env, HC_PREDEPLOY: '1', ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
     let out = '';
     p.stdout.on('data', (d) => (out += d)); p.stderr.on('data', (d) => (out += d));
     p.on('close', (code) => resolve({ code, out }));
@@ -102,6 +103,9 @@ async function startServer(kind) {
   }
 }
 
+// other agents' browser runs wait while the deploy check runs (they queue again afterwards)
+const releaseReserve = only ? () => undefined : reserveChrome('predeploy');
+process.on('exit', () => releaseReserve());
 const before = sourceHash();
 console.log(`The Hollow Crown pre-deploy check: ${suites.length} suites, source ${before.hash.slice(0, 12)} (${before.files} files)\n`);
 const results = [];
@@ -130,6 +134,7 @@ for (const s of suites) {
   if (!ok && out) console.log(out.trim().split('\n').filter((l) => /FAIL|Error|error|✗/.test(l)).slice(0, 6).map((l) => `        ${l.slice(0, 180)}`).join('\n'));
 }
 stopServers();
+releaseReserve();
 
 const after = sourceHash();
 const failed = results.filter((r) => !r.ok).map((r) => r.id);

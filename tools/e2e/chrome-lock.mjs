@@ -16,6 +16,19 @@ export const CHROME_PATH = process.env.CHROME ?? {
 // One lock per user, shared by every checkout and worktree (it used to live in <repo>/tools/e2e, so a deploy
 // worktree and the main tree each had their own and two Chromes could run). $CHROME_LOCK_DIR overrides.
 const LOCK = process.env.CHROME_LOCK_DIR ?? join(homedir(), '.hollow-crown-chrome-lock');
+// The pre-deploy check reserves Chrome for its whole run: while the reservation's owner pid is alive, only processes
+// started by the check (HC_PREDEPLOY=1) may take the lock, so a deploy isn't starved by other agents' browser runs.
+export const RESERVE = `${LOCK}.reserve`;
+function reservedByOther() {
+  if (process.env.HC_PREDEPLOY === '1') return false;
+  try { const pid = Number(readFileSync(RESERVE, 'utf8').split(' ')[0]); if (pid && alive(pid)) return true; rmSync(RESERVE, { force: true }); } catch { /* none */ }
+  return false;
+}
+/** Reserve Chrome for this process (the pre-deploy check); returns the release function. */
+export function reserveChrome(label = 'predeploy') {
+  writeFileSync(RESERVE, `${process.pid} ${label} ${new Date().toISOString()}`);
+  return () => { try { if (readFileSync(RESERVE, 'utf8').startsWith(`${process.pid} `)) rmSync(RESERVE, { force: true }); } catch { /* gone */ } };
+}
 const STALE_MS = 20 * 60_000;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -35,6 +48,7 @@ export async function acquireChrome(label = 'e2e', maxWaitMs = 45 * 60_000) {
   let told = false;
   for (;;) {
     try {
+      if (reservedByOther()) throw new Error('reserved');
       mkdirSync(LOCK);
       writeFileSync(join(LOCK, 'owner'), `${process.pid} ${label} ${new Date().toISOString()}`);
       break;

@@ -52,6 +52,11 @@ try {
     ch.level = 10; ch.gold = 5000;
     ch.inventory.push({ uid: 'e2e-ing', base: 'i_ingot', ilvl: 1, qty: 10 }, { uid: 'e2e-rb', base: 'i_ruby', ilvl: 1, qty: 1 });
     ch.equipment.main = { uid: 'e2e-w', base: 'w_sword_rime', ilvl: 1, qty: 1 };
+    // shop and Runeforge acts need the hero within 96 px of the merchant (npcPos): stand beside Odo first
+    const core = await import('/src/core/index.ts');
+    const at = core.Services.get('worlds').npcPos?.('npc:odo');
+    const auth = (await import('/src/systems/sim/index.ts')).systemsAuthority?.();
+    if (at && auth) auth.sim.teleport(core.Services.get('net').localPlayer, at.space, at.x + 30, at.y);
     (await import('/src/core/flags.ts')).setFlag('shop.open', 'npc:odo');
   })()`);
   await sleep(900);
