@@ -67,7 +67,7 @@ export const KEYSTONE_OFFERS: Record<string, [string, string, string]> = {
   huntsman: ['ks_pack_leader', 'ks_executioner', 'ks_hoarder'],
   falconer: ['ks_pack_leader', 'ks_phase_step', 'ks_hoarder'],
   corsair: ['ks_hoarder', 'ks_tempest', 'ks_berserker'],
-  jester: ['ks_glass_cannon', 'ks_hoarder', 'ks_untouchable'],
+  jester: ['ks_glass_cannon', 'ks_chain_reaction', 'ks_untouchable'],
   bard: ['ks_conduit', 'ks_lifebinder', 'ks_tempest'],
   skald: ['ks_berserker', 'ks_juggernaut_heart', 'ks_chain_reaction'],
 };
