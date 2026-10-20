@@ -4,10 +4,11 @@
  * resolves each place to a space and world px: an NPC by where it stands now (else its scheduled landmark), anything
  * else by questPlace (src/world/hc/questPlaces.ts: pieces inside an instance point at its door from outside).
  */
-import { TILE_SIZE, type NpcId } from '@/core';
+import { TILE_SIZE, type NpcId, type WorldObject } from '@/core';
 import { HC_SHOPS } from '@/data/items/hc/shops';
 import { questMarkers, type QuestMarker } from '@/narrative/client/markers';
-import { isPresent, npcLandmark } from '@/narrative/engine';
+import { isPresent, npcDef, npcLandmark } from '@/narrative/engine';
+import { objectsAround } from '@/world/hc/interact';
 import { questPlace } from '@/world/hc/questPlaces';
 import { warmMarkers } from '@/world/hc/spawns';
 
@@ -24,6 +25,8 @@ export interface QuestMark {
   tracked: boolean;
   side: boolean;
   label: string;
+  /** what the map calls the place (an NPC, landmark, object or door); '' for zones and regions, labelled already */
+  name: string;
 }
 
 /** Where an NPC entity stands now, in the space the player is in (world px), if it's here. */
@@ -54,12 +57,30 @@ export function merchantsIn(space: string, npcAt?: NpcAt): { x: number; y: numbe
   return out;
 }
 
+const names = new Map<string, string>();
+/** The map name of a mark's place (cached; the world is deterministic): an NPC's name, an object's or landmark's, a door's. */
+export function placeLabel(place: string, at: { space: string; x: number; y: number }): string {
+  let n = names.get(place);
+  if (n !== undefined) return n;
+  if (place.startsWith('npc:')) n = npcDef(place as NpcId)?.name ?? '';
+  else if (/^(zone|area|region|vil):/.test(place)) n = '';
+  else {
+    const tx = Math.floor(at.x / TILE_SIZE), ty = Math.floor(at.y / TILE_SIZE);
+    // a landmark's rect can start in the next chunk; a piece inside an instance resolves to its door, so it takes the door's name
+    const near = objectsAround(at.space, tx, ty, 1), door = (x: WorldObject) => x.kind === 'door' && Math.abs(x.at[0] - tx) + Math.abs(x.at[1] - ty) < 4;
+    const o = near.find((x) => x.id === place) ?? near.find((x) => door(x) && x.props?.target === place) ?? near.find(door);
+    n = typeof o?.props?.name === 'string' ? o.props.name : typeof o?.props?.label === 'string' && o.kind === 'trigger' ? o.props.label : '';
+  }
+  names.set(place, n);
+  return n;
+}
+
 /** The open objectives, resolved; unresolvable ones are dropped (see unresolvedMarkers). Tracked first. */
 export function questMarks(npcAt?: NpcAt, here?: string): QuestMark[] {
   const out: QuestMark[] = [];
   for (const m of source()) {
     const at = resolvePlace(m.place, npcAt, here);
-    if (at) out.push({ key: `${m.quest}#${m.objective}#${m.place}`, place: m.place, ...at, tracked: m.tracked, side: m.side, label: m.label });
+    if (at) out.push({ key: `${m.quest}#${m.objective}#${m.place}`, place: m.place, ...at, tracked: m.tracked, side: m.side, label: m.label, name: m.tracked ? placeLabel(m.place, at) : '' });
   }
   return out.sort((a, b) => Number(b.tracked) - Number(a.tracked));
 }

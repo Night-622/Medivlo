@@ -16,6 +16,7 @@
  *   class-objects       class story objects: usable only in their own classes' campaigns (classObjects.ts)
  *   clearance           bodies fit their arenas, lair corridors and story markers (clearance.ts)
  *   smiths              every Runeforge within 30 tiles of a waystone; every capital and Concordia has one
+ *   labels              realm and Morvane map labels clear of markers and each other (mapLabels.ts)
  *   reach               a hero body reaches every objective place, NPC spot, chest and search object (reach.ts)
  *   loot                chests' Claude 3 loot tables resolve; every rare chest has one
  *   merchants           smiths, plus each capital's smith + trader and each frontier's pedlar by its village waystone,
@@ -119,6 +120,8 @@ if (check === 'unplaced') {
   await import('./classObjects'); // each class as host sees only its own story objects, and all of them
 } else if (check === 'clearance') {
   await import('./clearance'); // bosses, minis and packs fit their arenas, corridors and markers
+} else if (check === 'labels') {
+  await import('./mapLabels'); // map labels clear of markers and each other (MapScreen's placement, replayed)
 } else if (check === 'reach') {
   await import('./reach'); // a hero can get to every objective place, NPC, chest and search object
 } else if (check === 'loot') {

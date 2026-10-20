@@ -73,7 +73,7 @@ export const MORVANE_WAYSTONES: WaystoneDef[] = [
   { id: 'ws:glade', name: "Gloamwood Glade", space: 'concordia', region: 'region:gloam', at: [800, 368] },
   { id: 'ws:stag', name: "Stag’s Rest", space: 'concordia', region: 'region:gloam', at: [680, 472] },
   { id: 'ws:briar', name: "Briar Cottage", space: 'concordia', region: 'region:briar', at: [440, 528] },
-  { id: 'ws:abbey', name: "Abbey Shore", space: 'concordia', region: 'region:abbey', at: [1032, 472] },
+  { id: 'ws:abbey', name: 'Abbeyshore', space: 'concordia', region: 'region:abbey', at: [1032, 472] },
   { id: 'ws:frost', name: "Warden’s Gate", space: 'concordia', region: 'region:frost', at: [520, 280] },
   { id: 'ws:kiln', name: "Kiln Gate", space: 'concordia', region: 'region:ash', at: [328, 680] },
   { id: 'ws:marsh', name: "Lantern Ford", space: 'concordia', region: 'region:marsh', at: [1200, 856] },

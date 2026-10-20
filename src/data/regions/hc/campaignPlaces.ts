@@ -236,6 +236,7 @@ const FIST = [
 const RIME = [
   ...realmList('area:rime-capital', `
     zone-1: landmark:spire-stair-board # bounty board
+    zone-1: landmark:spire-stair-lamplighter @obj:frozen-lamplighter # Halla stands beside you here (the-first-tick, stage halla)
     zone-2: obj:rime-treaty-copy # under glass, deep stack
     zone-2: obj:market-price-ledger
     zone-2: obj:first-keeping @landmark:archive-oldest-vault

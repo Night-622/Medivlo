@@ -132,12 +132,20 @@ function near(h: PlacesHost, at: P2, w: number, hh: number, r0 = 0, inHeart = fa
 }
 
 /** A landmark rect with optional props scattered in it and an object at its centre. */
+/** Set-piece names as the quests call them (the id-derived names read "Camp", "Court", "Stairs Top") */
+const PIECE_NAMES: Record<string, string> = {
+  'landmark:stone-court': 'The Stone Court', 'landmark:barrow-door': 'The Barrow Door', 'landmark:berenika-shrine': 'Berenika’s Shrine',
+  'landmark:heart-camp': 'The Heart Camp', 'landmark:legion-camp': 'The Legion Camp', 'landmark:twelve-stairs': 'The Twelve Stairs',
+  'landmark:twelve-stairs-top': 'The Top of the Twelve Stairs', 'landmark:shore-boat': 'Aldous’s Boat', 'landmark:abbey-north-door': 'The Abbey’s North Door',
+  'landmark:brind-graveyard': 'Brindlecross Graveyard', 'landmark:road-bandit-camp': 'The Bandit Camp', 'landmark:brind-pip-home': 'Pip’s Home',
+};
+
 function setPiece(h: PlacesHost, id: string, at: P2, w: number, hh: number, props: [string, number, number][], obj?: { id: string; kind?: WorldObject['kind']; label: string; extra?: WorldObject['props'] }, pave = false, inHeart = false): P2 | null {
   const tl = near(h, at, w, hh, 0, inHeart);
   if (!tl) { console.warn(`[world] no room for ${id}`); return null; }
   const [x, y] = tl;
   h.keep([x, y, w, hh], pave);
-  const name = id.replace(/^landmark:[a-z]+-/, '').split('-').map((s) => s[0].toUpperCase() + s.slice(1)).join(' ');
+  const name = PIECE_NAMES[id] ?? id.replace(/^landmark:[a-z]+-/, '').split('-').map((s) => s[0].toUpperCase() + s.slice(1)).join(' ');
   h.obj({ id, kind: 'trigger', at: [x, y], size: [w, hh], props: { name, label: name, landmark: true } });
   for (const [art, dx, dy] of props) h.put({ art, x: (x + dx) * TILE_SIZE + 16, y: (y + dy) * TILE_SIZE + 28, key: `${id}:${art}:${dx},${dy}` });
   if (obj) h.obj({ id: obj.id, kind: obj.kind ?? 'interactable', at: [x + Math.floor(w / 2), y + hh - 1], props: { name, label: obj.label, ...obj.extra } });

@@ -26,8 +26,27 @@ export interface SetPieceHost {
   find?(id: string): P2 | null;
 }
 
-const title = (id: string) => id.replace(/^[a-z]+:/, '').split('-').filter((w) => !/^\d+$/.test(w))
-  .map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+/** words a title keeps lowercase after its first word ("Hall of Held Hours") */
+const SMALL = new Set(['of', 'the', 'and', 'a', 'an', 'in', 'on', 'at', 'to', 'by', 'for', 'under', 'over']);
+/**
+ * Ids lose apostrophes: the possessives as the quest text spells them (the commoner form where both occur), keyed by
+ * the word pair the id holds (Claude 2's map naming pass, scanning every quest and dialogue).
+ */
+const POSSESSIVE: Record<string, string> = {
+  'bowyers post': 'bowyers’', 'champions bridge': 'champion’s', 'cowards cairn': 'coward’s', 'cutters camp': 'cutters’',
+  'dancers stone': 'dancers’', 'elders yard': 'elders’', 'foscos bridge': 'fosco’s', 'gamekeepers lodge': 'gamekeeper’s',
+  'keepers hut': 'keepers’', 'keepers lodge': 'keepers’', 'liars fork': 'liar’s', 'lions gate': 'lion’s', 'poachers camp': 'poachers’',
+  'riders cairn': 'riders’', 'rills bridge': 'rill’s', 'ringers loft': 'ringers’', 'sals last': 'sal’s', 'sisters bridge': 'sisters’',
+  'sorrows laughing': 'sorrow’s', 'thieves exchange': 'thieves’', 'tuttles pawn': 'tuttle’s', 'twins cart': 'twins’', 'twins door': 'twins’',
+  'witchs belfry': 'witch’s',
+};
+const title = (id: string) => {
+  const w = id.replace(/^[a-z]+:/, '').split('-').filter((x) => !/^\d+$/.test(x));
+  return w.map((x, i) => {
+    const word = POSSESSIVE[`${x} ${w[i + 1] ?? ''}`] ?? x;
+    return i > 0 && SMALL.has(word) ? word : word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
+};
 
 /** Art for a set piece, by keyword (buildings take the realm recolour). */
 export function setPieceArt(id: string, school: string): string {

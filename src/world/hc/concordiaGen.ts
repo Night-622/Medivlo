@@ -111,7 +111,7 @@ export class ConcordiaGen implements SpaceGen {
     });
     this.waystones = [...moved, { id: 'ws:gate-circle', name: 'The Gate Circle', space: 'concordia', region: 'region:alder', at: [gx + 3, gy + 2] },
       // the old waystone outside the Weeping Wall that Sela wakes in Act III (Claude 4)
-      { id: 'ws:heart-camp', name: "The Bearers' Camp", space: 'concordia', region: this.regionAtMap(810 / data.scale, 274 / data.scale)?.id ?? 'region:heart', at: [810, 274] }];
+      { id: 'ws:heart-camp', name: 'The Heart Camp', space: 'concordia', region: this.regionAtMap(810 / data.scale, 274 / data.scale)?.id ?? 'region:heart', at: [810, 274] }];
     this.riverField = new DistanceField(this.widthTiles, this.heightTiles, segmentsOf(data.river));
     const ids: PaletteId[] = ['village', 'forest', 'rc:rime', 'rc:ash', 'rc:radiance', 'rc:storm', 'rc:umbral'];
     this.registry = new TileRegistry(ids.map((id) => paletteOf(id)));

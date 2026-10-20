@@ -320,7 +320,11 @@ export class MapScreen {
     }
     // merchants, then quest objectives on this level (labels keep off both); the player's dot stays on top
     for (const [x, y] of drawMerchants(this.scene, this.view, space, this.toScreen)) labels.block(x, y, 8);
-    for (const q of drawQuestMarks(this.scene, this.view, this.src.quests?.() ?? [], space, this.toScreen, this.focus)) labels.block(q.x, q.y, 9);
+    for (const q of drawQuestMarks(this.scene, this.view, this.src.quests?.() ?? [], space, this.toScreen, this.focus)) {
+      labels.block(q.x, q.y, 9);
+      // the tracked objective's place by name (most landmarks and people have no label of their own on the map)
+      if (q.mark.tracked && q.mark.name) names.push(() => labels.add(q.x, q.y, capFirst(q.mark.name), C.gold));
+    }
     if (this.src.space() === space) {
       const p = this.src.player();
       const [x, y] = this.toScreen(p.x / TILE, p.y / TILE);

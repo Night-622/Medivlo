@@ -148,6 +148,15 @@ Design: docs/world/HOLLOW-CROWN-WORLD.md. Pure code in src/world/hc (shared with
   - The map's village close-up draws the merchants and quest marks standing in that village.
   - Inside an instance, the marker index warms the instance's outside space first.
   - Browser-checked: 3 merchant coins at Glacierhome, the close-up shows the smithy anvil and the market coin, no page errors. WorldV2Scene.ts (379) and MapScreen.ts (385) trimmed under 400 (WorldHud.ts, markerGlyphs.ts)
+- [x] **Map naming and label pass:**
+  - New `checks.ts labels` (in the suite, 10 checks): MapScreen's label placement replayed in Node for 12 realms and Morvane. 198 labels, 0 overlaps; Morvane's dense clusters were fixed with more label spots.
+  - Waystones renamed to match the quest text: ws:heart-camp is "The Heart Camp" (×204 in text), ws:abbey is "Abbeyshore" (×58).
+  - Realm landmark names derived from ids keep small words lowercase and follow the text's possessives (24, e.g. "Keepers’ Lodge").
+  - Concordia set pieces have their quest names ("The Legion Camp", "The Stone Court", …).
+  - 19 names use ’.
+  - The tracked quest's mark is labelled with its place's name on the map; all non-zone objective places have one.
+  - landmark:spire-stair-lamplighter added for Claude 4 (Halla at the lamplighter in I-1).
+  - Browser: 13 maps drawn with every optional area found, no page errors.
 - [ ] Next: user world reports via Claude 1
 - Dev: `?scene=WorldV2&space=<space>&tp=tx,ty&zoom=0.5&hour=22&fly=1&hc_class=<class>`. Console: `__world.where() / tp(tx,ty) / space(id) / focus() / press() / hour(h)`
 

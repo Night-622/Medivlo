@@ -9,12 +9,12 @@ export const AREAS: AreaDef[] = [
     id: 'area:ash-capital', school: 'ash', side: 'capital', title: "Kilnhold", className: "Arcanist",
     zones: [
       { name: "Kiln Ward", theme: "lower streets of soot-brick and chimney-pots; permit queues, glowing gutters" },
-      { name: "Glassblowers' Row", theme: "bright workshops, a coloured-glass market, apprentices with singed eyebrows" },
+      { name: 'Glassblowers’ Row', theme: "bright workshops, a coloured-glass market, apprentices with singed eyebrows" },
       { name: "the Smoke Terraces", theme: "stepped rooftops wreathed in smoke; Conclave towers and the old observatories" },
       { name: "the Kiln Roots", theme: "flues and tunnels under the city that feed the Great Kiln; Lava Slimes and Kiln Golems" },
     ],
     lairs: [
-      { name: "the Zealots' Furnace", theme: "a chapel turned furnace, run by the Ashen Zealot" },
+      { name: 'the Zealots’ Furnace', theme: "a chapel turned furnace, run by the Ashen Zealot" },
       { name: "the Glass Archive", theme: "a burning library, held by the Ledger Flame: a fire-spirit made of thirty years of burned records" },
       { name: "the Heart of the Kiln", theme: "the Great Kiln's core, where the Kiln half-stone glows; nemesis I" },
     ],
@@ -56,7 +56,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Jarlsfell", theme: "the outlands beyond the wall: frozen steadings, starving clans" },
     ],
     lairs: [
-      { name: "the Jarl's Longhall", theme: "the Frostbound Jarl's hall in the Jarlsfell" },
+      { name: 'the Jarl’s Longhall', theme: "the Frostbound Jarl's hall in the Jarlsfell" },
       { name: "the Wraith Barrows", theme: "Warden burial mounds, held by the Hundredth Warden: the wall's founder, hollow and still on watch" },
       { name: "the Breach", theme: "the broken section of the Wardwall, holding the Wall half-stone; nemesis I" },
     ],
@@ -70,7 +70,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Tower Foundations", theme: "under the Lightning Tower: copper roots, static, Static Wisps" },
     ],
     lairs: [
-      { name: "the Witch's Belfry", theme: "an abandoned bell-tower the Tempest Witch rings to call the storm" },
+      { name: 'the Witch’s Belfry', theme: "an abandoned bell-tower the Tempest Witch rings to call the storm" },
       { name: "the Grand Patent Vault", theme: "the guild's vault of forbidden inventions, held by the Perpetual Engine Mk. XII, which has refused to stop" },
       { name: "the Tower Crown", theme: "the top of the Lightning Tower, holding the Tower half-stone; nemesis I" },
     ],
@@ -84,7 +84,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Eyrie Steps", theme: "cliff stairs up to the Thunderbird nests" },
     ],
     lairs: [
-      { name: "the Ram King's Crag", theme: "the Storm Ram's crag, where the herd-king fights for the herd" },
+      { name: 'the Ram King’s Crag', theme: "the Storm Ram's crag, where the herd-king fights for the herd" },
       { name: "the Thunderbird Aerie", theme: "the nest of Old Clatterwing, a hollowed Thunderbird matriarch" },
       { name: "the Eye of the Storm", theme: "the still, silent centre of the storm, holding the Eye half-stone; nemesis I" },
     ],
@@ -112,7 +112,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Dimming", theme: "where the light fails: the first night in thirty years, and terrified villagers" },
     ],
     lairs: [
-      { name: "the Lion's Gate", theme: "an old gatehouse, den of the Gilded Lion" },
+      { name: 'the Lion’s Gate', theme: "an old gatehouse, den of the Gilded Lion" },
       { name: "the Forsworn Chapel", theme: "a ruined Oathbound chapel, held by Ser Gallant the Forsworn, a knight who broke his oath and cannot die" },
       { name: "the Dimming Shrine", theme: "the shrine at the centre of the Dimming, holding the March half-stone; nemesis I" },
     ],
@@ -128,7 +128,7 @@ export const AREAS: AreaDef[] = [
     lairs: [
       { name: "the Cult Undercroft", theme: "the Duskblade Cult's den beneath a forgotten temple" },
       { name: "the Hall of Lost Names", theme: "a hall papered in forgotten names, held by the Unremembered: a creature made of everyone Nocturne forgot" },
-      { name: "the Obelisk's Shadow", theme: "the shadow-side of the Moon Obelisk, holding the Obelisk half-stone; nemesis I" },
+      { name: 'the Obelisk’s Shadow', theme: "the shadow-side of the Moon Obelisk, holding the Obelisk half-stone; nemesis I" },
     ],
   },
   {
@@ -140,7 +140,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Stalker Moors", theme: "purple moorland above the warrens, where Moon Stalkers hunt" },
     ],
     lairs: [
-      { name: "the Stalker's Den", theme: "the Moon Stalker's hollow on the moor" },
+      { name: 'the Stalker’s Den', theme: "the Moon Stalker's hollow on the moor" },
       { name: "the Brood Spire", theme: "a silk tower, home of Mother Hushweb, a vast Night Spider who eats sound" },
       { name: "the Veil Heart", theme: "the deepest chamber of the warrens, holding the Veil half-stone; nemesis I" },
     ],
@@ -162,7 +162,7 @@ export const AREAS: AreaDef[] = [
   {
     id: 'area:verdant-frontier', school: 'verdant', side: 'frontier', title: "the Thornwilds", className: "Ranger",
     zones: [
-      { name: "Wayfarer's Rest", theme: "the Rangers' tree-camp at the edge of the wilds" },
+      { name: 'Wayfarer’s Rest', theme: "the Rangers' tree-camp at the edge of the wilds" },
       { name: "the Thornwilds", theme: "dense bramble forest; trails that move overnight" },
       { name: "the Bloomfen", theme: "a flowering marsh; Bloomtraps disguised as lilies" },
       { name: "the Rotwood", theme: "grey, blighted forest where the tears soaked in" },
@@ -182,7 +182,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Old Armoury", theme: "the city's ancient armoury, crawling with Training Automatons" },
     ],
     lairs: [
-      { name: "the Saint's Tomb", theme: "the crypt of the Sword Saint, who has not stopped duelling" },
+      { name: 'the Saint’s Tomb', theme: "the crypt of the Sword Saint, who has not stopped duelling" },
       { name: "the Grand Salle", theme: "the oldest salle, held by the Perfect Parry: a fencing automaton that has never been touched" },
       { name: "the Fencing Hall", theme: "the realm's landmark, holding the Hall half-stone; nemesis I" },
     ],
@@ -207,7 +207,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Anvilgate Wards", theme: "walls within walls; gate-tolls between every street" },
       { name: "the Tilt Yard", theme: "jousting lists, squires, heraldry, a great deal of shouting" },
       { name: "the Fortress Forge", theme: "the vast forge-halls building the Colossus; sparks and slag" },
-      { name: "Berenika's Wall", theme: "the \"Wall of Shame\" built after the Hollowing, now cracking; Iron Sentries" },
+      { name: 'Berenika’s Wall', theme: "the \"Wall of Shame\" built after the Hollowing, now cracking; Iron Sentries" },
     ],
     lairs: [
       { name: "the Barrow of Knights", theme: "crypts of the Order, where the Iron Revenant still keeps vigil" },
@@ -266,7 +266,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Old Snares", theme: "the deep forest, strung with poachers' traps; Giant Ticks" },
     ],
     lairs: [
-      { name: "the Poachers' Camp", theme: "the Poacher Chief's camp" },
+      { name: 'the Poachers’ Camp', theme: "the Poacher Chief's camp" },
       { name: "the Tick Hollows", theme: "a rotten hollow, home of the Swollen Queen, a tick fat on hollow blood" },
       { name: "the Trophy Hall", theme: "a baron's trophy hall, holding the Lodge half-stone; nemesis I" },
     ],
@@ -282,7 +282,7 @@ export const AREAS: AreaDef[] = [
     lairs: [
       { name: "the Bear Cave", theme: "the Alpha Bear's den" },
       { name: "the Hollow Eyrie", theme: "the nest of Grandmother Talon, the eldest great hawk, hollowed" },
-      { name: "the Moor's Crown", theme: "a stone ring on the highest hill, holding the Moor half-stone; nemesis I" },
+      { name: 'the Moor’s Crown', theme: "a stone ring on the highest hill, holding the Moor half-stone; nemesis I" },
     ],
   },
   {
@@ -304,11 +304,11 @@ export const AREAS: AreaDef[] = [
     zones: [
       { name: "the Brine Market", theme: "a floating market of lashed-together ships" },
       { name: "Gallows Reef", theme: "the reef islands and their gibbets, home port of the Brine Fleet" },
-      { name: "the Wreckers' Coves", theme: "sea-caves where wreckers lure ships with lanterns" },
+      { name: 'the Wreckers’ Coves', theme: "sea-caves where wreckers lure ships with lanterns" },
       { name: "the Crow Islands", theme: "rocky isles thick with Thief Crows and pirate hoards" },
     ],
     lairs: [
-      { name: "Vex's Guildhold", theme: "Guildmaster Vex's sea-fort" },
+      { name: 'Vex’s Guildhold', theme: "Guildmaster Vex's sea-fort" },
       { name: "the Wreck of the Merry Widow", theme: "a ghost ship held by Captain Nobody, who signed away his name" },
       { name: "the Gallows", theme: "the great gibbet-rock at the reef's heart, holding the Reef half-stone; nemesis I" },
     ],
@@ -319,7 +319,7 @@ export const AREAS: AreaDef[] = [
       { name: "the Opera Quarter", theme: "grand lilac streets around the silent Opera; buskers with no tunes left" },
       { name: "the Busking Steps", theme: "the stair-streets where music is still allowed; a turf war over the last good songs" },
       { name: "the Conservatory", theme: "the music school, its practice rooms going quiet" },
-      { name: "the Prompter's Cellars", theme: "the tunnels beneath the Opera; Siren Wisps" },
+      { name: 'the Prompter’s Cellars', theme: "the tunnels beneath the Opera; Siren Wisps" },
     ],
     lairs: [
       { name: "the Choir Loft", theme: "the Opera's loft, haunted by the Choir Phantom" },
