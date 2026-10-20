@@ -33,7 +33,7 @@ export type { CampaignInfo } from './classes';
 export { getRep, changeRep, repTier, rankTitle, syncAllRepFlags, PRICE_BY_TIER } from './reputation';
 export { validateContent } from './validate';
 export { availableBanter, playBanter } from './banter';
-export { npcDef, npcsAt, npcLandmark, npcPlacements, isPresent, talkTo, bark, npcMet, npcQuestState, npcQuestInfo } from './npcs';
+export { npcDef, npcsAt, npcLandmark, npcPlacements, isPresent, talkTo, bark, npcMet, npcQuestInfo } from './npcs';
 
 let installed = false;
 

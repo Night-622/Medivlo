@@ -129,10 +129,6 @@ export function npcMet(id: NpcId): boolean {
  * The NPC's quest state for the card: 'active' when one of their quests is running (or a running quest's current
  * stage wants you to talk to them), 'offer' when they give a quest you could start now, else null.
  */
-export function npcQuestState(id: NpcId): 'offer' | 'active' | null {
-  return npcQuestInfo(id)?.state ?? null;
-}
-
 export function npcQuestInfo(id: NpcId): { state: 'offer' | 'active'; quest: QuestDef } | null {
   for (const q of activeQuests()) {
     if (q.giver === id) return { state: 'active', quest: q };

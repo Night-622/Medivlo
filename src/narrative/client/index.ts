@@ -34,9 +34,9 @@ export function installNarrativeClient(game: Phaser.Game): void {
   setLocalFormatter((text) => interpolate(formatKeys(text)));
   installTutorial();
   game.scene.add(NARRATIVE_UI_KEY, NarrativeUiScene, false);
-  // mount on whichever HUD runs (HudV2 is the handoff HUD; the v1 Hud stays until it is retired)
+  // mount on the HUD (HudV2; the v1 Hud scene is retired)
   let mounted = 0;
-  for (const key of [SceneKeys.HudV2, SceneKeys.Hud]) {
+  for (const key of [SceneKeys.HudV2]) {
     const hud = game.scene.getScene(key) as (Phaser.Scene & { anchors?: Record<string, Phaser.GameObjects.Container> }) | null;
     if (!hud) continue;
     mounted++;
