@@ -6,6 +6,8 @@
  * player when it wins < 2 of 3 fights, or takes > 2× the reference time, or > 300 s.
  *   node tools/e2e/sim/run.mjs boss-check [classId…]      → tools/e2e/out/boss-check.md
  *   SEEDS=n gear-curve kits per level (default 3) · FIGHTS=n fight seeds per kit (default 2)
+ *   node tools/e2e/sim/run.mjs boss-check gate   pre-deploy gate: every boss won at typical gear, 0 deaths, every win
+ *     ≤ 300 s (or its documented allowance in ALLOW), no crash; "N/M passed", exit code 1 on a failure
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { CLASS_SCHOOL } from '@/core/constants';
@@ -13,14 +15,23 @@ import type { CharacterSave } from '@/systems/rules/types';
 import { runFight, type FightResult } from './builds-fight';
 import { seedOf, typicalBuild } from './builds-make';
 import { bossFor, LEVELS, type Level } from './builds-run';
+
+const BOSS_SLOT_NAME: Record<number, string> = { 8: 'lair-2', 14: 'nemesis', 34: 'Act III' };
+import { check, tally } from './features-harness';
 import { gearScore } from './gear-curve-model';
 import { questsOf, runClass } from './gear-curve-walk';
 
 const SEEDS = Number(process.env.SEEDS) || 3;
 const FIGHTS = Number(process.env.FIGHTS) || 2;
-const args = process.argv.slice(3);
+const GATE = process.argv.slice(3).includes('gate');
+const args = process.argv.slice(3).filter((a) => a !== 'gate');
 const CLASSES = args.length ? args : Object.keys(CLASS_SCHOOL);
 const WALL_SECS = 300;
+/** documented per-boss time allowances for the gate ('<class>:<level>' → seconds), each with its reason (the healer's
+ * Herald of Noon needs none: ~204 s) */
+const ALLOW: Record<string, { secs: number; why: string }> = {
+  'warden:14': { secs: 360, why: 'Torvald Wallbreaker vs the tank warden: mean ~281 s after Claude 3’s ×0.7 HP, slowest seed ~324 s (2026-10-21)' },
+};
 
 interface Cell { cls: string; L: Level; boss: string; ref: FightResult; refScore: number; fights: FightResult[]; scores: number[]; ilvl: number[] }
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length);
@@ -45,7 +56,7 @@ for (const cls of CLASSES) {
     }
     cells.push(c);
     const won = c.fights.filter((x) => x.won);
-    console.log(`${cls.padEnd(12)} L${String(L).padEnd(2)} ${c.boss.slice(0, 28).padEnd(28)} won ${won.length}/${c.fights.length} · TTK ${mean(won.map((x) => x.secs)).toFixed(0)}s (ref ${c.ref.won ? c.ref.secs.toFixed(0) + 's' : 'lost'}) · deaths ${mean(c.fights.map((x) => x.deaths)).toFixed(1)} · gear ${((mean(c.scores) / c.refScore - 1) * 100).toFixed(0)}% vs ref`);
+    if (!GATE) console.log(`${cls.padEnd(12)} L${String(L).padEnd(2)} ${c.boss.slice(0, 28).padEnd(28)} won ${won.length}/${c.fights.length} · TTK ${mean(won.map((x) => x.secs)).toFixed(0)}s (ref ${c.ref.won ? c.ref.secs.toFixed(0) + 's' : 'lost'}) · deaths ${mean(c.fights.map((x) => x.deaths)).toFixed(1)} · gear ${((mean(c.scores) / c.refScore - 1) * 100).toFixed(0)}% vs ref`);
   }
 }
 
@@ -73,3 +84,20 @@ for (const L of LEVELS) {
 mkdirSync('tools/e2e/out', { recursive: true });
 writeFileSync('tools/e2e/out/boss-check.md', md.join('\n'));
 console.log(`${walls.length} walls · report tools/e2e/out/boss-check.md · run time ${((Date.now() - t0) / 1000).toFixed(1)} s`);
+
+// ───────────── gate ─────────────
+if (GATE) {
+  const all = cells.flatMap((c) => [c.ref, ...c.fights]);
+  const crashes = all.filter((r) => r.crash);
+  check(!crashes.length, `no crash in ${all.length} boss fights`, crashes.slice(0, 2).map((r) => r.crash).join(' || '));
+  for (const L of LEVELS) {
+    const cs = cells.filter((c) => c.L === L), lost = cs.filter((c) => c.fights.some((x) => !x.won)), died = cs.filter((c) => c.fights.some((x) => x.deaths > 0));
+    check(!lost.length, `L${L} bosses (${BOSS_SLOT_NAME[L]}): every fight won at typical gear (${cs.length} classes)`, lost.map((c) => `${c.cls} ${c.boss}`).join(', '));
+    check(!died.length, `L${L} bosses: 0 deaths`, died.map((c) => `${c.cls} ${c.boss}`).join(', '));
+    const slow = cs.map((c) => ({ c, t: Math.max(0, ...c.fights.filter((x) => x.won).map((x) => x.secs)), cap: ALLOW[`${c.cls}:${c.L}`]?.secs ?? WALL_SECS })).filter((x) => x.t > x.cap);
+    check(!slow.length, `L${L} bosses: every win ≤ ${WALL_SECS} s (or its allowance)`, slow.map((x) => `${x.c.cls} ${x.c.boss} ${x.t} s > ${x.cap} s`).join(', '));
+  }
+  const { checks, fails } = tally();
+  if (fails) process.exitCode = 1;
+  console.log(`${checks - fails}/${checks} passed`);
+}
