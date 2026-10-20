@@ -78,7 +78,8 @@ export interface GameEvents {
   'party:wiped': { waystone: string };
   'pvp:kill': { killer: string; victim: string; gold: number };
   /** authority's grant; the owning client applies it to its character and saves */
-  'loot:granted': { playerId: string; item?: string; qty?: number; gold?: number; xp?: number; /** exact instance for the owning client to add */ instance?: HcItemInstance };
+  'loot:granted': { playerId: string; item?: string; qty?: number; gold?: number; xp?: number; /** exact instance for the owning client to add */ instance?: HcItemInstance;
+    /** the authority's rune slots and tome spell after a rune/tome act, for the owning client's save */ runes?: Record<string, string[]>; tomeSpell?: string };
   'status:changed': { entityId: string; status: string; stacks: number; ms: number };
   /** a party member's vote on a dialogue choice (for UI) */
   'vote:cast': { voteId: string; playerId: string; choice: number };

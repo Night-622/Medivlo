@@ -79,7 +79,7 @@ function spellsBranch(classId: string, school: SchoolId): BranchSpec {
   return {
     root: { ...one(`${c.name} Spellcraft`, si, 'Your path into magic. Every spell grows from here.', {}), free: true },
     paths,
-    bridge: one('Spell Weaving', si, '+6% spell damage and +6% cast speed', { mods: [f('spellDmg', 0.06), f('castSpeed', 0.06)] }),
+    bridge: one('Spell Weaving', si, '+6% spell damage, +6% cast speed and +3% damage', { mods: [f('spellDmg', 0.06), f('castSpeed', 0.06), f('dmg', 0.03)] }),
     tops: [top(0), top(1)],
     ult: one(SP[2][0], si, SP[2][1], {}, `spell:${slug(SP[2][0])}`),
     labels: { root: 'Path root', major: 'Spell', minor: 'Minor node', choice: 'Variant · pick one of two', top: 'New school spell', ult: 'Ultimate spell' },
@@ -88,7 +88,7 @@ function spellsBranch(classId: string, school: SchoolId): BranchSpec {
 
 // ───────────── Skills branch ─────────────
 function elementNode(school: SchoolId): Spec {
-  const [name, desc] = HC_SCHOOL_ELEMENT[school];
+  const [name] = HC_SCHOOL_ELEMENT[school];
   const fx = (r: number): Passive => {
     switch (school) {
       case 'ash': return { hooks: [{ id: 'burnPower', value: 0.3 * r }] };
@@ -105,7 +105,14 @@ function elementNode(school: SchoolId): Spec {
       case 'song': return { mods: [f('buffPower', 0.1 * r)] };
     }
   };
-  return ranks(name, `school_${school}`, 3, (r) => `${desc} × ${r}`, fx);
+  // the real value at each rank, not "<handoff line> × r"
+  const TEXT: Record<SchoolId, (r: number) => string> = {
+    ash: (r) => `Burns deal +${30 * r}% damage.`, rime: (r) => `Slows are +${15 * r}% stronger.`, storm: (r) => `Chains jump to ${r} more foe${r > 1 ? 's' : ''}.`,
+    radiance: (r) => `+${10 * r}% healing done.`, umbral: (r) => `+${3 * r}% life steal.`, verdant: (r) => `Roots last ${0.5 * r} s longer.`,
+    blade: (r) => `+${10 * r}% crit damage.`, iron: (r) => `+${5 * r}% block chance.`, fist: (r) => `+${r} max Momentum.`,
+    hunt: (r) => `+${8 * r}% damage to marked foes.`, guile: (r) => `+${10 * r}% Embershards found.`, song: (r) => `Your buffs are ${10 * r}% stronger.`,
+  };
+  return ranks(name, `school_${school}`, 3, TEXT[school], fx);
 }
 
 function keystone(school: SchoolId, i: 0 | 1): Spec {
@@ -153,7 +160,7 @@ function skillsBranch(school: SchoolId): BranchSpec {
   return {
     root: { ...one(`${S} Discipline`, si, 'The core of your school. Grow outward into offence, defence and utility.', {}), free: true },
     paths: [
-      { a: ranks(`${S} Attunement`, si, 5, (r) => `+${r * 3}% ${S} damage`, (r) => ({ mods: [f(dk, 0.03 * r)] })),
+      { a: ranks(`${S} Attunement`, si, 5, (r) => `+${r * 3}% ${S} damage and +${r}% damage`, (r) => ({ mods: [f(dk, 0.03 * r), f('dmg', 0.01 * r)] })),
         m1: one('Set Mastery', 'icon_robe', 'Attuned armour bonuses are 25% stronger; +3% damage.', { hooks: [{ id: 'setMastery', value: 0.25 }], mods: [f('dmg', 0.03)] }),
         m2: one('Keen Eye', 'icon_dagger', '+3% crit chance and +10% crit damage', { mods: [f('crit', 0.03), f('critd', 0.1)] }),
         b: elementNode(school),
@@ -163,8 +170,8 @@ function skillsBranch(school: SchoolId): BranchSpec {
         m2: one('+5% max health', 'icon_potion_red', '+5% max health', { mods: [pct('hp', 0.05)] }),
         b: perk(P[2], si, 'School perk'),
         c1: perk(P[3], si, pick), c2: perk(P[4], si, pick) },
-      { a: ranks('Focus', 'icon_potion_ember', 5, (r) => `+${r * 10} max Ember; +${(r * 1.5).toFixed(1)}% spell damage while above half Ember`, (r) => ({ mods: [f('ember', 10 * r), f('spellDmg', 0.015 * r, { c: 'emberAbove', pct: 0.5 })] })),
-        m1: one('Deep Well', 'icon_potion_ember', '+0.6 Ember regen per second; spells cost 3% less', { mods: [f('emberRegen', 0.6), f('emberCost', -0.03)] }),
+      { a: ranks('Focus', 'icon_potion_ember', 5, (r) => `+${r * 10} max Ember; +${r * 3}% spell damage`, (r) => ({ mods: [f('ember', 10 * r), f('spellDmg', 0.03 * r)] })),
+        m1: one('Deep Well', 'icon_potion_ember', '+0.6 Ember regen per second; spells cost 3% less; 3% shorter cooldowns', { mods: [f('emberRegen', 0.6), f('emberCost', -0.03), f('cdr', 0.03)] }),
         m2: one('Quick Hands', 'icon_staff', '6% shorter cooldowns; +0.3 Ember regen', { mods: [f('cdr', 0.06), f('emberRegen', 0.3)] }),
         b: perk(P[5], si, 'School perk'),
         c1: perk(P[6], si, pick), c2: perk(P[7], si, pick) },
@@ -194,7 +201,7 @@ function upgradesBranch(classId: string): BranchSpec {
         b: ranks('Fleet Foot', 'icon_boots', 3, (r) => `+${r * 3}% move speed`, (r) => ({ mods: [f('moveSpeed', 0.03 * r)] })),
         c1: ks(0, one('Extra Dash', 'school_storm', '+1 dash charge.', { mods: [f('dashCharges', 1)] })),
         c2: one('Sure Footed', 'icon_boots', '+1 dash charge, and you can’t be slowed while dashing.', { mods: [f('dashCharges', 1)], hooks: [{ id: 'dashNoSlow' }] }) },
-      { a: ranks('Ember Reserve', 'icon_potion_ember', 5, (r) => `+${r * 15} max Ember; +${r}% spell damage while above half Ember`, (r) => ({ mods: [f('ember', 15 * r), f('spellDmg', 0.01 * r, { c: 'emberAbove', pct: 0.5 })] })),
+      { a: ranks('Ember Reserve', 'icon_potion_ember', 5, (r) => `+${r * 15} max Ember; +${r * 2}% spell damage`, (r) => ({ mods: [f('ember', 15 * r), f('spellDmg', 0.02 * r)] })),
         m1: one('+3 bag slots', 'icon_robe', '+3 bag slots', { mods: [f('bag', 3)] }),
         m2: one('+5% potion healing', 'icon_potion_red', '+5% potion healing', { mods: [f('potionHeal', 0.05)] }),
         b: ranks('Deep Pockets', 'icon_robe', 3, (r) => `+${r * 6} bag slots`, (r) => ({ mods: [f('bag', 6 * r)] })),

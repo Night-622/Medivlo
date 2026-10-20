@@ -98,6 +98,7 @@ export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Recor
     pay(w, p, c.gold);
     spend(w, p, INGOT, c.ingots);
     it.upgrade = c.to;
+    w.emit('item:crafted', { recipe: 'recipe:upgrade', uid: it.uid }); // quests and hints (Claude 4's Act I smith quest)
     changed(w, p, it, worn);
     return null;
   }

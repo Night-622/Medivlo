@@ -8,7 +8,8 @@ import { HC_PIECES } from '@/data/items/hc/armour.gen';
 import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { shopByNpc, type HcShopDef } from '@/data/items/hc/shops';
 import { P, unlockLevel, xpToNext } from '@/systems/rules/curves';
-import { itemInfo, materialIndex, styleIndex } from '@/systems/rules/gear';
+import { itemInfo, materialIndex, sellValue, styleIndex } from '@/systems/rules/gear';
+import type { ItemInstance } from '@/systems/rules/types';
 import { hook } from '@/systems/rules/stats';
 import { grantXp } from './death';
 import { grantItem, grantOrDrop } from './loot';
@@ -51,11 +52,12 @@ export function shopStock(shop: HcShopDef, p: { classId: string; level: number; 
   return out;
 }
 
-export const sellPrice = (base: string, ilvl: number): number => {
-  const info = itemInfo(base);
-  if (!info || info.questItem) return 0;
-  return Math.max(1, Math.round((info.value / 4) * (info.slot ? gearScale(ilvl) : 1)));
-};
+/** What a merchant pays for one: base value / 4, scaled by item level, rolled rarity and upgrades (rules/gear sellValue). */
+export const sellPrice = (it: Pick<ItemInstance, 'base' | 'ilvl' | 'rarity' | 'upgrade'>): number => sellValue(it);
+
+
+
+
 
 export function buysItem(shop: HcShopDef, base: string): boolean {
   const info = itemInfo(base);
@@ -88,7 +90,7 @@ export function sell(w: SimWorld, p: PlayerEnt, shopId: string, uid: string): st
   if (!shop || !it) return 'Nothing to sell.';
   if (!nearNpc(w, p, shop.npc)) return 'Walk over to the merchant first.';
   if (!buysItem(shop, it.base)) return `${shop.name} doesn’t buy that.`;
-  const price = sellPrice(it.base, it.ilvl) * it.qty;
+  const price = sellPrice(it) * it.qty;
   p.save.inventory.splice(p.save.inventory.indexOf(it), 1);
   for (let i = 0; i < it.qty; i++) w.emit('item:used', { playerId: p.playerId, uid, def: it.base as never });
   p.save.gold += price;

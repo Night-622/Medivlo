@@ -64,7 +64,8 @@ export function itemInfo(id: string): ItemInfo | undefined {
   const w = WEAPON.get(id);
   if (w) return { id, name: w.name, kind: 'weapon', rarity: w.rarity, value: w.value, slot: 'weapon', weaponType: w.type, stackable: false, questItem: false };
   const p = PIECE.get(id);
-  if (p) return { id, name: p.name, kind: 'armour', rarity: p.rarity, value: p.value, slot: p.slot, stackable: false, questItem: false };
+  // the handoff named pieces <set name> + <piece noun>, and the set name already ends in the style: "… Robes Robes" → "… Robes"
+  if (p) return { id, name: p.name.replace(/\b(\w+) \1\b/, '$1'), kind: 'armour', rarity: p.rarity, value: p.value, slot: p.slot, stackable: false, questItem: false };
   const l = LEG.get(id);
   if (l) {
     const base = WEAPON.get(l.base);
@@ -183,6 +184,9 @@ export function itemMods(it: ItemInstance): Modifier[] {
   const lg = LEG.get(it.base);
   const trinketId = lg && lg.slot !== 'main' ? lg.base : statBase(it.base);
   if (TRINKET[trinketId]) out.push(...TRINKET[trinketId](L).map((m) => (lg ? { ...m, value: m.value * 1.5 } : m)));
+  // staves and wands carry spell power (40% of their average hit), so a caster's weapon upgrade shows in its spells
+  const wb = weaponBase(it.base);
+  if (wb && (wb.type === 'staff' || wb.type === 'wand')) { const [a, b] = weaponDamage(it.base, L); out.push(f('sp', ((a + b) / 2) * 0.4)); }
   // Runeforge upgrade +n: +8% base stats per level (BUILDS.md §6)
   const up = 1 + 0.08 * upgradeOf(it);
   const based = up === 1 ? out : out.map((m) => ({ ...m, value: m.value * up }));
@@ -339,4 +343,19 @@ export function itemWeaponDamage(it: Pick<ItemInstance, 'base' | 'ilvl' | 'upgra
   const up = 1 + 0.08 * upgradeOf(it);
   const [a, b] = weaponDamage(it.base, it.ilvl);
   return up === 1 ? [a, b] : [Math.round(a * up), Math.round(b * up)];
+}
+
+/** A piece's worth beyond its base value: rolled rarity (×1–4) and Runeforge upgrades (+25% each). Shops and tooltips. */
+export function worthMult(it: Pick<ItemInstance, 'base' | 'rarity' | 'upgrade'>): number {
+  const base = itemInfo(it.base);
+  if (!base?.slot || !it.rarity) return 1 + 0.25 * upgradeOf(it);
+  const lift = [1, 1.3, 1.7, 2.3, 3, 4][rarityIndex(it.rarity as Rarity)] / [1, 1.3, 1.7, 2.3, 3, 4][rarityIndex(base.rarity)];
+  return Math.max(0.5, lift) * (1 + 0.25 * upgradeOf(it));
+}
+
+/** A merchant's price for one (tooltips and the shop agree): base value / 4, item level, rarity and upgrades. */
+export function sellValue(it: Pick<ItemInstance, 'base' | 'ilvl' | 'rarity' | 'upgrade'>): number {
+  const info = itemInfo(it.base);
+  if (!info || info.questItem) return 0;
+  return Math.max(1, Math.round((info.value / 4) * (info.slot ? Math.pow(P(it.ilvl), 0.6) : 1) * worthMult(it)));
 }

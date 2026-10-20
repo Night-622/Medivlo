@@ -83,10 +83,10 @@ function shops(): void {
   const ing = p.save.inventory.find((x) => x.base === 'i_ingot')!;
   g = p.save.gold;
   act(w, 'sell', { shop: 'npc:odo', uid: ing.uid });
-  check(p.save.gold === g + sellPrice('i_ingot', 1) * 3 && !qty(p, 'i_ingot'), `sell 3 ingots: ${sellPrice('i_ingot', 1)} each`);
+  check(p.save.gold === g + sellPrice({ base: 'i_ingot', ilvl: 1 }) * 3 && !qty(p, 'i_ingot'), `sell 3 ingots: ${sellPrice({ base: 'i_ingot', ilvl: 1 })} each`);
   g = p.save.gold;
   act(w, 'sell', { shop: 'npc:odo', uid: bought!.uid });
-  check(p.save.gold === g + sellPrice(line.item, 10) && sellPrice(line.item, 20) > sellPrice(line.item, 1), `sell the L10 piece back for ${sellPrice(line.item, 10)} (gear sells by item level)`);
+  check(p.save.gold === g + sellPrice({ base: line.item, ilvl: 10 }) && sellPrice({ base: line.item, ilvl: 20 }) > sellPrice({ base: line.item, ilvl: 1 }), `sell the L10 piece back for ${sellPrice({ base: line.item, ilvl: 10 })} (gear sells by item level)`);
   const relic = HC_ITEMS.find((i) => i.cat === 'relic')!;
   w.sim.questReward({ playerId: 'a', hcItems: [{ item: relic.id }] });
   const r = p.save.inventory.find((x) => x.base === relic.id)!;

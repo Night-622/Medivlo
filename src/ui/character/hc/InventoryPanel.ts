@@ -13,6 +13,7 @@ import { kitFor } from '@/data/classes/hc/kits';
 import { campaignItem } from '@/data/items/hc/campaign-items';
 import { borrowedIcon, itemInfo, itemWeaponDamage, legendary, slotsFor, weaponDamage } from '@/systems/rules/gear';
 import { compileStats } from '@/systems/rules/playerStats';
+import { itemRarity } from '@/systems/rules/affixes';
 import { compareLines, fmtStat, itemTooltip, statLabel } from '@/systems/rules/describeHc';
 import { xpToNext } from '@/systems/rules/curves';
 import type { GearSlot, ItemInstance } from '@/systems/rules/types';
@@ -65,7 +66,7 @@ export class InventoryPanel {
     for (const [gs, x, y, label] of EQUIP) {
       const it = ch.equipment[gs];
       const info = it ? itemInfo(it.base) : undefined;
-      const fr = slot(s, x, y, 56, (info?.rarity as never) ?? 'empty');
+      const fr = slot(s, x, y, 56, it && info ? itemRarity(it) as never : 'empty');
       this.c.add(fr);
       if (it) this.icon(it, x, y);
       else this.c.add(s.add.text(x + 28, y + 28, label, typeStyle('badge', C.text500, 52)).setOrigin(0.5).setAlign('center'));
@@ -92,7 +93,7 @@ export class InventoryPanel {
     this.c.add(s.add.text(504, 100, 'Pack', typeStyle('h2', C.text)));
     const cap = Math.round(st.bag ?? 66);
     // gold and slots sit at the panel foot so the header row is free for the category filters
-    this.c.add(s.add.text(1200, 660, `${ch.gold} Embershards   ·   ${ch.inventory.length}/${cap}`, typeStyle('bodyL', C.gold)).setOrigin(1, 0));
+    this.c.add(s.add.text(1200, 660, `${ch.gold} Embershards · ${ch.inventory.length}/${cap}`, typeStyle('bodyL', C.gold)).setOrigin(1, 0));
     const cats: [string, string][] = [['all', 'All'], ['gear', 'Gear'], ...HC_ITEM_CATS.filter(([k]) => k !== 'trinket').map(([k, l]) => [k, l.split(' ')[0]] as [string, string])];
     let fx = 600;
     for (const [k, l] of cats) {
@@ -111,7 +112,7 @@ export class InventoryPanel {
       const x = GRID.x + (i % GRID.cols) * (GRID.size + GRID.gap), y = GRID.y + Math.floor(i / GRID.cols) * (GRID.size + GRID.gap);
       const it = items[i];
       const info = it ? itemInfo(it.base) : undefined;
-      const fr = slot(s, x, y, GRID.size, (info?.rarity as never) ?? 'empty');
+      const fr = slot(s, x, y, GRID.size, it && info ? itemRarity(it) as never : 'empty');
       this.c.add(fr);
       if (!it) continue;
       this.icon(it, x, y);
@@ -125,7 +126,7 @@ export class InventoryPanel {
   }
 
   private icon(it: ItemInstance, x: number, y: number): void {
-    rarityGlyph(this.scene, this.c, it.base, x, y);
+    rarityGlyph(this.scene, this.c, it.base, x, y, itemRarity(it));
     const f = iconFrame(it.base);
     if (f) this.c.add(this.scene.add.image(x + 28, y + 28, f.key, f.frame));
     if (it.qty > 1) this.c.add(this.scene.add.text(x + 52, y + 52, String(it.qty), typeStyle('badge', C.text)).setOrigin(1, 1));
@@ -141,7 +142,7 @@ export class InventoryPanel {
       ? slotsFor(info).map((sl) => ch.equipment[sl]).find(Boolean) ?? (slotsFor(info).length ? undefined : null)
       : null;
     if (worn !== null) lines.push(...compareLines(it, worn));
-    this.tip = showTooltip(this.scene, this.c, lines, { x, y, w: 56 }, info?.rarity, SCHOOL_COLOR[school]);
+    this.tip = showTooltip(this.scene, this.c, lines, { x, y, w: 56 }, itemRarity(it), SCHOOL_COLOR[school]);
   }
   private hideTip(): void { this.tip?.destroy(); this.tip = null; }
 

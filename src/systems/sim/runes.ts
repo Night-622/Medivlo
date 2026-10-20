@@ -12,7 +12,12 @@ import { consumeItem, rebuildPlayer } from './player';
 import type { PlayerEnt } from './state';
 import type { SimWorld } from './world';
 
-const changed = (w: SimWorld, p: PlayerEnt): void => { rebuildPlayer(w, p); w.emit('loot:granted', { playerId: p.playerId }); };
+const changed = (w: SimWorld, p: PlayerEnt): void => {
+  rebuildPlayer(w, p);
+  // the owner's client (a guest keeps its own save) gets the authority's runes and tome spell back
+  const payload = { playerId: p.playerId, runes: { ...(p.save.runes ?? {}) }, tomeSpell: p.save.tomeSpell ?? '' };
+  w.emit('loot:granted', payload);
+};
 
 /** act 'rune': { spell, rune } slots one; { spell, rune, remove: true } takes it out. */
 export function runeAct(w: SimWorld, p: PlayerEnt, args: Record<string, unknown>): string | null {

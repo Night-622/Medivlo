@@ -244,7 +244,7 @@ export function runLair(save: CharacterSave, realm: string, seed: number, rooms 
       for (let t = 0; t < 30 * 4; t++) bot.idle(++tick, 0, 0);
     }
   } catch (e) {
-    return { ...result(a, false, combat, L, (e as Error).stack?.split('\n').slice(0, 3).join(' | ')), waves: waves.length, cleared };
+    return { ...result(a, false, combat, L, (e as Error).stack?.split('\n').slice(0, Number(process.env.STACK ?? 3)).join(' | ')), waves: waves.length, cleared };
   }
   return { ...result(a, cleared === waves.length, combat, L), waves: waves.length, cleared };
 }

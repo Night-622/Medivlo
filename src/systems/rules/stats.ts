@@ -2,6 +2,7 @@
  * Stat compilation: class base + level + gear + set bonuses + tree + buffs → a flat stat table,
  * plus the conditional modifiers, procs, hooks and spell mods that the sim evaluates at hit time. Pure.
  */
+import { MARTIAL_SCHOOLS } from '@/core/constants';
 import { P } from './curves';
 import type { Aura, Cond, Convert, CreatureTier, Hook, HcClassBase, Modifier, Passive, Proc, SpellMod, StatKey, StatusId, WeaponType } from './types';
 
@@ -30,7 +31,8 @@ export function classBase(cls: HcClassBase, level: number): Modifier[] {
   return [
     f('hp', (180 + 20 * guard) * p),
     f('ember', 100 + 8 * arcana + 2 * (level - 1)),
-    f('emberRegen', 5 + 0.5 * arcana),
+    // martial kits (low arcana) spend Ember on every press too: +1.5 regen so a fourth spell doesn't starve the kit
+    f('emberRegen', 5 + 0.5 * arcana + ((MARTIAL_SCHOOLS as readonly string[]).includes(cls.school) ? 1.5 : 0)),
     f('stamina', 100),
     f('staminaRegen', 22 + speed),
     f('armor', 6 + 3 * guard + 2 * (level - 1)),

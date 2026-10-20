@@ -51,10 +51,14 @@ export function installCharacterSync(): () => void {
       if (guest()) {
         const c = character();
         if (e.gold) c.gold = Math.max(0, c.gold + e.gold);
+        // runes and the tome spell live on the authority's copy: it sends them back with the change
+        const extra = e as { runes?: CharacterSave['runes']; tomeSpell?: string };
+        if (extra.runes) c.runes = extra.runes;
+        if (extra.tomeSpell !== undefined) c.tomeSpell = extra.tomeSpell || undefined;
         if (e.xp) { c.xp += e.xp; while (c.xp >= xpToNext(c.level) && c.level < 40) { c.xp -= xpToNext(c.level); c.level++; } }
         // a piece the runeforge changed comes back with its own uid: replace it where it is (pack or worn)
         const same = e.instance && !e.item ? [...c.inventory, ...Object.values(c.equipment)].find((x) => x?.uid === e.instance!.uid) : undefined;
-        if (same) Object.assign(same, { ilvl: e.instance!.ilvl, gem: e.instance!.gem });
+        if (same) { const { uid: _u, ...rest } = e.instance!; Object.assign(same, rest); } // every rolled / forged field (upgrade, sockets, affixes, imbue, uniqueFx)
         else if (e.instance) {
           const stack = itemInfo(e.instance.base)?.stackable ? c.inventory.find((x) => x.base === e.instance!.base) : undefined;
           if (stack) stack.qty += e.instance.qty; else c.inventory.push({ ...e.instance });
@@ -141,6 +145,7 @@ export function learn(nodeId: string): string | null {
   const chk = canLearn(c.classId, nodeId, c.tree, availablePoints(c));
   if (!chk.ok) return chk.why;
   c.tree[nodeId] = (c.tree[nodeId] ?? 0) + 1;
+  bus.emit('tree:allocated', { treeId: `skilltree:${c.classId}` as never, nodeId, rank: c.tree[nodeId] });
   sendLoadout();
   return null;
 }

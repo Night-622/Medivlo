@@ -17,6 +17,9 @@ import { dist2, type SimWorld } from './world';
 
 const XP_RANGE = 900;
 
+/** bodies whose death is being resolved right now (re-entry guard) */
+const DYING = new WeakSet<Combatant>();
+
 export function onCombatantZero(w: SimWorld, tgt: Combatant, src: Combatant | null): void {
   if (tgt.dead) return;
   if (tgt.kind === 'player') return onPlayerZero(w, tgt as PlayerEnt, src);
@@ -37,7 +40,10 @@ export function onCombatantZero(w: SimWorld, tgt: Combatant, src: Combatant | nu
     w.emit('boss:phase', { enemyId: e.id as never, phase: -1 });
     return;
   }
-  // on-death abilities resolve while the body is still "alive" for targeting
+  // on-death abilities resolve while the body is still "alive" for targeting; a death already in progress is not
+  // restarted (an on-death blast the hero parries counter-attacks the dying body: that looped until the stack ran out)
+  if (DYING.has(e)) return;
+  DYING.add(e);
   e.hp = 0;
   // summoned creatures (adds, splits) never summon again on death: no split cascades
   for (const ab of e.cdef.onDeath) {

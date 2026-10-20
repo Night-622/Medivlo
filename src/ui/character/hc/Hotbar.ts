@@ -6,7 +6,7 @@
 import Phaser from 'phaser';
 import { Art } from '@/art';
 import { Services } from '@/core/services';
-import { Settings, type Action } from '@/core/settings';
+import { keyLabel, type Action } from '@/core/settings';
 import type { EntityState } from '@/net/types';
 import { C, slot, typeStyle } from '@/ui/kit/hc';
 import { spellDef } from '@/systems/rules/spells';
@@ -28,7 +28,6 @@ function swungWith(): { type: WeaponType; base: string } {
 const S = 60, GAP = 8, DIV = 12;
 interface Cell { key: Action; bg: Phaser.GameObjects.NineSlice; icon?: Phaser.GameObjects.Image; cd: Phaser.GameObjects.Rectangle; cdText: Phaser.GameObjects.Text; badge: Phaser.GameObjects.Text; label: Phaser.GameObjects.Text; x: number }
 
-const KEY_LABEL: Record<string, string> = { ONE: '1', TWO: '2', THREE: '3', FOUR: '4', SPACE: '␣' };
 
 export class Hotbar extends Phaser.GameObjects.Container {
   private cells: Cell[] = [];
@@ -94,7 +93,8 @@ export class Hotbar extends Phaser.GameObjects.Container {
       else if (i === 5) this.setIcon(c, 'icon_potion_ember', 1);
       else if (i === 6) this.setIcon(c, 'school_storm', 2);
       else { const wpn = swungWith(); this.setIcon(c, Art.tryFrame(wpn.base) ? wpn.base : `w_${wpn.type}_wood`, 1); }
-      c.label.setText(KEY_LABEL[Settings.key(c.key)] ?? Settings.key(c.key));
+      // the same key names as the rest of the UI (core keyLabel); Space stays a glyph to fit the slot
+      c.label.setText(keyLabel(c.key) === 'Space' ? '␣' : keyLabel(c.key));
     });
   }
 

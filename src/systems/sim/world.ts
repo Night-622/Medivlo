@@ -136,7 +136,8 @@ export class SimWorld {
   condCtx(c: Combatant, target?: Combatant | null): CondCtx {
     const p = c.kind === 'player' ? (c as PlayerEnt) : null;
     let alliesNear = 0;
-    if (target !== undefined) for (const o of this.combatants(c.space)) if (o !== c && o.team === c.team && dist2(o, c) < 300 * 300) alliesNear++;
+    // your own minions (pets, summons, decoys) are not company: 'alone' still holds with a hawk at your side
+    if (target !== undefined) for (const o of this.combatants(c.space)) if (o !== c && o.team === c.team && (o as EnemyEnt).ownerId !== c.id && dist2(o, c) < 300 * 300) alliesNear++;
     return {
       hpFrac: c.hp / Math.max(1, c.maxHp),
       targetHpFrac: target ? target.hp / Math.max(1, target.maxHp) : undefined,

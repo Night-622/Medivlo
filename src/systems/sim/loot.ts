@@ -8,7 +8,7 @@ import { HC_LEGENDARIES } from '@/data/items/hc/legendary.gen';
 import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { P, dropRolls, unlockLevel } from '@/systems/rules/curves';
 import type { DropSpec } from '@/systems/rules/creatures';
-import { itemInfo, materialIndex, styleIndex } from '@/systems/rules/gear';
+import { AMULET_IDS, itemInfo, materialIndex, RING_IDS, styleIndex } from '@/systems/rules/gear';
 import { itemRarity, rollable, rollAffixes, rollInstance, type DropTier } from '@/systems/rules/affixes';
 import { SOCKETS, type LootEntry } from '@/systems/rules/affixTypes';
 import { ACT3_BOSSES, lootTable } from '@/data/items/hc/lootTables';
@@ -30,7 +30,8 @@ function pickIndex(w: SimWorld, level: number, max: number, luck: number): numbe
   let top = 0;
   for (let i = 0; i <= max; i++) if (level >= unlockLevel(i)) top = i;
   const roll = w.rng.next() * (1 - luck * 0.5);
-  return roll < 0.55 ? top : roll < 0.85 ? Math.max(0, top - 1) : w.rng.int(0, top);
+  // the newest tier most of the time (0.7): drops, not the smith, are where upgrades come from (gear-curve audit)
+  return roll < 0.7 ? top : roll < 0.9 ? Math.max(0, top - 1) : w.rng.int(0, top);
 }
 
 /** Who the drop is for: weapon types and armour school of the killers (drops lean toward what they can use). */
@@ -43,6 +44,8 @@ export function rollGear(w: SimWorld, level: number, spec?: DropSpec, luck = 0, 
 }
 
 function rollBase(w: SimWorld, level: number, spec?: DropSpec, luck = 0, forWho?: LootFor): { base: string; ilvl: number } {
+  // rings and amulets drop too (about 1 in 10 gear rolls), with the usual rarity and bonus lines
+  if (!spec && w.rng.chance(0.1)) return { base: w.rng.pick(w.rng.chance(0.5) ? RING_IDS : AMULET_IDS), ilvl: level };
   if (spec?.kind === 'spark') {
     const pool = w.rng.chance(0.5) ? HC_WEAPONS.filter((x) => x.material === 'spark').map((x) => x.id) : HC_PIECES.filter((p) => p.set.endsWith('_vestment')).map((p) => p.id);
     return { base: w.rng.pick(pool), ilvl: level };
@@ -80,7 +83,7 @@ export function rollKillLoot(w: SimWorld, e: EnemyEnt, killers: PlayerEnt[]): vo
       if (!w.rng.chance(Math.max(GEAR_CHANCE[e.tier], elite?.gear ?? 0) * (1 + luck))) continue;
       const spec = gearSpecs.length && w.rng.chance(0.6) ? w.rng.pick(gearSpecs) : undefined;
       const k = killers.length ? killers[(r + g) % killers.length] : undefined;
-      drop(w, e.space, e.x, e.y, { ...rollGear(w, e.level, spec, luck, k ? { weapons: k.kit.weapons, school: k.school, classId: k.save.classId } : undefined, e.tier === 'boss' ? 'boss' : e.tier === 'mini' ? 'mini' : 'enemy'), qty: 1 });
+      drop(w, e.space, e.x, e.y, { ...rollGear(w, Math.max(e.level, (k?.save.level ?? e.level) - 2), spec, luck, k ? { weapons: k.kit.weapons, school: k.school, classId: k.save.classId } : undefined, e.tier === 'boss' ? 'boss' : e.tier === 'mini' ? 'mini' : 'enemy'), qty: 1 });
     }
     for (const d of e.cdef.drops) {
       if (d.kind !== 'item') continue;
@@ -130,7 +133,7 @@ export function openChest(w: SimWorld, p: PlayerEnt, objectId: string, props: Re
   const pieces = rare ? (w.rng.chance(0.4) ? 2 : 1) : w.rng.chance(0.6) ? 1 : 0;
   // Lucky (hook chestExtra, 0.1): a chance of one more item
   const extra = w.rng.chance(p.stats.hooks.get('chestExtra') ?? 0) ? 1 : 0;
-  for (let i = 0; i < pieces + extra; i++) drop(w, p.space, p.x, p.y, { ...rollGear(w, level, undefined, luck, forWho, 'chest'), qty: 1 }, undefined, p.id);
+  for (let i = 0; i < pieces + extra; i++) drop(w, p.space, p.x, p.y, { ...rollGear(w, Math.max(level, p.save.level), undefined, luck, forWho, 'chest'), qty: 1 }, undefined, p.id);
   if (!rare || w.rng.chance(0.5)) drop(w, p.space, p.x, p.y, { base: w.rng.pick(['i_hp_s', 'i_hp_s', 'i_em_s', 'i_st']), ilvl: level, qty: 1 }, undefined, p.id);
   // a named table on the chest (Claude 2's placements: props.loot = 'tbl:<id>') rolls on top
   if (typeof props.loot === 'string') rollTable(w, p, props.loot, level, p);
@@ -227,7 +230,7 @@ function entryItem(w: SimWorld, p: PlayerEnt, e: LootEntry, level: number): Loot
     return { base: w.rng.pick(pool).item, ilvl: 1, qty: 1 };
   }
   const forWho = e.gear.forKit ? { weapons: p.kit.weapons, school: p.school, classId: p.save.classId } : undefined;
-  const g = rollGear(w, level, undefined, 0.3, forWho, 'chest');
+  const g = rollGear(w, Math.max(level, p.save.level), undefined, 0.3, forWho, 'chest');
   const min = e.gear.minRarity;
   if (min && rollable(g.base) && RARITY_ORDER.indexOf(itemRarity(g)) < RARITY_ORDER.indexOf(min)) {
     const n = SOCKETS[min];
