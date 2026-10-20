@@ -59,6 +59,8 @@ const SUITES = [
   { id: 'integrity-ui', what: 'browser: texture rebuilds keep live sprites, lifecycle resets, no async writes to closed screens', cmd: e2e('integrity-ui.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/integrity-ui.mjs', owner: 'Claude 6' },
   { id: 'qa-input', what: 'browser: keys after alt-tab, rebinding every action, Esc only pauses, People per realm, window sizes, Large-text HUD', cmd: e2e('qa-input.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/qa-input.mjs', owner: 'Claude 7' },
   { id: 'qa-markers', what: 'browser: quest markers on the minimap (edge arrow), map and Show on map, moving with the stage', cmd: e2e('qa-markers.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/qa-markers.mjs', owner: 'Claude 7' },
+  { id: 'qa-world-feel', what: 'browser: props fade when the hero walks behind them, searched objects say so, world feel basics', cmd: e2e('qa-world-feel.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/qa-world-feel.mjs', owner: 'Claude 7' },
+  { id: 'qa-rebake', what: 'browser: 72 class changes and 24 gear swaps rebuild sprites with no texture errors', cmd: e2e('qa-rebake.mjs', '--base', BASE), needs: ['web'], file: 'tools/e2e/qa-rebake.mjs', owner: 'Claude 7' },
   { id: 'coop-world', what: 'two browsers in co-op: join, input, chat, party vote', cmd: e2e('coop-world.mjs', '--base', BASE), needs: ['web'] },
   { id: 'hc-front', what: 'front end: load, pause, public realm, chat, leave', cmd: e2e('hc-front.mjs', '--base', BASE), needs: ['web', 'realm'] },
   { id: 'realm-duel', what: 'live Duels realm: challenge, accept, duel starts', cmd: e2e('realm-duel.mjs', '--base', BASE), needs: ['web', 'realm'] },
