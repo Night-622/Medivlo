@@ -69,6 +69,14 @@ const zoneCache = new Map<string, SpawnZoneDef[]>();
 /** The campaign owner's class: the replicated campaign.class flag (the host's, on a guest too), else the hero's. */
 const hostClass = (): string | null => (typeof getFlag('campaign.class') === 'string' && getFlag('campaign.class') ? String(getFlag('campaign.class')) : heroClassId());
 
+/** The top of a spawn zone's band in force now, for this campaign's host (what the chest it guards rolls at). */
+export function zoneTopNow(space: string, zoneId: string): number | null {
+  const z = spawnZones(space).find((x) => x.id === zoneId);
+  if (!z) return null;
+  const host = hostClass();
+  return levelAt(z, stepDone(host, (q) => evalCondition({ questCompleted: q })), host)[1];
+}
+
 /** The level band a Morvane region's creatures spawn at now, for this campaign's host and progress (map panel). */
 export function regionBandNow(region: string): [number, number] | null {
   const z = spawnZones('concordia').find((x) => x.id.startsWith(`${region}#`)) ?? (region === 'region:heart' ? spawnZones('concordia').find((x) => x.id === 'zone:legion-camp') : undefined);
@@ -124,6 +132,17 @@ function realmZones(space: string): SpawnZoneDef[] {
   const pool = bestiaryFor(gen.school).filter((c) => c.tier === 'enemy').map((c) => c.id);
   if (!pool.length) return [];
   const out: SpawnZoneDef[] = [];
+  /** the zone (2–4) of the same side nearest an optional area, a level up: its band when no walk reaches the area */
+  const besideZone = (side: string, at: [number, number]): { group: string; step: number } => {
+    let best = 2, bd = Infinity;
+    for (const [zid, zat] of gen.zones) {
+      const n = Number(zid.slice(-1));
+      if (n < 2 || !zid.includes(`-${side}-`)) continue;
+      const d = Math.hypot(zat[0] - at[0], zat[1] - at[1]);
+      if (d < bd) { bd = d; best = n; }
+    }
+    return { group: `${gen.school}-${side}-z${best}`, step: 1 };
+  };
   // levels by campaign order (bands.ts, zoneBands.gen.ts): a side's zone n and its roads share a band group,
   // lair roads the zone they leave from (l1 → 2, l2/l3 → 4), the gate road its own; zone-number bands otherwise
   const S = gen.school;
@@ -158,12 +177,13 @@ function realmZones(space: string): SpawnZoneDef[] {
     const d = Math.hypot(towards[0] - o.at[0], towards[1] - o.at[1]) || 1;
     const at: [number, number] = [Math.round(o.at[0] + ((towards[0] - o.at[0]) / d) * 14), Math.round(o.at[1] + ((towards[1] - o.at[1]) / d) * 14)];
     const lv = o.kind === 'cave' ? OPTIONAL_LEVEL.cave - 1 : 6;
-    out.push({ id: `guard:${id.slice(5)}`, space, at, r: 4, ...banded(id.slice(5), lv, 'guard', o.kind === 'cave'), pool, cap: 3 });
+    out.push({ id: `guard:${id.slice(5)}`, space, at, r: 4, ...banded(id.slice(5), lv, 'guard', o.kind === 'cave', besideZone(o.side, o.at)), pool, cap: 3 });
   }
-  // optional ruins: an elite pack a step above the zone beside them, guarding the cache
+  // optional ruins: a pack guarding the cache, banded by campaign order like the approach guards (group
+  // <school>-<side>-ruin; elite-led from L8; the old fixed L8 until the table knows the group)
   for (const [id, o] of gen.optional) {
     if (o.kind !== 'ruin') continue;
-    out.push({ id: `pack:${id.slice(5)}`, space, at: o.at, r: o.r - 2, level: [OPTIONAL_LEVEL.ruin, OPTIONAL_LEVEL.ruin + 1], pool, cap: 3, elite: true });
+    out.push({ id: `pack:${id.slice(5)}`, space, at: o.at, r: o.r - 2, ...banded(id.slice(5), OPTIONAL_LEVEL.ruin, 'guard', true, besideZone(o.side, o.at)), pool, cap: 3 });
   }
   return out;
 }

@@ -50,11 +50,14 @@ function band(tiers: ZoneTier[], kind: Kind, eliteGuard: boolean): Band {
 
 /**
  * Level (and elite) of a realm spawn in `group` (zone n of a side, a realm's gate road, an optional area's
- * approach). `eliteGuard`: an approach guard that leads with an elite once its floor reaches L8.
+ * approach). `eliteGuard`: an approach guard that leads with an elite once its floor reaches L8. `alt`: when no
+ * walk reaches the group (optional areas are off every quest route), follow that group's tiers `step` levels up
+ * (the zone beside it) instead of the fixed fallback.
  */
-export function banded(group: string, fallback: number, kind: Kind, eliteGuard = false): Banded {
+export function banded(group: string, fallback: number, kind: Kind, eliteGuard = false, alt?: { group: string; step: number }): Banded {
   const cls = SIDE_CLASS[group.split('-').slice(0, 2).join('-')];
-  return { ...band(ZONE_BANDS[group] ?? [{ floor: Math.max(1, fallback) }], kind, eliteGuard), cls, track: 'act1' };
+  const near = alt && ZONE_BANDS[alt.group]?.map((t) => ({ ...t, floor: Math.min(12, t.floor + alt.step) }));
+  return { ...band(ZONE_BANDS[group] ?? near ?? [{ floor: Math.max(1, fallback) }], kind, eliteGuard), cls, track: 'act1' };
 }
 
 /** Level (and elite) of a Concordia spawn in a Morvane region, per host class. */

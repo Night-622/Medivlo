@@ -7,7 +7,7 @@ import { CHUNK_TILES, Services, TILE_SIZE, bus, type NpcDef, type TimePhase } fr
 import { sim as defaultSim, type SimLoop } from '@/net';
 import { handleWorldAct, landmarksAt } from './interact';
 import { NpcProvider, npcsIn } from './npcs';
-import { BossWatch, SpawnDirector, warmMarkers, type QuestKill } from './spawns';
+import { BossWatch, SpawnDirector, warmMarkers, zoneTopNow, type QuestKill } from './spawns';
 import { allWaystones, placeName, spaceRuntime } from './spaces';
 import { optionalName } from '@/data/regions/hc/optionalAreas';
 import { prewarm } from './runtime';
@@ -183,6 +183,7 @@ export function installWorldAuthority(opts: WorldAuthorityOpts): WorldAuthority 
       const n = opts.npcPlacements && npcsIn(space, opts.npcPlacements()).find((x) => x.npc.id === npcId);
       return n ? { x: n.x, y: n.y } : null;
     },
+    chestLevel: zoneTopNow,
   };
   // a lookout marks its half's ruin and cave on the map (hint:<area>, kept with the found regions)
   const offLook = bus.on('interact', ({ playerId, objectId, props }) => {

@@ -199,7 +199,8 @@ export class ConcordiaGen implements SpaceGen {
           art('d_pillar', x - 4, y, 'p1'); art('d_pillar', x + 4, y, 'p2'); art('d_pillar', x - 3, y + 3, 'p3');
           art('d_bones', x - 1, y + 4, 'bones');
           art('d_chest', x, y + 2, 'cache');
-          this.obj({ id: `obj:${base}-cache`, kind: 'chest', at: [x, y + 3], props: { name: 'Chest', label: 'Open', level: regionLevels(r)[1], rarity: 'rare' } });
+          // level: the ruin pack's band in force for this host when opened (interact.ts); the handoff band as a fallback
+          this.obj({ id: `obj:${base}-cache`, kind: 'chest', at: [x, y + 3], props: { name: 'Chest', label: 'Open', level: regionLevels(r)[1], band: `pack:${base}`, rarity: 'rare' } });
           art('f_runestone', x + 3, y + 3, 'find');
           this.obj({ id: `obj:${base}-find`, kind: 'interactable', at: [x + 3, y + 4], props: { name, label: 'Search' } });
         } else if (kind === 'cave') {

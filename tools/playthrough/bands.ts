@@ -30,7 +30,7 @@ export function bandGroup(id: string): string | null {
   if (m) return `${m[1]}-${m[2]}-z${m[3]}`;
   m = /^(?:patrol|camp):([a-z]+)-(capital|frontier)-(z|l)(\d)(?:-\d)?$/.exec(id);
   if (m) return `${m[1]}-${m[2]}-z${m[3] === 'z' ? m[4] : [2, 4, 4][Number(m[4]) - 1]}`;
-  m = /^guard:([a-z]+)-(capital|frontier)-(cave|view)$/.exec(id);
+  m = /^guard:([a-z]+)-(capital|frontier)-(cave|view)$/.exec(id) ?? /^pack:([a-z]+)-(capital|frontier)-(ruin)$/.exec(id);
   if (m) return `${m[1]}-${m[2]}-${m[3]}`;
   m = /^camp:([a-z]+)-gate-road-\d$/.exec(id);
   if (m) return `${m[1]}-gate`;

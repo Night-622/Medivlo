@@ -22,6 +22,8 @@ export interface InteractPorts {
   place: (playerId: string, space: string, x: number, y: number) => void;
   /** where an NPC stands in a space now (world px), for talking to NPCs that have no anchor object */
   npcAt?: (space: string, npcId: string) => { x: number; y: number } | null;
+  /** the level a chest guarded by spawn zone `zoneId` rolls at now (the top of that zone's band in force) */
+  chestLevel?: (space: string, zoneId: string) => number | null;
 }
 
 const toast = (text: string) => bus.emit('narrative:toast', { text, kind: 'info' });
@@ -63,7 +65,12 @@ export function handleWorldAct(p: InteractPorts, me: Actor, action: string, args
 }
 
 function use(p: InteractPorts, me: Actor, o: WorldObject): void {
-  const props = o.props ?? {};
+  let props = o.props ?? {};
+  // a chest guarded by a banded pack rolls at that pack's band in force (campaign order), not a fixed level
+  if (o.kind === 'chest' && typeof props.band === 'string') {
+    const lv = p.chestLevel?.(me.space, props.band);
+    if (lv) props = { ...props, level: lv };
+  }
   switch (o.kind) {
     case 'waystone': {
       const was = p.worlds.isWoken(me.id, o.id);
