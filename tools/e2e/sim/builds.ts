@@ -62,7 +62,9 @@ const dead: ClassDead[] = [];
 if (FULL) {
   console.log(`# ── dead content (direct A/B on the typical L${PROBE_LEVEL} build; dead = <2% DPS, <2% survival, <2% EHP and no utility)`);
   // known probe / bot limits (Claude 5): read the list with these in mind
-  console.log('#    caveats: survival = share of the net drain cancelled; cooldown cuts can read as a survival LOSS (the bot then casts heals and defensives less often: chooseSlot order);');
+  console.log('#    the bar: best of DPS / survival / EHP >= 5% in the best use. Probe survival is INFORMATIONAL for harm: a note harm on survival');
+  console.log('#    alone is not a fix-it item; survival regressions are judged by the fight sims (campaign + gauntlet) (Claude 3, 2026-10-21).');
+  console.log('#    caveats: survival = share of the net drain cancelled (floor 25% of gross); heal-tanks calibrate at their sustain cap;');
   console.log('#    calibration may miss the 45–90 s window for heal-heavy classes (survival jumps across it between multipliers); traps, ground heals at the aim point, slows and other');
   console.log('#    crowd control on the boss bag, and ally buffs (measured solo) are mostly invisible here.');
   classes.forEach((c, ci) => {

@@ -26,6 +26,8 @@ export interface Probe {
   /** seconds to die from full at the net drain (capped) */
   surv: number;
   ehp: number; maxHp: number;
+  /** seconds the probe actually ran (less than PROBE_SECS if the hero fell) and how much was healed per second */
+  secs?: number; healed?: number;
 }
 
 const SURV_CAP = 1000;
@@ -133,7 +135,7 @@ export function probeOnce(save: CharacterSave, seed: number, dmgMult: number, se
   }
   const s = Math.max(1, tick) / 30;
   const drain = (a.m.taken - healedHp) / s;
-  return { dps: a.m.dealt / s, taken: a.m.taken / s, drain, surv: Math.min(SURV_CAP, p.maxHp / Math.max(drain, p.maxHp / SURV_CAP)), ehp: refEhp(p, cls, L), maxHp: p.maxHp };
+  return { dps: a.m.dealt / s, taken: a.m.taken / s, drain, surv: Math.min(SURV_CAP, p.maxHp / Math.max(drain, p.maxHp / SURV_CAP)), ehp: refEhp(p, cls, L), maxHp: p.maxHp, secs: s, healed: healedHp / s };
 }
 
 /** Mean over the probe seeds (cached by build fingerprint: same build → same numbers). */
@@ -158,13 +160,17 @@ export function calibrate(save: CharacterSave): number {
   // continuous in mult (see probeOnce), so the 45–90 s window is reachable for heal-heavy classes too (Claude 5)
   // over all the probe seeds, as the report measures: for heal-heavy kits the seeds' drains differ a lot
   const surv = (m: number) => probe(save, m).surv;
-  let lo = 0.05, hi = 400, mult = 1;
+  // heal-tanks have a capacity cliff: healing matches the damage until it can't (Oathbound: ~60 HP/s), so the window sits
+  // on a steep knee where seeds disagree; if bisection never lands inside it, keep the tried multiplier closest to 60 s
+  let lo = 0.05, hi = 400, mult = 1, best = 1, bestErr = Infinity;
   for (let i = 0; i < 14; i++) {
     const v = surv(mult);
     if (v > 45 && v < 90) return mult;
+    const err = Math.abs(Math.log(v / 60));
+    if (err < bestErr) { bestErr = err; best = mult; }
     if (v >= 90) lo = mult; else hi = mult;
     mult = Math.sqrt(lo * hi);
   }
-  return mult;
+  return best;
 }
 

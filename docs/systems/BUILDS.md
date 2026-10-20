@@ -365,6 +365,66 @@ Claude 1: every capital has two shops, defined in shops.ts.
 XP and level bands are unchanged: `run.mjs xp-project` must still give the same act medians (it ignores gear, so it
 holds).
 
+### Audit 2026-10-21 (Claude 5)
+
+`builds full` on the typical L14 build, at the start of the night and after the tuning and probe passes. Gate 145/145
+throughout.
+
+**Totals:** dead entries 343 → 127. Harm notes 51 → 77, but probe survival is informational for harm now, so only the
+25 DPS harm notes count. In the signature, school and shared-keystone slots, dead entries went 210 → 31.
+
+**How the probe changed** (tools/e2e/sim/builds-probe.ts, builds-dead.ts, builds-fight.ts):
+- **Healing:** it is read from the hero's own health. Lifesteal and other silent heals were invisible before.
+- **Positions:** the bag and the hitters are re-pinned every tick, so knockback can no longer carry them out of reach.
+- **Incoming damage:** it is continuous in the multiplier, and hits are capped at 5% hp.
+  - Extra hitters stay in the frontal arc, so front blocks count.
+  - A replacement hitter waits a full interval.
+- **Calibration:** a log bisection on the mean drain of all 5 seeds. If no multiplier lands in the window, it keeps the one closest to 60 s.
+- **Dashing:** the bot dashes every 3 s.
+- **Survival:** the share of the net drain cancelled, floored at 25% of gross damage taken.
+- **Harm:** only counts beyond 1.5× the class's own seed noise.
+- **Spell choice:** the bot heals first below 60% hp, skips heals above 90%, and keeps Ember for its cheapest heal below 80%.
+
+| Class | Dead (start) | Dead (now) | Harm notes | DPS harm |
+|---|---|---|---|---|
+| warden | 6 | 2 | 0 | 0 |
+| rimecaller | 13 | 9 | 1 | 1 |
+| ranger | 13 | 6 | 3 | 2 |
+| hedgewitch | 16 | 7 | 1 | 0 |
+| reaver | 10 | 6 | 0 | 0 |
+| arcanist | 11 | 4 | 2 | 2 |
+| stormlancer | 8 | 3 | 2 | 0 |
+| sparkwright | 16 | 11 | 0 | 0 |
+| oathbound | 12 | 7 | 0 | 0 |
+| cantor | 17 | 2 | 8 | 2 |
+| shade | 22 | 3 | 6 | 3 |
+| duskweaver | 24 | 7 | 1 | 0 |
+| swordsman | 10 | 1 | 11 | 0 |
+| samurai | 11 | 1 | 5 | 4 |
+| knight | 8 | 2 | 3 | 1 |
+| juggernaut | 14 | 3 | 4 | 2 |
+| monk | 17 | 3 | 6 | 0 |
+| brawler | 14 | 2 | 3 | 0 |
+| huntsman | 12 | 7 | 4 | 4 |
+| falconer | 19 | 13 | 2 | 2 |
+| corsair | 13 | 3 | 11 | 1 |
+| jester | 15 | 4 | 4 | 1 |
+| bard | 23 | 15 | 0 | 0 |
+| skald | 19 | 6 | 0 | 0 |
+| **total** | **343** | **127** | **77** | **25** |
+
+**Outliers and open items:**
+- **Dead in the most classes** (generator positions): the +10% armour connector (12), school keystones 1 / 2 (10 / 6), school
+  spell ranks 2–3 (8 / 4), the Ember connectors Focus / +0.6 regen / Ember Reserve (7 / 7 / 6), Spell Weaving (4) and
+  Set Mastery (6).
+- **Probe-blind** (judge by the fight sims): parry, stealth and freeze keystones, traps, ground heals at the aim point,
+  crowd control on the boss bag, and ally buffs measured solo.
+- **Oathbound:** heal throughput caps at about 60 HP/s, so survival sits on a cliff. It calibrates at that cap (×5.9, 36 s)
+  and wins all of its campaign fights.
+- **Most DPS harm notes** are "binding one more spell" in tempo kits (Samurai, Huntsman, Shade): a cast costs a swing.
+- **Gauntlet after the changes** (`gauntlet ash 8 all 5 2`, `gauntlet storm 27 all 5 2`): Ash L8 had 0 deaths in all 24
+  classes. Storm L27 had 4 in total (Monk 0/2, Falconer 1/0, Bard 0/1), within the earlier 0–2 per class.
+
 ---
 
 ## 8. Saves, replication, security (Claude 1's contracts; my rules)
