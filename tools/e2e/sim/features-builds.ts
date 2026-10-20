@@ -5,7 +5,7 @@
 import { kitFor } from '@/data/classes/hc/kits';
 import { newCharacter } from '@/systems/rules/character';
 import { playerPassives } from '@/systems/rules/playerStats';
-import { spellDef } from '@/systems/rules/spells';
+import { allSpells, spellDef } from '@/systems/rules/spells';
 import { compile, evalCond, type CondCtx } from '@/systems/rules/stats';
 import type { CharacterSave, HcSpell, Passive, Trigger } from '@/systems/rules/types';
 import { Btn } from '@/net/types';
@@ -260,7 +260,24 @@ function keystonesAndMastery(): void {
   check(ms.some((m) => m.weapon === inHand) && !!other && sig(swapped) !== sig(sw), `weapon mastery: warden's ${inHand} passive applies; switching to a ${other?.weapon} changes it`);
 }
 
+/** Minions: totems, traps, decoys and pets count (summon trigger, minionDmg, the 'minions' condition). */
+function minions(): void {
+  const totem = [...allSpells()].find((s) => s.actions.some((a) => a.a === 'zone' && a.kind === 'totem'));
+  if (!check(!!totem, 'a kit spell places a totem')) return;
+  const placed = (extra: Passive[]) => {
+    const w = world(), p = hero(w, 'a', save('sparkwright', 20));
+    give(p, marker('summon'), ...extra);
+    cast(w.sim.w, p, 0, { ...totem!, castMs: 0 });
+    const z = [...w.sim.w.zones.values()].find((x) => x.kind === 'totem' && x.cast.caster === p);
+    return { p, z, n: w.sim.w.minionsOf(p.id) };
+  };
+  const a = placed([]), b = placed([{ mods: [{ stat: 'minionDmg', op: 'flat', value: 0.6 }] }]);
+  check(!!a.z && marked(a.p, 'summon') && a.n >= 1, `${totem!.name}: placing it fires 'summon' and it counts as a minion`, `zone ${!!a.z}, minions ${a.n}`);
+  check(!!a.z && !!b.z && Math.abs(b.z.cast.dmgMult / a.z.cast.dmgMult - 1.6) < 1e-9, `${totem!.name}: +60% minion damage makes the totem hit 60% harder`, `×${b.z && a.z ? (b.z.cast.dmgMult / a.z.cast.dmgMult).toFixed(2) : '?'}`);
+}
+
 export function buildChecks(): void {
+  minions();
   keystonesAndMastery();
   conversion();
   spellLevels();

@@ -148,10 +148,12 @@ export class SimWorld {
       minions: p ? this.minionsOf(c.id) : 0,
     };
   }
-  /** live summons (pets) a combatant owns */
+  /** live minions a combatant owns: summons, pets, decoys, and its totems and traps */
   minionsOf(id: string): number {
     let n = 0;
-    for (const e of this.enemies.values()) if (e.ownerId === id && !e.dead) n++;
+    for (const e of this.enemies.values()) if (e.ownerId === id && !e.dead && !e.storyPet) n++; // cosmetic story pets don't count
+    // totems and traps the hero placed count too
+    for (const z of this.zones.values()) if (!z.dead && (z.kind === 'totem' || z.kind === 'trap') && z.cast.caster.id === id && this.t < z.until) n++;
     return n;
   }
   evalCond = evalCond;

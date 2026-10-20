@@ -3,7 +3,7 @@
  * abilities. Area targeting, projectiles, zones, movement, summons and resources all start here.
  */
 import type { Action, Area, HitFlag } from '@/systems/rules/types';
-import { addBuff, addShield, applyStatus, dealDamage, heal } from './combat';
+import { addBuff, addShield, applyStatus, dealDamage, fireProcs, heal } from './combat';
 import { reviveNear } from './coop';
 import { shadedBy } from './hazards';
 import { spawnDecoy, spawnSummon } from './spawn';
@@ -175,15 +175,19 @@ function run(w: SimWorld, a: Action, c: CastCtx): void {
       return;
     case 'zone': {
       const o = origin(a.area, c);
-      if (a.kind === 'decoy') { spawnDecoy(w, c, o, a.dur * c.durMult); return; }
+      if (a.kind === 'decoy') { spawnDecoy(w, c, o, a.dur * c.durMult); if (caster.kind === 'player' && !c.flags.includes('noProc')) fireProcs(w, caster, 'summon'); return; }
       const id = w.nextId('fx');
       const dur = a.dur * c.durMult * (1 + (caster.stats.hooks.get('zoneDur') ?? 0));
+      // totems and traps are the caster's minions (BUILDS: minion perks, Pack Leader, summon affixes)
+      const minion = (a.kind === 'totem' || a.kind === 'trap') && caster.kind === 'player';
+      const zc: CastCtx = minion ? { ...c, dmgMult: c.dmgMult * (1 + (caster.stats.stats.minionDmg ?? 0)) } : c;
       w.zones.set(id, {
         id, space: caster.space, kind: a.kind, visual: a.visual ?? a.kind, x: o.x, y: o.y,
         area: { ...a.area, r: (a.area.r ?? 0) * c.areaMult, len: a.area.len, width: a.area.width }, dir: c.dir,
         until: w.t + dur, tick: a.tick ?? 0, nextTick: w.t + (a.tick ?? 0), each: a.each && pinToZone(a.each), trigger: a.trigger && pinToZone(a.trigger),
-        blocksShots: !!a.blocksShots, taunts: !!a.taunts, cast: { ...c, aim: o }, team: caster.team, dead: false,
+        blocksShots: !!a.blocksShots, taunts: !!a.taunts, cast: { ...zc, aim: o }, team: caster.team, dead: false,
       });
+      if (minion && !c.flags.includes('noProc')) fireProcs(w, caster, 'summon');
       return;
     }
     case 'summon': spawnSummon(w, c, a.what, a.count, a.dur, a.power); return;

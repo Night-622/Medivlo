@@ -90,7 +90,7 @@ export function spawnSummon(w: SimWorld, c: CastCtx, what: string, count: number
         : spawnCreature(w, { creature: what.slice(5), level: me.level, space: me.space, x: at.x, y: at.y, tier: 'enemy', ownerId: me.id, team: 'players', expiresAt: w.t + dur, power });
       if (e && pet === null) e.dmg = (c.power * power) / 2;
       // deeper builds: minion damage / HP from the owner's passives, and the 'summon' trigger
-      if (e) { const st = me.stats.stats; e.dmg *= 1 + (st.minionDmg ?? 0); e.maxHp = Math.round(e.maxHp * (1 + (st.minionHp ?? 0))); e.hp = e.maxHp; }
+      if (e && pet === null) { const st = me.stats.stats; e.dmg *= 1 + (st.minionDmg ?? 0); e.maxHp = Math.round(e.maxHp * (1 + (st.minionHp ?? 0))); e.hp = e.maxHp; }
     }
     if (!c.flags.includes('noProc')) fireProcs(w, me, 'summon');
     return;
@@ -139,6 +139,9 @@ export function spawnPet(w: SimWorld, ownerId: string, kind: string, x: number, 
   e.def = `pet:${kind}`;
   e.maxHp = e.hp = Math.round(owner.maxHp * p.hp);
   e.dmg = (((owner.weapon.min + owner.weapon.max) / 2) * (1 + (owner.stats.stats.power ?? 0)) + (owner.stats.stats.sp ?? 0) * 0.3) * p.dmg * petPower;
+  // pets are minions: the owner's minion damage / health (Pack Leader, summon affixes and perks)
+  e.dmg *= 1 + (owner.stats.stats.minionDmg ?? 0);
+  e.maxHp = e.hp = Math.round(e.maxHp * (1 + (owner.stats.stats.minionHp ?? 0)));
   e.cdef = { ...e.cdef, ai: { ...e.cdef.ai, speed: p.speed, attackMs: p.attackMs, attackRange: p.range, flying: p.flying, ranged: false, immobile: false, flee: false }, abilities: [], phases: [], onDeath: [] };
   return e;
 }
@@ -149,7 +152,7 @@ export function spawnDecoy(w: SimWorld, c: CastCtx, at: { x: number; y: number }
   const e = spawnCreature(w, { creature: 'bx_hollowed', level: me.level, space: me.space, x: at.x, y: at.y, tier: 'enemy', ownerId: me.id, team: me.team, expiresAt: w.t + dur });
   if (!e) return;
   e.def = me.def;
-  e.maxHp = e.hp = Math.round(me.maxHp * 0.3);
+  e.maxHp = e.hp = Math.round(me.maxHp * 0.3 * (1 + (me.stats.stats.minionHp ?? 0)));
   e.dmg = 0;
   e.cdef = { ...e.cdef, ai: { ...e.cdef.ai, speed: 0, immobile: true, attackRange: 0, aggro: 0 }, abilities: [], phases: [], onDeath: [], lowHp: [] };
   e.ai = 'dormant';
