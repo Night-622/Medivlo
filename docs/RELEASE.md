@@ -38,5 +38,6 @@ screenshot. Deploy steps are in docs/DEPLOY.md.
 - [ ] $10 budget alert confirmed by the user (Google Cloud console → Billing → Budgets & alerts)
 - [x] `firebase deploy --only firestore:rules` (deployed to medivlo 2026-10-20; redeploy if the rules change)
 - [x] Realm server on Cloud Run (australia-southeast1); `VITE_REALM_SERVER` in `.env.production`; a real-token join verified live (2026-10-20)
-- [ ] `node tools/release/predeploy-check.mjs` passes (HUD, hitboxes, every feature), then `npm run build && HOLLOW_CROWN_RELEASE=1 firebase deploy --only hosting` (tools/release/guard.mjs blocks hosting deploys without the flag or without a passing test stamp for the exact code)
+- [x] Test deploy to medivlo.web.app (2026-10-20, d47d336: predeploy 23/23 in a clean worktree; live bundle verified)
+- [ ] Launch: `node tools/release/predeploy-check.mjs` passes (HUD, hitboxes, every feature), then `npm run build && HOLLOW_CROWN_RELEASE=1 firebase deploy --only hosting` (tools/release/guard.mjs blocks hosting deploys without the flag or without a passing test stamp for the exact code)
 - [ ] Post-deploy smoke test on the live URL: title → New Game → play 5 min; Public Realms lists 4; sign up with a username (recovery code shown); invite a friend from another machine

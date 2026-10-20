@@ -4,6 +4,7 @@
  */
 import type Phaser from 'phaser';
 import { heroName, mv, type HeroGear, type HeroLook } from './mv';
+import { sideFrames } from './side';
 
 export interface AtlasSheet { file: string; frameWidth: number; frameHeight: number; columns?: number; frames?: string[] | number; pivot?: [number, number]; pieces?: { id: string }[] }
 export interface AtlasImage { file: string; w?: number; h?: number; origin?: [number, number]; lights?: [number, number, number][]; label?: string; category?: string }
@@ -64,12 +65,35 @@ export function bakeHero(scene: Phaser.Scene, key: string, classId: string, look
   const idle = mv().frames(name, 'idle') ?? [];
   const walk = mv().frames(name, 'walk') ?? [];
   if (!idle.length || !walk.length) throw new Error(`MV could not draw hero "${name}"`);
-  // match exported layout: [idle0, idle1, walkA, pass, walkB, pass]
-  addCanvasSheet(scene, key, [idle[0], idle[1] ?? idle[0], walk[0], walk[1], walk[2], walk[3] ?? walk[1]]);
-  for (const a of ['idle', 'walk'] as const) if (scene.anims.exists(`${key}:${a}`)) scene.anims.remove(`${key}:${a}`);
+  // frames 0–5 match the exported layout [idle0, idle1, walkA, pass, walkB, pass]; 6–11 are the side view
+  // (facing right; left = flipX): [idle0, idle1, contact, pass, contact, pass]
+  const side = sideView(name);
+  addCanvasSheet(scene, key, [idle[0], idle[1] ?? idle[0], walk[0], walk[1], walk[2], walk[3] ?? walk[1], ...side]);
+  for (const a of ['idle', 'walk', 'idle-side', 'walk-side']) if (scene.anims.exists(`${key}:${a}`)) scene.anims.remove(`${key}:${a}`);
   scene.anims.create({ key: `${key}:idle`, frames: scene.anims.generateFrameNumbers(key, { frames: [0, 1] }), frameRate: 2.5, repeat: -1 });
   scene.anims.create({ key: `${key}:walk`, frames: scene.anims.generateFrameNumbers(key, { frames: [2, 3, 4, 5] }), frameRate: 8, repeat: -1 });
+  if (side.length) {
+    scene.anims.create({ key: `${key}:idle-side`, frames: scene.anims.generateFrameNumbers(key, { frames: [6, 7] }), frameRate: 2.5, repeat: -1 });
+    scene.anims.create({ key: `${key}:walk-side`, frames: scene.anims.generateFrameNumbers(key, { frames: [8, 9, 10, 11] }), frameRate: 8, repeat: -1 });
+  }
   return key;
+}
+
+/** True when a baked hero sheet has side-view anims (`<key>:walk-side` / `<key>:idle-side`, facing right). */
+export function hasSideView(scene: Phaser.Scene, key: string): boolean { return scene.anims.exists(`${key}:walk-side`); }
+
+/**
+ * Side-view frames for a hero name, or [] (the hero then keeps the mirrored front walk). Never throws: an unfinished
+ * class or a drawing error must not break baking.
+ */
+function sideView(name: string): HTMLCanvasElement[] {
+  try {
+    const i = sideFrames(name, 'idle'), w = sideFrames(name, 'walk');
+    return i.length >= 2 && w.length >= 4 ? [i[0], i[1], w[0], w[1], w[2], w[3]] : [];
+  } catch (e) {
+    if (import.meta.env.DEV) console.warn('[art] side view unavailable for', name, e);
+    return [];
+  }
 }
 
 /** Any single MV-drawn image (icons, props, wordmark…) as a texture. */
