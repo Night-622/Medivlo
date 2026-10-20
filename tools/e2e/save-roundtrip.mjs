@@ -83,7 +83,7 @@ try {
     return { list, json: JSON.stringify(st) };
   })()`);
   const a = JSON.parse(saved.json), b = JSON.parse(loaded.json);
-  delete a.meta.updatedAt; delete b.meta.updatedAt; delete a.meta.playtimeSec; delete b.meta.playtimeSec; // both tick with real time (autosave)
+  delete a.meta.updatedAt; delete b.meta.updatedAt; delete a.meta.playtimeSec; delete b.meta.playtimeSec; delete a.meta.rev; delete b.meta.rev; // tick with real time / every save (autosave)
   check('listLocal shows the save', !!loaded.list[saved.slot] && loaded.list[saved.slot].name === 'Savetest', JSON.stringify(loaded.list[saved.slot]));
   const diff = (x, y, path = '') => {
     if (JSON.stringify(x) === JSON.stringify(y)) return null;
