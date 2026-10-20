@@ -18,6 +18,7 @@ import { RealmNet, listRealms, type RealmListing } from '../realm/RealmNet';
 import { isFirebaseConfigured } from '@/firebase/config';
 import { ensureUser, firebase } from '@/firebase/app';
 import { hostedCodeOf, setHosting } from '@/firebase/friends';
+import { SaveService } from '@/firebase/SaveService';
 
 async function signalingAndUid(): Promise<{ sig: Signaling; uid: string }> {
   if (isFirebaseConfigured) {
@@ -129,7 +130,9 @@ export async function enterRealm(listing: RealmListing): Promise<RealmNet> {
     catch (e) { if (!import.meta.env.DEV) throw new Error('Sign in to play online'); console.warn('[realm] no Firebase user, using dev auth', e); }
   }
   if (!token) token = `dev:local-${crypto.randomUUID().slice(0, 8)}:${me().name.replace(/:/g, '')}`;
-  const net = await RealmNet.connect(REALM_SERVER, listing.id, token, me());
+  // the realm seats the hero from the player's CLOUD save (cloud autosaves lag up to a minute): push it first
+  if (isFirebaseConfigured && Game.hasState && Game.state.player.hero) await SaveService.save(Game.state);
+  const net = await RealmNet.connect(REALM_SERVER, listing.id, token, { ...me(), slot: Game.hasState ? Game.state.meta.slot : undefined });
   localId();
   useNet(net);
   current = net;

@@ -65,8 +65,8 @@ export type ClientMsg =
   | { type: 'input'; frames: InputFrame[] }
   | { type: 'vote'; voteId: string; choice: number }
   | { type: 'chat'; text: string }
-  /** `token`: public realms only, the Firebase ID token (kept out of the URL: request logs record URLs) */
-  | { type: 'hello'; playerId: PlayerId; name: string; classId: string; level: number; firstVisit: boolean; token?: string }
+  /** public realms only: `token` = the Firebase ID token (kept out of the URL: request logs record URLs); `slot` = the save slot whose hero the server seats */
+  | { type: 'hello'; playerId: PlayerId; name: string; classId: string; level: number; firstVisit: boolean; token?: string; slot?: number }
   | { type: 'bye' }
   /** a client registered a state sync after joining (e.g. a scene restart): send the current blocks again */
   | { type: 'state:request' }

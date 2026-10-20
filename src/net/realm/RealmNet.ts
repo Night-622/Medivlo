@@ -22,7 +22,7 @@ export class RealmNet extends RemoteClient {
    * The ID token rides in the hello, never the URL (request logs keep URLs). A server from before that (no /caps)
    * still gets it in the query string, so a new client works against an older deployment.
    */
-  static async connect(serverUrl: string, realmId: string, token: string, hello: { name: string; classId: string; level: number }, timeoutMs = 30000): Promise<RealmNet> {
+  static async connect(serverUrl: string, realmId: string, token: string, hello: { name: string; classId: string; level: number; slot?: number }, timeoutMs = 30000): Promise<RealmNet> {
     const http = serverUrl.replace(/^ws/, 'http');
     const caps = await fetch(`${http}/caps`).then((r) => (r.ok ? r.json() as Promise<{ helloToken?: boolean }> : null)).catch(() => null);
     const inHello = !!caps?.helloToken;

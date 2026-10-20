@@ -13,11 +13,12 @@ import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import { WebSocketServer, type WebSocket } from 'ws';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { loadSave } from './realm-load';
 
 type RealmRule = 'peaceful' | 'duels' | 'arena' | 'ffa';
-interface RealmDef { id: string; name: string; rule: RealmRule; space: string; maxPlayers: number }
+interface RealmDef { id: string; name: string; rule: RealmRule; space: string; maxPlayers: number; trustedSaves?: boolean }
 interface RealmApi {
-  attach(p: { playerId: string; name: string; classId: string; level: number }, send: (json: string) => void): boolean;
+  attach(p: { playerId: string; name: string; classId: string; level: number }, send: (json: string) => void, saved?: { character: unknown; playtimeSec: number }): { ok: true } | { ok: false; reason: string; log?: string };
   detach(playerId: string): void; receive(playerId: string, json: string): void; tick(dt: number): void;
   count(): number; full(): boolean; testProvider?(): void;
 }
@@ -26,6 +27,9 @@ const PORT = Number(process.env.PORT ?? 8080);
 const PROJECT = process.env.FIREBASE_PROJECT_ID ?? 'medivlo';
 const DEV_AUTH = process.env.DEV_AUTH === '1';
 const TEST_PROVIDER = process.env.REALM_TEST_PROVIDER === '1';
+/** Seat each player's SAVED hero (read from their own cloud save) instead of trusting their loadout. On in
+ * production; DEV_AUTH (local tests) keeps the loadout path unless REALM_LOAD_SAVES=1. */
+const LOAD_SAVES = process.env.REALM_LOAD_SAVES ? process.env.REALM_LOAD_SAVES === '1' : !DEV_AUTH;
 
 /** Fixed realm catalogue (REBUILD.md: Peaceful / Duels / Arena / Free-for-all). Spaces per Claude 2. */
 const REALMS: RealmDef[] = [
@@ -49,7 +53,7 @@ function spawnRealm(def: RealmDef): RealmApi {
   });
   (ctx as { globalThis?: unknown }).globalThis = ctx;
   realmCode.runInContext(ctx);
-  const api = (ctx as unknown as { __createRealm(cfg: RealmDef): RealmApi }).__createRealm(def);
+  const api = (ctx as unknown as { __createRealm(cfg: RealmDef): RealmApi }).__createRealm({ ...def, trustedSaves: LOAD_SAVES });
   if (TEST_PROVIDER) api.testProvider?.();
   let last = performance.now();
   let slowLogged = 0;
@@ -140,22 +144,30 @@ async function onJoin(ws: WebSocket, def: RealmDef, queryToken: string): Promise
   const helloMsg = await first;
   clearTimeout(helloTimer);
   if (helloMsg === null) { kick('The realm did not hear from you in time'); return; }
-  let hello: { name?: unknown; classId?: unknown; level?: unknown; token?: unknown };
+  let hello: { name?: unknown; classId?: unknown; level?: unknown; token?: unknown; slot?: unknown };
   try { hello = JSON.parse(helloMsg); } catch { kick('Bad hello'); return; }
   if (!hello || typeof hello !== 'object') { kick('Bad hello'); return; }
+  const token = queryToken || (typeof hello.token === 'string' ? hello.token : '');
   let who: { uid: string; name?: string };
-  try { who = await (early ?? verify(typeof hello.token === 'string' ? hello.token : '')); }
+  try { who = await (early ?? verify(token)); }
   catch { kick('Sign in again to play online'); return; }
   // gone while we verified: its 'close' already fired, so attaching now would leave a ghost seat nobody frees
   if (ws.readyState !== ws.OPEN) return;
+  let saved: { character: unknown; playtimeSec: number } | undefined;
+  if (LOAD_SAVES) {
+    const r = await loadSave(PROJECT, who.uid, Number(hello.slot), token);
+    if (!r.ok) { console.log(`[realm] ${def.id}: refused ${who.uid}: ${r.log}`); kick(r.reason); return; }
+    if (ws.readyState !== ws.OPEN) return;
+    saved = { character: r.character, playtimeSec: r.playtimeSec };
+  }
   seats.get(who.uid)?.('You joined from another window'); // detaches the old seat before the new one attaches
   let api: RealmApi;
   try { api = live.get(def.id)?.api ?? spawnRealm(def); }
   catch (e) { console.error(`[realm] ${def.id}: failed to start`, e); kick('That realm is unavailable right now'); return; }
   // bounded: these go to every player in the realm in each session update
   const level = Math.max(1, Math.min(99, Math.floor(Number(hello.level)) || 1));
-  const ok = api.attach({ playerId: who.uid, name: String(hello.name ?? who.name ?? 'Wanderer').slice(0, 16), classId: String(hello.classId ?? '').slice(0, 32), level }, (json) => { if (ws.readyState === ws.OPEN) ws.send(json); });
-  if (!ok) { kick('That realm is full'); return; }
+  const seat = api.attach({ playerId: who.uid, name: String(hello.name ?? who.name ?? 'Wanderer').slice(0, 16), classId: String(hello.classId ?? '').slice(0, 32), level }, (json) => { if (ws.readyState === ws.OPEN) ws.send(json); }, saved);
+  if (!seat.ok) { if (seat.log) console.log(`[realm] ${def.id}: refused ${who.uid}: ${seat.log}`); kick(seat.reason); return; }
   console.log(`[realm] ${def.id}: + ${who.uid} (${api.count()} in)`);
   let budget = 120; // messages per second, per player
   const refill = setInterval(() => { budget = 120; }, 1000);
