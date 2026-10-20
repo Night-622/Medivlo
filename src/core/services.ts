@@ -16,6 +16,8 @@ export interface WorldService {
   wakeWaystone(playerId: string, waystoneId: string): void;
   /** where a place is: landmark:, obj:, area:, zone: ids and inst: entrances (Claude 2); null if unknown */
   placePos?(placeId: string): { space: string; x: number; y: number } | null;
+  /** where an NPC stands now (authority), e.g. so shop and Runeforge acts need the hero beside the merchant */
+  npcPos?(npcId: string): { space: string; x: number; y: number } | null;
 }
 
 /** Implemented by Claude 3, registered in createPlayer(). */
