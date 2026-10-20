@@ -43,7 +43,12 @@ interface MVSide {
   heroLook(name: string): Look | null;
   heroFrameX?: (L: Look, dy: number, feet: string) => HTMLCanvasElement;
   _int: { SKINS: string[][]; HAIRC: string[][]; EYEC: string[][]; [k: string]: unknown };
-  GEAR?: { DYE: number[] };
+  GEAR?: {
+    DYE: number[];
+    SETS: { helm: string; a: string[]; b: string[]; t: string; style: string }[];
+    WEAPONS: { type: string; mat: { b: string[]; g: string[]; a: string; glow?: string } }[];
+    kitOf(cls: string): { alt: string };
+  };
 }
 
 export const M = (): MVSide => mv() as unknown as MVSide;

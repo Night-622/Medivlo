@@ -8,6 +8,11 @@ const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ?
 const BASE = arg('base', 'http://localhost:5196'), OUT = 'tools/e2e/out/side';
 const CLASSES = arg('classes', 'warden,arcanist,huntsman').split(','), HAIRS = arg('hairs', '2,1').split(',').map(Number);
 const SCALE = Number(arg('scale', 4)), NAME = arg('name', 'side-sheet'), BODIES = arg('bodies', '0,1').split(',').map(Number), NOHAT = process.argv.includes('--nohat');
+// paperdoll gear for every row, e.g. --gear helm=5,weapon=12,neck=1,face=2,extra=2,cape=2,headw=2 (MV.heroLook keys)
+const kv = (t) => Object.fromEntries(t.split(',').filter(Boolean).map((p) => { const [k, v] = p.split('='); return [k, Number(v)]; }));
+const GEAR = kv(arg('gear', ''));
+// one row per gear variant on top of --gear, e.g. --gears "helm=1|helm=2|weapon=3,neck=1" (labelled on the row)
+const GEARS = arg('gears', '').split('|').filter(Boolean).map((t) => ({ t, g: kv(t) }));
 mkdirSync(OUT, { recursive: true });
 const page = await launch({ port: 9800 + Math.floor(Math.random() * 150), width: 1280, height: 720 });
 const errors = [];
@@ -24,7 +29,11 @@ try {
     const MV = window.MV, S = ${SCALE}, CW = 32 * S, CH = 40 * S, GAP = 10, LABEL = 150;
     const classes = ${JSON.stringify(CLASSES)}, hairs = ${JSON.stringify(HAIRS)};
     const rows = [];
-    for (const cls of classes) for (const body of ${JSON.stringify(BODIES)}) for (const hair of hairs) rows.push({ cls, body, hair });
+    const XK = ['brows', 'dye', 'headw', 'cape', 'neck', 'face', 'extra', 'helm', 'chest', 'hands', 'feet', 'weapon'], GEAR = ${JSON.stringify(GEAR)}, GEARS = ${JSON.stringify(GEARS.length ? GEARS : [{ t: '', g: {} }])};
+    const mk = (r) => { const G = Object.assign({}, GEAR, r.gear.g), L = Object.assign(MV.heroLook(r.cls), { body: r.body, hair: r.hair, nohat: ${NOHAT} }, G);
+      const name = 'hero:' + r.cls + ':' + [L.skin, L.hair, L.hc, L.eyes, L.ec, L.mouth, L.mark].join(':') + ':${NOHAT ? 1 : 0}:' + L.body + (Object.keys(G).length ? ':' + XK.map((k) => (k === 'brows' ? (L.brows ?? '') : (L[k] ?? 0))).join(':') : '');
+      return { L, name }; };
+    for (const cls of classes) for (const body of ${JSON.stringify(BODIES)}) for (const hair of hairs) for (const gear of GEARS) rows.push({ cls, body, hair, gear });
     const cols = ['front', 'walk', '', '', '', 'side idle', '', 'side walk', '', '', '', 'left (flipX)'];
     const W = LABEL + cols.length * (CW + GAP), H = 40 + rows.length * (CH + GAP);
     const c = document.createElement('canvas'); c.width = W; c.height = H;
@@ -36,14 +45,13 @@ try {
       x.fillStyle = (i >= 5 ? '#2a3462' : '#232b52'); x.fillRect(px, py, CW, CH);
       x.save(); if (flip) { x.translate(px + CW, py); x.scale(-1, 1); x.drawImage(f, 0, 0, CW, CH); } else x.drawImage(f, px, py, CW, CH); x.restore(); };
     rows.forEach((r, ri) => {
-      const L = Object.assign(MV.heroLook(r.cls), { body: r.body, hair: r.hair, nohat: ${NOHAT} });
-      const name = 'hero:' + r.cls + ':' + [L.skin, L.hair, L.hc, L.eyes, L.ec, L.mouth, L.mark].join(':') + ':${NOHAT ? 1 : 0}:' + L.body;
+      const { L, name } = mk(r);
       const front = MV.frames(name, 'idle'), walk = MV.frames(name, 'walk');
       const sIdle = sideFrames(L, 'idle'), sWalk = sideFrames(L, 'walk');
       put(front[0], 0, ri); walk.forEach((f, i) => put(f, 1 + i, ri)); sIdle.forEach((f, i) => put(f, 5 + i, ri)); sWalk.forEach((f, i) => put(f, 7 + i, ri)); put(sWalk[0], 11, ri, true);
       x.fillStyle = '#e8ecff'; x.font = '20px "Jersey 10", monospace';
       const py = 40 + ri * (CH + GAP);
-      x.fillText(r.cls, 8, py + 40); x.fillText((r.body ? 'male' : 'female'), 8, py + 66); x.fillText(MV.LOOK.hair[r.hair], 8, py + 92);
+      x.fillText(r.cls, 8, py + 40); x.fillText((r.body ? 'male' : 'female'), 8, py + 66); x.fillText(MV.LOOK.hair[r.hair], 8, py + 92); if (r.gear.t) x.fillText(r.gear.t, 8, py + 118);
     });
     // native scales, as they read in game: per row, front idle + side idle + side walk ×4 + flipped, at 1× on grass
     // (the world) and at 2× on the panel colour (character creation preview, HUD portrait)
@@ -51,7 +59,7 @@ try {
     nx.imageSmoothingEnabled = false;
     nx.fillStyle = '#3f8f4f'; nx.fillRect(0, 0, ROWW + 8, n.height);
     nx.fillStyle = '#1b2140'; nx.fillRect(ROWW + 8, 0, n.width - ROWW - 8, n.height);
-    rows.forEach((r, ri) => { const L = Object.assign(MV.heroLook(r.cls), { body: r.body, hair: r.hair, nohat: ${NOHAT} }); const name = 'hero:' + r.cls + ':' + [L.skin, L.hair, L.hc, L.eyes, L.ec, L.mouth, L.mark].join(':') + ':${NOHAT ? 1 : 0}:' + L.body;
+    rows.forEach((r, ri) => { const { L, name } = mk(r);
       const fr = [MV.frames(name, 'idle')[0], ...sideFrames(L, 'idle').slice(0, 1), ...sideFrames(L, 'walk')];
       const draw = (s, ox, oy) => { fr.forEach((f, i) => nx.drawImage(f, ox + i * (32 * s + 2 * s), oy, 32 * s, 40 * s));
         const last = fr[fr.length - 4]; nx.save(); nx.translate(ox + fr.length * (32 * s + 2 * s) + 32 * s, oy); nx.scale(-1, 1); nx.drawImage(last, 0, 0, 32 * s, 40 * s); nx.restore(); };

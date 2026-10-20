@@ -1,94 +1,67 @@
 /**
- * Side-view class gear (Claude 5): headgear and held items in profile, facing right, in the handoff's colours and
- * banded shading. Phase 1 covers the prototype classes (warden, arcanist, huntsman); any other class falls back to
- * its front headgear squeezed to profile width and no held item. Phase 2 fills in the other 21 classes and NPCs.
+ * Side-view class gear registry + contributor guide (Claude 5).
+ *
+ * WHERE: one file per school, src/art/side/classes/<school>.ts, default-exporting { <class>: SideGear } for its two
+ * classes. Owners: ash, rime, hunt + shared gear: Claude 5 · storm, radiance, umbral, verdant, song: Claude 4 ·
+ * blade, iron, fist, guile: Claude 2. Shared worn gear (paperdoll weapons, helm sets, alt headwear, accessories):
+ * src/art/side/shared/*, Claude 5. Contract and helpers: ./kit.ts. Edit only your files.
+ *
+ * WHAT IS AUTOMATIC (don't redraw it): torso, sleeves, hands, legs and boots are sampled from the hero's real front
+ * body (body.ts), so the class colours, dyes, chest sets and gloves come through. The head, face and hair are drawn
+ * in profile (head.ts). The class cloak (HERO.back) is sampled and hung behind as a generic cloak. You add only the
+ * HEADGEAR and the HELD ITEMS, plus `back` when the class's back gear isn't a cloak.
+ *
+ * THE GRID: 32×40 canvas, facing RIGHT (left = flipX). Pivot bottom-centre, ground below row 37 (feet rows 36–37).
+ * Head: skull ~x 8–23, rows 6–21; face edge x 23, nose x 24; eye ~x 19–21 row 15; brow band rows 11–12; crown
+ * rows 0–10. Torso x 11–20, rows 22–32 (robes to 35). Near arm hangs at x 14–16 from row 22; its hand reaches
+ * x 14+`hold` … 16+`hold` at about row 30 when the class holds something. Behind = smaller x.
+ *
+ * SideGear (kit.ts):
+ *   head(g, P)                headgear in profile; brims seen edge-on stay full width, domes ~x 7–24.
+ *   open                      true for circlets/bands/open hoods (hair crown stays drawn under it).
+ *   held(g, P, hand, phase, swing)  item in front of the near arm (staves, bows, swords), with `hold` (px reach,
+ *                             ~4–6; 0 = the arm swings freely and `swing` says where the hand is, for censers/axes).
+ *   farHeld(g, P, swing, ph)  far-arm item between body and near arm (shields edge-on, off-hand lanterns/books);
+ *                             shift x by round(swing/2).
+ *   back(g, P, phase)         back gear in profile, drawn behind the body INSTEAD of the sampled cloak (scabbards,
+ *                             slung staves, quivers, banners); `keepCloak: true` draws it over the cloak instead.
+ * Every function draws on a fresh canvas at dy = 0; the composer lifts it with the body's bob and draws the ink
+ * outline (OUTLINE RULE: never draw ink outlines yourself; one layer = one outline, so draw each item solid).
+ *
+ * PHASES (body.ts Phase): idle | a (near leg forward) | pass (far leg swinging) | b (far leg forward) | pass2.
+ * Walk = [a, pass, b, pass2]; idle = [idle, idle with the body 1 px up]. Bob convention: held items add bob(ph)
+ * (−1 on passes) and, if tall, tilt(ph) (±1 lean at the top on contacts); low items add dip(ph) on footfalls.
+ *
+ * STYLE: the handoff's — banded shading (kit band(): light column, body, dark column), light from the top left,
+ * colours from the class's front art (art.js HERO[cls]), no external assets.
+ *
+ * CHECK YOUR WORK: start the e2e server (npx vite --config tools/e2e/vite.test.config.mjs --port 51xx --strictPort;
+ * it doesn't watch files: restart it after edits), then
+ *   node tools/art-side/sheet.mjs --base http://localhost:51xx --classes knight,juggernaut [--scale 8] [--nohat]
+ * → tools/e2e/out/side/side-sheet.png (front vs side idle + walk, flipX) and side-sheet-1x.png (1× on grass, 2×).
+ * Add --name <yours> so sheets don't overwrite each other. One headless Chrome at a time (cdp.mjs takes the lock);
+ * stop your server by PID afterwards. Typecheck clean, files under ~400 lines.
  */
-import { M, type Gfx, type Pal } from './mvApi';
-import type { Phase } from './body';
+import { M } from './mvApi';
+import type { Pal } from './mvApi';
+import type { SideGear } from './kit';
+import ash from './classes/ash';
+import rime from './classes/rime';
+import storm from './classes/storm';
+import radiance from './classes/radiance';
+import umbral from './classes/umbral';
+import verdant from './classes/verdant';
+import blade from './classes/blade';
+import iron from './classes/iron';
+import fist from './classes/fist';
+import hunt from './classes/hunt';
+import guile from './classes/guile';
+import song from './classes/song';
 
-const ST = ['#eef4ff', '#a9bbd6', '#62759a'], GO = ['#ffe27a', '#f0a823', '#b8661a'];
-const BL = ['#5aaeff', '#2f74e0', '#1f469c'], RR = ['#ff6a6a', '#d63447', '#8a1f45'];
-const CAP = ['#d9c4a0', '#a8906a', '#8a6a4a', '#6e5a40'];
+export type { SideGear } from './kit';
 
-/** held items ride the stride: up 1 on the pass frames, and a pendulum lean against the hand's swing on contact */
-const bob = (ph: Phase) => (ph === 'pass' || ph === 'pass2' ? -1 : 0);
-const tilt = (ph: Phase) => (ph === 'a' ? -1 : ph === 'b' ? 1 : 0);
-
-/** a vertical banded strip (art.js sh) */
-const band = (g: Gfx, x: number, y: number, w: number, h: number, c: string[]) => { g.r(x, y, w, h, c[1]); g.r(x, y, 1, h, c[0]); g.r(x + w - 1, y, 1, h, c[2]); };
-
-export interface SideGear {
-  /** headgear; `open` leaves the crown's hair drawn (circlets, bands) */
-  head?: (g: Gfx, P: Pal) => void;
-  open?: boolean;
-  /** held item, drawn in front; `hold` = how far forward the near hand reaches to carry it (px) */
-  held?: (g: Gfx, P: Pal, hand: number, phase: Phase) => void;
-  hold?: number;
-  /** item on the far arm, between the body and the near arm (shields) */
-  farHeld?: (g: Gfx, P: Pal, swing: number, phase: Phase) => void;
-}
-
-export const SIDE: Record<string, SideGear> = {
-  warden: {
-    head: (g) => {
-      // plume crest front to back, the dome, a gold brow band, neck guard behind, cheek guard and nasal in front
-      g.poly([[9, 8], [10, 4], [13, 1.5], [17, 1.5], [20, 3.5], [21, 7], [18, 5], [14, 4], [11, 6]], BL[1]);
-      g.line(10, 4, 13, 2, BL[0]); g.line(13, 2, 17, 2, BL[0]); g.line(18, 5, 21, 7, BL[2]);
-      g.ell(15.5, 10, 8.4, 6.4, ST[2]); g.ell(15, 9.6, 7.8, 5.8, ST[1]); g.ell(12.5, 7.4, 3.8, 2.4, ST[0]);
-      g.x.clearRect(0, 13, 32, 27);
-      g.r(7, 11, 17, 2, GO[1]); g.r(7, 11, 17, 1, GO[0]);
-      band(g, 7, 13, 4, 5, ST); g.r(7, 17, 4, 1, ST[2]);
-      band(g, 15, 13, 3, 5, ST);
-      g.r(23, 12, 2, 4, ST[1]); g.p(23, 12, ST[0]); g.p(24, 15, ST[2]);
-    },
-    farHeld: (g, _P, swing, ph) => {
-      // the rime shield held forward, seen edge-on: steel rim, a sliver of the blue face, the gold boss standing out
-      const x = 21 + Math.round(swing / 2), y = 20 + bob(ph);
-      g.r(x, y, 3, 17, ST[2]); g.r(x, y + 1, 1, 15, ST[1]); g.r(x, y, 3, 1, ST[0]);
-      g.r(x + 2, y + 1, 1, 15, BL[1]); g.p(x + 2, y + 1, BL[0]); g.p(x + 2, y + 15, BL[2]);
-      g.p(x + 3, y + 8, GO[0]); g.p(x + 3, y + 9, GO[1]);
-    },
-  },
-  arcanist: {
-    head: (g) => {
-      // the wide brim seen edge-on, the cone, its tip curling back with the lantern hanging from it
-      g.ell(15.5, 12, 11.6, 2.2, RR[2]); g.ell(15.5, 11.4, 11, 1.6, RR[1]); g.r(6, 11, 9, 1, RR[0]);
-      g.poly([[8, 11], [12.5, 2.5], [22, 11]], RR[1]); g.poly([[17, 11], [12.5, 2.5], [22, 11]], RR[2]);
-      g.line(10, 10, 12, 4, RR[0]);
-      g.poly([[13, 3.5], [11, 1], [7, 0.5], [3, 2.5], [6, 2], [10, 2.6]], RR[1]); g.line(11, 1, 7, 1, RR[0]);
-      g.r(11, 9, 9, 2, GO[1]); g.r(11, 9, 9, 1, GO[0]); g.p(19, 9, '#ff7a2a'); g.p(18, 9, '#ffd36a');
-      g.line(3, 3, 3, 5, '#3a2a4a'); g.r(1, 6, 5, 5, '#3a2a4a'); g.r(2, 7, 3, 3, '#ffd36a'); g.p(3, 7, '#fff0b0'); g.r(1, 5, 5, 1, '#5a4470');
-    },
-    hold: 6,
-    held: (g, _P, hand, ph) => {
-      // the ember staff carried upright in front, orb above the brow line; its top sways against the stride
-      const x = 25 + hand - 6, b = bob(ph), t = tilt(ph);
-      g.line(x + t, 10 + b, x, 37, '#c4834a'); g.line(x + 1 + t, 10 + b, x + 1, 37, '#7d4a2a'); g.r(x - 1 + t, 9 + b, 4, 2, GO[1]);
-      g.disc(x + 0.5 + t, 5.5 + b, 3, '#ff7a2a'); g.disc(x + t, 5 + b, 1.8, '#ffd36a'); g.p(x - 1 + t, 4 + b, '#ffffff');
-      g.p(x + 1 + t, 1 + b, '#ffb03a'); g.p(x - 1 + t, 0 + b, '#ff7a2a');
-    },
-  },
-  huntsman: {
-    head: (g) => {
-      // a leather cap: crown, banded brim with a peak forward, the near earflap, the tail behind
-      g.poly([[9, 6], [4, 9], [2, 13], [6, 10], [9, 9]], CAP[2]); g.p(2, 12, '#efe6cf'); g.p(3, 12, '#efe6cf');
-      g.ell(15.5, 9, 8.2, 4.8, CAP[1]); g.ell(14.5, 8, 6.4, 3.4, CAP[0]);
-      g.x.clearRect(0, 12, 32, 28);
-      g.r(7, 11, 16, 3, CAP[2]); g.r(7, 11, 16, 1, CAP[1]);
-      g.poly([[22, 11], [26, 12], [26, 13.5], [22, 14]], CAP[2]); g.line(22, 11, 26, 12, CAP[1]);
-      band(g, 13, 14, 3, 6, [CAP[0], CAP[1], CAP[3]]);
-    },
-    hold: 4,
-    held: (g, _P, hand, ph) => {
-      // the crossbow at the hip, pointing the way he walks; it dips on each footfall
-      const x = 18 + hand - 4, y = 27 + (ph === 'a' || ph === 'b' ? 1 : 0) + bob(ph);
-      g.r(x, y, 10, 2, '#8a4f2a'); g.r(x, y, 10, 1, '#b06a38');
-      g.line(x + 9, y - 5, x + 9, y + 6, '#5a5f7a'); g.line(x + 10, y - 5, x + 10, y + 6, '#8a90a8');
-      g.line(x + 9, y - 5, x + 4, y, '#fff1cf'); g.line(x + 9, y + 6, x + 4, y + 1, '#fff1cf');
-      g.r(x + 9, y, 3, 1, '#e8c98f'); g.p(x + 12, y, '#d3ddff');
-    },
-  },
-};
+/** every class's side gear, by class id */
+export const SIDE: Record<string, SideGear> = { ...ash, ...rime, ...storm, ...radiance, ...umbral, ...verdant, ...blade, ...iron, ...fist, ...hunt, ...guile, ...song };
 
 /** Fallback headgear: the class's front hat squeezed from 21 to 13 columns, set back over the skull. */
 export function squeezedHead(cls: string, P: Pal): HTMLCanvasElement | null {
