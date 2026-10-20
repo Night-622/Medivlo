@@ -123,6 +123,14 @@ export class SimWorld {
     const extra: Passive[] = c.buffs.filter((b) => b.mods.length || b.procs.length).map((b) => ({ mods: b.mods, procs: b.procs }));
     c.stats = extra.length ? compileOnto(c.base, extra) : c.base;
     c.statsDirty = false;
+    // a hero's pools follow buffs too (auras, food, sets): a higher max does not heal, a lower one clamps
+    if (c.kind === 'player') {
+      const p = c as PlayerEnt;
+      const hp = Math.round(p.stats.stats.hp ?? p.maxHp), em = Math.round(p.stats.stats.ember ?? p.emberMax), st = Math.round(p.stats.stats.stamina ?? p.staminaMax);
+      if (hp > 0 && hp !== p.maxHp) { p.maxHp = hp; p.hp = Math.min(p.hp, hp); }
+      if (em > 0 && em !== p.emberMax) { p.emberMax = em; p.ember = Math.min(p.ember, em); }
+      if (st > 0 && st !== p.staminaMax) { p.staminaMax = st; p.stamina = Math.min(p.stamina, st); }
+    }
   }
 
   condCtx(c: Combatant, target?: Combatant | null): CondCtx {

@@ -6,7 +6,10 @@ import { HC_PIECES } from '@/data/items/hc/armour.gen';
 import { Btn } from '@/net/types';
 import { newCharacter } from '@/systems/rules/character';
 import { P } from '@/systems/rules/curves';
-import { bossElement, itemMods, legendary } from '@/systems/rules/gear';
+import { itemInfo, itemMods, legendary, slotsFor } from '@/systems/rules/gear';
+import { allUniques, uniqueInstance } from '@/systems/rules/uniques';
+import { dealDamage } from '@/systems/sim/combat';
+import { spend } from '@/systems/sim/builds';
 import { compileStats } from '@/systems/rules/playerStats';
 import type { CharacterSave, GearSlot, ItemInstance } from '@/systems/rules/types';
 import { check, dummy, hero, near, world } from './features-harness';
@@ -76,32 +79,42 @@ function setBonuses(): void {
   check(near(withM, 0.15 * 1.25), 'Set Mastery: the Attuned +15% Rime damage becomes +18.75%', `Attuned part is still +${(withM * 100).toFixed(2)}% (hook 'setMastery' is never read)`);
 }
 
+/** Legendaries and uniques carry bespoke effects (data/items/hc/uniques.ts, Claude 5): two of them proven in the sim. */
 function legendaries(): void {
-  // Morwen's axe (fxIndex 1): kills heal 10% and restore 10 Ember
-  const lg = legendary('lg_morwen')!;
-  for (const main of ['lg_morwen', 'w_axe_ember']) {
+  // Morwen's Cleaver: half of each attack lands as Rime
+  {
     const w = world();
-    const s = { ...newCharacter('juggernaut'), level: 10 }; // axe, no lifesteal (a reaver's 7% would refill it from the killing blow)
-    s.equipment.main = { uid: 'm', base: main, ilvl: 10, qty: 1 };
-    const p = hero(w, 'a', s);
-    const id = w.sim.spawn({ creature: 'bx_wolf', level: 10, space: 't', x: 30, y: 0, dormant: true });
-    p.ember = 0; p.hp = Math.round(p.maxHp * 0.5);
-    const hp0 = p.hp;
-    w.sim.damage(id, 1e12, 'physical', p.id);
-    const healed = (p.hp - hp0) / p.maxHp;
-    // every melee kill also heals 5% (bloodlust)
-    check(main === lg.id ? near(p.ember, 10) && near(healed, 0.15, 0.01) : near(p.ember, 0) && near(healed, 0.05, 0.01),
-      main === lg.id ? `${lg.name}: a kill restores 10 Ember and heals 10% (+5% bloodlust)` : 'plain ember axe: a kill gives no Ember, only the 5% bloodlust', `ember ${p.ember}, healed ${(healed * 100).toFixed(1)}%`);
+    const s = { ...newCharacter('juggernaut'), level: 14 };
+    s.equipment.main = { uid: 'm', base: 'lg_morwen', ilvl: 14, qty: 1 };
+    const p = hero(w, 'a', s), d = dummy(w, 30, 0);
+    const n0 = w.events.length;
+    dealDamage(w.sim.w, p, d, 100, 'physical');
+    const kinds = w.since(n0, 'combat:hit').filter((e) => e.p.sourceId === p.id && e.p.kind === 'dmg').map((e) => String(e.p.type)).sort().join(',');
+    check(kinds === 'physical,rime', `${legendary('lg_morwen')!.name}: an attack lands half as Rime`, kinds);
   }
-  // The Engine's amulet (fxIndex 3): immune to its boss's signature status
-  const eng = legendary('lg_engine')!, sig = bossElement(eng.boss).signature;
-  const w = world();
-  const a = { ...newCharacter('warden'), level: 10 };
-  a.equipment.amulet = { uid: 'am', base: eng.id, ilvl: 10, qty: 1 };
-  const pa = hero(w, 'a', a), pb = hero(w, 'b', { ...newCharacter('warden'), level: 10 }, 200, 0);
-  w.sim.applyStatus(pa.id, { id: sig as never, dur: 2000 });
-  w.sim.applyStatus(pb.id, { id: sig as never, dur: 2000 });
-  check(!pa.statuses.has(sig as never) && pb.statuses.has(sig as never), `${eng.name}: immune to ${sig} (the hero beside it is not)`);
+  // Engine's Sigil: every 50 Ember spent overcharges you (a cast-speed buff and a shock nova)
+  {
+    const w = world();
+    const s = { ...newCharacter('sparkwright'), level: 14 };
+    s.equipment.amulet = { uid: 'am', base: 'lg_engine', ilvl: 14, qty: 1 };
+    const p = hero(w, 'a', s), d = dummy(w, 40, 0);
+    p.ember = p.emberMax = 200;
+    const n0 = w.events.length;
+    spend(w.sim.w, p, 'ember', 50);
+    const shocked = d.statuses.has('shock'), buffed = p.buffs.some((b) => b.id === 'lg:engine');
+    check(buffed && shocked && w.since(n0, 'combat:hit').some((e) => e.p.targetId === d.id), `${legendary('lg_engine')!.name}: 50 Ember spent gives +30% cast speed and a shock nova`, JSON.stringify({ buffed, shocked }));
+  }
+  // every unique resolves, wears in its slot and changes the hero
+  const bad = allUniques().filter((u) => {
+    const info = itemInfo(u.id), slot = info ? slotsFor(info)[0] : undefined;
+    if (!info || !slot) return true;
+    const s = { ...newCharacter('warden'), level: 40 };
+    const plain = JSON.stringify(compileStats(s).stats);
+    s.equipment[slot] = { uid: 'u', base: u.id, ilvl: 40, qty: 1, ...(uniqueInstance(u.id, 40) ?? {}) } as ItemInstance;
+    const c = compileStats(s);
+    return JSON.stringify(c.stats) === plain && !c.procs.length;
+  }).map((u) => u.id);
+  check(!bad.length && allUniques().length === 40, `all ${allUniques().length} uniques resolve, fit a slot and change the hero who wears them`, bad.join(','));
 }
 
 export function gearChecks(): void {

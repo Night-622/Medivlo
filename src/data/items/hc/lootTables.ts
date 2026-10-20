@@ -9,6 +9,7 @@ import { HC_LEGENDARIES } from './legendary.gen';
 import type { LootTable } from '@/systems/rules/affixTypes';
 import type { SchoolId } from '@/systems/rules/types';
 import { essenceOf } from './build-items';
+import { HC_UNIQUES } from './uniques';
 
 const SCHOOLS: SchoolId[] = ['ash', 'rime', 'storm', 'radiance', 'umbral', 'verdant', 'blade', 'iron', 'fist', 'hunt', 'guile', 'song'];
 
@@ -35,6 +36,14 @@ export const HC_LOOT_TABLES: LootTable[] = [
   // the 25 legendary bosses: on top of the legendary itself, a rune and a rare piece
   ...HC_LEGENDARIES.map((l): LootTable => ({ id: `tbl:${l.boss}`, rolls: 1, entries: [{ weight: 60, rune: 'any' }, { weight: 40, gear: { minRarity: 'runed', forKit: true } }] })),
 ];
+
+// each u_* unique joins its home table (weight 25; once per character, repeats roll a wrought kit piece) (Claude 5)
+for (const un of HC_UNIQUES) {
+  if (!un.home.startsWith('tbl:')) continue;
+  const t = HC_LOOT_TABLES.find((x) => x.id === un.home);
+  if (!t) throw new Error(`[loot] unique ${un.id}: no table ${un.home}`);
+  t.entries.push({ weight: 25, unique: un.id });
+}
 
 const BY_ID = new Map(HC_LOOT_TABLES.map((t) => [t.id, t]));
 export const lootTable = (id: string): LootTable | undefined => BY_ID.get(id);

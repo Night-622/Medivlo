@@ -61,6 +61,10 @@ outliers(rows).forEach((l) => console.log(l));
 const dead: ClassDead[] = [];
 if (FULL) {
   console.log(`# ── dead content (direct A/B on the typical L${PROBE_LEVEL} build; dead = <2% DPS, <2% survival, <2% EHP and no utility)`);
+  // known probe / bot limits (Claude 5): read the list with these in mind
+  console.log('#    caveats: survival = share of the net drain cancelled; cooldown cuts can read as a survival LOSS (the bot then casts heals and defensives less often: chooseSlot order);');
+  console.log('#    calibration may miss the 45–90 s window for heal-heavy classes (survival jumps across it between multipliers); traps, ground heals at the aim point, slows and other');
+  console.log('#    crowd control on the boss bag, and ally buffs (measured solo) are mostly invisible here.');
   classes.forEach((c, ci) => {
     try {
       const d = deadContent(c, PROBE_LEVEL);

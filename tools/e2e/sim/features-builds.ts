@@ -10,7 +10,7 @@ import { compile, evalCond, type CondCtx } from '@/systems/rules/stats';
 import type { CharacterSave, HcSpell, Passive, Trigger } from '@/systems/rules/types';
 import { Btn } from '@/net/types';
 import { spend } from '@/systems/sim/builds';
-import { applyStatus, convertShares, dealDamage } from '@/systems/sim/combat';
+import { addShield, applyStatus, convertShares, dealDamage } from '@/systems/sim/combat';
 import { cast, spellView, weaponRoll } from '@/systems/sim/player';
 import { availablePoints } from '@/systems/rules/character';
 import { allNodes, canLearn, MAX_SHARED_KEYSTONES } from '@/systems/rules/tree';
@@ -276,7 +276,23 @@ function minions(): void {
   check(!!a.z && !!b.z && Math.abs(b.z.cast.dmgMult / a.z.cast.dmgMult - 1.6) < 1e-9, `${totem!.name}: +60% minion damage makes the totem hit 60% harder`, `×${b.z && a.z ? (b.z.cast.dmgMult / a.z.cast.dmgMult).toFixed(2) : '?'}`);
 }
 
+/** Pools follow buffs (an hp aura raises max HP), and player:damaged reports health lost after a shield. */
+function poolsAndShields(): void {
+  const w = world(), p = hero(w, 'a', save('warden'));
+  const h0 = p.maxHp;
+  give(p, { aura: [{ id: 'oath', r: 160, mods: [{ stat: 'hp', op: 'pct', value: 0.1 }] }] });
+  w.run(1200);
+  check(Math.abs(p.maxHp / h0 - 1.1) < 0.01, 'an aura’s +10% max health raises the hero’s max HP (buffs move the pools)', `${h0} → ${p.maxHp}`);
+  const d = dummy(w, 40, 0);
+  p.spawnProtectUntil = 0;
+  addShield(w.sim.w, p, 1e6, 5000);
+  const n0 = w.events.length;
+  dealDamage(w.sim.w, d, p, 200, 'ash');
+  check(!w.since(n0, 'player:damaged').length, 'a hit fully soaked by a shield reports no health lost (player:damaged)');
+}
+
 export function buildChecks(): void {
+  poolsAndShields();
   minions();
   keystonesAndMastery();
   conversion();
