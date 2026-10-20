@@ -11,6 +11,8 @@ import { objectsAround, tileDist, usableNow } from '../hc/interact';
 
 /** a little inside the authority's USE_RANGE so a prompt never promises what the server refuses */
 const FOCUS_RANGE = 1.9;
+/** tiles an NPC counts as nearer than an object (talking beats a stone or a sign at about the same distance) */
+const NPC_BIAS = 0.75;
 const LABEL: Partial<Record<WorldObject['kind'], string>> = { waystone: 'Wake', door: 'Enter', 'npc-anchor': 'Talk', chest: 'Open', sign: 'Read', lore: 'Read', lever: 'Pull' };
 
 export class FocusPrompt {
@@ -59,10 +61,11 @@ export class FocusPrompt {
         const d = tileDist(o, p.x, p.y);
         if (d < bd) { bd = d; best = o; }
       }
-      // NPC entities: talk to whoever stands closest (anchored or not); the authority re-checks range
+      // NPC entities: talk to whoever stands closest (anchored or not); the authority re-checks range. People win
+      // over a stone or object about as close (Sela Moth keeps the Brindlecross waystone and stands on its step)
       for (const n of this.npcs()) {
         const d = Math.hypot(n.x - p.x, n.y - p.y) / TILE_SIZE;
-        if (d < bd) { bd = d; best = { id: n.id, kind: 'npc-anchor', at: [Math.floor(n.x / TILE_SIZE), Math.floor(n.y / TILE_SIZE) - 1], props: { name: n.name, label: 'Talk' } }; }
+        if (d < FOCUS_RANGE && d - NPC_BIAS < bd) { bd = Math.max(0, d - NPC_BIAS); best = { id: n.id, kind: 'npc-anchor', at: [Math.floor(n.x / TILE_SIZE), Math.floor(n.y / TILE_SIZE) - 1], props: { name: n.name, label: 'Talk' } }; }
       }
       this.focus = best;
     }

@@ -32,10 +32,11 @@ try {
   if (profile) spans((await page.send('Profiler.stop')).profile);
   const r = await page.eval(`(() => {
     const h = window.__hitch; h.done = true;
-    const f = h.frames.slice(2).sort((a, b) => a - b), q = (p) => f[Math.min(f.length - 1, Math.floor(p * f.length))];
+    const raw = h.frames.slice(2), at = [], tAt = []; let acc = 0; raw.forEach((x, i) => { acc += x; if (x > 33) { at.push(i); tAt.push(Math.round(acc)); } });
+    const f = [...raw].sort((a, b) => a - b), q = (p) => f[Math.min(f.length - 1, Math.floor(p * f.length))];
     const s = window.__world.chunkStats(), s0 = h.s0;
     return { where: window.__world.where(), frames: f.length, p50: q(0.5), p95: q(0.95), p99: q(0.99), max: f[f.length - 1],
-      over33: f.filter((x) => x > 33).length, over50: f.filter((x) => x > 50).length, top: f.slice(-8).map((x) => Math.round(x)),
+      over33: f.filter((x) => x > 33).length, over50: f.filter((x) => x > 50).length, spikesAtMs: tAt, top: f.slice(-8).map((x) => Math.round(x)),
       long: h.long.sort((a, b) => b - a).slice(0, 10),
       shows: s.show.shows - s0.show.shows, showMax: s.show.max, tilesMs: s.show.tiles - s0.show.tiles, spritesMs: s.show.sprites - s0.show.sprites, lightsMs: s.show.lights - s0.show.lights,
       slowShows: s.show.slow.slice(s0.show.slow.length, s0.show.slow.length + 8),
@@ -45,7 +46,7 @@ try {
   const n = (x) => (typeof x === 'number' ? Math.round(x * 10) / 10 : x);
   console.log(`${space} ${mode} ${secs}s → ${JSON.stringify(r.where)}`);
   console.log(`frames ${r.frames}: p50 ${n(r.p50)} p95 ${n(r.p95)} p99 ${n(r.p99)} max ${n(r.max)} ms; >33 ms ${r.over33}, >50 ms ${r.over50}; slowest ${r.top.join(' ')}`);
-  console.log(`long tasks (ms): ${r.long.join(' ') || 'none'}`);
+  console.log(`long tasks (ms): ${r.long.join(' ') || 'none'}; frames > 33 ms at ${r.spikesAtMs.join(', ') || '-'} ms into the run`);
   console.log(`chunks shown ${r.shows} (max ${n(r.showMax)} ms; tiles ${n(r.tilesMs)} sprites ${n(r.spritesMs)} lights ${n(r.lightsMs)} ms total), worker ${r.worker} delivered ${r.delivered}, sync builds ${r.syncBuilds}`);
   for (const x of r.slowShows) console.log(`  slow show ${x}`);
   console.log(`art bakes ${r.bakes} (${n(r.bakeMs)} ms, max ${n(r.bakeMax)})`);

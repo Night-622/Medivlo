@@ -23,22 +23,25 @@ export interface MapMarker {
   startsLit?: boolean;
 }
 
-const overviews = new Map<string, { w: number; h: number; rgba: Uint8ClampedArray }>();
+/** An overview image, and which of its pixels are road (for the map's label placement). */
+export interface Overview { w: number; h: number; rgba: Uint8ClampedArray; road: Uint8Array }
+const overviews = new Map<string, Overview>();
 
 /** RGBA overview of a school realm, one pixel per REALM_OVERVIEW_STEP tiles (an instance: one per tile) (cached). */
-export function realmOverview(space: string): { w: number; h: number; rgba: Uint8ClampedArray } {
+export function realmOverview(space: string): Overview {
   const hit = overviews.get(space);
   if (hit) return hit;
   const gen = spaceRuntime(space).gen;
   const S = space.startsWith('inst:') ? 1 : REALM_OVERVIEW_STEP, w = Math.ceil(gen.widthTiles / S), h = Math.ceil(gen.heightTiles / S);
-  const rgba = new Uint8ClampedArray(w * h * 4);
+  const rgba = new Uint8ClampedArray(w * h * 4), road = new Uint8Array(w * h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const tx = x * S, ty = y * S;
-    const c = gen.paletteAt(tx, ty).mini[CORNER_MINI[gen.cornerAt(tx, ty)] ?? 'ground'];
+    const tx = x * S, ty = y * S, corner = CORNER_MINI[gen.cornerAt(tx, ty)] ?? 'ground';
+    const c = gen.paletteAt(tx, ty).mini[corner];
+    if (corner === 'path') road[y * w + x] = 1;
     const i = (y * w + x) * 4;
     rgba[i] = c >> 16; rgba[i + 1] = (c >> 8) & 255; rgba[i + 2] = c & 255; rgba[i + 3] = 255;
   }
-  const out = { w, h, rgba };
+  const out = { w, h, rgba, road };
   overviews.set(space, out);
   return out;
 }

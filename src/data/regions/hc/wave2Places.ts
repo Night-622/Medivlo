@@ -133,8 +133,8 @@ export const WAVE2_CONCORDIA: ConcordiaExtra[] = [
   c('obj:skald-legion-drum', 'landmark:legion-camp', 'The great summons drum', -2, -8, 'Strike'),
   // shared Concordia Act II depth (Claude 5): Brindlecross, the roads out, Abbeyshore. Area centres are points on
   // the A* walks (Brindlecross → wolf tracks, Thornhollow → Stag's Rest, the Goose → Shore Chapel)
-  c('obj:cc-goose-letters', 'obj:brind-goose-bed', 'A washstand drawer of letters', -1, 0, 'Open the drawer'),
-  c('obj:cc-waystone-listen', 'landmark:brind-waystone', 'Beside the waystone', 1, 0, 'Listen'),
+  c('obj:cc-goose-letters', 'obj:brind-goose-bed', 'A washstand drawer of letters', -4, 0, 'Open the drawer'), // 4 tiles off the bed and Wil, so neither loses the [F] focus
+  c('obj:cc-waystone-listen', 'landmark:brind-waystone', 'A few steps from the waystone', 4, -2, 'Listen'), // 4 tiles from Sela Moth, who keeps the stone
   c('area:cc-gloam-edge', 'landmark:gloam-wolf-tracks', 'Where the moor meets the Gloamwood', 0, 4), // where the walk from Brindlecross enters region:gloam
   c('area:cc-shore-road', 'landmark:brind-gilded-goose', 'The milestone on the shore road', 201, -111), // halfway to the Shore Chapel
   c('area:cc-briar-path', 'landmark:thorn-briar-kettle', 'The Briar path into the Gloamwood', 150, -13), // just inside region:gloam on the walk from Thornhollow

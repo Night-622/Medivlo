@@ -368,7 +368,7 @@ export const CONCORDIA_EXTRA: ConcordiaExtra[] = [
   c('landmark:falconer-supper-ledge', 'landmark:cliff-lightning-jar', 'A flat rock below the hooded ledges', 0, -19), // ~24 steps up the cliff path (Bartle's escort)
   c('area:falconer-cliff-path', 'landmark:cliff-lightning-jar+landmark:falconer-supper-ledge', 'The Stormcliff path'),
   c('landmark:falconer-gate-dovecote', 'landmark:brind-gilded-goose', 'The dovecote behind the inn', 0, -4),
-  c('obj:falconer-reply-to-wren', 'landmark:falconer-gate-dovecote', 'A note for Wren', 0, 1, 'Read'),
+  c('obj:falconer-reply-to-wren', 'landmark:falconer-gate-dovecote', 'A note for Wren', 0, -4, 'Read'), // up at the dovecote, clear of the Goose bed's [F] focus
   c('landmark:falconer-perch-post', 'landmark:heart-camp', 'A perch-post', -5, -3),
   c('obj:falconer-jess-post', 'landmark:falconer-perch-post', 'Jesses on the post', 0, 1, 'Examine'),
   c('obj:falconer-fallen-hoods', 'landmark:legion-camp', 'Three hoods in the dust', 2, -3, 'Examine'),

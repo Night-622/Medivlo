@@ -12,6 +12,7 @@ import { C, HCButton, n, panel, tab, text } from '@/ui/kit/hc';
 import { isAction } from '@/ui/kit/hc/keys';
 import { REALM_OVERVIEW_STEP, mapMarkers, morvaneRegionAt, realmOverview, zoneInfo, type MapMarker } from '@/world/hc/overview';
 import { REALMS, instanceDef, placeName, realmOf } from '@/world/hc/spaces';
+import { MapLabels, capFirst } from './labels';
 
 export interface MapScreenSource {
   /** the local player's space and position (world px) */
@@ -48,6 +49,8 @@ export class MapScreen {
   /** current level's map transform: world tile → screen */
   private toScreen: ((tx: number, ty: number) => [number, number]) | null = null;
   private markers: MapMarker[] = [];
+  /** the realm or instance overview on screen (label placement keeps names off its roads) */
+  private ov: { ox: number; oy: number; scale: number; w: number; h: number; road: Uint8Array } | null = null;
   open = false;
 
   constructor(private scene: Phaser.Scene, private src: MapScreenSource) {
@@ -114,6 +117,7 @@ export class MapScreen {
     this.view.removeAll(true);
     this.side.removeAll(true);
     this.toScreen = null;
+    this.ov = null;
     this.markers = [];
     this.drawCrumbs();
     if (level.kind === 'realms') this.drawRealms();
@@ -132,7 +136,7 @@ export class MapScreen {
     if (parent) items.push([parent === 'concordia' ? 'Morvane' : realmOf(parent)?.name ?? parent, { kind: 'space', space: parent }]);
     if (L.kind !== 'realms') items.push([L.space === 'concordia' ? 'Morvane' : L.space.startsWith('inst:') ? placeName(L.space, L.space).name : realmOf(L.space)?.name ?? L.space, { kind: 'space', space: L.space }]);
     if (L.kind === 'village') items.push([this.villageName(L.space, L.id), L]);
-    items.forEach(([label, lv], i) => this.crumbs.add(tab(this.scene, i * 158, 0, label, i === items.length - 1, () => this.go(lv))));
+    items.forEach(([label, lv], i) => this.crumbs.add(tab(this.scene, i * 158, 0, capFirst(label), i === items.length - 1, () => this.go(lv))));
   }
 
   // ───────────── textures ─────────────
@@ -161,14 +165,16 @@ export class MapScreen {
   private drawRealms(): void {
     this.image(this.mvTexture('hc-map:realms', 'mvrealm'), MX, MY, 2);
     const here = this.src.space();
+    const labels = new MapLabels(this.scene, this.view, { bounds: [MX, MY, MW, MH] });
+    const names: (() => void)[] = [];
     for (const r of world().REALMS) {
       const space = r.id === 'concord' ? 'concordia' : `realm:${r.id}`;
       const known = this.realmKnown(space);
       const x = MX + r.x * 2, y = MY + r.y * 2;
-      const label = text(this.scene, x, y + (r.id === 'concord' ? 0 : 26), known ? r.name : '???', 'caption', known ? C.text : C.text500).setOrigin(0.5);
-      this.view.add(label);
-      if (space === here) this.view.add(this.scene.add.rectangle(x, y - 14, 10, 10, n(C.gold)).setStrokeStyle(2, n(C.ink)));
+      names.push(() => labels.add(x, y + (r.id === 'concord' ? 0 : 26), known ? r.name : '???', known ? C.text : C.text300));
+      if (space === here) { this.view.add(this.scene.add.rectangle(x, y - 14, 10, 10, n(C.gold)).setStrokeStyle(2, n(C.ink))); labels.block(x, y - 14, 8); }
     }
+    for (const place of names) place();
     const mine = REALMS.find((r) => r.space === here) ?? REALMS.find((r) => r.space === this.src.homeSpace());
     if (mine) this.selectRealm(mine.space);
   }
@@ -224,6 +230,7 @@ export class MapScreen {
     const scale = Math.min(MW / ov.w, MH / ov.h);
     const ox = MX + (MW - ov.w * scale) / 2, oy = MY + (MH - ov.h * scale) / 2;
     this.image(key, ox, oy, scale);
+    this.ov = { ox, oy, scale, w: ov.w, h: ov.h, road: ov.road };
     this.toScreen = (tx, ty) => [ox + (tx / REALM_OVERVIEW_STEP) * scale, oy + (ty / REALM_OVERVIEW_STEP) * scale];
     this.drawMarkers(space);
     const r = realmOf(space)!;
@@ -247,12 +254,13 @@ export class MapScreen {
     const scale = Math.min(MW / ov.w, MH / ov.h);
     const ox = MX + (MW - ov.w * scale) / 2, oy = MY + (MH - ov.h * scale) / 2;
     this.image(key, ox, oy, scale);
+    this.ov = { ox, oy, scale, w: ov.w, h: ov.h, road: ov.road };
     this.toScreen = (tx, ty) => [ox + (tx + 0.5) * scale, oy + (ty + 0.5) * scale];
     this.drawMarkers(space);
     const d = instanceDef(space);
     const ms = mapMarkers(space);
     this.side.removeAll(true);
-    this.title(placeName(space, space).name, placeName(space, space).subtitle);
+    this.title(capFirst(placeName(space, space).name), placeName(space, space).subtitle);
     let y = 72;
     if (d?.theme) { this.para(d.theme[0].toUpperCase() + d.theme.slice(1) + '.', y); y += 56; }
     const n = (k: MapMarker['kind']) => ms.filter((m) => m.kind === k).length;
@@ -270,9 +278,9 @@ export class MapScreen {
     if (!v || !key) { this.para('No close-up of this place has been drawn yet.', 72); return; }
     let y = 64;
     for (const p of world().vilLayout(v)) {
-      const pill = text(this.scene, ox + p.x + p.w / 2, oy + p.y + p.h + 4, `${p.npc ? '◆ ' : ''}${p.label}`, 'caption', p.npc ? C.gold : C.text).setOrigin(0.5, 0);
+      const pill = text(this.scene, ox + p.x + p.w / 2, oy + p.y + p.h + 4, `${p.npc ? '◆ ' : ''}${capFirst(p.label)}`, 'caption', p.npc ? C.gold : C.text).setOrigin(0.5, 0);
       this.view.add([this.scene.add.rectangle(pill.x, pill.y + pill.height / 2, pill.width + 12, pill.height + 4, n(C.bg), 0.85), pill]);
-      if (y < MH - 40) { this.side.add(text(this.scene, 0, y, `${p.label} · ${p.svc}`, 'caption', p.npc ? C.gold : C.text300, PW - 32)); y += 26; }
+      if (y < MH - 40) { this.side.add(text(this.scene, 0, y, `${capFirst(p.label)} · ${p.svc}`, 'caption', p.npc ? C.gold : C.text300, PW - 32)); y += 26; }
     }
   }
 
@@ -294,8 +302,15 @@ export class MapScreen {
     const hidden = (m: MapMarker) => space === 'concordia' && !woken.has(m.id)
       && !found.has(morvaneRegionAt(m.at[0] / 4, m.at[1] / 4)?.id ?? '');
     this.markers = this.markers.filter((m) => !hidden(m));
+    const ov = this.ov;
+    const labels = new MapLabels(this.scene, this.view, {
+      bounds: [MX, MY, MW, MH],
+      road: ov ? (x, y) => { const px = Math.floor((x - ov.ox) / ov.scale), py = Math.floor((y - ov.oy) / ov.scale); return px >= 0 && py >= 0 && px < ov.w && py < ov.h && ov.road[py * ov.w + px] === 1; } : undefined,
+    });
+    const names: (() => void)[] = [];
     for (const m of this.markers) {
       const [x, y] = this.toScreen(m.at[0], m.at[1]);
+      if (m.kind !== 'zone') labels.block(x, y);
       if (m.kind === 'waystone') {
         const lit = woken.has(m.id) || m.startsLit;
         g.fillStyle(n(C.ink), 1).fillTriangle(x, y - 8, x + 7, y, x, y + 8).fillTriangle(x, y - 8, x - 7, y, x, y + 8);
@@ -304,7 +319,7 @@ export class MapScreen {
         g.fillStyle(n(C.ink), 1).fillRect(x - 6, y - 6, 12, 12);
         g.fillStyle(n(C.gold), 1).fillRect(x - 4, y - 4, 8, 8);
       } else if (m.kind === 'zone' && space !== 'concordia') {
-        this.view.add(text(this.scene, x, y, m.name, 'caption', C.text).setOrigin(0.5).setAlpha(0.85));
+        names.push(() => labels.add(x, y, m.name));
       } else if (m.kind === 'exit') {
         g.fillStyle(n(C.ink), 1).fillTriangle(x, y - 8, x + 7, y, x, y + 8).fillTriangle(x, y - 8, x - 7, y, x, y + 8);
         g.fillStyle(n(C.teal), 1).fillTriangle(x, y - 6, x + 5, y, x, y + 6).fillTriangle(x, y - 6, x - 5, y, x, y + 6);
@@ -323,7 +338,7 @@ export class MapScreen {
         if (!seen && !found.has(`hint:${m.id}`)) continue;
         g.fillStyle(n(C.ink), 1).fillCircle(x, y, 6);
         g.fillStyle(seen ? n(C.gold) : 0x6b7494, 1).fillCircle(x, y, 4);
-        this.view.add(text(this.scene, x, y + 14, seen ? m.name : '?', 'caption', seen ? C.text : C.text500).setOrigin(0.5).setAlpha(0.9));
+        names.push(() => labels.add(x, y, seen ? m.name : '?', seen ? C.text : C.text500, true));
       }
     }
     if (this.src.space() === space) {
@@ -331,7 +346,9 @@ export class MapScreen {
       const [x, y] = this.toScreen(p.x / TILE, p.y / TILE);
       g.fillStyle(n(C.ink), 1).fillCircle(x, y, 7);
       g.fillStyle(n(C.gold), 1).fillCircle(x, y, 5);
+      labels.block(x, y, 10);
     }
+    for (const place of names) place();
   }
 
   private waystoneButtons(space: string, filter: (w: MapMarker) => boolean, y: number): number {
@@ -339,15 +356,15 @@ export class MapScreen {
     for (const w of mapMarkers(space).filter((m) => m.kind === 'waystone' && filter(m))) {
       if (y > MH - 40) break;
       const lit = woken.has(w.id) || !!w.startsLit;
-      this.button(lit ? `Travel · ${w.name}` : `${w.name} (asleep)`, () => { this.src.travel(w.id); }, y, 'primary', !lit);
+      this.button(lit ? `Travel · ${capFirst(w.name)}` : `${capFirst(w.name)} (asleep)`, () => { this.src.travel(w.id); }, y, 'primary', !lit);
       y += 48;
     }
     return y;
   }
 
   private title(name: string, sub: string): void {
-    this.side.add(text(this.scene, 0, 0, name, 'h2', C.text, PW - 32));
-    this.side.add(text(this.scene, 0, 36, sub, 'caption', C.gold, PW - 32));
+    this.side.add(text(this.scene, 0, 0, capFirst(name), 'h2', C.text, PW - 32));
+    this.side.add(text(this.scene, 0, 36, capFirst(sub), 'caption', C.gold, PW - 32));
   }
 
   private para(s: string, y: number): void {

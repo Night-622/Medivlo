@@ -61,6 +61,11 @@ export function artCanvas(scene: Phaser.Scene, name: string): HTMLCanvasElement 
   return c;
 }
 
+/** Whether an art name still needs a first-use bake (recolours and landmarks; base frames never do). */
+export function needsBake(scene: Phaser.Scene, name: string): boolean {
+  return (name.startsWith('rc:') || name.startsWith('lm:')) && !scene.textures.exists(`hc-${name}`);
+}
+
 /** Texture for a placeable art name, baking recolours and landmarks on first use. */
 export function artTexture(scene: Phaser.Scene, name: string): ArtTex {
   if (name.startsWith('lm:')) {

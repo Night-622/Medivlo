@@ -8,7 +8,7 @@ import type { ChunkFeed } from './ChunkFeed';
 import { CHUNK_TILES, Depth, TILE_SIZE, bus } from '@/core';
 import type { SpaceRuntime } from '../hc/runtime';
 import type { HcChunk } from '../hc/space';
-import { artCanvas, artLights, artTexture } from './artCache';
+import { artCanvas, artLights, artTexture, needsBake } from './artCache';
 import type { Lighting } from './Lighting';
 
 const N = CHUNK_TILES;
@@ -50,9 +50,14 @@ function tileAtlas(scene: Phaser.Scene, rt: SpaceRuntime): string {
 const READY_PER_FRAME = 2;
 const WAIT_MS = 700;
 const PREFETCH = 2;
+/** main-thread ms per frame for baking the art of chunks waiting in the prefetch ring (at least one bake a frame) */
+const BAKE_MS = 3;
 
 export class ChunkRenderer {
   private live = new Map<string, View>();
+  /** prefetched chunks whose art is queued, and the art waiting to be baked before those chunks are shown */
+  private prebaked = new Set<string>();
+  private bakeQueue = new Set<string>();
   private tileset: string;
   /** chunks built here per frame when the worker can't help (each costs a few ms, up to ~150 ms cold) */
   budget = 1;
@@ -96,12 +101,35 @@ export class ChunkRenderer {
     // prefetch a ring beyond the view so walking never waits on generation
     if (feed) {
       for (let cy = y0 - PREFETCH; cy <= y1 + PREFETCH; cy++) for (let cx = x0 - PREFETCH; cx <= x1 + PREFETCH; cx++) {
-        if (this.rt.inBounds(cx, cy) && !this.live.has(`${cx},${cy}`)) feed.request(this.rt, cx, cy, 100 + (cx + 0.5 - ccx) ** 2 + (cy + 0.5 - ccy) ** 2);
+        if (!this.rt.inBounds(cx, cy) || this.live.has(`${cx},${cy}`)) continue;
+        feed.request(this.rt, cx, cy, 100 + (cx + 0.5 - ccx) ** 2 + (cy + 0.5 - ccy) ** 2);
+        this.queueBakes(cx, cy);
       }
     }
+    this.drainBakes();
     for (const [k, view] of this.live) {
       const { cx, cy } = view.chunk;
       if (cx < x0 - 1 || cx > x1 + 1 || cy < y0 - 1 || cy > y1 + 1) this.hide(k);
+    }
+  }
+
+  /** Queue the first-use bakes (realm recolours, landmarks) of a chunk that is ready but not shown yet. */
+  private queueBakes(cx: number, cy: number): void {
+    const k = `${cx},${cy}`;
+    if (this.prebaked.has(k)) return;
+    const c = this.rt.chunk(cx, cy, false);
+    if (!c) return;
+    this.prebaked.add(k);
+    for (const p of c.placements) if (needsBake(this.scene, p.art)) this.bakeQueue.add(p.art);
+  }
+
+  /** Bake queued art within BAKE_MS, so a chunk's show never pays for a big building's recolour on top. */
+  private drainBakes(): void {
+    const t0 = performance.now();
+    for (const art of this.bakeQueue) {
+      this.bakeQueue.delete(art);
+      try { artTexture(this.scene, art); } catch { /* show() reports a missing art */ }
+      if (performance.now() - t0 > BAKE_MS) break;
     }
   }
 
