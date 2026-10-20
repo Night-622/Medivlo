@@ -22,7 +22,7 @@ import { spawnCreature, spawnPet, spawnStoryPet } from './spawn';
 import { HC_STORY_PETS } from '@/data/items/hc/campaign-items';
 import { eliteAffix } from '@/data/enemies/hc/elites';
 import type { Combatant, EnemyEnt, PlayerEnt } from './state';
-import { dist2, facing4, freeSpot, SimWorld, type SimPorts } from './world';
+import { dist2, facing4, facing4Sticky, freeSpot, SimWorld, type SimPorts } from './world';
 import { resetCost, xpToNext } from '@/systems/rules/curves';
 import { sanitizeLoadout } from '@/systems/rules/validate';
 import { lookKey, paperdoll, type HeroLookLite } from '@/systems/rules/paperdoll';
@@ -301,7 +301,7 @@ const csv = (xs: Iterable<string>) => [...xs].join(',');
 function playerState(w: SimWorld, p: PlayerEnt): EntityState {
   const cd = (i: number) => { const id = p.save.hotbar[i]; return id ? Math.max(0, Math.round((p.cds.get(id) ?? 0) - w.t)) : 0; };
   return {
-    id: p.id, space: p.space, kind: 'player', def: p.def, x: Math.round(p.x), y: Math.round(p.y), facing: facing4(p.face),
+    id: p.id, space: p.space, kind: 'player', def: p.def, x: Math.round(p.x), y: Math.round(p.y), facing: (p.facingView = facing4Sticky(p.face, p.facingView)),
     anim: p.dead ? 'dead' : p.downed ? 'down' : p.anim, hp: Math.max(0, Math.round(p.hp)), maxHp: p.maxHp, owner: p.playerId,
     data: {
       em: Math.round(p.ember), emMax: p.emberMax, st: Math.round(p.stamina), stMax: p.staminaMax,

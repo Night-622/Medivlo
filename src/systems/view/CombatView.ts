@@ -5,7 +5,7 @@
  */
 import Phaser from 'phaser';
 import { Depth } from '@/core/constants';
-import { Art, bakeBeast, bakeHero } from '@/art';
+import { Art, bakeBeast, bakeHero, hasSideView } from '@/art';
 import type { EntityId, EntityKind, EntityState, Snapshot, SnapshotConsumer } from '@/net/types';
 import { kindColor } from './fx';
 import { creature } from '@/systems/rules/creatures';
@@ -73,8 +73,9 @@ export class CombatView implements SnapshotConsumer {
       seen.add(e.id);
       const r = this.recs.get(e.id) ?? this.create(e);
       if (!r) continue;
-      r.tx = e.x; r.ty = e.y; r.data = e.data ?? {}; r.hp = e.hp ?? 0; r.maxHp = e.maxHp ?? 0; r.facing = e.facing; r.owner = e.owner;
-      if (r.def !== e.def || r.anim !== e.anim) { r.def = e.def; this.animate(r, e.anim); r.anim = e.anim; }
+      r.tx = e.x; r.ty = e.y; r.data = e.data ?? {}; r.hp = e.hp ?? 0; r.maxHp = e.maxHp ?? 0; r.owner = e.owner;
+      // a facing change can swap front ↔ side anims (side-view sheets), so it re-picks the anim too
+      if (r.def !== e.def || r.anim !== e.anim || r.facing !== e.facing) { r.def = e.def; r.facing = e.facing; this.animate(r, e.anim); r.anim = e.anim; }
       if (e.kind === 'player') this.updateHeroTexture(r);
     }
     // full snapshots list everything in view; anything missing left our area of interest
@@ -191,7 +192,10 @@ export class CombatView implements SnapshotConsumer {
     if (!(r.obj instanceof Phaser.GameObjects.Sprite)) return;
     const key = r.obj.texture.key;
     const walk = anim === 'walk' || anim === 'dash' || anim === 'leap';
-    const want = this.scene.anims.exists(`${key}:${walk ? 'walk' : 'idle'}`) ? `${key}:${walk ? 'walk' : 'idle'}` : `${key}:idle`;
+    // heroes with side-view frames (bakeHero 6–11, facing right) use them facing east / west; others keep the front sheet
+    const side = (r.facing === 'e' || r.facing === 'w') && hasSideView(this.scene, key) ? '-side' : '';
+    const pick = `${key}:${walk ? 'walk' : 'idle'}${side}`;
+    const want = this.scene.anims.exists(pick) ? pick : this.scene.anims.exists(`${key}:${walk ? 'walk' : 'idle'}`) ? `${key}:${walk ? 'walk' : 'idle'}` : `${key}:idle`;
     if (this.scene.anims.exists(want) && (force || r.obj.anims.currentAnim?.key !== want)) r.obj.play(want, true);
     if (anim === 'attack' || anim === 'cast') this.scene.tweens.add({ targets: r.obj, scaleY: 0.9, duration: 70, yoyo: true });
   }

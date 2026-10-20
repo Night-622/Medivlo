@@ -196,3 +196,13 @@ export function isBehind(att: Vec, tgt: { x: number; y: number; face: Vec }): bo
   return d.x * tgt.face.x + d.y * tgt.face.y < -0.3;
 }
 export const facing4 = (v: Vec): 'n' | 'e' | 's' | 'w' => (Math.abs(v.x) > Math.abs(v.y) ? (v.x > 0 ? 'e' : 'w') : v.y > 0 ? 's' : 'n');
+
+/**
+ * facing4 with hysteresis between the side (e/w) and front (n/s) views: a hero on a diagonal keeps the view it had until
+ * the other axis leads by 25%, so the side-view walk never flickers. Within an axis the sign switches at once.
+ */
+export function facing4Sticky(v: Vec, prev: 'n' | 'e' | 's' | 'w' | undefined): 'n' | 'e' | 's' | 'w' {
+  const ax = Math.abs(v.x), ay = Math.abs(v.y);
+  const side = prev === 'e' || prev === 'w' ? ay <= ax * 1.25 : prev === 'n' || prev === 's' ? ax > ay * 1.25 : ax > ay;
+  return side ? (v.x > 0 ? 'e' : v.x < 0 ? 'w' : prev === 'w' ? 'w' : 'e') : v.y > 0 ? 's' : v.y < 0 ? 'n' : prev === 'n' ? 'n' : 's';
+}

@@ -14,6 +14,7 @@ import { ShopPanel } from '@/ui/character/hc/ShopPanel';
 import { HeroInput } from '@/systems/input/HeroInput';
 import { CombatFx } from '@/systems/view/fx';
 import { CombatView } from '@/systems/view/CombatView';
+import { hasSideView } from '@/art';
 import { Hotbar } from '@/ui/character/hc/Hotbar';
 import { BossBar, BuffRow } from '@/ui/character/hc/HudExtras';
 import { CharacterPanels } from '@/ui/character/hc/CharacterPanels';
@@ -121,6 +122,7 @@ function installDevHandle(scene: Phaser.Scene, view: CombatView, space: () => st
     sprite: () => {
       const o = view.local, cam = scene.cameras.main;
       return { key: o.texture.key, frame: o.frame.name, x: o.x, y: o.y, visible: o.visible, alpha: o.alpha, depth: o.depth, w: o.displayWidth, h: o.displayHeight,
+        anim: o.anims.currentAnim?.key ?? '', flipX: o.flipX, side: hasSideView(scene, o.texture.key),
         cam: { x: cam.worldView.x, y: cam.worldView.y, w: cam.worldView.width, h: cam.worldView.height, zoom: cam.zoom }, active: o.active };
     },
     screenOf: (id: string) => {

@@ -104,6 +104,8 @@ export interface PlayerEnt extends Combatant {
   spawnProtectUntil: number;
   /** rate limit for the "Too far away." notice */
   farNoticeAt?: number;
+  /** the 4-way view last sent (facing4Sticky keeps side vs front steady on diagonals) */
+  facingView?: 'n' | 'e' | 's' | 'w';
   /** keystone clocks (keystones.ts): Eye of the Storm charges and when the last one came, the 1 s keystone tick, the Pyromaniac singe */
   stormCharge?: number; stormAt?: number; keystoneAt?: number; singeAt?: number;
   attackCount: number;

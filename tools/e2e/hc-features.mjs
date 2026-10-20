@@ -96,6 +96,18 @@ async function slashKey(cls) {
   await ev(`(async () => { const c = await import('/src/core/index.ts'); c.Services.get('combat').despawn(${JSON.stringify(id)}); return 1; })()`);
 }
 
+async function sideWalk(cls) {
+  // real D / A: a hero with side-view frames walks with walk-side (flipped for left); without them, the front walk
+  const walk = async (key) => { await page.keyDown(key); await sleep(700); const s = await ev('window.__hc.sprite()'); await page.keyUp(key); await sleep(400); return s; };
+  const right = await walk('KeyD'), left = await walk('KeyA');
+  if (right.side) {
+    check(/:walk-side$/.test(right.anim) && !right.flipX, `${cls}: walking right (D) plays walk-side, unflipped`, `${right.anim} flip ${right.flipX}`);
+    check(/:walk-side$/.test(left.anim) && left.flipX, `${cls}: walking left (A) plays walk-side, flipped`, `${left.anim} flip ${left.flipX}`);
+  } else {
+    check(/:walk$/.test(right.anim) && /:walk$/.test(left.anim), `${cls}: no side frames yet → the front walk both ways`, `${right.anim} / ${left.anim}`);
+  }
+}
+
 async function telegraphs(cls) {
   // a creature rigged to one telegraphed ground strike at the hero (no basic attacks, never moves)
   const run = async (walkOut) => {
@@ -177,6 +189,7 @@ try {
   for (const [k, cls] of CLASSES.entries()) {
     await enter(cls);
     await targeting(cls);
+    await sideWalk(cls);
     await slashKey(cls);
     await telegraphs(cls);
     await skillsAndPack(cls);
