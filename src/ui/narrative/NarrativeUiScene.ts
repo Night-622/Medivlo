@@ -68,9 +68,9 @@ export class NarrativeUiScene extends Phaser.Scene {
       if (this.open === 'journal') {
         if (ev.code === 'ArrowUp') { this.journal.move(-1); return; }
         if (ev.code === 'ArrowDown') { this.journal.move(1); return; }
-        if (ev.code === 'KeyT') { this.journal.track(); return; }
+        if (isAction(ev, 'track')) { this.journal.track(); return; }
       }
-      // bindable actions (rebinds), not letters; T/↑/↓ in the journal and ←/→ in books are in-panel keys
+      // bindable actions (rebinds), not letters ('track' too); ↑/↓ in the journal and ←/→ in books are in-panel keys
       if (isAction(ev, 'journal')) this.toggle('journal');
       else if (isAction(ev, 'codex')) this.toggle('codex');
       else if (ev.code === 'Escape' && this.open) this.closePanel();

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { Registry } from '@/core';
+import { Registry, keyLabel } from '@/core';
 import type { LoreCategory, LoreEntry, LoreId } from '@/core';
 import { C, typeStyle } from '@/ui/kit/hc';
 import { isUnlocked, unlockedSections } from '@/narrative/engine/codex';
@@ -75,7 +75,7 @@ export class CodexPanel extends Phaser.GameObjects.Container {
     this.keep(sc.add.text(bx, 40, `Discovered ${found} of ${all.length}`, typeStyle('body', C.text300)));
     this.keep(sc.add.rectangle(bx, 64, 240, 10, 0x0b0f22).setOrigin(0).setStrokeStyle(2, 0x1a1230));
     this.keep(sc.add.rectangle(bx, 64, 240 * (found / Math.max(1, all.length)), 10, 0xffc43d).setOrigin(0));
-    this.keep(sc.add.text(W - 104, 50, 'L · Esc close', typeStyle('caption', '#7884b5')).setOrigin(1, 0.5));
+    this.keep(sc.add.text(W - 104, 50, `${keyLabel('codex')} · Esc close`, typeStyle('caption', '#7884b5')).setOrigin(1, 0.5));
 
     // categories (only those with something to show)
     let ny = NAV.y;

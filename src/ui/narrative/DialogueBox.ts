@@ -116,7 +116,7 @@ export class DialogueBox extends Phaser.GameObjects.Container {
     // 13px, not the 11px caption: at caption size Pixelify's "2" reads as an "8" ("1–2" looked like "1-8")
     const n = Math.min(9, v.choices.length);
     const keys = n === 1 ? 'Press 1' : n === 2 ? 'Press 1 or 2' : `Press 1 to ${n}`;
-    this.keep(sc.add.text(TEXT.x, HINT_Y, n ? `${keys} to choose · Esc to leave the conversation` : 'Space or click to continue · Esc to leave', { ...typeStyle('caption', '#7884b5'), fontSize: '13px' }));
+    this.keep(sc.add.text(TEXT.x, HINT_Y, n ? `${keys} to choose · Esc to leave the conversation` : 'Enter, Space or click to continue · Esc to leave', { ...typeStyle('caption', '#7884b5'), fontSize: '13px' }));
     if (v.deadline) this.timer = this.keep(sc.add.text(TEXT.x + 520, HINT_Y, '', typeStyle('caption', C.gold300)).setOrigin(1, 0));
     this.tick();
   }

@@ -18,7 +18,7 @@ export type TutorialStep = (typeof TUTORIAL_STEPS)[number];
 type Lines = { name: string; journal: string } & Record<TutorialStep, string>;
 const KEYS: Record<TutorialStep, string> = {
   move: '{key:move}', talk: '{key:interact}', attack: 'click or {key:cast1}', dash: '{key:dash}',
-  potion: '{key:potionQ} / {key:potionE}', pack: '{key:inventory}', track: '{key:journal}, then T', waystone: '{key:interact}',
+  potion: '{key:potionQ} / {key:potionE}', pack: '{key:inventory}', track: '{key:journal}, then {key:track}', waystone: '{key:interact}',
 };
 
 const SCHOOL: Record<string, Lines> = {

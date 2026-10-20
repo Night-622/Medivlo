@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { Game, Registry, bus } from '@/core';
+import { Game, Registry, bus, keyLabel } from '@/core';
 import type { NpcDef, ObjectiveDef, QuestDef, QuestId } from '@/core';
 import { C, typeStyle } from '@/ui/kit/hc';
 import { npcTexture } from '@/art';
@@ -34,7 +34,7 @@ const SLOT_BY_RARITY: Record<string, string> = { common: 'ui:slot_common', fine:
 
 /**
  * The quest journal (J), handoff › Journal. Visuals: Claude 1; quest state/logic: Claude 4 (engine/quests, guest mirror).
- * Wheel scrolls the list; ↑/↓ select, T track (routed by NarrativeUiScene).
+ * Wheel scrolls the list; ↑/↓ select, the bindable 'track' action (default T) tracks (routed by NarrativeUiScene).
  */
 export class QuestJournal extends Phaser.GameObjects.Container {
   tab: JournalTab = 'active';
@@ -260,7 +260,7 @@ export class QuestJournal extends Phaser.GameObjects.Container {
     const m = this.keep(sc.add.nineslice(done ? 496 : 706, 620, 'ui:btn_slate', undefined, 180, 52, 8, 8, 8, 8).setOrigin(0));
     this.keep(sc.add.text((done ? 496 : 706) + 90, 646, 'Show on map', { fontFamily: '"Jersey 10"', fontSize: '24px', color: C.text }).setOrigin(0.5));
     m.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.onClose(); bus.emit('ui:open', { panel: 'map' }); });
-    this.keep(sc.add.text(1208, 646, '↑ ↓ quest · T track · Esc close', typeStyle('caption', '#7884b5')).setOrigin(1, 0.5));
+    this.keep(sc.add.text(1208, 646, `↑ ↓ quest · ${keyLabel('track')} track · Esc close`, typeStyle('caption', '#7884b5')).setOrigin(1, 0.5));
   }
 
   private objective(x: number, y: number, w: number, s: string, state: 'done' | 'now', q?: QuestDef, o?: ObjectiveDef): number {

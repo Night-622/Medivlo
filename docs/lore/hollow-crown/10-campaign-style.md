@@ -105,7 +105,7 @@ Use the hooks below instead.
   - `school: '<school>'` for the class flavour options. Don't also prefix the text with "[School]", except for bracketed actions like `[Lift it off.]`.
 - **Openers:** givers use the `offer()` helper (`when: fresh(quest)`). Turn-ins are entries keyed on `questStage`, placed before the general entry.
 - **Flags:** set quest-critical flags at the moment of decision, in the choice effects. Every critical scene must be reopenable.
-- **Ids and flag names:**
+- **Ids and flag names** (never set the engine-derived flags `story.bearers_gathered`, `campaign.class`, `campaign.school`; R37):
   - dialogue ids `dialogue:<class>-<slug>`; object scenes `dialogue:obj-<object-slug>`;
   - flags `<class>.*`, `insight.*` or `story.*` only (no `npc.*`).
 
