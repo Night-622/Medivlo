@@ -102,7 +102,7 @@ const flagged = rows.filter((r) => r.flags.length);
 const hard = rows.filter((r) => r.kind === 'hard').flatMap((r) => r.res.flatMap((x) => x.members));
 const sum = (f: (m: (typeof hard)[number]) => number) => hard.reduce((a, m) => a + f(m), 0);
 md.push('', `Revives under ×${HARD} boss damage: ${sum((m) => m.downs)} downs, ${sum((m) => m.revivesGiven)} revives, ${sum((m) => m.deaths)} members lost to the downed timer or a wipe. ` +
-  `Helpers knelt ${sum((m) => m.kneel).toFixed(0)} s in range with F held; the 0.5 s combat lock blocked ${sum((m) => m.blockedOwn).toFixed(0)} s of it through the helper's own damage (DoTs, zones, pets' owner credit) and ${sum((m) => m.blockedHit).toFixed(0)} s through hits taken.`);
+  `Helpers knelt ${sum((m) => m.kneel).toFixed(0)} s in range with F held; hits taken paused the channel for ${sum((m) => m.blockedHit).toFixed(0)} s of it.`);
 md.push('', '## Where co-op feels worse', '', ...(flagged.length ? flagged.map((r) => `- **${r.party.join(' + ')}** L${r.L} ${r.kind} (${r.target}): ${r.flags.join('; ')}`) : ['- none']), '');
 md.push('## Every fight', '', '| party | L | fight | won | party time | each member alone | additive | speed-up | damage shares | downs | revives | killed |', '|---|---|---|---|---|---|---|---|---|---|---|---|');
 for (const r of rows) {
