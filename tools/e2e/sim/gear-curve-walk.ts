@@ -12,9 +12,9 @@ import { readFileSync } from 'node:fs';
 import type { QuestDef, WorldObject } from '@/core';
 import { CLASS_SCHOOL } from '@/core/constants';
 import { creature } from '@/systems/rules/creatures';
-import { LEVEL_CAP, questXpMult, spawnCountMult, xpForKill, xpToNext } from '@/systems/rules/curves';
+import { LEVEL_CAP, spawnCountMult, xpForKill, xpToNext } from '@/systems/rules/curves';
 import type { Rarity } from '@/systems/rules/types';
-import { QUEST_XP_TIER } from '@/systems/sim/shop';
+import { QUEST_XP_TIER, questXpScale } from '@/systems/sim/shop';
 import { ELITE } from '@/data/enemies/hc/elites';
 import { InstanceGen } from '@/world/hc/instanceGen';
 import { instanceDef } from '@/world/hc/spaces';
@@ -98,8 +98,8 @@ export interface Run {
 export function runClass(cls: string, seed: number, own: QuestDef[], checks: readonly number[], onCheck?: (L: number, pl: Player) => void,
   onQuest?: (quest: string, level: number) => void, opts: {
     party?: number; onXp?: (quest: string, src: XpSource, levels: number) => void;
-    /** a quest's level band for rules/curves.ts questXpMult (the sim's lookup once it exports one); onQuestXp sees each reward's base levels and multiplier */
-    questBand?: (quest: string) => readonly [number, number] | null; onQuestXp?: (quest: string, baseLevels: number, mult: number) => void;
+    /** onQuestXp sees each reward's base levels and its multiplier (sim/shop.ts questXpScale: band × the class's Act II table) */
+    onQuestXp?: (quest: string, baseLevels: number, mult: number) => void;
   } = {}): Run {
   // a party meets bigger packs and lair waves (spawnCountMult); every hero near a kill gets its full XP (sim/death.ts),
   // so party size only changes how many kills there are. Bosses and quest objective kills stay single. (Loot here stays solo.)
@@ -188,7 +188,7 @@ export function runClass(cls: string, seed: number, own: QuestDef[], checks: rea
     pl.quest(q.reward?.gold, q.reward?.hcItems);
     curSrc = 'quest';
     if (q.reward?.xpTier) {
-      const mult = questXpMult(pl.level, opts.questBand?.(q.id) ?? null);
+      const mult = questXpScale(cls, pl.level, q.id);
       opts.onQuestXp?.(q.id, QUEST_XP_TIER[q.reward.xpTier], mult);
       h.gain(QUEST_XP_TIER[q.reward.xpTier] * xpToNext(pl.level) * mult);
     }
