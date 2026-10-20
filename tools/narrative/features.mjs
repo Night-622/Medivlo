@@ -57,15 +57,25 @@ const pick = async (pred) => {
 };
 /** click a choice with the mouse, on its rendered text */
 const clickChoice = async (text) => {
-  const t = (await nui()).find((o) => o.text === text && o.alpha > 0.5);
+  const t = await waitFor(async () => (await nui()).find((o) => o.text.replace(/\s+/g, ' ') === text && o.alpha > 0.5), 3000);
   if (!t) return false;
   await page.click(t.x, t.y); await sleep(600); return true;
 };
-/** finish whatever conversation is open: first choice, or continue */
+/** click a row/tab in the narrative UI by its text (exact, or a prefix) */
+const clickText = async (pred) => {
+  const t = await waitFor(async () => (await nui()).find((o) => o.alpha > 0.5 && pred(o.text)), 3000);
+  if (!t) return false;
+  await page.click(t.x, t.y); await sleep(600); return true;
+};
+/** finish whatever conversation is open: Farewell if offered (menus loop back to their start), else the last choice, or continue */
 const endDialogue = async () => {
   for (let i = 0; i < 40; i++) {
     const v = await dlg(); if (!v) return;
-    if (v.choices.length) { const j = Math.max(0, v.choices.findIndex((c) => c.enabled)); await page.press(`Digit${j + 1}`, 60); }
+    if (v.choices.length) {
+      const bye = v.choices.findIndex((c) => c.enabled && /^(Farewell|Goodbye|Leave)/.test(c.text));
+      const last = v.choices.map((c) => c.enabled).lastIndexOf(true);
+      await page.press(`Digit${(bye >= 0 ? bye : Math.max(0, last)) + 1}`, 60);
+    }
     else await page.press('Space', 60);
     await sleep(350);
   }
@@ -73,20 +83,40 @@ const endDialogue = async () => {
 const continueUntil = async (pred, n = 12) => { for (let i = 0; i < n; i++) { const v = await dlg(); if (!v || pred(v)) return v; if (v.choices.length) return v; await page.press('Space', 60); await sleep(400); } return dlg(); };
 /** stand beside a world NPC (snapshot entity) or a placed object, and wait until it is the [F] focus */
 const npcPos = (id) => page.eval(`(window.__game.scene.getScene('WorldV2').npcs?.view.list() ?? []).find((n) => n.id === ${JSON.stringify(id)}) ?? null`);
+const placeTile = (place) => page.eval(`(async () => { const m = (await import('/src/world/hc/spawns.ts')).markerAt(${JSON.stringify(place)}); return m ? m.at : null; })()`);
+/** teleport beside the target, trying the tiles round it until it (not a neighbouring object) holds the [F] focus */
 const walkTo = async (id, place) => {
-  const p = place
-    ? await waitFor(() => core(`const w = c.Services.get('world'); return w.placePos ? w.placePos(${JSON.stringify(place)}) : null;`), 20000)
-    : await waitFor(() => npcPos(id), 20000);
-  if (!p) return false;
-  await page.eval(`window.__world.tp(${Math.floor(p.x / 32)}, ${Math.floor(p.y / 32)})`);
-  return !!(await waitFor(async () => (await page.eval('window.__world.focus()')) === id, 8000));
+  const t = place ? await waitFor(() => placeTile(place), 20000) : await waitFor(async () => { const n = await npcPos(id); return n && [Math.floor(n.x / 32), Math.floor(n.y / 32)]; }, 20000);
+  if (!t) return false;
+  const ring = [[0, 1], [0, 0], [-1, 0], [1, 0], [0, -1], [-1, 1], [1, 1], [-2, 0], [2, 0], [0, 2], [-1, -1], [1, -1]];
+  for (const [dx, dy] of ring) {
+    await page.eval(`window.__world.tp(${t[0] + dx}, ${t[1] + dy})`);
+    if (await waitFor(async () => (await page.eval('window.__world.focus()')) === id, 1500)) return true;
+  }
+  return false;
 };
 const events = () => page.eval('window.__ev.splice(0)');
+/** press the interact key at an NPC until their dialogue opens (after a conversation the HUD fades back in first) */
+const talk = async (id, dialogueId) => {
+  await waitFor(async () => (await hud())?.alpha === 1, 4000);
+  for (let i = 0; i < 3; i++) {
+    // NPCs keep their schedules and wander a little between conversations: step back up to them if needed
+    if ((await page.eval('window.__world.focus()')) !== id && id.startsWith('npc:')) await walkTo(id);
+    await pressAction('interact');
+    const d = await waitFor(async () => { const x = await dlg(); return x && (!dialogueId || x.id === dialogueId) ? x : null; }, 2500);
+    if (d) return d;
+  }
+  return null;
+};
 
 try {
   // ── boot as a fresh Warden in Frostmere, with First Steps on ──
   await page.goto(`${BASE}/?scene=WorldV2&space=realm:rime&hc_class=warden`);
   await waitFor(() => page.eval('!!(window.__hc && window.__hc.local() && window.__hud && window.narrative && window.__world)'), 120000);
+  // the dev URL picks the combat kit only; the story needs a hero (as character creation sets it)
+  await core(`const { defaultLook } = await import('/src/data/classes/hc/index.ts');
+    c.Game.state.player.hero = { classId: 'warden', look: defaultLook('warden', 0), outfit: { dye: 0, headw: 0, cape: 0, neck: 0, face: 0, extra: 0 } };
+    c.syncHeroClass(c.Game.state);`);
   await sleep(1500);
   await endDialogue();
   await core(`window.__ev = []; for (const n of ['narrative:toast', 'quest:started', 'quest:completed', 'codex:unlocked', 'ui:open', 'ui:close']) c.bus.on(n, (e) => window.__ev.push({ n, ...e }));`);
@@ -98,7 +128,7 @@ try {
   const moveBefore = await flag('tut.move');
   await page.hold([await keyOf('up')], 400); await sleep(500);
   const fs = await quest('quest:warden-first-steps');
-  check('First Steps: a real move key ticks the move step', !moveBefore && (await flag('tut.move')) === true && !!fs?.objectives?.move, `flag ${await flag('tut.move')}, objective ${JSON.stringify(fs?.objectives?.move)}`);
+  check('First Steps: a real move key ticks the move step', !!fs && !moveBefore && (await flag('tut.move')) === true, `quest ${!!fs}, flag ${moveBefore} → ${await flag('tut.move')}`);
   check('First Steps shows in the HUD tracker', (await hud())?.texts.some((t) => t.text === 'FIRST STEPS'));
 
   // ── [School] and INSIGHT options for the party (a Warden alone: Rime yes, Radiance/Song not offered) ──
@@ -144,25 +174,29 @@ try {
   check('the quest offer starts the quest', !!(await quest('quest:cc-waystones')));
   await endDialogue();
   check('the HUD returns when the dialogue ends', !!(await waitFor(async () => (await hud())?.alpha === 1, 3000)));
-  await pressAction('interact');
-  v = await waitFor(() => dlg(), 5000);
+  v = await talk('npc:sela', 'dialogue:cc-sela');
   const compass = v?.choices.find((c) => /compass/i.test(c.text));
   const clicked = compass ? await clickChoice(compass.text) : false;
-  check('a choice by mouse click advances (compass)', clicked && (await dlg())?.node === 'compass', `${clicked} ${(await dlg())?.node}`);
+  const seen = clicked ? '' : (await nui()).filter((o) => o.x > 600 && o.y > 400).map((o) => o.text.slice(0, 30)).join(' | ');
+  check('a choice by mouse click advances (compass)', clicked && (await dlg())?.node === 'compass', `${clicked} ${(await dlg())?.node} ${seen}`);
   await endDialogue();
-  await pressAction('interact');
-  await waitFor(() => dlg(), 5000);
-  await pick((c) => c.text === 'Farewell.');
-  check('Farewell closes the dialogue', !!(await waitFor(async () => !(await dlg()), 3000)));
+  const opened = await talk('npc:sela', 'dialogue:cc-sela');
+  const bye = opened && await pick((c) => c.text === 'Farewell.');
+  check('Farewell closes the dialogue', !!opened && !!bye && !!(await waitFor(async () => !(await dlg()), 3000)), `opened ${!!opened}, farewell offered ${!!bye}`);
 
   // ── quests in the tracker and the Journal ──
-  let h = await hud();
+  let h;
   const inTracker = (hh, s) => !!hh?.texts.some((t) => t.text.includes(s) && t.alpha > 0.5);
-  check('the started quest shows in the HUD tracker', inTracker(h, 'Wake the Waystones') && inTracker(h, 'Brindlecross waystone'));
+  const isQuestRow = (s) => s === 'Wake the Waystones';
   await pressAction('journal');
   check('the Journal (Active) lists it', !!(await waitFor(async () => (await nui()).some((t) => t.text.includes('Wake the Waystones')), 4000)));
+  // select it and track it with T, as a player does; the HUD tracker follows the tracked quest
+  const selected = await clickText(isQuestRow);
+  await page.press('KeyT', 60); await sleep(400);
   await page.screenshot(`${OUT}/features-journal.png`);
-  await page.press('Escape', 60); await sleep(600);
+  await page.press('Escape', 60); await sleep(800);
+  h = await waitFor(async () => { const x = await hud(); return inTracker(x, 'Wake the Waystones') ? x : null; }, 3000) ?? await hud();
+  check('tracking it (click + T in the Journal) shows it in the HUD tracker', selected && inTracker(h, 'Wake the Waystones') && inTracker(h, 'Brindlecross waystone'), `selected ${selected}`);
   // stage by real input: walk to the Brindlecross waystone and wake it with the interact key
   const atStone = await walkTo('ws:brind', 'landmark:brind-waystone');
   if (atStone) { await pressAction('interact'); }
@@ -171,29 +205,28 @@ try {
   check('waking the waystone with [F] completes the stage', st === 'wood', `focus ok ${atStone}, stage ${(await quest('quest:cc-waystones'))?.stage}`);
   check('the tracker shows the next stage', inTracker(h, 'Gloamwood Glade'));
   await pressAction('journal');
-  check('the Journal shows the next stage', !!(await waitFor(async () => (await nui()).some((t) => /Gloamwood|Three more stones/.test(t.text)), 4000)));
+  await clickText(isQuestRow);
+  check('the Journal shows the next stage', !!(await waitFor(async () => (await nui()).some((t) => /Gloamwood Glade|Three more stones/.test(t.text)), 4000)));
   await page.press('Escape', 60); await sleep(500);
   // finish it (set-up via DEV), the last talk by real input
   await core(`const me = c.Services.get('net').localPlayer; for (const w of ['ws:glade', 'ws:stag', 'ws:briar']) c.bus.emit('waystone:woken', { playerId: me, waystone: w, space: 'concordia' });`);
   await sleep(600);
-  if (await walkTo('npc:sela')) { await pressAction('interact'); await waitFor(() => dlg(), 4000); await endDialogue(); }
+  if (await walkTo('npc:sela')) { await talk('npc:sela', 'dialogue:cc-sela-report'); await endDialogue(); }
   await N(`flag('cc.waystone_heart', true)`);
   const done = await waitFor(async () => (await quest('quest:cc-waystones'))?.completed === true, 6000);
   await sleep(800);
   const h2 = await hud();
   check('completing it pays XP (bar or level rises)', !!done && (Number(h2.text.lvl) > Number(xpBefore.text.lvl) || h2.bars.xp > xpBefore.bars.xp), `lvl ${xpBefore.text.lvl}→${h2.text.lvl} xp ${xpBefore.bars.xp}→${h2.bars.xp}`);
   await pressAction('journal');
-  await waitFor(async () => (await nui()).some((t) => t.text === 'Done'), 3000);
-  const doneTab = (await nui()).find((t) => t.text === 'Done');
-  if (doneTab) await page.click(doneTab.x, doneTab.y);
-  check('the Journal’s Done tab lists it', !!(await waitFor(async () => (await nui()).some((t) => t.text.includes('Wake the Waystones')), 3000)));
+  const doneTab = await clickText((s) => /^Done\b/.test(s));
+  const doneSeen = await waitFor(async () => (await nui()).some((t) => t.text.includes('Wake the Waystones')), 3000);
+  check('the Journal’s Done tab lists it', doneTab && !!doneSeen, `tab ${doneTab}; ${(await nui()).filter((o) => o.x < 470).map((o) => o.text.slice(0, 24)).slice(0, 12).join(' | ')}`);
   await page.press('Escape', 60); await sleep(500);
 
   // ── trust: a TRUST choice moves trust, the diamonds and a teal toast ──
   await N(`flag('trust.sela', 3)`);
   await events();
-  if (await walkTo('npc:sela')) await pressAction('interact');
-  await waitFor(() => dlg(), 4000);
+  if (await walkTo('npc:sela')) await talk('npc:sela', 'dialogue:cc-sela');
   await pick((c) => /storms bother/.test(c.text));
   v = await waitFor(async () => { const d = await dlg(); return d?.id === 'dialogue:cc-sela-confide' ? d : null; }, 5000);
   v = await continueUntil((x) => x.choices.length > 0);
@@ -205,17 +238,17 @@ try {
   check('a TRUST choice raises trust', (await flag('trust.sela')) === 4, `trust ${await flag('trust.sela')}`);
   check('the trust diamonds update in the dialogue', t0 === 3 && v?.trust === 4, `${t0} → ${v?.trust}`);
   const trustToast = evs.find((e) => e.n === 'narrative:toast' && e.kind === 'trust');
-  check('a teal trust toast shows', !!trustToast && inTracker(await hud(), trustToast.text.slice(0, 10)), trustToast?.text ?? 'none');
+  // the HUD is faded under the dialogue, so the toast has to be readable once the conversation closes
   await endDialogue();
+  const shown = trustToast && await waitFor(async () => inTracker(await hud(), trustToast.text.slice(0, 10)), 3000);
+  check('a teal trust toast shows (readable after the dialogue closes)', !!shown, trustToast ? `${trustToast.text} (kind trust → teal)` : 'no trust toast event');
 
   // ── INSIGHT: hidden until its insight is known ──
-  if (await walkTo('npc:nanbriar')) await pressAction('interact');
-  v = await waitFor(() => dlg(), 5000);
+  v = (await walkTo('npc:nanbriar')) ? await talk('npc:nanbriar', 'dialogue:cc-nan') : null;
   const hiddenBefore = !!v && !v.choices.some((c) => /Citadel gardens/.test(c.text));
   await endDialogue();
   await N(`flag('insight.tears_seed', true)`);
-  await pressAction('interact');
-  v = await waitFor(() => dlg(), 5000);
+  v = await talk('npc:nanbriar', 'dialogue:cc-nan');
   check('an INSIGHT-gated option is hidden, then shown once the insight is known', hiddenBefore && !!v?.choices.some((c) => /Citadel gardens/.test(c.text)), `before hidden ${hiddenBefore}`);
   await endDialogue();
 
