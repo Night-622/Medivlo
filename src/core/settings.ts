@@ -21,6 +21,7 @@ export interface SettingsData {
   sharpRendering: boolean;
   damageNumbers: 'all' | 'mine' | 'off'; showHints: boolean; autoLootGold: boolean;
   textSize: 'normal' | 'large'; reduceFlashing: boolean; rarityGlyphs: boolean;
+  /** no shake, bobbing, pulsing or flicker (Settings › Accessibility); also implies reduceFlashing */ reduceMotion: boolean;
   /** martial slash direction: 'facing' = where the hero faces (default, on the slash key); 'mouse' = toward the cursor, on left click */
   slashAim: 'facing' | 'mouse';
   keys: Record<Action, string>;
@@ -28,7 +29,7 @@ export interface SettingsData {
 
 export const DEFAULT_SETTINGS: SettingsData = {
   master: 80, music: 60, sfx: 80, fullscreen: false, screenShake: 'full', pixelPerfect: false, sharpRendering: true,
-  damageNumbers: 'all', showHints: true, autoLootGold: true, textSize: 'normal', reduceFlashing: false, rarityGlyphs: true,
+  damageNumbers: 'all', showHints: true, autoLootGold: true, textSize: 'normal', reduceFlashing: false, rarityGlyphs: true, reduceMotion: false,
   slashAim: 'facing',
   keys: { ...DEFAULT_KEYS },
 };
