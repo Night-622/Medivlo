@@ -4,7 +4,7 @@ import { HC_WEAPON_TYPES } from '@/data/items/hc/weapons.gen';
 import { armourPiece, armourSet, gemsOf, hasHybrid, hybridFor, hybridSchools, itemInfo, itemMods, itemWeaponDamage, legendary, setProgress, upgradeOf, weaponBase, GEMS } from './gear';
 import { affixDef, affixPassive, itemRarity, socketCount } from './affixes';
 import { uniqueDef } from './uniques';
-import { affixLabel, flavourOf } from './buildText';
+import { affixLabel, displayName, flavourOf } from './buildText';
 import { spellDef } from './spells';
 import { HC_ITEM_FLAVOUR } from '@/data/lore/hc-item-flavour';
 import { campaignItem } from '@/data/items/hc/campaign-items';
@@ -81,7 +81,7 @@ export function itemTooltip(it: ItemInstance, equipped: ItemInstance[], classSch
     out.push({ text: `Attuned (${SCHOOL_NAME[set.school]}): ${set.attuned}`, color: count >= 4 && set.school === classSchool ? 'school' : 'dim', size: 's' });
     const hs = hybridSchools(equipped), hy = hs ? hybridFor(hs[0], hs[1]) : undefined;
     out.push(hy && count >= 2 && count < 4
-      ? { text: `Hybrid: ${hy.name}. ${hy.text}`, color: 'good', size: 's' }
+      ? { text: `Hybrid: ${displayName('hybrid', hy.schools.join('+'), hy.name)}. ${hy.text}`, color: 'good', size: 's' }
       : { text: 'Hybrid: 2 of this set + 2 of another school’s set: a two-school bonus.', color: count >= 2 && count < 4 && hasHybrid(equipped) ? 'good' : 'dim', size: 's' });
   }
   const gems = gemsOf(it), sockets = socketCount(it);

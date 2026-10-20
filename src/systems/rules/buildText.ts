@@ -3,10 +3,10 @@
  * every screen shows `overlay.name ?? def.name` and the in-world flavour line, while mechanics keep their own text.
  */
 import {
-  AFFIX_TEXT, ITEM_TEXT, KEYSTONE_TEXT, MASTERY_TEXT, PERK_TEXT, RUNE_TEXT, SPELL_TEXT, UNIQUE_TEXT,
+  AFFIX_TEXT, HYBRID_TEXT, ITEM_TEXT, KEYSTONE_TEXT, MASTERY_TEXT, PERK_TEXT, RUNE_TEXT, SPELL_TEXT, UNIQUE_TEXT,
 } from '@/data/lore/hc-builds-text';
 
-export type TextKind = 'perk' | 'keystone' | 'mastery' | 'spell' | 'rune' | 'item' | 'unique';
+export type TextKind = 'perk' | 'keystone' | 'mastery' | 'spell' | 'rune' | 'item' | 'unique' | 'hybrid';
 export interface ShownText { name?: string; flavour?: string; lore?: string }
 
 export function textOf(kind: TextKind, id: string): ShownText | undefined {
@@ -18,6 +18,8 @@ export function textOf(kind: TextKind, id: string): ShownText | undefined {
     case 'rune': return RUNE_TEXT[id];
     case 'item': return ITEM_TEXT[id] ?? RUNE_TEXT[id];
     case 'unique': return UNIQUE_TEXT[id];
+    /** key `${schools[0]}+${schools[1]}` as HC_HYBRIDS lists them */
+    case 'hybrid': return HYBRID_TEXT[id];
   }
 }
 export const displayName = (kind: TextKind, id: string, fallback: string): string => textOf(kind, id)?.name ?? fallback;

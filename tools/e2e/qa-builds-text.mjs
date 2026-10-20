@@ -150,6 +150,15 @@ for (const u of HC_UNIQUES.filter((x) => UNIQUE_TEXT[x.id]).slice(0, 12)) {
   add('wired', 'unique ' + u.id, lines.some((l) => l.includes(want.slice(0, 40))) ? null : 'tooltip lacks its flavour ("' + want.slice(0, 50) + '…")');
 }
 
+// hybrid sets: 2 cloth pieces of school A + 2 of school B worn → the piece's tooltip names the bonus as the overlay does
+for (const h of HC_HYBRIDS) {
+  const key = h.schools[0] + '+' + h.schools[1], want = HYBRID_TEXT[key]?.name ?? h.name;
+  const piece = (s: string, p: string) => ({ uid: 'qa-' + s + p, base: 'a_' + s + '_cloth_' + p, ilvl: 20, qty: 1 });
+  const worn = [piece(h.schools[0], 'helm'), piece(h.schools[0], 'chest'), piece(h.schools[1], 'hands'), piece(h.schools[1], 'feet')];
+  const lines = itemTooltip(worn[0] as never, worn as never, h.schools[0] as never, []).map((l) => l.text);
+  add('wired', 'hybrid ' + key, lines.some((l) => l.startsWith('Hybrid: ' + want + '.')) ? null : 'hybrid line is "' + (lines.find((l) => l.startsWith('Hybrid')) ?? 'missing') + '", want "Hybrid: ' + want + '."');
+}
+
 const cats = [...new Set(rows.map((r) => r.cat))];
 for (const cat of cats) {
   if (ONLY.length && !ONLY.some((o) => cat.startsWith(o))) continue;
