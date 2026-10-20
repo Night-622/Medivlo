@@ -103,9 +103,15 @@ for (const raw of ideas) {
   if (top && sh) { const shN = C.shared.find((t) => norm(t.name) === norm(picks[1])); const need = new Set([...top.need, ...shN.need]);
     check(`${build}: both keystones unlock by level ${LEVEL}`, need.size <= LEVEL - 1, `${need.size} points needed → level ${need.size + 1}`); }
 }
-// intro claim: "The two keystones need about 11 skill points"
+// intro claim, read from the doc so edits stay honest: "need A to B skill points" (the exact range) or "about N"
+// (within 2 of the whole range), and "by level L" (every pair's cheapest unlock fits by then)
 const costs = Object.values(data.classes).flatMap((C) => C.tops.flatMap((t) => C.shared.map((s) => new Set([...t.need, ...s.need]).size)));
-check('BUILD-IDEAS intro: "the two keystones need about 11 skill points"', Math.min(...costs) >= 9 && Math.max(...costs) <= 13, `cheapest pair ${Math.min(...costs)}, dearest ${Math.max(...costs)} points`);
+const lo = Math.min(...costs), hi = Math.max(...costs), intro = ideas.find((l) => /keystones need/.test(l)) ?? '';
+const range = intro.match(/need (\d+) to (\d+) skill points/), about = intro.match(/need about (\d+) skill points/), byLevel = intro.match(/level\**\s*(\d+)\**/);
+if (range) check(`BUILD-IDEAS intro: "need ${range[1]} to ${range[2]} skill points"`, Number(range[1]) === lo && Number(range[2]) === hi, `data: ${lo} to ${hi}`);
+else if (about) check(`BUILD-IDEAS intro: "need about ${about[1]} skill points"`, lo >= Number(about[1]) - 2 && hi <= Number(about[1]) + 2, `data: ${lo} to ${hi}`);
+else check('BUILD-IDEAS intro: states how many points the two keystones need', false, intro.slice(0, 120));
+if (byLevel) check(`BUILD-IDEAS intro: every build's core works by level ${byLevel[1]}`, hi + 1 <= Number(byLevel[1]), `dearest pair needs level ${hi + 1}`);
 
 // ── PATCH-NOTES ──
 const notes = readFileSync('docs/PATCH-NOTES.md', 'utf8');
