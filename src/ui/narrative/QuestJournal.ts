@@ -171,7 +171,8 @@ export class QuestJournal extends Phaser.GameObjects.Container {
     rows.add(sc.add.text(LIST.x + 50, y + 33, `${ACT_LABEL[q.act] ?? ''} · ${placeLabel(q)}`, { ...typeStyle('badge', '#7884b5'), fontStyle: '700' }));
     const hist = stageHistory()[q.id] ?? [p.stage];
     const totalStages = Math.max(hist.length, q.stages.filter((s) => !s.end).length + 1);
-    const prog = p.completed ? 'Done' : p.failed ? 'Failed' : `${Math.min(hist.length, totalStages)}/${totalStages}`;
+    // "Step n/N" (which stage you're on), so it isn't mistaken for the objective's own count beside it in the detail
+    const prog = p.completed ? 'Done' : p.failed ? 'Failed' : `Step ${Math.min(hist.length, totalStages)}/${totalStages}`;
     rows.add(sc.add.text(LIST.x + LIST.w - 12, y + 10, prog, { ...typeStyle('badge', p.completed ? C.good : C.gold300), fontStyle: '700' }).setOrigin(1, 0));
     if (Game.state.narrative.trackedQuest === q.id) rows.add(sc.add.rectangle(LIST.x + LIST.w - 18, y + 36, 10, 10, 0xffc43d).setRotation(Math.PI / 4).setStrokeStyle(2, 0x1a1230));
     bg.setInteractive({ useHandCursor: true }).on('pointerup', () => { this.sel = q.id; this.render(); });
@@ -226,16 +227,18 @@ export class QuestJournal extends Phaser.GameObjects.Container {
     this.keep(sc.add.text(R, ry, 'Rewards', { fontFamily: '"Jersey 10"', fontSize: '24px', color: '#ffc43d' }));
     ry += 32;
     const r = q.reward;
-    const line = (slotKey: string, icon: { key: string; frame?: string | number } | undefined, label: string, sub?: string) => {
+    // `glyph`: rewards with no atlas icon (experience, skill points) get a short gold mark in the slot instead
+    const line = (slotKey: string, icon: { key: string; frame?: string | number } | undefined, label: string, sub?: string, glyph?: string) => {
       this.keep(sc.add.nineslice(R, ry, slotKey, undefined, 44, 44, 8, 8, 8, 8).setOrigin(0));
       if (icon) this.keep(sc.add.image(R + 22, ry + 22, icon.key, icon.frame));
+      else if (glyph) this.keep(sc.add.text(R + 22, ry + 23, glyph, { fontFamily: '"Jersey 10"', fontSize: '22px', color: '#ffc43d' }).setOrigin(0.5));
       this.keep(sc.add.text(R + 54, ry + (sub ? 6 : 14), label, { ...typeStyle('body', C.text, RW - 60), fontStyle: '600' }));
       if (sub) this.keep(sc.add.text(R + 54, ry + 24, sub, typeStyle('caption', C.text500)));
       ry += 50;
     };
-    if (r?.xpTier) line('ui:slot_empty', undefined, `${XP_LABEL[r.xpTier]} experience`, 'XP');
+    if (r?.xpTier) line('ui:slot_empty', undefined, `${XP_LABEL[r.xpTier]} experience`, undefined, 'XP');
     if (r?.gold) line('ui:slot_empty', iconFrame('icon_coin'), `${r.gold} Embershards`);
-    if (r?.skillPoints) line('ui:slot_empty', undefined, `+${r.skillPoints} skill point${r.skillPoints > 1 ? 's' : ''}`);
+    if (r?.skillPoints) line('ui:slot_empty', undefined, `+${r.skillPoints} skill point${r.skillPoints > 1 ? 's' : ''}`, undefined, 'SP');
     for (const it of [...(r?.hcItems ?? []), ...(r?.items ?? [])].slice(0, 5 - Number(!!r?.xpTier) - Number(!!r?.gold))) {
       line(SLOT_BY_RARITY[rarity(it.item)] ?? 'ui:slot_empty', iconFrame(it.item), `${itemName(it.item)}${it.qty && it.qty > 1 ? ` ×${it.qty}` : ''}`, rarity(it.item).toUpperCase());
     }

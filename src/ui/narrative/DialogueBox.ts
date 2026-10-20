@@ -15,6 +15,9 @@ type BoxView = DialogueView & { votes?: Record<number, string[]>; deadline?: num
 const PANEL = { x: 64, y: 430, w: 1152, h: 262 };
 const TEXT = { x: 96, y: 468, w: 520, wFull: 1088 };
 const CHOICES = { x: 648, y: 456, w: 548, min: 46, gap: 6 };
+const PLATE = { x: 88, y: 412, h: 56 };
+const PLATE_BOTTOM = PLATE.y + PLATE.h;
+const HINT_Y = 650;
 const TAG_BG = { quest: '#ffc43d', insight: '#c9a2ff', trustUp: '#6ee06a', trustDown: '#ff4d5e' };
 
 /**
@@ -93,9 +96,12 @@ export class DialogueBox extends Phaser.GameObjects.Container {
     // body text (narration in a softer colour, the hero's own lines in gold)
     const wrap = v.choices.length ? TEXT.w : TEXT.wFull;
     const color = narrator ? C.text300 : playerSpeaks ? C.gold300 : C.text;
-    const body = this.keep(sc.add.text(TEXT.x, TEXT.y, v.text, { ...typeStyle('bodyL', color, wrap), fontSize: '17px', lineSpacing: 9 }));
-    if (body.height > 172) body.setFontSize(15).setLineSpacing(6);
-    if (body.height > 172) body.setFontSize(13).setLineSpacing(4);
+    // under a name plate (412 + 56 tall) the text drops 12 px so it doesn't sit flush; it must stay clear of the hint row
+    const bodyY = narrator ? TEXT.y : PLATE_BOTTOM + 12;
+    const maxH = HINT_Y - 10 - bodyY;
+    const body = this.keep(sc.add.text(TEXT.x, bodyY, v.text, { ...typeStyle('bodyL', color, wrap), fontSize: '17px', lineSpacing: 9 }));
+    if (body.height > maxH) body.setFontSize(15).setLineSpacing(6);
+    if (body.height > maxH) body.setFontSize(13).setLineSpacing(4);
     if (!v.choices.length) {
       const last = body.getBottomRight();
       this.caret = this.keep(sc.add.rectangle(last.x! + 6, last.y! - 18, 10, 14, parseInt(C.gold.slice(1), 16)).setOrigin(0));
@@ -107,9 +113,11 @@ export class DialogueBox extends Phaser.GameObjects.Container {
     let y = Math.min(CHOICES.y, PANEL.y + PANEL.h - 20 - total);
     v.choices.forEach((c, i) => { this.choice(c, i, y, heights[i]); y += heights[i] + CHOICES.gap; });
 
-    const n = v.choices.length;
-    this.keep(sc.add.text(TEXT.x, 650, n ? `1–${Math.min(9, n)} choose · Esc leave the conversation` : 'Space or click to continue · Esc leave', typeStyle('caption', '#7884b5')));
-    if (v.deadline) this.timer = this.keep(sc.add.text(TEXT.x + 520, 650, '', typeStyle('caption', C.gold300)).setOrigin(1, 0));
+    // 13px, not the 11px caption: at caption size Pixelify's "2" reads as an "8" ("1–2" looked like "1-8")
+    const n = Math.min(9, v.choices.length);
+    const keys = n === 1 ? 'Press 1' : n === 2 ? 'Press 1 or 2' : `Press 1 to ${n}`;
+    this.keep(sc.add.text(TEXT.x, HINT_Y, n ? `${keys} to choose · Esc to leave the conversation` : 'Space or click to continue · Esc to leave', { ...typeStyle('caption', '#7884b5'), fontSize: '13px' }));
+    if (v.deadline) this.timer = this.keep(sc.add.text(TEXT.x + 520, HINT_Y, '', typeStyle('caption', C.gold300)).setOrigin(1, 0));
     this.tick();
   }
 
@@ -119,7 +127,7 @@ export class DialogueBox extends Phaser.GameObjects.Container {
     const role = sc.add.text(0, 0, npc?.title ?? '', { ...typeStyle('caption', C.text300), fontStyle: '700' });
     const diamonds = v.trust !== undefined ? 5 * 15 + 6 : 0;
     const w = 14 + name.width + (role.text ? 10 + role.width : 0) + diamonds + 14 + 16;
-    this.keep(sc.add.nineslice(88, 412, 'ui:panel_gold', undefined, w, 40 + 16, 8, 8, 8, 8).setOrigin(0));
+    this.keep(sc.add.nineslice(PLATE.x, PLATE.y, 'ui:panel_gold', undefined, w, PLATE.h, 8, 8, 8, 8).setOrigin(0));
     this.keep(name.setPosition(88 + 22, 412 + 28).setOrigin(0, 0.5));
     let x = name.x + name.width + 10;
     if (role.text) { this.keep(role.setPosition(x, 412 + 29).setOrigin(0, 0.5)); x += role.width + 10; } else role.destroy();
