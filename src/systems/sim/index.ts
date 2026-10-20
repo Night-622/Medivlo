@@ -71,7 +71,8 @@ export function installSystemsAuthority(opts: SystemsAuthorityOpts = {}): System
     s.syncMembers(members);
     if (opts.loadCharacter) for (const m of members) {
       if (!m.connected || s.w.players.has(`p:${m.playerId}`)) continue;
-      void opts.loadCharacter(m.playerId).then((save) => { if (save) s.addPlayer(m.playerId, save); });
+      // still here when the trusted copy arrives? (a player who left meanwhile must not come back as a ghost)
+      void opts.loadCharacter(m.playerId).then((save) => { if (save && net.session().members.some((x) => x.playerId === m.playerId && x.connected)) s.addPlayer(m.playerId, save); });
     }
   }));
   Services.register('combat', s);

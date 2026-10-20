@@ -11,7 +11,7 @@ import { essenceOf, HC_RUNES, RUNE_DUST } from '@/data/items/hc/build-items';
 import { MAGIC_SCHOOLS, MARTIAL_SCHOOLS } from '@/core/constants';
 import { socketCount } from '@/systems/rules/affixes';
 import type { ItemInstance, SchoolId } from '@/systems/rules/types';
-import { grantItem } from './loot';
+import { grantItem, grantOrDrop } from './loot';
 import { rebuildPlayer } from './player';
 import type { PlayerEnt } from './state';
 import type { SimWorld } from './world';
@@ -144,10 +144,10 @@ export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Recor
     if (!y) return 'The smith won’t break that.';
     p.save.inventory.splice(p.save.inventory.indexOf(it), 1);
     w.emit('item:used', { playerId: p.playerId, uid: it.uid, def: it.base as never });
-    grantItem(w, p, { base: INGOT, ilvl: 1, qty: y.ingots });
-    for (const g of y.gems) grantItem(w, p, { base: g, ilvl: 1, qty: 1 });
+    grantOrDrop(w, p, { base: INGOT, ilvl: 1, qty: y.ingots });
+    for (const g of y.gems) grantOrDrop(w, p, { base: g, ilvl: 1, qty: 1 });
     const dust = dustYield(it);
-    if (dust) grantItem(w, p, { base: RUNE_DUST, ilvl: 1, qty: dust });
+    if (dust) grantOrDrop(w, p, { base: RUNE_DUST, ilvl: 1, qty: dust });
     return null;
   }
   return 'The smith shrugs.';

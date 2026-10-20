@@ -11,7 +11,7 @@ import { P, unlockLevel, xpToNext } from '@/systems/rules/curves';
 import { itemInfo, materialIndex, styleIndex } from '@/systems/rules/gear';
 import { hook } from '@/systems/rules/stats';
 import { grantXp } from './death';
-import { grantItem } from './loot';
+import { grantItem, grantOrDrop } from './loot';
 import type { PlayerEnt } from './state';
 import type { SimWorld } from './world';
 
@@ -108,7 +108,7 @@ export function questReward(w: SimWorld, e: QuestRewardEv): void {
     for (const it of e.hcItems ?? []) {
       const info = itemInfo(it.item);
       if (!info) { console.warn(`[systems] quest reward: unknown item ${it.item}`); continue; }
-      grantItem(w, p, { base: it.item, ilvl: it.ilvl ?? (info.slot ? p.save.level : 1), qty: it.qty ?? 1 });
+      grantOrDrop(w, p, { base: it.item, ilvl: it.ilvl ?? (info.slot ? p.save.level : 1), qty: it.qty ?? 1 });
     }
   }
 }

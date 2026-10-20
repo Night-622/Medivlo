@@ -99,11 +99,12 @@ interface SpellMod {
 }
 ```
 
-**Rune catalogue (16):**
-- **Projectile:** Fork, Chain, Pierce, Split.
-- **Area:** Wider area, Linger, Burst.
-- **Any spell:** Haste, Echo, Convert (one rune per school, so 12 variants under one id pattern `rn_convert_<school>`),
-  Efficiency (−cost), Power (+dmg, +cost), Ward, Leech, Twin, Duration.
+**Rune catalogue (15 kinds, 27 ids; data/items/hc/build-items.ts):**
+- **Projectile:** Volley (+2 projectiles, −20% each), Pierce, Split.
+- **Area:** Reach (+40% area), Linger, Burst (a repeating spell lands at once, +50%).
+- **Any spell:** Chain (2 more foes at 60%), Haste (−20% cd and cast time), Echo, Thrift (−25% cost), Power (+30% dmg,
+  +30% cost), Ward (8% max-HP shield on cast), Leech (6%), Twin, Duration (+40%), and Convert, one per school
+  (`rn_convert_<school>`, crafted with that school's Essence).
 
 Rune instances are items (`base: 'rn_<id>'`) that drop and are crafted. Slotted runes live in the character save
 (§2.5). **Slots:**

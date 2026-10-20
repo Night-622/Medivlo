@@ -25,7 +25,7 @@ import { eliteAffix } from '@/data/enemies/hc/elites';
 import type { Combatant, EnemyEnt, PlayerEnt } from './state';
 import { dist2, facing4, facing4Sticky, freeSpot, SimWorld, type SimPorts } from './world';
 import { resetCost, xpToNext } from '@/systems/rules/curves';
-import { sanitizeLoadout } from '@/systems/rules/validate';
+import { legalEquipment, sanitizeLoadout } from '@/systems/rules/validate';
 import { lookKey, paperdoll, type HeroLookLite } from '@/systems/rules/paperdoll';
 
 const AOI = 1400;
@@ -166,23 +166,29 @@ export class Sim implements CombatService {
     switch (msg.type) {
       case 'loadout': {
         // never trust a client save: clamp, drop unknown items, replay the tree, limit the hotbar
-        const save = from === this.localPlayer ? (msg.data as unknown as CharacterSave) : sanitizeLoadout(msg.data);
+        // a known remote hero's tree is replayed within the authority's own level, points and class
+        const data = p && from !== this.localPlayer && msg.data && typeof msg.data === 'object' ? { ...msg.data, level: p.save.level, bonusPoints: p.save.bonusPoints, classId: p.save.classId } : msg.data;
+        const save = from === this.localPlayer ? (msg.data as unknown as CharacterSave) : sanitizeLoadout(data);
         if (!save?.classId) return;
         if (p) { p.save = from === this.localPlayer ? save : mergeRemote(p.save, save); rebuildPlayer(this.w, p); } else this.addPlayer(from, save);
         return;
       }
       case 'act': {
+        const args = msg.args && typeof msg.args === 'object' ? msg.args as Record<string, unknown> : {};
         if (msg.domain !== 'systems' || !p) return;
-        if (msg.action === 'respawn' && p.dead) respawn(this.w, p);
-        if (msg.action === 'useItem') useItem(this.w, p, String(msg.args.uid));
-        if (msg.action === 'rune') { const err = runeAct(this.w, p, msg.args); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
-        if (msg.action === 'hazard') useHazard(this.w, p, String(msg.args.id));
-        if (msg.action === 'buy') { const err = buy(this.w, p, String(msg.args.shop), String(msg.args.item), this.shopEnv); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
-        if (RUNEFORGE_ACTIONS.includes(msg.action)) { const err = runeforge(this.w, p, msg.action, msg.args); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
-        if (msg.action === 'sell') { const err = sell(this.w, p, String(msg.args.shop), String(msg.args.uid)); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
+        // respawn waits for its timer (PvP 5 s, a wipe 8 s) unless the authority's own hero asks (a solo death waits for the choice)
+        if (msg.action === 'respawn') { if (p.dead && (from === this.localPlayer || p.respawnAt === Infinity || this.w.t >= p.respawnAt)) respawn(this.w, p); return; }
+        // the dead and the downed trade, forge and use nothing
+        if (p.dead || p.downed) return;
+        if (msg.action === 'useItem') useItem(this.w, p, String(args.uid));
+        if (msg.action === 'rune') { const err = runeAct(this.w, p, args); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
+        if (msg.action === 'hazard') useHazard(this.w, p, String(args.id));
+        if (msg.action === 'buy') { const err = buy(this.w, p, String(args.shop), String(args.item), this.shopEnv); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
+        if (RUNEFORGE_ACTIONS.includes(msg.action)) { const err = runeforge(this.w, p, msg.action, args); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
+        if (msg.action === 'sell') { const err = sell(this.w, p, String(args.shop), String(args.uid)); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
         // position is authority-internal: only the authority's own player may move itself (its world code runs here);
         // the world moves remote players with sim.teleport()
-        if (msg.action === 'teleport' && from === this.localPlayer) this.teleport(from, String(msg.args.space ?? p.space), Number(msg.args.x), Number(msg.args.y));
+        if (msg.action === 'teleport' && from === this.localPlayer) this.teleport(from, String(args.space ?? p.space), Number(args.x), Number(args.y));
         return;
       }
       case 'duel': {
@@ -197,6 +203,9 @@ export class Sim implements CombatService {
           p.duelWith = other.id; other.duelWith = p.id;
           this.w.emit('duel:started', { a: msg.target, b: from });
         } else {
+          // one ask per target every 3 s (duel:asked is replicated to the whole realm)
+          const prevAsk = this.duelAsks.get(from);
+          if (prevAsk && prevAsk.to === msg.target && this.w.t - prevAsk.at < 3000) return;
           this.duelAsks.set(from, { to: msg.target, at: this.w.t });
           // names ride along: in a public realm the other player is not in the client's own session list
           this.w.emit('duel:asked', { from, to: msg.target, fromName: this.names.get(from), toName: this.names.get(msg.target) });
@@ -282,8 +291,11 @@ function mergeRemote(prev: CharacterSave, next: CharacterSave): CharacterSave {
   for (const it of [...prev.inventory, ...Object.values(prev.equipment)]) if (it) known.set(it.uid, it);
   // gems and item levels are the runeforge's business (authority): a loadout only rearranges known pieces
   const keep = (it: CharacterSave['inventory'][number] | undefined): CharacterSave['inventory'][number] | undefined => (it && known.has(it.uid) ? { ...known.get(it.uid)! } : undefined);
-  const equipment: CharacterSave['equipment'] = {};
-  for (const [slot, it] of Object.entries(next.equipment)) { const k = keep(it); if (k) equipment[slot as keyof CharacterSave['equipment']] = k; }
+  // the authority's copies, then the slot / class / two-hander rules on THOSE (a uid could name another item)
+  const claimed: CharacterSave['equipment'] = {};
+  for (const [slot, it] of Object.entries(next.equipment)) { const k = keep(it); if (k) claimed[slot as keyof CharacterSave['equipment']] = k; }
+  const { equipment } = legalEquipment(prev.classId, claimed);
+
   const used = new Set(Object.values(equipment).map((x) => x!.uid));
   const inventory = next.inventory.map(keep).filter((x): x is NonNullable<typeof x> => !!x && !used.has(x.uid));
   // anything the client dropped from its lists stays in the pack (no silent deletion either)
@@ -302,7 +314,7 @@ function mergeRemote(prev: CharacterSave, next: CharacterSave): CharacterSave {
     for (const [id, r] of Object.entries(prev.tree)) if (id.startsWith(pre)) tree[id] = r;
   }
   return {
-    ...next, inventory, equipment, tree,
+    ...next, classId: prev.classId, inventory, equipment, tree,
     level: prev.level, xp: prev.xp, gold, bonusPoints: prev.bonusPoints, legendariesSeen: prev.legendariesSeen,
     // runes and tomes are slotted / read on the authority (they use up items): a loadout cannot add them
     runes: prev.runes ?? {}, tomeSpell: prev.tomeSpell,

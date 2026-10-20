@@ -17,12 +17,15 @@ const ownerOf = (w: SimWorld, c: Combatant | null): PlayerEnt | undefined =>
   !c ? undefined : c.kind === 'player' ? (c as PlayerEnt) : c.kind === 'pet' ? w.players.get((c as EnemyEnt).ownerId ?? '') : undefined;
 
 export function onPlayerZero(w: SimWorld, p: PlayerEnt, src: Combatant | null): void {
+  // already down: a DoT tick or hazard must not restart the downed timer or wipe the revive in progress
+  if (p.downed) { p.hp = 0; return; }
   const killer = ownerOf(w, src);
   if (killer && killer !== p) return pvpDeath(w, p, killer);
   const standing = [...w.players.values()].filter((o) => o !== p && !o.dead && !o.downed);
   if (standing.length) {
     p.hp = 0;
     p.downed = { until: w.t + DOWNED_MS, revive: 0, reviver: null };
+    p.statuses.clear();
     p.windup = null;
     p.motion = null;
     w.emit('player:downed', { playerId: p.playerId });
@@ -59,6 +62,8 @@ function wipe(w: SimWorld, last: PlayerEnt, killer?: Combatant | null): void {
 function pvpDeath(w: SimWorld, p: PlayerEnt, killer: PlayerEnt): void {
   switch (w.ports.realmRule()) {
     case 'duels':
+      // a bleed left over from a finished duel ends nothing: the duel is already over
+      if (!p.duelWith) { p.hp = 1; return; }
       p.hp = 1;
       p.duelWith = null;
       killer.duelWith = null;

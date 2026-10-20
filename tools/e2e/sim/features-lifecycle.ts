@@ -55,7 +55,55 @@ function freeRespec(): void {
   check(free && !regranted && g.save.gold < gold0, 'free respec: the first reset costs nothing and uses it up; a loadout cannot grant it again; the next reset is charged', JSON.stringify({ free, regranted, gold: [gold0, g.save.gold] }));
 }
 
+/** Claude 6's sim audit: each finding's repro, now holding. */
+function audit(): void {
+  // 1. a downed hero under a DoT keeps its downed timer (revivable)
+  {
+    const w = world({ party: 2 }), a = hero(w, 'a', { ...newCharacter('warden'), level: 10 }), b = hero(w, 'b', { ...newCharacter('warden'), level: 10 }, 30, 0);
+    a.spawnProtectUntil = b.spawnProtectUntil = 0;
+    w.sim.damage(a.id, 1e9, 'physical');
+    const until = a.downed?.until;
+    a.statuses.set('bleed', { id: 'bleed', until: w.sim.w.t + 5000, power: 0, sourceId: 'world', dps: 50, kind: 'physical', stacks: 1, nextTick: w.sim.w.t });
+    w.run(1500);
+    check(!!until && a.downed?.until === until && !a.dead && !!b, 'downed: a DoT ticking on a downed hero does not restart the downed timer (still revivable)', `until ${until} → ${a.downed?.until}`);
+  }
+  // 2 + 3. a later remote loadout: equipment rules on the authority's own item, tree within the authority's points
+  {
+    const w = world({ party: 2 });
+    hero(w, 'a', newCharacter('warden'));
+    const own = { ...newCharacter('reaver'), level: 2 };
+    own.inventory.push({ uid: 'spear', base: 'w_spear_wood', ilvl: 1, qty: 1 });
+    w.sim.receive({ type: 'loadout', data: JSON.parse(JSON.stringify(own)) } as never, 'b');
+    const g = w.sim.w.players.get('p:b')!;
+    const forged = JSON.parse(JSON.stringify({ ...own, level: 40, bonusPoints: 60, equipment: { ...own.equipment, main: { uid: 'spear', base: own.equipment.main!.base, ilvl: 1, qty: 1 } }, tree: { sk_p1a: 5, sk_p0a: 5, up_p0a: 5 } }));
+    w.sim.receive({ type: 'loadout', data: forged } as never, 'b');
+    const ranks = Object.values(g.save.tree).reduce((x, y) => x + y, 0);
+    check(g.save.equipment.main?.base !== 'w_spear_wood' && g.save.inventory.some((x) => x.uid === 'spear'), 'remote loadout: a uid naming a weapon the class cannot wield stays in the pack', String(g.save.equipment.main?.base));
+    check(g.save.level === 2 && ranks <= 2, `remote loadout: the tree replays within the authority's level 2 (${ranks} ranks), not the claimed L40`, JSON.stringify(g.save.tree));
+  }
+  // 4. a quest reward into a full pack falls at the hero's feet
+  {
+    const w = world(), p = hero(w, 'a', newCharacter('warden'));
+    while (p.save.inventory.length < 66) p.save.inventory.push({ uid: `f${p.save.inventory.length}`, base: 'w_sword_wood', ilvl: 1, qty: 1 });
+    w.sim.questReward({ playerId: 'a', hcItems: [{ item: 'i_ruby', qty: 1 }] });
+    check([...w.sim.w.loot.values()].some((l) => l.item?.base === 'i_ruby' && l.lockTo === p.id), 'quest reward into a full pack: dropped at the hero’s feet, held for them');
+  }
+  // 8 + 9. a remote respawn waits for its timer; the dead buy nothing
+  {
+    const w = world({ party: 2 }), a = hero(w, 'a', newCharacter('warden'));
+    hero(w, 'b', newCharacter('warden'), 400, 0);
+    a.dead = true; a.respawnAt = w.sim.w.t + 8000;
+    w.sim.receive({ type: 'act', domain: 'systems', action: 'respawn', args: {} } as never, 'a');
+    const early = !a.dead;
+    const g0 = a.save.gold;
+    w.sim.receive({ type: 'act', domain: 'systems', action: 'buy', args: { shop: 'npc:nan-briar', item: 'i_hp_s' } } as never, 'a');
+    w.sim.receive({ type: 'act', domain: 'systems', action: 'useItem' } as never, 'a');
+    check(!early && a.save.gold === g0, 'a remote respawn before its timer is ignored; a dead hero cannot buy; an act with no args does not throw');
+  }
+}
+
 export function lifecycleChecks(): void {
+  audit();
   freeRespec();
   inputRestart();
   loadReset();

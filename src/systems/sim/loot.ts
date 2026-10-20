@@ -235,3 +235,10 @@ function entryItem(w: SimWorld, p: PlayerEnt, e: LootEntry, level: number): Loot
   }
   return { ...g, qty: 1 };
 }
+
+/** Give an item, or drop it at the hero's feet (held for them) with a notice when the pack is full: nothing is lost. */
+export function grantOrDrop(w: SimWorld, p: PlayerEnt, it: Omit<ItemInstance, 'uid'>): void {
+  if (grantItem(w, p, it)) return;
+  drop(w, p.space, p.x, p.y, it, undefined, p.id);
+  w.emit('systems:notice', { playerId: p.playerId, text: 'Your pack is full: it fell at your feet.', kind: 'error' });
+}

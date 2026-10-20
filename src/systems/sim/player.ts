@@ -75,7 +75,7 @@ export function rebuildPlayer(_w: SimWorld, p: PlayerEnt): void {
   p.maxHp = Math.round(p.base.stats.hp ?? 100);
   p.emberMax = Math.round(p.base.stats.ember ?? 100);
   p.staminaMax = Math.round(p.base.stats.stamina ?? 100);
-  p.hp = Math.max(1, Math.round(p.maxHp * hpFrac));
+  p.hp = p.dead || p.downed ? 0 : Math.max(1, Math.round(p.maxHp * hpFrac));
   p.ember = p.emberMax * emFrac;
   // weapons: main hand, else the class start weapon at 70%
   const main = s.equipment.main, off = s.equipment.off;

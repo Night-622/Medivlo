@@ -37,6 +37,8 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
   const flags = o.flags ?? [];
   const hitInfo = { x: Math.round(tgt.x), y: Math.round(tgt.y), sourceId: src?.id ?? 'world', targetId: tgt.id, type: kind };
   if (src && src !== tgt && !w.hostile(src, tgt) && !o.dot) return 0;
+  // a player's DoT on another player stops when PvP no longer allows it (duel over, safe zone)
+  if (o.dot && src && src !== tgt && src.kind === 'player' && tgt.kind === 'player' && !w.hostile(src, tgt)) return 0;
   // scripted damage (no source) finishes a yielded boss: the story chose "destroy"
   if (!src && tgt.kind === 'enemy' && (tgt as EnemyEnt).yielded) { tgt.hp = 0; tgt.buffs = []; onCombatantZero(w, tgt, null); return raw; }
   if (((tgt.motion?.iframes || (tgt.iframesUntil ?? 0) > w.t) && !o.dot) || flagged(tgt, 'invulnerable')) {

@@ -7,7 +7,7 @@ import { CLASS_SCHOOL } from '@/core/constants';
 import { HC_TOMES } from '@/data/items/hc/build-items';
 import { runeDef, runeFits, runeSlots } from '@/systems/rules/runes';
 import { spellDef } from '@/systems/rules/spells';
-import { grantItem } from './loot';
+import { grantItem, grantOrDrop } from './loot';
 import { consumeItem, rebuildPlayer } from './player';
 import type { PlayerEnt } from './state';
 import type { SimWorld } from './world';
@@ -22,7 +22,7 @@ export function runeAct(w: SimWorld, p: PlayerEnt, args: Record<string, unknown>
   if (!p.spells.has(spellId)) return 'You don’t know that spell.';
   const runes = (p.save.runes ??= {});
   const now = runes[spellId] ?? [];
-  if (args.remove) {
+  if (args.remove === true) {
     if (!now.includes(id)) return 'That rune isn’t in that spell.';
     if (!grantItem(w, p, { base: id, ilvl: 1, qty: 1 })) return 'Your pack is full.';
     runes[spellId] = now.filter((x) => x !== id);
@@ -52,7 +52,7 @@ export function readTome(w: SimWorld, p: PlayerEnt, uid: string): boolean {
   const old = p.save.tomeSpell;
   if (old === tome.spell) { w.emit('systems:notice', { playerId: p.playerId, text: 'You already know that spell.', kind: 'error' }); return true; }
   // runes slotted in the forgotten spell come back to the pack
-  if (old) for (const id of p.save.runes?.[old] ?? []) grantItem(w, p, { base: id, ilvl: 1, qty: 1 });
+  if (old) for (const id of p.save.runes?.[old] ?? []) grantOrDrop(w, p, { base: id, ilvl: 1, qty: 1 });
   if (old && p.save.runes) delete p.save.runes[old];
   p.save.tomeSpell = tome.spell;
   p.save.hotbar = p.save.hotbar.map((h) => (h === old ? null : h)) as typeof p.save.hotbar;

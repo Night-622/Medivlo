@@ -60,6 +60,25 @@ function item(raw: unknown, level: number): ItemInstance | null {
   return out;
 }
 
+/**
+ * Equipment rules on the authority's own items (a later remote loadout only names uids; the authority swaps its copy
+ * in, so the slot / class / two-hander rules must hold on that copy): right slot, a kit weapon, no off hand with a
+ * two-hander. Returns the equipment kept and the items that must go back to the pack.
+ */
+export function legalEquipment(classId: string, eq: CharacterSave['equipment']): { equipment: CharacterSave['equipment']; off: ItemInstance[] } {
+  const kit = kitFor(classId), equipment: CharacterSave['equipment'] = {}, off: ItemInstance[] = [];
+  for (const slot of SLOTS) {
+    const it = eq[slot];
+    if (!it) continue;
+    const info = itemInfo(it.base);
+    if (!info || !slotsFor(info).includes(slot) || (info.weaponType && !kit.weapons.includes(info.weaponType))) { off.push(it); continue; }
+    equipment[slot] = it;
+  }
+  const main = equipment.main && itemInfo(equipment.main.base);
+  if (main?.weaponType && TWO_HANDED.includes(main.weaponType) && equipment.off) { off.push(equipment.off); delete equipment.off; }
+  return { equipment, off };
+}
+
 /** Returns a safe copy, or null when the loadout is unusable (unknown class, not an object). */
 export function sanitizeLoadout(raw: unknown): CharacterSave | null {
   if (!raw || typeof raw !== 'object') return null;
