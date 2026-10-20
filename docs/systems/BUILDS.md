@@ -631,7 +631,8 @@ start. Claude 2 builds bands from it, so regenerate it only together with Claude
 - **`run.mjs boss-check gate`** (gate, 13 s): every class's lair-2, nemesis and Act III boss, at the gear a typical
   player actually wears.
   - It checks: every fight won, 0 deaths, every win ≤ 300 s (or a documented allowance; none today), no crash.
-  - Final 10/10: median time to kill 83 s (lair-2), 107 s (nemesis), 102 s (Act III).
+  - Final 10/10: median time to kill 83 s (lair-2), 107 s (nemesis), 115 s (Act III). Per-class quest XP brings the
+    hero to L34 earlier in the route, with gear at 67% over the reference kit (was 83%).
 - **`run.mjs first-minutes`** (report, 1 s): each class's first 3 route fights at L1–3 with the starter kit and every
   first pick. Final: 0 deaths, slowest 17 s, lowest HP left 82%, no potions.
 - **`run.mjs coop-balance gate`** (gate, 14 s): parties of 2–4 through the real party scaling and revive rules.
@@ -651,7 +652,7 @@ start. Claude 2 builds bands from it, so regenerate it only together with Claude
     because the test bots kite perfectly and play parry kits poorly.
 - **`run.mjs build-diversity`** (report, 27 s): at L40, how many choices on each axis stay within 15% of a class's
   best build (keystone pairings, armour set, tome).
-  - Final: 6–48 viable combinations per class.
+  - Final: 4–48 viable combinations per class (warden 4, juggernaut 12; the rest unchanged).
   - No school keystone, unique or hybrid that nobody would pick.
   - Open: endgame bosses barely threaten a typical player, so defensive choices rarely pay off. That's the user's
     call (power fantasy).
