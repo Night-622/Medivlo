@@ -33,6 +33,9 @@ Test build for medivlo. Everything below is in this build. Default keys are show
 
 ## Co-op and saves
 
+- Playing together is quicker: a party now clears fights faster than one hero alone.
+- Bosses keep their eyes on whoever is standing in their face, and tanks hold their attention more firmly, so a party can choose who takes the hits.
+- Getting hit while you revive a friend pauses the revive instead of starting it over.
 - Rejoining a friend’s game works: a rejoin replaces the old connection.
 - Co-op keeps running while the host’s tab is in the background.
 - Guests see forged items, runes and tome spells correctly.
