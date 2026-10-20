@@ -5,9 +5,12 @@
  * gems and salvaged pieces as item:used.
  */
 import { shopByNpc } from '@/data/items/hc/shops';
-import { INGOT, reforgeCost, salvageYield, socketCost } from '@/systems/rules/runeforge';
+import { dustYield, imbueCost, INGOT, reforgeCost, rerollCost, salvageYield, socketCost, transferCost, uniqueOf, upgradeCost } from '@/systems/rules/runeforge';
+import { affixDef, rollAffixes } from '@/systems/rules/affixes';
+import { essenceOf, HC_RUNES, RUNE_DUST } from '@/data/items/hc/build-items';
+import { MAGIC_SCHOOLS, MARTIAL_SCHOOLS } from '@/core/constants';
 import { socketCount } from '@/systems/rules/affixes';
-import type { ItemInstance } from '@/systems/rules/types';
+import type { ItemInstance, SchoolId } from '@/systems/rules/types';
 import { grantItem } from './loot';
 import { rebuildPlayer } from './player';
 import type { PlayerEnt } from './state';
@@ -47,9 +50,12 @@ function changed(w: SimWorld, p: PlayerEnt, it: ItemInstance, worn: boolean): vo
   if (worn) rebuildPlayer(w, p);
 }
 
+export const RUNEFORGE_ACTIONS = ['reforge', 'socket', 'salvage', 'upgrade', 'reroll', 'imbue', 'transfer', 'craft'];
+
 export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Record<string, unknown>): string | null {
   const shop = shopByNpc(String(args.shop ?? ''));
   if (!shop?.runeforge) return 'There is no runeforge here.';
+  if (action === 'craft') return craft(w, p, String(args.rune ?? ''));
   const o = owned(p, String(args.uid ?? ''));
   if (!o) return 'You don’t have that.';
   const { it, worn } = o;
@@ -83,6 +89,55 @@ export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Recor
     changed(w, p, it, worn);
     return null;
   }
+  if (action === 'upgrade') {
+    const c = upgradeCost(it);
+    if (!c) return 'That can’t be upgraded any further.';
+    if (count(p, INGOT) < c.ingots) return `You need ${c.ingots} Iron Ingots.`;
+    if (p.save.gold < c.gold) return 'Not enough Embershards.';
+    pay(w, p, c.gold);
+    spend(w, p, INGOT, c.ingots);
+    it.upgrade = c.to;
+    changed(w, p, it, worn);
+    return null;
+  }
+  if (action === 'reroll') {
+    const cost = rerollCost(it), i = Number(args.affix);
+    if (cost === null || !Number.isInteger(i) || !it.affixes?.[i]) return 'There is nothing to reroll there.';
+    if (p.save.gold < cost) return 'Not enough Embershards.';
+    // a fresh roll of one affix: same kind (prefix / suffix), any group the rest of the item does not already hold
+    const fresh = rerollOne(w, p, it, i);
+    if (!fresh) return 'The runes refuse to change.';
+    pay(w, p, cost);
+    it.affixes = it.affixes.map((a, j) => (j === i ? fresh : a));
+    changed(w, p, it, worn);
+    return null;
+  }
+  if (action === 'imbue') {
+    const cost = imbueCost(it), school = String(args.school ?? '') as SchoolId;
+    if (cost === null) return 'Only weapons take an imbue.';
+    if (!(SCHOOLS as string[]).includes(school)) return 'Choose a school.';
+    if (!count(p, essenceOf(school))) return 'You need an Essence of that school.';
+    if (p.save.gold < cost) return 'Not enough Embershards.';
+    pay(w, p, cost);
+    spend(w, p, essenceOf(school), 1);
+    it.imbue = school;
+    changed(w, p, it, worn);
+    return null;
+  }
+  if (action === 'transfer') {
+    const src = owned(p, String(args.from ?? ''));
+    if (!src) return 'You don’t have that.';
+    if (src.worn) return 'Take it off first.';
+    const cost = transferCost(src.it, it);
+    if (cost === null) return 'That effect can’t move there.';
+    if (p.save.gold < cost) return 'Not enough Embershards.';
+    pay(w, p, cost);
+    it.uniqueFx = uniqueOf(src.it);
+    p.save.inventory.splice(p.save.inventory.indexOf(src.it), 1);
+    w.emit('item:used', { playerId: p.playerId, uid: src.it.uid, def: src.it.base as never });
+    changed(w, p, it, worn);
+    return null;
+  }
   if (action === 'salvage') {
     if (worn) return 'Take it off first.';
     const y = salvageYield(it);
@@ -91,7 +146,36 @@ export function runeforge(w: SimWorld, p: PlayerEnt, action: string, args: Recor
     w.emit('item:used', { playerId: p.playerId, uid: it.uid, def: it.base as never });
     grantItem(w, p, { base: INGOT, ilvl: 1, qty: y.ingots });
     for (const g of y.gems) grantItem(w, p, { base: g, ilvl: 1, qty: 1 });
+    const dust = dustYield(it);
+    if (dust) grantItem(w, p, { base: RUNE_DUST, ilvl: 1, qty: dust });
     return null;
   }
   return 'The smith shrugs.';
+}
+
+const SCHOOLS: string[] = [...MAGIC_SCHOOLS, ...MARTIAL_SCHOOLS];
+
+/** One affix rerolled: the same kind (prefix / suffix), a group the rest of the item does not hold. */
+function rerollOne(w: SimWorld, p: PlayerEnt, it: ItemInstance, i: number): NonNullable<ItemInstance['affixes']>[number] | null {
+  const old = affixDef(it.affixes![i].id);
+  if (!old) return null;
+  const keep = new Set(it.affixes!.filter((_, j) => j !== i).map((a) => affixDef(a.id)?.group));
+  for (let tries = 0; tries < 40; tries++) {
+    const [r] = rollAffixes(w.rng, it.base, it.ilvl, 'fine', { classId: p.save.classId, school: p.school });
+    const d = r && affixDef(r.id);
+    if (d && d.kind === old.kind && !keep.has(d.group) && r.id !== old.id) return r;
+  }
+  return null;
+}
+
+/** Craft a rune from its recipe (gold + rune dust, an Essence for Convert runes). */
+function craft(w: SimWorld, p: PlayerEnt, id: string): string | null {
+  const r = HC_RUNES.find((x) => x.id === id);
+  if (!r) return 'The smith doesn’t know that rune.';
+  for (const need of r.craft.items) if (count(p, need.item) < need.qty) return 'You lack the materials.';
+  if (p.save.gold < r.craft.gold) return 'Not enough Embershards.';
+  if (!grantItem(w, p, { base: r.id, ilvl: 1, qty: 1 })) return 'Your pack is full.';
+  pay(w, p, r.craft.gold);
+  for (const need of r.craft.items) spend(w, p, need.item, need.qty);
+  return null;
 }

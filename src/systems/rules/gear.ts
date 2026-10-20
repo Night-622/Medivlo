@@ -8,6 +8,8 @@ import { HC_LEGENDARIES } from '@/data/items/hc/legendary.gen';
 import { HC_MATERIALS, HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { HC_BESTIARY } from '@/data/enemies/hc/bestiary.gen';
 import { campaignItem } from '@/data/items/hc/campaign-items';
+import { HC_BUILD_ITEMS } from '@/data/items/hc/build-items';
+import { uniqueDef } from './uniques';
 import { P } from './curves';
 import { scalePassive } from './scale';
 import type {
@@ -34,6 +36,9 @@ const SET = new Map(HC_SETS.map((s) => [s.id, s]));
 const ITEM = new Map(HC_ITEMS.map((i) => [i.id, i]));
 const LEG = new Map(HC_LEGENDARIES.map((l) => [l.id, l]));
 const MAT_INDEX = new Map(HC_MATERIALS.map((m, i) => [m.id, i]));
+const BUILD = new Map(HC_BUILD_ITEMS.map((b) => [b.id, b]));
+/** the atlas frame a deeper-builds item borrows until it has art */
+export const borrowedIcon = (id: string): string | undefined => BUILD.get(id)?.icon;
 const STYLE_INDEX = new Map<string, number>(HC_STYLES.map((s, i) => [s, i]));
 
 export const RING_IDS = ['i_copper', 'i_silver', 'i_signet', 'i_emberring'];
@@ -51,6 +56,9 @@ export function itemInfo(id: string): ItemInfo | undefined {
     return { ...b, id, name: ci.name, rarity: ci.rarity, desc: ci.desc, stackable: false, questItem: false, value: Math.max(b.value, 60),
       ...(ci.kind === 'trinket' ? { kind: 'trinket' as const, slot: ci.slot, weaponType: undefined } : {}) };
   }
+  // uniques (u_*): their base's shape, their own name, gold like a legendary
+  const u = id.startsWith('u_') ? uniqueDef(id) : undefined;
+  if (u) { const b = itemInfo(u.base); return b && { ...b, id, name: u.name, kind: 'legendary', rarity: 'spark', desc: u.text, value: Math.max(b.value * 3, 1500), stackable: false, questItem: false }; }
   const w = WEAPON.get(id);
   if (w) return { id, name: w.name, kind: 'weapon', rarity: w.rarity, value: w.value, slot: 'weapon', weaponType: w.type, stackable: false, questItem: false };
   const p = PIECE.get(id);
@@ -64,7 +72,11 @@ export function itemInfo(id: string): ItemInfo | undefined {
     };
   }
   const it = ITEM.get(id);
-  if (!it) return undefined;
+  if (!it) {
+    // deeper-builds items: runes, rune dust, Essences, tomes (stackable, no slot)
+    const b = BUILD.get(id);
+    return b && { id, name: b.name, kind: b.cat, rarity: b.rarity, value: b.value, desc: b.desc, stackable: true, questItem: false };
+  }
   const ring = RING_IDS.includes(id), amulet = AMULET_IDS.includes(id);
   return {
     id, name: it.name, kind: ring || amulet ? 'trinket' : it.cat, rarity: it.rarity, value: it.value, desc: it.desc,
@@ -74,7 +86,7 @@ export function itemInfo(id: string): ItemInfo | undefined {
 }
 
 /** Resolve an alias (story item) to the handoff id that carries its stats and art. */
-export const statBase = (id: string): string => { const ci = campaignItem(id); return ci && ci.kind !== 'relic' ? ci.base : id; };
+export const statBase = (id: string): string => { const ci = campaignItem(id); if (ci && ci.kind !== 'relic') return ci.base; return id.startsWith('u_') ? uniqueDef(id)?.base ?? id : id; };
 export const weaponBase = (id: string): HcWeaponBase | undefined => WEAPON.get(statBase(id)) ?? WEAPON.get(LEG.get(id)?.base ?? '');
 export const armourPiece = (id: string): HcArmourPiece | undefined => PIECE.get(statBase(id));
 export const armourSet = (id: string): HcArmourSet | undefined => SET.get(id);
@@ -260,8 +272,25 @@ export function setBonuses(equipped: ItemInstance[], classSchool: SchoolId, attu
       if (set.school === classSchool) out.push(scalePassive(ATTUNED[set.school], attuned));
     }
   }
+  out.push(...hybridBonus(equipped));
   return out;
 }
+
+/**
+ * Hybrid sets (BUILDS.md §5): 2–3 pieces each of two sets of DIFFERENT schools give both sets' 4-piece effects at
+ * half strength (each on its own style's trigger). A full 4-piece set never counts toward a hybrid.
+ */
+export function hybridBonus(equipped: ItemInstance[]): Passive[] {
+  const halves = setProgress(equipped).filter((p) => p.count >= 2 && p.count < 4);
+  const pair = halves.find((a) => halves.some((b) => b.set.school !== a.set.school));
+  if (!pair) return [];
+  const other = halves.find((b) => b.set.school !== pair.set.school)!;
+  return [pair, other].map(({ set }) => {
+    const t = STYLE_TRIGGER[set.style];
+    return scalePassive({ procs: [{ on: t.on, every: t.every, icd: t.icd ?? 1000, do: SCHOOL_EFFECT[set.school] }] }, 0.5);
+  });
+}
+export const hasHybrid = (equipped: ItemInstance[]): boolean => hybridBonus(equipped).length > 0;
 
 // ───────────── legendaries ─────────────
 /** Boss element → damage kind of its shockwave / echo, and its signature status for the immunity effect. */

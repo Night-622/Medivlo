@@ -3,6 +3,7 @@
  * zones, loot and co-op rules, answers Services.combat, receives client messages and produces snapshot entities.
  * Phaser-free: the public-realm server runs the same class.
  */
+import { runeAct } from './runes';
 import type { ClientMsg, EntityState, InputFrame, PartyMember, PlayerId } from '@/net/types';
 import type { CharacterSave } from '@/systems/rules/types';
 import type { CombatantInfo, CombatService, DamageKind, SpawnRequest, StatusApply } from '@/core/hc';
@@ -12,7 +13,7 @@ import { stepEnemy } from './enemy';
 import { tickProjectiles, tickZones } from './entities';
 import { useItem } from './items';
 import { buy, sell, questReward, questTake, type QuestRewardEv, type ShopEnv } from './shop';
-import { runeforge } from './runeforge';
+import { RUNEFORGE_ACTIONS, runeforge } from './runeforge';
 import { loseEscort, tickEscorts } from './escort';
 import { chestsOf, openChest, rollKillLoot, tickLoot } from './loot';
 import { addHazard, clearHazards, removeHazard, tickHazards, useHazard, type HazardSpec } from './hazards';
@@ -174,9 +175,10 @@ export class Sim implements CombatService {
         if (msg.domain !== 'systems' || !p) return;
         if (msg.action === 'respawn' && p.dead) respawn(this.w, p);
         if (msg.action === 'useItem') useItem(this.w, p, String(msg.args.uid));
+        if (msg.action === 'rune') { const err = runeAct(this.w, p, msg.args); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
         if (msg.action === 'hazard') useHazard(this.w, p, String(msg.args.id));
         if (msg.action === 'buy') { const err = buy(this.w, p, String(msg.args.shop), String(msg.args.item), this.shopEnv); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
-        if (msg.action === 'reforge' || msg.action === 'socket' || msg.action === 'salvage') { const err = runeforge(this.w, p, msg.action, msg.args); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
+        if (RUNEFORGE_ACTIONS.includes(msg.action)) { const err = runeforge(this.w, p, msg.action, msg.args); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
         if (msg.action === 'sell') { const err = sell(this.w, p, String(msg.args.shop), String(msg.args.uid)); if (err) this.w.emit('systems:notice', { playerId: from, text: err, kind: 'error' }); }
         // position is authority-internal: only the authority's own player may move itself (its world code runs here);
         // the world moves remote players with sim.teleport()
@@ -288,12 +290,13 @@ function mergeRemote(prev: CharacterSave, next: CharacterSave): CharacterSave {
   for (const it of known.values()) if (!used.has(it.uid) && !inventory.some((x) => x.uid === it.uid)) inventory.push(it);
   // a branch that lost ranks was reset: the authority charges for it (the client already paid its own copy);
   // a guest who cannot pay keeps the old branch
-  let gold = prev.gold;
+  let gold = prev.gold, freeUsed = false;
   const tree: CharacterSave['tree'] = { ...next.tree };
   for (const pre of ['sp_', 'sk_', 'up_']) {
     const ranks = (t: CharacterSave['tree']) => Object.entries(t).reduce((n, [id, r]) => n + (id.startsWith(pre) ? r : 0), 0);
     if (ranks(next.tree) >= ranks(prev.tree)) continue;
-    const cost = resetCost(prev.level);
+    const cost = prev.freeRespec ? 0 : resetCost(prev.level);
+    freeUsed = freeUsed || !!prev.freeRespec;
     if (gold >= cost) { gold -= cost; continue; }
     for (const id of Object.keys(tree)) if (id.startsWith(pre)) delete tree[id];
     for (const [id, r] of Object.entries(prev.tree)) if (id.startsWith(pre)) tree[id] = r;
@@ -301,6 +304,10 @@ function mergeRemote(prev: CharacterSave, next: CharacterSave): CharacterSave {
   return {
     ...next, inventory, equipment, tree,
     level: prev.level, xp: prev.xp, gold, bonusPoints: prev.bonusPoints, legendariesSeen: prev.legendariesSeen,
+    // runes and tomes are slotted / read on the authority (they use up items): a loadout cannot add them
+    runes: prev.runes ?? {}, tomeSpell: prev.tomeSpell,
+    // the free respec is the authority's: used by a reset, never granted by a loadout
+    freeRespec: prev.freeRespec && !freeUsed ? true : undefined, buildVersion: prev.buildVersion,
     chests: [...chestsOf(prev)], // authority-owned: a client can not forget a chest to loot it again
   } as CharacterSave;
 }

@@ -18,7 +18,7 @@ export type Rarity = 'common' | 'fine' | 'ember' | 'runed' | 'wrought' | 'spark'
 export type WeaponType = 'sword' | 'axe' | 'mace' | 'spear' | 'bow' | 'staff' | 'dagger' | 'wand';
 export type ArmourPiece = 'helm' | 'chest' | 'hands' | 'feet';
 export type BodyArch = 'quad' | 'slime' | 'skeleton' | 'humanoid' | 'spirit' | 'flyer' | 'plant' | 'construct' | 'bug';
-export type ItemCat = 'potion' | 'food' | 'scroll' | 'gem' | 'material' | 'trinket' | 'tool' | 'relic';
+export type ItemCat = 'potion' | 'food' | 'scroll' | 'gem' | 'material' | 'trinket' | 'tool' | 'relic' | 'rune' | 'tome';
 export type TreeBranch = 'spells' | 'skills' | 'upgrades';
 
 export const RARITY_ORDER: Rarity[] = ['common', 'fine', 'ember', 'runed', 'wrought', 'spark'];
@@ -172,6 +172,9 @@ export interface SpellMod {
   spell: string;
   dmg?: number; cost?: number; cd?: number; area?: number; dur?: number;
   echo?: number; twin?: boolean; split?: boolean; linger?: number; burst?: boolean;
+  // spell runes (BUILDS.md §2.2): + projectiles, pierce, chain to N more foes at 60%, −cd / −cast time share,
+  // deal another kind, a shield of this share of max HP on cast, share of damage healed back
+  count?: number; pierce?: boolean; chain?: number; haste?: number; convert?: DamageKind; ward?: number; leech?: number;
 }
 
 // ───────────── spells & kits ─────────────

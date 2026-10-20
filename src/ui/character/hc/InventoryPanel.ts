@@ -11,7 +11,7 @@ import { HC_ITEM_CATS } from '@/data/items/hc/items.gen';
 import { SCHOOL_COLOR } from '@/data/classes/hc';
 import { kitFor } from '@/data/classes/hc/kits';
 import { campaignItem } from '@/data/items/hc/campaign-items';
-import { itemInfo, itemWeaponDamage, legendary, slotsFor, weaponDamage } from '@/systems/rules/gear';
+import { borrowedIcon, itemInfo, itemWeaponDamage, legendary, slotsFor, weaponDamage } from '@/systems/rules/gear';
 import { compileStats } from '@/systems/rules/playerStats';
 import { compareLines, fmtStat, itemTooltip, statLabel } from '@/systems/rules/describeHc';
 import { xpToNext } from '@/systems/rules/curves';
@@ -31,7 +31,7 @@ const STATS: string[] = ['hp', 'ember', 'armor', 'sp', 'crit', 'critd', 'moveSpe
 
 /** Atlas frame for an item icon (legendaries borrow their base icon). */
 export function iconFrame(base: string): { key: string; frame?: string | number } | undefined {
-  return Art.tryFrame(base) ?? (legendary(base) ? Art.tryFrame(legendary(base)!.base) : undefined) ?? Art.tryFrame(campaignItem(base)?.base ?? '');
+  return Art.tryFrame(base) ?? (legendary(base) ? Art.tryFrame(legendary(base)!.base) : undefined) ?? Art.tryFrame(campaignItem(base)?.base ?? '') ?? Art.tryFrame(borrowedIcon(base) ?? '');
 }
 
 export class InventoryPanel {

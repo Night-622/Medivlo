@@ -2,6 +2,7 @@
  * Using items from the pack (Claude 3): potions, food (out of combat), tonics, scrolls (free school casts),
  * the Old Abbey Tome (+1 skill point), powder bombs. Authority-validated `act useItem`.
  */
+import { readTome } from './runes';
 import { P } from '@/systems/rules/curves';
 import { scrollSpell } from '@/systems/rules/spells';
 import type { Action, Modifier } from '@/systems/rules/types';
@@ -29,6 +30,7 @@ export function useItem(w: SimWorld, p: PlayerEnt, uid: string): boolean {
   const it = p.save.inventory.find((x) => x.uid === uid);
   if (!it || p.dead || p.downed) return false;
   const id = it.base;
+  if (readTome(w, p, uid)) return true;
   if (id === 'i_hp_s' || id === 'i_hp_l') return potion(w, p, 'q');
   if (id === 'i_em_s' || id === 'i_em_l') return potion(w, p, 'e');
   const food = FOOD[id];

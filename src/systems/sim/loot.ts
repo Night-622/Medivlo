@@ -9,9 +9,13 @@ import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { P, dropRolls, unlockLevel } from '@/systems/rules/curves';
 import type { DropSpec } from '@/systems/rules/creatures';
 import { itemInfo, materialIndex, styleIndex } from '@/systems/rules/gear';
-import { rollInstance, type DropTier } from '@/systems/rules/affixes';
+import { itemRarity, rollable, rollAffixes, rollInstance, type DropTier } from '@/systems/rules/affixes';
+import { SOCKETS, type LootEntry } from '@/systems/rules/affixTypes';
+import { ACT3_BOSSES, lootTable } from '@/data/items/hc/lootTables';
+import { HC_RUNES, HC_TOMES } from '@/data/items/hc/build-items';
+import { uniqueDef, uniqueInstance } from '@/systems/rules/uniques';
 import { ELITE } from '@/data/enemies/hc/elites';
-import type { ItemInstance } from '@/systems/rules/types';
+import { RARITY_ORDER, type ItemInstance } from '@/systems/rules/types';
 import type { EnemyEnt, LootEnt, PlayerEnt } from './state';
 import { Btn } from '@/net/types';
 import { dist2, type SimWorld } from './world';
@@ -96,6 +100,11 @@ export function rollKillLoot(w: SimWorld, e: EnemyEnt, killers: PlayerEnt[]): vo
         if (first) k.save.legendariesSeen.push(lg.id);
       }
     }
+    // named tables (BUILDS.md §5.1): the boss's own, and tbl:act3 for every Act III form
+    for (const k of killers) {
+      rollTable(w, k, `tbl:${e.cdef.id}`, e.level, e);
+      if (ACT3_BOSSES.has(e.cdef.id)) rollTable(w, k, 'tbl:act3', e.level, e);
+    }
   }
 }
 
@@ -123,6 +132,8 @@ export function openChest(w: SimWorld, p: PlayerEnt, objectId: string, props: Re
   const extra = w.rng.chance(p.stats.hooks.get('chestExtra') ?? 0) ? 1 : 0;
   for (let i = 0; i < pieces + extra; i++) drop(w, p.space, p.x, p.y, { ...rollGear(w, level, undefined, luck, forWho, 'chest'), qty: 1 }, undefined, p.id);
   if (!rare || w.rng.chance(0.5)) drop(w, p.space, p.x, p.y, { base: w.rng.pick(['i_hp_s', 'i_hp_s', 'i_em_s', 'i_st']), ilvl: level, qty: 1 }, undefined, p.id);
+  // a named table on the chest (Claude 2's placements: props.loot = 'tbl:<id>') rolls on top
+  if (typeof props.loot === 'string') rollTable(w, p, props.loot, level, p);
   w.emit('chest:opened', { playerId: p.playerId, objectId });
   return true;
 }
@@ -173,4 +184,54 @@ export function tickLoot(w: SimWorld): void {
       if (l.item && grantItem(w, p, l.item)) { w.loot.delete(l.id); break; }
     }
   }
+}
+
+// ───────────── named loot tables (BUILDS.md §5.1) ─────────────
+const RUNE_WEIGHT: Record<string, number> = { fine: 3, ember: 2, runed: 1 };
+
+/** Roll a named table for one player at a level; drops land at `at`, locked to that player. Unknown ids do nothing. */
+export function rollTable(w: SimWorld, p: PlayerEnt, id: string, level: number, at: { space: string; x: number; y: number }): void {
+  const t = lootTable(id);
+  if (!t) return;
+  const give = (e: LootEntry): void => {
+    const it = entryItem(w, p, e, level);
+    if (it) drop(w, at.space, at.x, at.y, it, undefined, p.id);
+  };
+  for (const e of t.always ?? []) give(e);
+  for (let i = 0; i < t.rolls; i++) {
+    let roll = w.rng.next() * t.entries.reduce((s, e) => s + e.weight, 0);
+    const e = t.entries.find((x) => (roll -= x.weight) < 0) ?? t.entries[t.entries.length - 1];
+    if (e) give(e);
+  }
+}
+
+function entryItem(w: SimWorld, p: PlayerEnt, e: LootEntry, level: number): LootEnt['item'] | undefined {
+  if ('nothing' in e) return undefined;
+  if ('unique' in e) {
+    // once per character: a repeat (or an Act-gated one too early) is a wrought piece for the kit instead
+    const u = uniqueDef(e.unique), seen = p.save.legendariesSeen;
+    if (u && !seen.includes(u.id) && level >= (u.minLevel ?? 1)) { seen.push(u.id); return uniqueInstance(u.id, level) ?? undefined; }
+    return entryItem(w, p, { weight: 1, gear: { minRarity: 'wrought', forKit: true } }, level);
+  }
+  if ('item' in e) return { base: e.item, ilvl: level, qty: e.qty ? w.rng.int(e.qty[0], e.qty[1]) : 1 };
+  if ('rune' in e) {
+    const pool = HC_RUNES.filter((r) => e.rune === 'any' || e.rune.includes(r.id));
+    let roll = w.rng.next() * pool.reduce((s, r) => s + (RUNE_WEIGHT[r.rarity] ?? 1), 0);
+    const r = pool.find((x) => (roll -= RUNE_WEIGHT[x.rarity] ?? 1) < 0) ?? pool[0];
+    return r && { base: r.id, ilvl: 1, qty: 1 };
+  }
+  if ('tome' in e) {
+    // never the player's own school (those spells are on its tree already)
+    const pool = HC_TOMES.filter((x) => x.school !== p.school && (e.tome === 'any' || x.school === e.tome));
+    if (!pool.length) return entryItem(w, p, { weight: 1, gear: { minRarity: 'runed', forKit: true } }, level);
+    return { base: w.rng.pick(pool).item, ilvl: 1, qty: 1 };
+  }
+  const forWho = e.gear.forKit ? { weapons: p.kit.weapons, school: p.school, classId: p.save.classId } : undefined;
+  const g = rollGear(w, level, undefined, 0.3, forWho, 'chest');
+  const min = e.gear.minRarity;
+  if (min && rollable(g.base) && RARITY_ORDER.indexOf(itemRarity(g)) < RARITY_ORDER.indexOf(min)) {
+    const n = SOCKETS[min];
+    Object.assign(g, { rarity: min, affixes: rollAffixes(w.rng, g.base, level, min, forWho), sockets: n ? Array.from({ length: n }, () => null) : undefined });
+  }
+  return { ...g, qty: 1 };
 }

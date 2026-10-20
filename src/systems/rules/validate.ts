@@ -9,6 +9,11 @@ import { kitFor } from '@/data/classes/hc/kits';
 import { LEVEL_CAP, levelPoints, xpToNext } from './curves';
 import { itemInfo, slotsFor, TWO_HANDED } from './gear';
 import { rollable, sanitizeAffixes, socketCount } from './affixes';
+import { sanitizeRunes } from './runes';
+import { allUniques, uniqueDef } from './uniques';
+import { spellDef } from './spells';
+import { HC_TOMES } from '@/data/items/hc/build-items';
+import { CLASS_SCHOOL } from '@/core/constants';
 import { MAGIC_SCHOOLS, MARTIAL_SCHOOLS } from '@/core/constants';
 import { HC_LEGENDARIES } from '@/data/items/hc/legendary.gen';
 import { allNodes, canLearn } from './tree';
@@ -41,12 +46,15 @@ function item(raw: unknown, level: number): ItemInstance | null {
     const affixes = sanitizeAffixes({ base, ilvl: out.ilvl, rarity: out.rarity, affixes: r.affixes as ItemInstance['affixes'] });
     if (affixes.length) out.affixes = affixes;
   }
+  // a unique's affixes are its own (fixed), whatever the loadout says
+  const ud = uniqueDef(base);
+  if (ud) { out.rarity = 'spark'; out.affixes = ud.affixes.map((a) => ({ ...a })); }
   const n = socketCount(out);
   if (n && Array.isArray(r.sockets)) out.sockets = Array.from({ length: n }, (_, i) => { const g = str((r.sockets as unknown[])[i]); return g && itemInfo(g)?.kind === 'gem' ? g : null; });
   const up = int(r.upgrade, 0, 5, 0);
   if (up && info.slot) out.upgrade = up;
   const imbue = str(r.imbue);
-  if (imbue && info.kind === 'weapon' && ([...MAGIC_SCHOOLS, ...MARTIAL_SCHOOLS] as readonly string[]).includes(imbue)) out.imbue = imbue as ItemInstance['imbue'];
+  if (imbue && info.slot === 'weapon' && (info.kind === 'weapon' || info.kind === 'legendary') && ([...MAGIC_SCHOOLS, ...MARTIAL_SCHOOLS] as readonly string[]).includes(imbue)) out.imbue = imbue as ItemInstance['imbue'];
   const fx = str(r.uniqueFx);
   if (fx && info.slot && uniqueFxOk(fx)) out.uniqueFx = fx;
   return out;
@@ -99,7 +107,10 @@ export function sanitizeLoadout(raw: unknown): CharacterSave | null {
   }
 
   // hotbar: kit spells + spells granted by learned nodes
-  const known = new Set<string>([...kit.spells, ...nodes.filter((n) => n.grantsSpell && (tree[n.id] ?? 0) > 0).map((n) => n.grantsSpell!)]);
+  // a tome's off-school spell (BUILDS.md §4): one non-ultimate school spell of another school
+  const tomeId = str(r.tomeSpell, 80), tomeSp = tomeId ? spellDef(tomeId) : undefined;
+  const tomeSpell = tomeSp && HC_TOMES.some((t) => t.spell === tomeId) && tomeSp.school !== CLASS_SCHOOL[classId] ? tomeId! : undefined;
+  const known = new Set<string>([...kit.spells, ...nodes.filter((n) => n.grantsSpell && (tree[n.id] ?? 0) > 0).map((n) => n.grantsSpell!), ...(tomeSpell ? [tomeSpell] : [])]);
   const hb = Array.isArray(r.hotbar) ? r.hotbar : [];
   const hotbar = [0, 1, 2, 3].map((i) => { const s = str(hb[i]); return s && known.has(s) ? s : null; }) as CharacterSave['hotbar'];
 
@@ -111,7 +122,11 @@ export function sanitizeLoadout(raw: unknown): CharacterSave | null {
     inventory, equipment,
     cosmetics: { back: int(cos.back, 0, 8), neck: int(cos.neck, 0, 8), face: int(cos.face, 0, 8), extra: int(cos.extra, 0, 8), dye: int(cos.dye, 0, 8), headwear: int(cos.headwear, 0, 4) },
     tree, bonusPoints, hotbar,
-    legendariesSeen: (Array.isArray(r.legendariesSeen) ? r.legendariesSeen : []).filter((x): x is string => typeof x === 'string' && x.startsWith('lg_')).slice(0, 40),
+    ...(tomeSpell ? { tomeSpell } : {}),
+    runes: sanitizeRunes({ classId, tree, tomeSpell, runes: r.runes as CharacterSave['runes'] }),
+    ...(typeof r.buildVersion === 'number' ? { buildVersion: int(r.buildVersion, 0, 99, 0) } : {}),
+    ...(r.freeRespec === true ? { freeRespec: true } : {}),
+    legendariesSeen: (Array.isArray(r.legendariesSeen) ? r.legendariesSeen : []).filter((x): x is string => typeof x === 'string' && (x.startsWith('lg_') || x.startsWith('u_'))).slice(0, 80),
     waystone: str(r.waystone, 80),
     ...(r.look && typeof r.look === 'object' ? { look: sanitizeLook(r.look as Record<string, unknown>) } : {}),
     chests: (Array.isArray(r.chests) ? r.chests : []).filter((x): x is string => typeof x === 'string' && x.startsWith('obj:') && x.length < 120).slice(-3000),
@@ -128,5 +143,5 @@ function sanitizeLook(l: Record<string, unknown>): Record<string, number> {
 }
 
 /** A unique effect id a loadout may carry (moved by the Runeforge): today the legendary effects (BUILDS.md §5). */
-const UNIQUE_FX = new Set(HC_LEGENDARIES.map((l) => l.id));
+const UNIQUE_FX = new Set([...HC_LEGENDARIES.map((l) => l.id), ...allUniques().map((u) => u.id)]);
 const uniqueFxOk = (fx: string): boolean => UNIQUE_FX.has(fx);

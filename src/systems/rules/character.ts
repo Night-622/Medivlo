@@ -1,4 +1,5 @@
 /** New characters and skill-point bookkeeping (Claude 3). Pure. */
+import { BUILD_VERSION } from '@/core/hcMigrate';
 import { kitFor } from '@/data/classes/hc/kits';
 import { levelPoints } from './curves';
 import { spentPoints } from './tree';
@@ -19,6 +20,8 @@ export function newCharacter(classId: string, body: 0 | 1 = 0): CharacterSave {
     tree: {}, bonusPoints: 0,
     hotbar: [kit.spells[0], kit.spells[1], kit.spells[2], null],
     legendariesSeen: [], waystone: null,
+    // made under the current build system: no refund / free respec on its first load
+    buildVersion: BUILD_VERSION,
   };
 }
 

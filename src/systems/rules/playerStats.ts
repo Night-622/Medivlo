@@ -7,6 +7,8 @@ import { kitFor } from '@/data/classes/hc/kits';
 import { legendary, legendaryPassive, setBonuses, itemMods, weaponBase } from './gear';
 import { HC_MASTERY } from '@/data/skilltrees/hc/mastery';
 import { itemAffixPassives } from './affixes';
+import { runeSpellMods } from './runes';
+import { uniqueEffect } from './uniques';
 import { campaignItem } from '@/data/items/hc/campaign-items';
 import { classBase, compile, type Compiled } from './stats';
 import { treePassives } from './tree';
@@ -18,7 +20,11 @@ export function playerPassives(s: CharacterSave): { passives: Passive[]; spells:
   const out: Passive[] = [{ mods: classBase(cls, s.level) }, kitFor(s.classId).passive];
   for (const it of eq) {
     out.push({ mods: itemMods(it) }, ...itemAffixPassives(it));
-    if (legendary(it.base)) out.push(legendaryPassive(it.base));
+    // a unique's own effect (bespoke, or the generic legendary one until written), or one moved onto this piece
+    const own = uniqueEffect(it.base) ?? (legendary(it.base) ? legendaryPassive(it.base) : undefined);
+    if (own) out.push(own);
+    // a unique effect moved onto this piece at the Runeforge
+    else if (it.uniqueFx) { const fx = uniqueEffect(it.uniqueFx) ?? (legendary(it.uniqueFx) ? legendaryPassive(it.uniqueFx) : undefined); if (fx) out.push(fx); }
     const story = campaignItem(it.base)?.passive;
     if (story) out.push(story);
   }
@@ -34,7 +40,9 @@ export function playerPassives(s: CharacterSave): { passives: Passive[]; spells:
   const mastery = tree.passives.reduce((v, p) => v + (p.hooks?.find((h) => h.id === 'setMastery')?.value ?? 0), 0);
   out.push(...setBonuses(eq, cls.school, 1 + mastery));
   out.push(...tree.passives);
-  return { passives: out, spells: tree.spells };
+  // slotted spell runes, and a tome's off-school spell
+  out.push({ spellMods: runeSpellMods(s) });
+  return { passives: out, spells: s.tomeSpell ? [...tree.spells, s.tomeSpell] : tree.spells };
 }
 
 export const compileStats = (s: CharacterSave): Compiled => compile(playerPassives(s).passives);

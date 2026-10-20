@@ -6,7 +6,8 @@
  *  - two realm creatures pinned in front of the hero, either side, that only basic-attack the hero (abilities stripped,
  *    replaced the tick they die), their damage calibrated per class so the base build loses its health in about a
  *    minute (one hit capped at 5% of the hero's health).
- * The bot stands still, targets the bag and presses casts / slash / attack like the fight bot; no potions, no dash.
+ * The bot stands still, targets the bag and presses casts / slash / attack like the fight bot, and dashes sideways about
+ * once a second when it can (put back on its spot after); no potions.
  * The hero is topped up to full at 12% HP (not a heal), so HP cycles like a real fight and the window is always full.
  * Measures DPS (everything hit), net HP drain (taken − healed) → seconds to die from full, and EHP from the build's
  * stats against a fixed damage mix.
@@ -61,28 +62,49 @@ export function probeOnce(save: CharacterSave, seed: number, dmgMult: number, se
   const bx = ranged ? Math.max(p.r + bag.r + 22, Math.min(200, ...reach)) : p.r + bag.r + 22;
   pin(bag, bx, 0, true);
   // a hitter that dies is replaced on the next tick, so incoming damage never stops (and kill procs fire on it too);
-  // one hit never exceeds 5% of the hero's health, so two blows in one tick cannot skip the 12% top-up below (and
-  // "below 25% health" effects such as Last Stand get their window)
-  const hitter = (sy: number): EnemyEnt => {
-    const h = spawnAt(a, `bx_${school}_0`, L, -300, sy * 300);
-    const d = p.r + h.r + 4;
-    pin(h, d * 0.45, sy * d * 0.9, false); // in front of the hero (front blocks count), beside the line to the bag
-    h.dmg = Math.min(h.dmg * dmgMult, p.maxHp * 0.05);
+  // one hit never exceeds 5% of the hero's health, so a couple of blows in one tick cannot skip the 12% top-up below
+  // (and "below 25% health" effects such as Last Stand get their window)
+  // where each pinned creature belongs: knockback and pulls must not carry an immobile hitter out of its reach (it
+  // would never come back) or the bag out of the hero's (Claude 5)
+  const spot = new Map<EnemyEnt, { x: number; y: number }>([[bag, { x: bx, y: 0 }]]);
+  // Hitter slots: the first pair in front (front blocks count), beside the line to the bag; more pairs (behind, then at
+  // the flanks) only when one pair can't deliver the calibrated damage. A hit stays ≤ 5% of the hero's health (4% once
+  // there are extra pairs); damage the cap would cut off comes first as faster attacks (a basic attack's 280 ms wind-up
+  // limits that to ~3×), then as extra staggered pairs, so heavy-sustain builds (lifesteal, regen) still get worn down
+  // and their survival perks get a window (Claude 5).
+  const SLOTS: [number, number][] = [[0.45, -0.9], [0.45, 0.9], [-0.45, -0.9], [-0.45, 0.9], [0, -1.1], [0, 1.1]];
+  let pairs = 1;
+  const hitter = (slot: number): EnemyEnt => {
+    const h = spawnAt(a, `bx_${school}_0`, L, -300, (slot % 2 ? 1 : -1) * 300);
+    const d = p.r + h.r + 4, [fx, fy] = SLOTS[slot];
+    pin(h, d * fx, d * fy, false);
+    spot.set(h, { x: d * fx, y: d * fy });
+    const cap = p.maxHp * (pairs > 1 ? 0.04 : 0.05), raw = (h.dmg * dmgMult) / pairs;
+    h.dmg = Math.min(raw, cap);
+    if (raw > cap) h.cdef = { ...h.cdef, ai: { ...h.cdef.ai, attackMs: Math.max(140, h.cdef.ai.attackMs / Math.min(8, raw / cap)) } };
+    h.attackReadyAt = a.sim.w.t + slot * 110; // staggered, so the pairs' blows rarely land in one tick
     return h;
   };
-  const hitters = [hitter(-1), hitter(1)];
+  const probeHit = spawnAt(a, `bx_${school}_0`, L, -600, 600);
+  pairs = Math.max(1, Math.min(3, Math.ceil((probeHit.dmg * dmgMult) / (p.maxHp * 0.05) / 3)));
+  probeHit.dead = true; a.sim.w.enemies.delete(probeHit.id);
+  const hitters = Array.from({ length: pairs * 2 }, (_, i) => hitter(i));
   const fodderKind = `bx_${school}_1`;
   let fodder = spawnAt(a, fodderKind, L, bx, 60);
   pin(fodder, bx + 10, bag.r + 30, true);
   let fodderDied = -1;
   let seq = 0, held = 0, tick = 0;
+  // healing measured from the hero's health itself (after − before + damage taken that tick): lifesteal and other
+  // silent heals (combat.ts heal(..., silent)) emit no combat:hit, so counting heal events alone missed them (Claude 5)
+  let healedHp = 0;
   const martial = hasSlash(save.classId);
   for (; tick < 30 * secs && !p.dead && !p.downed; tick++) {
     if (bag.hp < bag.maxHp * 0.1) bag.hp = bag.maxHp;
     // the hero is kept in the fight (topped up at 12%: not a heal event, so the drain still counts every hit) so every
     // build is measured over the same window — a build that dies early would otherwise skip its Ember-starved minute
     if (p.hp < p.maxHp * 0.12) p.hp = p.maxHp;
-    hitters.forEach((h, i) => { if (h.dead) hitters[i] = hitter(i ? 1 : -1); });
+    hitters.forEach((h, i) => { if (h.dead) hitters[i] = hitter(i); });
+    for (const e of [bag, ...hitters]) { const at = spot.get(e); if (at && !e.dead) { e.x = at.x; e.y = at.y; e.motion = null; } }
     if (fodder.dead) {
       if (fodderDied < 0) fodderDied = a.sim.w.t;
       else if (a.sim.w.t - fodderDied >= 2000) { fodder = spawnAt(a, fodderKind, L, bx, 60); pin(fodder, bx + 10, bag.r + 30, true); fodderDied = -1; }
@@ -90,13 +112,20 @@ export function probeOnce(save: CharacterSave, seed: number, dmgMult: number, se
     let buttons = Btn.ATTACK;
     if (tick % 15 === 0) { const s = chooseSlot(a.sim, p); if (s !== undefined) buttons |= CAST[s]; }
     if (martial && tick % 2 === 0 && a.sim.w.t >= (p.cds.get('slash') ?? 0)) buttons |= Btn.SLASH;
-    const frame: InputFrame = { seq: ++seq, t: a.sim.w.t, move: { x: 0, y: 0 }, aim: { x: bag.x, y: bag.y }, buttons: buttons & ~held | (buttons & Btn.ATTACK), target: bag.id };
+    // dash about once a second when a charge and the stamina are there (sideways, alternating), as players do: dash /
+    // dash-end / stamina-spent perks get measured; the hero is put back on its spot once the move ends (Claude 5)
+    const dashNow = tick % 30 === 15 && p.dashCharges > 0 && p.stamina >= 25 && !p.motion;
+    if (dashNow) buttons |= Btn.DASH;
+    const frame: InputFrame = { seq: ++seq, t: a.sim.w.t, move: dashNow ? { x: 0, y: (tick / 30) % 2 < 1 ? 1 : -1 } : { x: 0, y: 0 }, aim: { x: bag.x, y: bag.y }, buttons: buttons & ~held | (buttons & Btn.ATTACK), target: bag.id };
     held = buttons & ~Btn.ATTACK;
+    const hp0 = p.hp, taken0 = a.m.taken;
     a.sim.step(DT, tick + 1, new Map([[PID, [frame]]]));
     if (held) { held = 0; a.sim.step(0.0001, tick + 1, new Map([[PID, [{ ...frame, seq: ++seq, buttons: Btn.ATTACK }]]])); }
+    if (!p.dead && !p.downed) healedHp += Math.max(0, p.hp - hp0 + (a.m.taken - taken0));
+    if (!p.motion && (p.x !== 0 || p.y !== 0)) { p.x = 0; p.y = 0; }
   }
   const s = Math.max(1, tick) / 30;
-  const drain = (a.m.taken - a.m.healed) / s;
+  const drain = (a.m.taken - healedHp) / s;
   return { dps: a.m.dealt / s, taken: a.m.taken / s, drain, surv: Math.min(SURV_CAP, p.maxHp / Math.max(drain, p.maxHp / SURV_CAP)), ehp: refEhp(p, cls, L), maxHp: p.maxHp };
 }
 
@@ -115,11 +144,15 @@ export function probe(save: CharacterSave, dmgMult: number, seeds: readonly numb
 
 /** Hitter damage multiplier for a class's probe: the base build should lose its health in about a minute. */
 export function calibrate(save: CharacterSave): number {
-  let mult = 1;
-  for (let i = 0; i < 5; i++) {
+  // bisection on log(mult): with healing counted, survival is steep in the multiplier (sustain out-heals it, then it
+  // doesn't), so a proportional step overshoots (Claude 5)
+  const ok = (r: Probe) => r.surv > 45 && r.surv < 90;
+  let lo = 0.05, hi = 200, mult = 1;
+  for (let i = 0; i < 12; i++) {
     const r = probeOnce(save, PROBE_SEEDS[0], mult);
-    if (r.surv > 45 && r.surv < 90) break;
-    mult = Math.max(0.05, Math.min(200, mult * (r.surv >= SURV_CAP ? 4 : r.surv / 60)));
+    if (ok(r)) return mult;
+    if (r.surv >= 90) lo = mult; else hi = mult;
+    mult = Math.sqrt(lo * hi);
   }
   return mult;
 }

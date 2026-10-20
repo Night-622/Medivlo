@@ -4,7 +4,7 @@
  */
 import type { DamageKind, StatusId } from '@/core/hc';
 import type { SchoolId } from '@/core/constants';
-import type { HcSpell, Modifier, Proc, Rarity, SpellMod } from './types';
+import type { HcSpell, Modifier, Passive, Proc, Rarity, SpellMod } from './types';
 
 /** Where an affix may roll (gear slot families: both ring slots are 'ring'). */
 export type AffixSlot = 'weapon' | 'offhand' | 'head' | 'chest' | 'hands' | 'feet' | 'ring' | 'amulet';
@@ -101,6 +101,8 @@ export type LootEntry = { weight: number } & (
   | { rune: 'any' | string[] }
   | { tome: 'any' | SchoolId }
   | { nothing: true }
+  /** a unique (UniqueDef id): once per character per table; repeats roll a wrought kit piece */
+  | { unique: string }
 );
 
 export interface LootTable {
@@ -113,4 +115,24 @@ export interface LootTable {
   always?: LootEntry[];
   /** chests: keep today's gold + gear + potion roll and add this table on top (default true) */
   base?: boolean;
+}
+
+// ───────────── uniques (BUILDS.md §5) ─────────────
+/**
+ * A unique item: a fixed base (its stats and art), fixed affixes, and one build-defining effect. The 25 boss
+ * legendaries keep their lg_* ids (their effect replaces the six generic legendary effects); new ones are u_<slug>.
+ * Each drops once per character from its home (a loot table id, or 'boss' for a legendary's own boss).
+ */
+export interface UniqueDef {
+  id: string;
+  name: string;
+  /** stat / art base: a weapon, armour piece, ring or amulet id */
+  base: string;
+  affixes: RolledAffix[];
+  effect: Passive;
+  /** the effect line shown in gold on the tooltip */
+  text: string;
+  home: string;
+  /** at least this level to drop (Act gates) */
+  minLevel?: number;
 }

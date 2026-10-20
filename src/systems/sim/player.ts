@@ -10,12 +10,14 @@ import { itemWeaponDamage, weaponBase, weaponDamage } from '@/systems/rules/gear
 import { playerPassives } from '@/systems/rules/playerStats';
 import { compile, hook } from '@/systems/rules/stats';
 import { spellDef } from '@/systems/rules/spells';
-import type { Action, Area, BasicAttack, CharacterSave, HcSpell, SpellMod, WeaponType } from '@/systems/rules/types';
+import type { BasicAttack, CharacterSave, HcSpell, WeaponType } from '@/systems/rules/types';
 import { motionStep, motionTick, runActions } from './actions';
-import { setCaster, spellblade, spellLevel, spend, tickAuras } from './builds';
+import { setCaster, spellblade, spend, tickAuras } from './builds';
+import { flatParts, selfSide, shapeActions, spellView, targetBound } from './spells';
+export { spellView };
 import { tickKeystones } from './keystones';
 import { slash } from './slash';
-import { basicCast, consumeCharge, dealDamage, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
+import { addShield, basicCast, consumeCharge, dealDamage, fireProcs, flagged, heal, incapacitated, isMagic, kindOf, rooted } from './combat';
 import { newCombatantBase, type CastCtx, type Combatant, type PlayerEnt } from './state';
 import { dist, dist2, HERO_RADIUS, isBehind, norm, type SimWorld } from './world';
 export { HERO_RADIUS };
@@ -262,34 +264,6 @@ export const inArc = (p: Combatant, x: Combatant, range: number, arc: number) =>
 };
 
 // ───────────── spells ─────────────
-interface SpellView { spell: HcSpell; dmg: number; cost: number; cd: number; area: number; dur: number; echo: number; twin: boolean; split: boolean; linger: number }
-export function spellView(p: PlayerEnt, spell: HcSpell): SpellView {
-  const mods = p.stats.spellMods.filter((m: SpellMod) => m.spell === spell.id || m.spell === '*');
-  const sum = (k: keyof SpellMod) => mods.reduce((a, m) => a + (typeof m[k] === 'number' ? (m[k] as number) : 0), 0);
-  const ult = spell.tags.includes('ultimate');
-  const lv = spellLevel(p, spell);
-  return {
-    spell, dmg: (1 + sum('dmg')) * (1 + 0.12 * lv), area: (1 + sum('area') + (p.stats.stats.area ?? 0)) * (1 + 0.06 * lv), dur: 1 + sum('dur'), echo: sum('echo'), linger: sum('linger'),
-    twin: mods.some((m) => m.twin), split: mods.some((m) => m.split),
-    cost: Math.max(0, spell.cost * (1 + sum('cost') + (p.stats.stats.emberCost ?? 0))),
-    cd: Math.max(0.25, spell.cd * (1 + sum('cd')) * (1 - Math.min(0.5, p.stats.stats.cdr ?? 0)) * (ult ? 1 - (p.stats.stats.ultCdr ?? 0) : 1)),
-  };
-}
-
-/** A spell's working actions, looking through repeat / delay wrappers. */
-function flatParts(actions: Action[]): Action[] {
-  return actions.flatMap((a) => (a.a === 'repeat' || a.a === 'delay' ? flatParts(a.then) : [a]));
-}
-/** Resources, and buffs / heals / shields on yourself. */
-const selfSide = (a: Action): boolean => a.a === 'resource' || ((a.a === 'buff' || a.a === 'heal' || a.a === 'shield') && (a as { to?: string }).to === 'self');
-/** Does this action land on the cast's target itself (single hit, target-centred area, chain, blink / leap)? */
-function targetBound(a: Action): boolean {
-  if (a.a === 'chain') return true;
-  if (a.a === 'move') return a.mode === 'blink' || a.mode === 'behind' || a.mode === 'leap';
-  if (a.a === 'resource' || a.a === 'buff' || a.a === 'heal' || a.a === 'shield') return false;
-  const area = 'area' in a ? (a.area as Area | undefined) : undefined;
-  return !!area && (area.shape === 'single' || area.at === 'target');
-}
 
 export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: HcSpell, mult = 1): boolean {
   const id = spellOverride?.id ?? p.save.hotbar[slot];
@@ -327,14 +301,15 @@ export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: Hc
   const wAvg = ((p.weapon.min + p.weapon.max) / 2) * (1 + (p.stats.stats.power ?? 0));
   const power = scaling === 'spell' ? (p.stats.stats.sp ?? 0) + wAvg * 0.25 : wAvg + (p.stats.stats.sp ?? 0) * 0.25;
   const ctx: CastCtx = {
-    caster: p, spellId: spell.id, kind: spell.kind, power, isSpell: true, target, aim: aimPt, dir,
+    caster: p, spellId: spell.id, kind: v.convert ?? spell.kind, power, isSpell: true, target, aim: aimPt, dir, ...(v.leech ? { leech: v.leech } : {}),
     dmgMult: v.dmg * mult, areaMult: v.area, durMult: v.dur, flags: [], depth: 0, ...(unreachable ? { unreachable: true } : {}),
   };
-  const actions = v.split ? spell.actions.map((a) => (a.a === 'projectile' ? { ...a, count: (a.count ?? 1) * 3, spread: (a.spread ?? 0) + 30, coef: a.coef * 0.4 } : a)) : spell.actions;
+  const actions = shapeActions(spell.actions, v);
   const go = () => {
     p.anim = 'cast'; p.animUntil = w.t + 300;
     w.emit('ability:cast', { casterId: p.id, ability: spell.id, x: Math.round(p.x), y: Math.round(p.y), tx: Math.round(aimPt.x), ty: Math.round(aimPt.y), ms: 300 });
     runActions(w, actions, ctx);
+    if (v.ward) addShield(w, p, p.maxHp * v.ward, 4000);
     if (v.twin && target) {
       const other = w.nearestHostile(target, 140, (x) => x !== target);
       if (other) runActions(w, actions, { ...ctx, target: other, aim: { x: other.x, y: other.y }, dmgMult: ctx.dmgMult * 0.75 });
@@ -348,7 +323,7 @@ export function cast(w: SimWorld, p: PlayerEnt, slot: number, spellOverride?: Hc
     if (spell.tags.includes('ultimate')) fireProcs(w, p, 'ultimate');
     if (spell.tags.includes('ultimate') && hook(p.stats, 'encore')) w.later(1500, () => runActions(w, actions, { ...ctx, depth: 1 }));
   };
-  const castMs = spell.castMs ? spell.castMs / Math.max(0.3, 1 + (p.stats.stats.castSpeed ?? 0)) : 0;
+  const castMs = spell.castMs ? spell.castMs * (1 - v.haste) / Math.max(0.3, 1 + (p.stats.stats.castSpeed ?? 0)) : 0;
   if (castMs) { p.windup = { until: w.t + castMs, then: go, label: spell.id }; p.anim = 'cast'; p.animUntil = w.t + castMs; }
   else go();
   return true;

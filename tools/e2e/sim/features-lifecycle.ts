@@ -39,7 +39,24 @@ function classSwap(): void {
     && q.weapon.type === (kitFor('huntsman').weapons[0]), 'load: another class on the same entity re-derives def, school, kit and weapon', `def ${q.def}, kit ${q.kit.classId}, weapon ${q.weapon.type}`);
 }
 
+/** The one free respec (BUILDS.md §8): a guest's first reset after the perk tree is free and uses it up; a loadout can't grant it. */
+function freeRespec(): void {
+  const w = world({ party: 2 });
+  hero(w, 'a', { ...newCharacter('warden'), level: 10 });
+  const own = { ...newCharacter('warden'), level: 10, gold: 5000, tree: { sk_p1a: 3, up_p0a: 2 }, freeRespec: true };
+  w.sim.receive({ type: 'loadout', data: JSON.parse(JSON.stringify(own)) } as never, 'b');
+  const g = w.sim.w.players.get('p:b')!;
+  const gold0 = g.save.gold;
+  w.sim.receive({ type: 'loadout', data: JSON.parse(JSON.stringify({ ...own, tree: {}, freeRespec: false })) } as never, 'b');
+  const free = g.save.gold === gold0 && !Object.keys(g.save.tree).length && !g.save.freeRespec;
+  w.sim.receive({ type: 'loadout', data: JSON.parse(JSON.stringify({ ...own, tree: { sk_p1a: 1 }, freeRespec: true })) } as never, 'b');
+  const regranted = !!g.save.freeRespec;
+  w.sim.receive({ type: 'loadout', data: JSON.parse(JSON.stringify({ ...own, tree: {}, freeRespec: false })) } as never, 'b');
+  check(free && !regranted && g.save.gold < gold0, 'free respec: the first reset costs nothing and uses it up; a loadout cannot grant it again; the next reset is charged', JSON.stringify({ free, regranted, gold: [gold0, g.save.gold] }));
+}
+
 export function lifecycleChecks(): void {
+  freeRespec();
   inputRestart();
   loadReset();
   classSwap();

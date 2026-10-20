@@ -131,6 +131,11 @@ export function useItem(uid: string): void {
   Services.tryGet('net')?.send({ type: 'act', domain: 'systems', action: 'useItem', args: { uid } });
 }
 
+/** Slot a rune from the pack into a spell, or take it out (authority validates: slots, fit, ownership). */
+export function slotRune(spell: string, rune: string, remove = false): void {
+  Services.tryGet('net')?.send({ type: 'act', domain: 'systems', action: 'rune', args: { spell, rune, ...(remove ? { remove: true } : {}) } });
+}
+
 export function learn(nodeId: string): string | null {
   const c = character();
   const chk = canLearn(c.classId, nodeId, c.tree, availablePoints(c));
@@ -148,6 +153,8 @@ export function branchHasRanks(branch: TreeBranch): boolean {
 
 export function resetTree(branch: TreeBranch): string | null {
   const c = character(), cost = resetCost(c.level);
+  // the one free respec (characters from before the perk tree, BUILDS.md §8): every branch, no charge, once
+  if (c.freeRespec && Object.keys(c.tree).length) { c.tree = {}; c.freeRespec = false; sendLoadout(); return null; }
   // nothing learned in this branch: never charge for an empty reset
   if (!branchHasRanks(branch)) return 'Nothing to reset in this branch.';
   if (c.gold < cost) return `Resetting costs ${cost} Embershards.`;

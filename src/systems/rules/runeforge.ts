@@ -43,3 +43,42 @@ export function salvageYield(it: ItemInstance): SalvageYield | null {
   const gems = gemsOf(it);
   return { ingots: 1 + Math.floor(rarityIndex(itemRarity(it)) / 2) + Math.floor(it.ilvl / 12), gem: gems[0], gems };
 }
+
+// ───────────── deeper builds (BUILDS.md §6) ─────────────
+export const MAX_UPGRADE = 5;
+
+/** Cost of the next upgrade (+1 … +5: +8% base stats and +6% affix values per level); null at +5 or for non-gear. */
+export function upgradeCost(it: ItemInstance): { gold: number; ingots: number; to: number } | null {
+  const info = itemInfo(it.base);
+  const n = (it.upgrade ?? 0) + 1;
+  if (!info?.slot || info.questItem || n > MAX_UPGRADE) return null;
+  return { to: n, gold: Math.round(40 * scale(it.ilvl) * n * n), ingots: n };
+}
+
+/** Cost to reroll one affix (same group pool, the item's level); null without affixes. */
+export function rerollCost(it: ItemInstance): number | null {
+  if (!it.affixes?.length) return null;
+  return Math.round(25 * scale(it.ilvl) * (1 + rarityIndex(itemRarity(it)) / 2));
+}
+
+/** Cost to imbue a weapon with a school (its attacks deal half that school's damage): gold + that school's Essence. */
+export function imbueCost(it: ItemInstance): number | null {
+  const info = itemInfo(it.base);
+  if (info?.kind !== 'weapon' && info?.kind !== 'legendary') return null;
+  if (info.slot !== 'weapon') return null;
+  return Math.round(60 * scale(it.ilvl));
+}
+
+/** The unique effect a piece carries: moved onto it (uniqueFx), or its own if it is a legendary. */
+export const uniqueOf = (it: ItemInstance): string | undefined => it.uniqueFx ?? (itemInfo(it.base)?.kind === 'legendary' ? it.base : undefined);
+
+/** Cost to move `from`'s unique effect onto `to` (same slot family; `from` is destroyed); null if not possible. */
+export function transferCost(from: ItemInstance, to: ItemInstance): number | null {
+  const a = itemInfo(from.base), b = itemInfo(to.base);
+  if (!a?.slot || !b?.slot || from.uid === to.uid || !uniqueOf(from) || b.questItem) return null;
+  if (a.slot !== b.slot || b.kind === 'legendary') return null;
+  return Math.round(120 * scale(Math.max(from.ilvl, to.ilvl)));
+}
+
+/** Rune dust from salvaging: one per affix on the piece. */
+export const dustYield = (it: ItemInstance): number => it.affixes?.length ?? 0;

@@ -10,7 +10,8 @@ import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { AFFIX_COUNT, SOCKETS } from '@/systems/rules/affixTypes';
 import { affixDef, rollAffixes, rollInstance, rollRarity, sanitizeAffixes, tierAt } from '@/systems/rules/affixes';
 import { newCharacter } from '@/systems/rules/character';
-import { itemMods, itemWeaponDamage, weaponDamage } from '@/systems/rules/gear';
+import { hybridBonus, itemMods, itemWeaponDamage, weaponDamage } from '@/systems/rules/gear';
+import { HC_PIECES } from '@/data/items/hc/armour.gen';
 import { compileStats } from '@/systems/rules/playerStats';
 import { sanitizeLoadout } from '@/systems/rules/validate';
 import { RARITY_ORDER, type CharacterSave, type ItemInstance, type Rarity } from '@/systems/rules/types';
@@ -113,7 +114,16 @@ function sanitise(): void {
   check(!out.sockets && (out.upgrade ?? 0) <= 5 && !out.imbue && !out.affixes, 'sanitise: a loadout cannot add sockets beyond its rarity, upgrades past +5, a bad imbue or forged affixes', JSON.stringify({ s: out.sockets, u: out.upgrade, i: out.imbue, a: out.affixes }));
 }
 
+function hybrid(): void {
+  const pieces = (set: string, n: number) => HC_PIECES.filter((p) => p.set === set).slice(0, n).map((p, i): ItemInstance => ({ uid: `${set}-${i}`, base: p.id, ilvl: 20, qty: 1 }));
+  const mixed = [...pieces('rime_leather', 2), ...pieces('ash_robe', 2)];
+  const h = hybridBonus(mixed), none = hybridBonus([...pieces('rime_leather', 4)]), same = hybridBonus([...pieces('rime_leather', 2), ...pieces('rime_robe', 2)]);
+  const procs = h.flatMap((p) => p.procs ?? []);
+  check(h.length === 2 && procs.length === 2 && !none.length && !same.length, 'hybrid sets: 2 Rime + 2 Ash pieces give both schools’ 4-piece effects (half strength); a full set or two sets of one school do not', `${h.length} / ${none.length} / ${same.length}`);
+}
+
 export function affixChecks(): void {
+  hybrid();
   rolls();
   compiled();
   upgradeImbue();

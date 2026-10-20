@@ -170,6 +170,8 @@ export interface CastCtx {
   dmgMult: number;
   areaMult: number;
   durMult: number;
+  /** rune of leeching: share of this cast's damage healed back */
+  leech?: number;
   flags: HitFlag[];
   depth: number;
   /** a telegraphed creature cast: it resolves where the telegraph was drawn (aim), not where its target walked to */

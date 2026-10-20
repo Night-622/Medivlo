@@ -147,7 +147,7 @@ export function dealDamage(w: SimWorld, src: Combatant | null, tgt: Combatant, r
   if (tgt.kind === 'player') w.emit('player:damaged', { amount, type: kind as never, sourceId: src?.id ?? 'world', playerId: (tgt as PlayerEnt).playerId });
   if (src) {
     tgt.threat.set(src.id, (tgt.threat.get(src.id) ?? 0) + amount * (flags.includes('taunt') ? 5 : 1));
-    const ls = (src.stats.stats.lifesteal ?? 0) + (flags.includes('lifesteal') ? 0.5 : 0);
+    const ls = (src.stats.stats.lifesteal ?? 0) + (flags.includes('lifesteal') ? 0.5 : 0) + (o.cast?.caster === src ? o.cast.leech ?? 0 : 0);
     if (ls > 0) heal(w, src, src, amount * ls, true);
     if (flagged(tgt, 'reflect') && !o.isSpell && !o.dot) dealDamage(w, tgt, src, amount * 0.3, 'physical', { noProc: true, dot: true });
     if (hook(tgt.stats, 'thornskin') && !o.isSpell && !o.dot && Math.hypot(src.x - tgt.x, src.y - tgt.y) < 90) applyStatus(w, tgt, src, { id: 'root', dur: 1000 });
