@@ -74,8 +74,8 @@ const hedgewitch: ClassPerks = {
       (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.015 * r }, { stat: 'dmg', op: 'flat', value: 0.06 * r, when: { c: 'targetHas', status: 'blind' } }] })),
     one('pk_hedgewitch_mothkin', 'Mothkin', 'power', '+25% summon damage and +25% summon health; Moth Swarm deals 30% more and Moth Lantern blinds 30% longer.',
       { spellMods: [{ spell: 'spell:moth-swarm', dmg: 0.3 }, { spell: 'spell:moth-lantern', dur: 0.3 }], mods: [{ stat: 'minionDmg', op: 'flat', value: 0.25 }, { stat: 'minionHp', op: 'flat', value: 0.25 }] }),
-    one('pk_hedgewitch_lantern_light', 'Lantern Light', 'resource', 'Below 30% Ember: +3 Ember per second; above 50% Ember, +12% spell damage.',
-      { mods: [{ stat: 'spellDmg', op: 'flat', value: 0.12, when: { c: 'emberAbove', pct: 0.5 } }, { stat: 'emberRegen', op: 'flat', value: 3, when: { c: 'emberBelow', pct: 0.3 } }] }),
+    one('pk_hedgewitch_lantern_light', 'Lantern Light', 'resource', 'Below 30% Ember: +3 Ember per second; above 50% Ember, +12% spell damage; +4% damage.',
+      { mods: [{ stat: 'dmg', op: 'flat', value: 0.04 }, { stat: 'spellDmg', op: 'flat', value: 0.12, when: { c: 'emberAbove', pct: 0.5 } }, { stat: 'emberRegen', op: 'flat', value: 3, when: { c: 'emberBelow', pct: 0.3 } }] }),
   ],
 };
 

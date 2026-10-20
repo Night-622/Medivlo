@@ -92,10 +92,10 @@ const school: PerkDef[] = [
   one('pk_radiance_blessed', 'Blessed', 'power', '+20% healing received; +2 health per second in combat.',
     { mods: [{ stat: 'healingTaken', op: 'flat', value: 0.2 }, { stat: 'hpRegen', op: 'flat', value: 2, when: { c: 'inCombat' } }] }),
   // p2 focus / resource
-  three('pk_radiance_prayer', 'Prayer', 'resource', (r) => `+${(0.3 * r).toFixed(1)} Ember per second and ${r * 2}% shorter cooldowns.`,
-    (r) => ({ mods: [{ stat: 'emberRegen', op: 'flat', value: 0.3 * r }, { stat: 'cdr', op: 'flat', value: 0.02 * r }] })),
-  one('pk_radiance_tithe', 'Tithe', 'resource', 'Kills restore 6 Ember and 3% of max health.',
-    { procs: [{ on: 'kill', do: [{ a: 'resource', ember: 6 }, { a: 'heal', pctMax: 0.03, to: 'self' }] }] }),
+  three('pk_radiance_prayer', 'Prayer', 'resource', (r) => `+${(0.3 * r).toFixed(1)} Ember per second and ${r * 2}% shorter cooldowns; +${(2 * r).toFixed(1)}% damage.`,
+    (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.02 * r }, { stat: 'emberRegen', op: 'flat', value: 0.3 * r }, { stat: 'cdr', op: 'flat', value: 0.02 * r }] })),
+  one('pk_radiance_tithe', 'Tithe', 'resource', 'Kills restore 6 Ember and 3% of max health; +4% damage.',
+    { mods: [{ stat: 'dmg', op: 'flat', value: 0.04 }], procs: [{ on: 'kill', do: [{ a: 'resource', ember: 6 }, { a: 'heal', pctMax: 0.03, to: 'self' }] }] }),
   one('pk_radiance_long_light', 'Long Light', 'power', 'Your buffs last 20% longer and are 10% stronger; +4% damage.',
     { mods: [{ stat: 'dmg', op: 'flat', value: 0.04 }, { stat: 'buffDur', op: 'flat', value: 0.2 }, { stat: 'buffPower', op: 'flat', value: 0.1 }] }),
 ];

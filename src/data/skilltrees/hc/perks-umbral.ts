@@ -91,8 +91,8 @@ const school: PerkDef[] = [
     { procs: [{ on: 'lowHp', icd: 45000, do: [{ a: 'buff', id: 'umb:fade', dur: 2000, to: 'self', flags: ['untargetable'] }] }] }),
   one('pk_umbral_leech', 'Leech', 'resource', 'Heal for 3% of the damage you deal.', { mods: [{ stat: 'lifesteal', op: 'flat', value: 0.03 }] }),
   // p2 focus / resource
-  three('pk_umbral_night_mind', 'Night Mind', 'resource', (r) => `+${(0.3 * r).toFixed(1)} Ember per second and ${r * 2}% shorter cooldowns.`,
-    (r) => ({ mods: [{ stat: 'emberRegen', op: 'flat', value: 0.3 * r }, { stat: 'cdr', op: 'flat', value: 0.02 * r }] })),
+  three('pk_umbral_night_mind', 'Night Mind', 'resource', (r) => `+${(0.3 * r).toFixed(1)} Ember per second and ${r * 2}% shorter cooldowns; +${(2 * r).toFixed(1)}% damage.`,
+    (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.02 * r }, { stat: 'emberRegen', op: 'flat', value: 0.3 * r }, { stat: 'cdr', op: 'flat', value: 0.02 * r }] })),
   one('pk_umbral_shadow_stride', 'Shadow Stride', 'power', 'Your dash recharges 20% faster and costs 15% less stamina; +4% damage.',
     { mods: [{ stat: 'dmg', op: 'flat', value: 0.04 }, { stat: 'dashCd', op: 'flat', value: -0.2 }, { stat: 'staminaCost', op: 'flat', value: -0.15 }] }),
   one('pk_umbral_dark_pact', 'Dark Pact', 'resource', 'Every 50 Ember spent heals 3% of max health.',

@@ -93,8 +93,8 @@ const school: PerkDef[] = [
   one('pk_storm_lightning_reflexes', 'Lightning Reflexes', 'power', 'Your dash recharges 20% faster; +4% move speed.',
     { mods: [{ stat: 'dashCd', op: 'flat', value: -0.2 }, { stat: 'moveSpeed', op: 'flat', value: 0.04 }] }),
   // p2 focus / resource
-  three('pk_storm_charged', 'Charged', 'resource', (r) => `+${(0.3 * r).toFixed(1)} Ember per second and ${r * 2}% shorter cooldowns; +${r.toFixed(1)}% cast speed; +${r.toFixed(1)}% Storm damage.`,
-    (r) => ({ mods: [{ stat: 'dmg.storm', op: 'flat', value: 0.01 * r }, { stat: 'castSpeed', op: 'flat', value: 0.01 * r }, { stat: 'emberRegen', op: 'flat', value: 0.3 * r }, { stat: 'cdr', op: 'flat', value: 0.02 * r }] })),
+  three('pk_storm_charged', 'Charged', 'resource', (r) => `+${(0.3 * r).toFixed(1)} Ember per second and ${r * 2}% shorter cooldowns; +${r.toFixed(1)}% cast speed; +${r.toFixed(1)}% Storm damage; +${(1.5 * r).toFixed(1)}% damage.`,
+    (r) => ({ mods: [{ stat: 'dmg', op: 'flat', value: 0.015 * r }, { stat: 'dmg.storm', op: 'flat', value: 0.01 * r }, { stat: 'castSpeed', op: 'flat', value: 0.01 * r }, { stat: 'emberRegen', op: 'flat', value: 0.3 * r }, { stat: 'cdr', op: 'flat', value: 0.02 * r }] })),
   one('pk_storm_kinetic', 'Kinetic', 'resource', 'Every 50 stamina spent restores 8 Ember; +5% attack speed; +5% cast speed; +4% Storm damage.',
     { mods: [{ stat: 'dmg.storm', op: 'flat', value: 0.04 }, { stat: 'castSpeed', op: 'flat', value: 0.05 }, { stat: 'atkSpeed', op: 'flat', value: 0.05 }], procs: [{ on: 'staminaSpent', do: [{ a: 'resource', ember: 8 }] }] }),
   one('pk_storm_tempest_mind', 'Tempest Mind', 'power', '+10% cast speed and +10% attack speed.',

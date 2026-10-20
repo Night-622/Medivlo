@@ -96,8 +96,8 @@ const school: PerkDef[] = [
   // p2 focus / resource
   three('pk_guile_quick_wits', 'Quick Wits', 'resource', (r) => `+${r * 10} max stamina and ${r * 2}% shorter cooldowns.`,
     (r) => ({ mods: [{ stat: 'stamina', op: 'flat', value: 10 * r }, { stat: 'cdr', op: 'flat', value: 0.02 * r }] })),
-  one('pk_guile_opportunist', 'Opportunist', 'trigger', 'Every 50 stamina spent restores 6 Ember.',
-    { procs: [{ on: 'staminaSpent', do: [{ a: 'resource', ember: 6 }] }] }),
+  one('pk_guile_opportunist', 'Opportunist', 'trigger', 'Every 50 stamina spent restores 6 Ember; +4% damage.',
+    { mods: [{ stat: 'dmg', op: 'flat', value: 0.04 }], procs: [{ on: 'staminaSpent', do: [{ a: 'resource', ember: 6 }] }] }),
   one('pk_guile_silver_tongue', 'Silver Tongue', 'power', '+15% Embershards and +5% Guile damage.',
     { mods: [{ stat: 'gold', op: 'flat', value: 0.15 }, { stat: 'dmg.guile', op: 'flat', value: 0.05 }] }),
 ];

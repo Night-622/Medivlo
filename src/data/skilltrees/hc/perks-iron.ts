@@ -95,8 +95,8 @@ const school: PerkDef[] = [
   // p2 focus / resource
   three('pk_iron_drilled', 'Drilled', 'resource', (r) => `+${r * 10} max stamina and ${r * 2}% shorter cooldowns.`,
     (r) => ({ mods: [{ stat: 'stamina', op: 'flat', value: 10 * r }, { stat: 'cdr', op: 'flat', value: 0.02 * r }] })),
-  one('pk_iron_second_wind', 'Second Wind', 'resource', 'Blocking restores 8 stamina and 3 Ember.',
-    { procs: [{ on: 'block', icd: 500, do: [{ a: 'resource', stamina: 8, ember: 3 }] }] }),
+  one('pk_iron_second_wind', 'Second Wind', 'resource', 'Blocking restores 8 stamina and 3 Ember; +4% damage.',
+    { mods: [{ stat: 'dmg', op: 'flat', value: 0.04 }], procs: [{ on: 'block', icd: 500, do: [{ a: 'resource', stamina: 8, ember: 3 }] }] }),
   one('pk_iron_forge_born', 'Forge-born', 'power', '+8% max health and +5% Iron damage.',
     { mods: [{ stat: 'hp', op: 'pct', value: 0.08 }, { stat: 'dmg.iron', op: 'flat', value: 0.05 }] }),
 ];

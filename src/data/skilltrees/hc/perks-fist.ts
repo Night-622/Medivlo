@@ -96,8 +96,8 @@ const school: PerkDef[] = [
   // p2 focus / resource
   three('pk_fist_deep_breath', 'Deep Breath', 'resource', (r) => `+${r * 10} max stamina and +${r * 6}% stamina regeneration.`,
     (r) => ({ mods: [{ stat: 'stamina', op: 'flat', value: 10 * r }, { stat: 'staminaRegen', op: 'pct', value: 0.06 * r }] })),
-  one('pk_fist_ki_flow', 'Ki Flow', 'trigger', 'Every 50 stamina spent restores 6 Ember and grants 1 Momentum.',
-    { procs: [{ on: 'staminaSpent', do: [{ a: 'resource', ember: 6, momentum: 1 }] }] }),
+  one('pk_fist_ki_flow', 'Ki Flow', 'trigger', 'Every 50 stamina spent restores 6 Ember and grants 1 Momentum; +4% attack speed.',
+    { mods: [{ stat: 'atkSpeed', op: 'flat', value: 0.04 }], procs: [{ on: 'staminaSpent', do: [{ a: 'resource', ember: 6, momentum: 1 }] }] }),
   one('pk_fist_discipline', 'Discipline', 'power', '6% shorter cooldowns and +5% Fist damage.',
     { mods: [{ stat: 'cdr', op: 'flat', value: 0.06 }, { stat: 'dmg.fist', op: 'flat', value: 0.05 }] }),
 ];

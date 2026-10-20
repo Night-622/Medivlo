@@ -95,8 +95,8 @@ const school: PerkDef[] = [
   // p2 focus / resource
   three('pk_blade_endurance', 'Swordsman’s Wind', 'resource', (r) => `+${r * 10} max stamina and +${r * 5}% stamina regeneration.`,
     (r) => ({ mods: [{ stat: 'stamina', op: 'flat', value: 10 * r }, { stat: 'staminaRegen', op: 'pct', value: 0.05 * r }] })),
-  one('pk_blade_tempo', 'Tempo', 'trigger', 'Every 50 stamina spent restores 6 Ember.',
-    { procs: [{ on: 'staminaSpent', do: [{ a: 'resource', ember: 6 }] }] }),
+  one('pk_blade_tempo', 'Tempo', 'trigger', 'Every 50 stamina spent restores 6 Ember; +4% damage.',
+    { mods: [{ stat: 'dmg', op: 'flat', value: 0.04 }], procs: [{ on: 'staminaSpent', do: [{ a: 'resource', ember: 6 }] }] }),
   one('pk_blade_honed_mind', 'Honed Mind', 'power', '6% shorter cooldowns and +5% Blade damage.',
     { mods: [{ stat: 'cdr', op: 'flat', value: 0.06 }, { stat: 'dmg.blade', op: 'flat', value: 0.05 }] }),
 ];
