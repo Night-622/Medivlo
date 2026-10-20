@@ -249,7 +249,7 @@ const SET_PIECE_LINES: Record<string, string[]> = {
 };
 
 /** Slogs at typical gear (Claude 5's boss check: 240–400 s against a ~100 s median): −30% health. */
-const HP_TRIM: Record<string, number> = { 'cb_torvald-wallbreaker': 0.7, 'cb_dame-ilsabet': 0.7, 'cb_admiral-saltmarsh': 0.7, cb_konrad: 0.7, 'cb_ser-gallant': 0.8 };
+const HP_TRIM: Record<string, number> = { 'cb_torvald-wallbreaker': 0.62, 'cb_dame-ilsabet': 0.7, 'cb_admiral-saltmarsh': 0.7, cb_konrad: 0.7, 'cb_ser-gallant': 0.8 };
 
 export const HC_CAMPAIGN_BOSSES: CampaignBoss[] = RAW
   .map((b) => (b.slot === 'nemesis' && !b.abilities.some((a) => /yields/i.test(a)) ? { ...b, abilities: [...b.abilities, 'Yields when beaten: escapes.'] } : b))

@@ -27,11 +27,9 @@ const GATE = process.argv.slice(3).includes('gate');
 const args = process.argv.slice(3).filter((a) => a !== 'gate');
 const CLASSES = args.length ? args : Object.keys(CLASS_SCHOOL);
 const WALL_SECS = 300;
-/** documented per-boss time allowances for the gate ('<class>:<level>' → seconds), each with its reason (the healer's
- * Herald of Noon needs none: ~204 s) */
-const ALLOW: Record<string, { secs: number; why: string }> = {
-  'warden:14': { secs: 360, why: 'Torvald Wallbreaker vs the tank warden: mean ~281 s after Claude 3’s ×0.7 HP, slowest seed ~324 s (2026-10-21)' },
-};
+/** documented per-boss time allowances for the gate ('<class>:<level>' → { secs, why }). None today: Torvald was cut to ×0.62
+ * HP at the source (Claude 3, 2026-10-21) instead of an allowance; the healer's Herald of Noon sits at ~204 s. */
+const ALLOW: Record<string, { secs: number; why: string }> = {};
 
 interface Cell { cls: string; L: Level; boss: string; ref: FightResult; refScore: number; fights: FightResult[]; scores: number[]; ilvl: number[] }
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length);
