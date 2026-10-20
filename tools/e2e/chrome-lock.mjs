@@ -1,11 +1,11 @@
-// Machine-wide mutex for headless Chrome e2e runs (all four agents share one Mac with little free memory).
-// Only one headless Chrome may run at a time; others wait their turn. The lock is a directory in the repo
-// (every agent sees the same path) holding the owner's pid; stale locks (dead pid or > 20 min) are broken.
+// Machine-wide mutex for headless Chrome e2e runs: only one headless Chrome may run at a time across every agent,
+// checkout and worktree; others wait their turn. The lock is a directory in the user's home folder holding the
+// owner's pid; stale locks (dead pid or > 20 min) are broken.
 //   import { acquireChrome } from './chrome-lock.mjs';
 //   const release = await acquireChrome('my-test');   … run Chrome …   release();
 import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { homedir } from 'node:os';
 
 // Chrome binary for every e2e script: $CHROME, else the platform's default install path.
 export const CHROME_PATH = process.env.CHROME ?? {
@@ -13,7 +13,9 @@ export const CHROME_PATH = process.env.CHROME ?? {
   darwin: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
 }[process.platform] ?? '/usr/bin/google-chrome';
 
-const LOCK = join(dirname(fileURLToPath(import.meta.url)), '.chrome-lock');
+// One lock per user, shared by every checkout and worktree (it used to live in <repo>/tools/e2e, so a deploy
+// worktree and the main tree each had their own and two Chromes could run). $CHROME_LOCK_DIR overrides.
+const LOCK = process.env.CHROME_LOCK_DIR ?? join(homedir(), '.hollow-crown-chrome-lock');
 const STALE_MS = 20 * 60_000;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
