@@ -61,58 +61,82 @@ async function fight(ms = 20000, radius = 260) {
 
 // ── walk to a pixel point with WASD steering; sidestep when stuck; teleport only on long hauls ──
 const focused = async (id) => { const f = await ev('window.__world.focus()'); return !!f && !!id && (id.endsWith('*') ? f.startsWith(id.slice(0, -1)) : f === id); };
-async function walkTo(x, y, { near = 40, budget = 90000, focusId = null, haul = 90, until = null } = {}) {
+async function walkTo(x, y, { near = 40, budget = 90000, focusId = null, haul = 90, until = null, reachR = 1.5 } = {}) {
   let p = await me(); const start = Date.now(); let stuck = 0, side = 1;
-  // a mark on blocked ground (a cliff perch, a waystone, a statue): head for the nearest walkable tile round it
-  const open = await ev(`(() => { const q = window.__game.scene.getScene('WorldV2').query, gx = Math.floor(${x} / 32), gy = Math.floor(${y} / 32);
-    if (q.isWalkable(gx, gy)) return null; let best = null;
-    for (let r = 1; r <= 6 && !best; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r && q.isWalkable(gx + dx, gy + dy) && (!best || Math.hypot(dx, dy) < best[2])) best = [gx + dx, gy + dy, Math.hypot(dx, dy)];
-    return best ? [best[0] * 32 + 16, best[1] * 32 + 16, best[2]] : null; })()`);
-  if (open) { near = Math.max(near, 20); x = open[0]; y = open[1]; }
   const far = Math.hypot(x - p.x, y - p.y) / 32;
   if (far > haul) { // a long haul: a player would walk minutes; we jump to ~25 tiles out and walk the rest
     const k = 25 / far; await ev(`window.__world.tp(${Math.round((x + (p.x - x) * k) / 32)}, ${Math.round((y + (p.y - y) * k) / 32)})`);
     log.teleports++; mark(`teleported (long haul ${Math.round(far)} tiles)`); await sleep(1500);
   }
   // a player sees the way round trees and walls: plan over the real walkable tiles (A*), then steer with WASD
-  let path = await plan(x, y), wp = 0, replans = 0;
+  // the goal may sit on blocked ground (a cliff perch, a waystone): A* stops at the first reachable tile within reachR
+  const avoid = []; // tiles the hero couldn't get through (props wider than their tile, a companion in the way)
+  let path = await plan(x, y, reachR, avoid), wp = 0, replans = 0;
   if (!path) return { ok: false, why: 'no walkable path', stuck };
+  let [ex, ey] = path[path.length - 1];
+  let bestEnd = Infinity, lastGain = Date.now(), lastSkip = 0;
   while (Date.now() - start < budget) {
     p = await me();
     if (await active('Death')) return { ok: false, why: 'died', stuck };
     if (focusId && (await focused(focusId))) return { ok: true, stuck };
     if (until && (await until())) return { ok: true, stuck }; // e.g. a reach objective counted on the way
-    if (Math.hypot(x - p.x, y - p.y) < near) return { ok: true, stuck };
+    if (Math.hypot(x - p.x, y - p.y) < near || Math.hypot(ex - p.x, ey - p.y) < 14) return { ok: true, stuck };
     while (wp < path.length - 1 && Math.hypot(path[wp][0] - p.x, path[wp][1] - p.y) < 14) wp++;
     const [tx, ty] = path[wp];
     const dx = tx - p.x, dy = ty - p.y;
     const keys = []; if (dx > 6) keys.push('KeyD'); if (dx < -6) keys.push('KeyA'); if (dy > 6) keys.push('KeyS'); if (dy < -6) keys.push('KeyW');
     if (!keys.length) { wp = Math.min(path.length - 1, wp + 1); continue; }
-    await page.hold(keys, 250);
+    if (process.env.QA_TRACE && (Date.now() - start) % 5000 < 300) console.log(`  trace: at ${Math.round(p.x / 32)},${Math.round(p.y / 32)} → wp ${wp}/${path.length} ${Math.round(tx / 32)},${Math.round(ty / 32)} keys ${keys.join('+')} · ui ${JSON.stringify(await ev(`(async () => ({ dlg: (await import('/src/narrative/client/dialogueClient.ts')).dialogueClient.active, panel: window.__hud?.().panelOpen, pause: window.__game.scene.isActive('Pause'), input: window.__game.scene.getScene('WorldV2').heroInput?.enabled ?? null }))()`))}`);
+    // short taps near a waypoint, so the hero doesn't overshoot it and wobble back and forth
+    await page.hold(keys, Math.hypot(dx, dy) < 40 ? 90 : 250);
     const q = await me();
+    // progress watchdog: wobbling round a waypoint moves the hero, so "no movement" never fires; judge by distance
+    // to the end of the path instead: 3 s without getting closer → skip a waypoint and nudge; 8 s → re-plan from here
+    const dEnd = Math.hypot(ex - q.x, ey - q.y);
+    if (dEnd < bestEnd - 8) { bestEnd = dEnd; lastGain = Date.now(); }
+    else if (Date.now() - lastGain > 8000 && replans++ < 8) { stuck++; path = (await plan(x, y, reachR, avoid)) ?? path; wp = 0; [ex, ey] = path[path.length - 1]; bestEnd = Infinity; lastGain = Date.now(); continue; }
+    else if (Date.now() - lastGain > 3000 && Date.now() - lastSkip > 3000) { stuck++; lastSkip = Date.now(); avoid.push([Math.floor(path[wp][0] / 32), Math.floor(path[wp][1] / 32)]); path = (await plan(x, y, reachR, avoid)) ?? path; wp = 0; [ex, ey] = path[path.length - 1]; side = -side; await page.hold(Math.abs(dx) > Math.abs(dy) ? [side > 0 ? 'KeyS' : 'KeyW'] : [side > 0 ? 'KeyD' : 'KeyA'], 120); }
     if (Math.hypot(q.x - p.x, q.y - p.y) < 3) { // caught on a corner: nudge, then re-plan from here
       stuck++; side = -side;
       await page.hold(Math.abs(dx) > Math.abs(dy) ? [side > 0 ? 'KeyS' : 'KeyW'] : [side > 0 ? 'KeyD' : 'KeyA'], 250);
-      if (stuck % 4 === 0 && replans++ < 8) { path = (await plan(x, y)) ?? path; wp = 0; }
+      if (stuck % 4 === 0 && replans++ < 8) { path = (await plan(x, y, reachR, avoid)) ?? path; wp = 0; [ex, ey] = path[path.length - 1]; }
     }
-    if ((await ev('window.__hc.enemies()')).some((e) => Math.hypot(e.x - q.x, e.y - q.y) < 160)) { await fight(15000); path = (await plan(x, y)) ?? path; wp = 0; }
+    if ((await ev('window.__hc.enemies()')).some((e) => Math.hypot(e.x - q.x, e.y - q.y) < 160)) { await fight(15000); path = (await plan(x, y, reachR, avoid)) ?? path; wp = 0; [ex, ey] = path[path.length - 1]; }
     if (await dlg()) await lines(); // a scene can start on the way
   }
   return { ok: false, why: 'timeout', stuck };
 }
 
+// stand where the game offers [F] for `id`: walk there, then try the walkable tiles round it (nearest first) until
+// it is the focus, the way a player shuffles about until the prompt shows
+async function approach(id, x, y, budget = 45000) {
+  const t0 = Date.now();
+  await walkTo(x, y, { near: 20, budget: Math.min(budget, 30000), focusId: id });
+  if (await focused(id)) return true;
+  const ring = await ev(`(() => { const q = window.__game.scene.getScene('WorldV2').query, gx = Math.floor(${x} / 32), gy = Math.floor(${y} / 32), out = [];
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) if ((dx || dy) && q.isWalkable(gx + dx, gy + dy)) out.push([gx + dx, gy + dy, Math.hypot(dx, dy)]);
+    return out.sort((a, b) => a[2] - b[2]).map(([tx, ty]) => [tx * 32 + 16, ty * 32 + 16]); })()`);
+  for (const [tx, ty] of ring) {
+    if (Date.now() - t0 > budget) break;
+    await walkTo(tx, ty, { near: 8, budget: 8000, focusId: id });
+    if (await focused(id)) return true;
+  }
+  return focused(id);
+}
+
 // A* over walkable tiles in the hero's space (8-way, no corner cutting) → waypoints in world px, or null if none
-const plan = (x, y) => ev(`(() => {
+const plan = (x, y, R = 1.5, avoid = []) => ev(`(() => {
+  const avoid = new Set(${JSON.stringify(avoid.map(([a, b]) => a + ',' + b))});
   const q = window.__game.scene.getScene('WorldV2').query, p = window.__hc.local();
   const sx = Math.floor(p.x / 32), sy = Math.floor(p.y / 32), gx = Math.floor(${x} / 32), gy = Math.floor(${y} / 32);
-  const ok = (tx, ty) => (tx === gx && ty === gy) || q.isWalkable(tx, ty);
+  const ok = (tx, ty) => q.isWalkable(tx, ty) && !avoid.has(tx + ',' + ty);
   const key = (tx, ty) => tx * 100000 + ty, h = (tx, ty) => Math.hypot(tx - gx, ty - gy);
   const open = [[h(sx, sy), 0, sx, sy]], came = new Map([[key(sx, sy), null]]), cost = new Map([[key(sx, sy), 0]]);
   let found = null, n = 0;
   while (open.length && n++ < 60000) {
     let bi = 0; for (let i = 1; i < open.length; i++) if (open[i][0] < open[bi][0]) bi = i;
     const [, g, cx, cy] = open.splice(bi, 1)[0];
-    if (Math.abs(cx - gx) <= 1 && Math.abs(cy - gy) <= 1) { found = [cx, cy]; break; }
+    if (h(cx, cy) <= ${R}) { found = [cx, cy]; break; }
     for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]) {
       const nx = cx + dx, ny = cy + dy;
       if (!ok(nx, ny) || (dx && dy && (!ok(cx + dx, cy) || !ok(cx, cy + dy)))) continue;
@@ -122,7 +146,8 @@ const plan = (x, y) => ev(`(() => {
   }
   if (!found) return null;
   const tiles = []; for (let c = found; c; c = came.get(key(c[0], c[1]))) tiles.unshift(c);
-  return [...tiles.map(([tx, ty]) => [tx * 32 + 16, ty * 32 + 16]), [${x}, ${y}]];
+  const pts = tiles.map(([tx, ty]) => [tx * 32 + 16, ty * 32 + 16]);
+  return q.isWalkable(gx, gy) && found[0] === gx && found[1] === gy ? [...pts, [${x}, ${y}]] : pts;
 })()`);
 
 // the tracked quest's first open objective, and where its gold quest mark is (what a player follows)
@@ -186,7 +211,7 @@ try {
   const stone = await ev(`(() => { const w = window.__game.scene.getScene('WorldV2'), p = window.__hc.local();
     const all = w.chunks.views().flatMap((c) => c.objects).filter((o) => o.kind === 'waystone').map((o) => ({ id: o.id, x: o.at[0] * 32 + 16, y: o.at[1] * 32 + 16 }));
     return all.sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y))[0] ?? null; })()`);
-  if (stone) { await walkTo(stone.x, stone.y, { near: 20, budget: 30000, focusId: stone.id }); await page.press('KeyF'); await sleep(1200); if (await dlg()) await lines(); }
+  if (stone) { await approach(stone.id, stone.x, stone.y); await page.press('KeyF'); await sleep(1200); if (await dlg()) await lines(); }
   const tut2 = await ev(`(async () => { const c = await import('/src/core/index.ts'); return Object.fromEntries(Object.entries(c.Game.state.flags).filter(([k]) => k.startsWith('tut.'))); })()`);
   check('First Steps: J then T tracks a quest, F wakes the waystone', !!tut2['tut.track'] && !!tut2['tut.waystone'], JSON.stringify({ track: tut2['tut.track'], waystone: tut2['tut.waystone'], stone: stone?.id }));
   await shot('3-first-steps');
@@ -211,11 +236,11 @@ try {
       if (next) { o.at = [next.x, next.y]; o.id = next.id; (log.used ??= []).push(next.id); }
     }
     const moved = async () => { const a = await nextObjective(); return !a || a.quest !== o.quest || a.stage !== o.stage || a.text !== o.text || (a.count ?? 0) > (o.count ?? 0); };
-    const w = await walkTo(o.at[0], o.at[1], { near: o.kind === 'kill' || o.kind === 'reach' ? 64 : 48, focusId: o.kind === 'talk' || o.kind === 'interact' ? o.id : null, until: o.kind === 'reach' ? moved : null });
+    const w = await walkTo(o.at[0], o.at[1], { near: o.kind === 'kill' || o.kind === 'reach' ? 64 : 48, focusId: o.kind === 'talk' || o.kind === 'interact' ? o.id : null, until: o.kind === 'reach' ? moved : null, reachR: o.kind === 'reach' ? 3.5 : 1.5 });
     row.walkS = Math.round((Date.now() - t) / 1000); row.stuck = w.stuck;
     if (!w.ok) { row.why = w.why; if (w.why === 'died') { log.deaths++; await page.press('Enter'); await sleep(3000); } continue; }
     if (o.kind === 'talk' || o.kind === 'interact') {
-      if (!(await focused(o.id))) { await walkTo(o.at[0], o.at[1], { near: 20, budget: 15000, focusId: o.id }); }
+      if (!(await focused(o.id))) await approach(o.id, o.at[0], o.at[1], 30000);
       await page.press('KeyF'); await sleep(900);
       row.lines = await lines();
     } else if (o.kind === 'kill' || o.kind === 'collect') row.fight = await fight(60000, 420);
