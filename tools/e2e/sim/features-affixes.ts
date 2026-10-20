@@ -10,7 +10,7 @@ import { HC_WEAPONS } from '@/data/items/hc/weapons.gen';
 import { AFFIX_COUNT, SOCKETS } from '@/systems/rules/affixTypes';
 import { affixDef, rollAffixes, rollInstance, rollRarity, sanitizeAffixes, tierAt } from '@/systems/rules/affixes';
 import { newCharacter } from '@/systems/rules/character';
-import { hybridBonus, itemMods, itemWeaponDamage, weaponDamage } from '@/systems/rules/gear';
+import { hybridBonus, hybridFor, itemMods, itemWeaponDamage, weaponDamage } from '@/systems/rules/gear';
 import { HC_PIECES } from '@/data/items/hc/armour.gen';
 import { compileStats } from '@/systems/rules/playerStats';
 import { sanitizeLoadout } from '@/systems/rules/validate';
@@ -116,10 +116,12 @@ function sanitise(): void {
 
 function hybrid(): void {
   const pieces = (set: string, n: number) => HC_PIECES.filter((p) => p.set === set).slice(0, n).map((p, i): ItemInstance => ({ uid: `${set}-${i}`, base: p.id, ilvl: 20, qty: 1 }));
-  const mixed = [...pieces('rime_leather', 2), ...pieces('ash_robe', 2)];
+  const mixed = [...pieces('rime_leather', 2), ...pieces('guile_robe', 2)]; // no curated Rime + Guile pair: the generic half-and-half
   const h = hybridBonus(mixed), none = hybridBonus([...pieces('rime_leather', 4)]), same = hybridBonus([...pieces('rime_leather', 2), ...pieces('rime_robe', 2)]);
   const procs = h.flatMap((p) => p.procs ?? []);
-  check(h.length === 2 && procs.length === 2 && !none.length && !same.length, 'hybrid sets: 2 Rime + 2 Ash pieces give both schools’ 4-piece effects (half strength); a full set or two sets of one school do not', `${h.length} / ${none.length} / ${same.length}`);
+  check(h.length === 2 && procs.length === 2 && !none.length && !same.length, 'hybrid sets: 2 Rime + 2 Guile pieces give both schools’ 4-piece effects (half strength); a full set or two sets of one school do not', `${h.length} / ${none.length} / ${same.length}`);
+  const steam = hybridBonus([...pieces('rime_leather', 2), ...pieces('ash_robe', 2)]), cur = hybridFor('ash', 'rime');
+  check(!!cur && steam.length === 1 && steam[0] === cur.passive, `hybrid sets: Rime + Ash is the curated ${cur?.name ?? 'pair'} (its own bonus, not the generic one)`);
 }
 
 export function affixChecks(): void {
