@@ -31,14 +31,16 @@ export function killsPerLevel(level: number): number {
 }
 
 /** Level difference: +20% per level above you (catch-up, up to 5 levels), −25% per level below, never under 10%. */
-export const levelDiffMult = (playerLevel: number, enemyLevel: number): number =>
-  enemyLevel >= playerLevel ? 1 + 0.2 * Math.min(5, enemyLevel - playerLevel) : Math.max(0.1, 1 - 0.25 * (playerLevel - enemyLevel));
+export const levelDiffMult = (playerLevel: number, enemyLevel: number, cap = 5): number =>
+  enemyLevel >= playerLevel ? 1 + 0.2 * Math.min(cap, enemyLevel - playerLevel) : Math.max(0.1, 1 - 0.25 * (playerLevel - enemyLevel));
 
 /** XP for one kill at the killer's own level (no level sync; §2.2 clamps). Elite / tier multipliers ride on top. */
 export function xpForKill(playerLevel: number, enemyLevel: number, tier: CreatureTier): number {
-  const effLevel = Math.min(enemyLevel, playerLevel + 5);
+  // a boss or mini far above you pays for at most 2 levels of the gap (a big jump on one kill: Sentinel bosses, Act II)
+  const cap = tier === 'enemy' ? 5 : 2;
+  const effLevel = Math.min(enemyLevel, playerLevel + cap);
   const base = (xpToNext(effLevel) / killsPerLevel(playerLevel)) * TIER_XP[tier];
-  return Math.max(1, Math.round(base * levelDiffMult(playerLevel, enemyLevel)));
+  return Math.max(1, Math.round(base * levelDiffMult(playerLevel, enemyLevel, cap)));
 }
 
 /** Skill points from levels alone (quest points come on top). */
@@ -63,3 +65,17 @@ export const dropRolls = (n: number): number => Math.max(1, n);
 export const unlockLevel = (index: number): number => 1 + 5 * index;
 /** Branch reset cost in Embershards. */
 export const resetCost = (level: number): number => 10 * level;
+
+/**
+ * Quest XP follows the quest's own level band (Act II spread, 2026-10-21): +25% per level the hero is below its low
+ * end (at most ×2), −15% per level beyond one past its high end (at least ×0.6), ×1 inside. Every class then converges on the
+ * band whatever its thread's kill count was. No band known → ×1.
+ */
+export function questXpMult(heroLevel: number, band: readonly [number, number] | null | undefined): number {
+  if (!band) return 1;
+  const [lo, hi] = band;
+  if (heroLevel < lo) return Math.min(2, 1 + 0.25 * (lo - heroLevel));
+  // the over side starts one level past the high end: a duo runs ahead by design and should not feel short-changed
+  if (heroLevel > hi + 1) return Math.max(0.6, 1 - 0.15 * (heroLevel - hi - 1));
+  return 1;
+}

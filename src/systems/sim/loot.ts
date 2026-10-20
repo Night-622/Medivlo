@@ -169,7 +169,7 @@ export function grantItem(w: SimWorld, p: PlayerEnt, it: Omit<ItemInstance, 'uid
     inv.push(instance);
   }
   w.emit('loot:granted', { playerId: p.playerId, item: it.base, qty: it.qty, instance: { ...instance, qty: it.qty } });
-  w.emit('item:picked', { uid: instance.uid, def: it.base as never, qty: it.qty, playerId: p.playerId }); // v1 ItemId type until cutover
+  w.emit('item:picked', { uid: instance.uid, def: it.base, qty: it.qty, playerId: p.playerId });
   return true;
 }
 

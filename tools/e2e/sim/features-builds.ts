@@ -2,6 +2,7 @@
  * Deeper builds engine (Claude 3, docs/systems/BUILDS.md §2.1): the Passive extensions perks, affixes and uniques
  * are made of. Conversion, auras, "+N to <spell>", the new triggers, conditions and stats, each proven on the sim.
  */
+import { questXpMult } from '@/systems/rules/curves';
 import { kitFor } from '@/data/classes/hc/kits';
 import { newCharacter } from '@/systems/rules/character';
 import { playerPassives } from '@/systems/rules/playerStats';
@@ -291,7 +292,15 @@ function poolsAndShields(): void {
   check(!w.since(n0, 'player:damaged').length, 'a hit fully soaked by a shield reports no health lost (player:damaged)');
 }
 
+/** Quest XP follows the quest's band: under it up to ×2, inside ×1, over it down to ×0.6; no band ×1. */
+function questBandXp(): void {
+  const b: [number, number] = [28, 30];
+  const r = [questXpMult(26, b), questXpMult(20, b), questXpMult(29, b), questXpMult(33, b), questXpMult(40, b), questXpMult(26, null), questXpMult(31, b)];
+  check(r[0] === 1.5 && r[1] === 2 && r[2] === 1 && Math.abs(r[3] - 0.7) < 1e-9 && r[4] === 0.6 && r[5] === 1 && r[6] === 1, 'quest XP by band: 2 under ×1.5, far under ×2 (cap), inside and one over ×1, 3 over ×0.7, far over ×0.6 (floor), no band ×1', r.join(', '));
+}
+
 export function buildChecks(): void {
+  questBandXp();
   poolsAndShields();
   minions();
   keystonesAndMastery();

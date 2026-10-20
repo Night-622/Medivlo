@@ -222,7 +222,7 @@ export class Sim implements CombatService {
     const space = me?.space;
     const near = (e: { space: string; x: number; y: number }) => !me || (e.space === space && dist2(e, me) <= AOI * AOI);
     const out: EntityState[] = [];
-    for (const p of w.players.values()) out.push(playerState(w, p));
+    for (const p of w.players.values()) out.push(playerState(w, p, p === me || !me ? 'self' : near(p) ? 'peer' : 'far'));
     for (const e of w.enemies.values()) if (near(e)) out.push(enemyState(w, e));
     for (const pr of w.projectiles.values()) if (!pr.dead && near(pr)) out.push({
       id: pr.id, space: pr.space, kind: 'projectile', def: pr.visual, x: Math.round(pr.x), y: Math.round(pr.y), facing: facing4({ x: pr.vx, y: pr.vy }), anim: 'fly',
@@ -333,20 +333,35 @@ function info(c: Combatant): CombatantInfo {
 
 const csv = (xs: Iterable<string>) => [...xs].join(',');
 
-function playerState(w: SimWorld, p: PlayerEnt): EntityState {
+/**
+ * A hero as one viewer sees it (realm-perf 2026-10-21: snapshots are full, 15 Hz, per viewer):
+ * - self: everything the HUD and hotbar read (pools, XP, cooldowns, buffs, target);
+ * - peer (same space, in view): what CombatView and the party frames draw (level, statuses, look, downed, stealth, cast);
+ * - far (another space / out of view): the party-frame fields only.
+ * Default values ('' / 0 / false) are left out: every reader falls back to them.
+ */
+function playerState(w: SimWorld, p: PlayerEnt, view: 'self' | 'peer' | 'far' = 'self'): EntityState {
   const cd = (i: number) => { const id = p.save.hotbar[i]; return id ? Math.max(0, Math.round((p.cds.get(id) ?? 0) - w.t)) : 0; };
+  const shared = { lvl: p.save.level, down: p.downed ? Math.round(p.downed.until - w.t) : 0, rv: p.downed ? Math.round(p.downed.revive) : 0 };
+  const seen = view === 'far' ? {} : { s: csv(p.statuses.keys()), lk: lookOf(p), stealth: p.stealth, cast: p.windup?.label ?? '', sh: Math.round(p.shield) };
+  const own = view !== 'self' ? {} : {
+    em: Math.round(p.ember), emMax: p.emberMax, st: Math.round(p.stamina), stMax: p.staminaMax,
+    xp: p.save.xp, xpMax: xpToNext(p.save.level), mo: p.momentum, dc: p.dashCharges,
+    c1: cd(0), c2: cd(1), c3: cd(2), c4: cd(3), cs: Math.max(0, Math.round((p.cds.get('slash') ?? 0) - w.t)), cq: Math.max(0, Math.round(p.potionReadyAt.q - w.t)), ce: Math.max(0, Math.round(p.potionReadyAt.e - w.t)),
+    tg: p.target ?? '', b: csv(p.buffs.map((b) => b.id)),
+  };
   return {
     id: p.id, space: p.space, kind: 'player', def: p.def, x: Math.round(p.x), y: Math.round(p.y), facing: (p.facingView = facing4Sticky(p.face, p.facingView)),
     anim: p.dead ? 'dead' : p.downed ? 'down' : p.anim, hp: Math.max(0, Math.round(p.hp)), maxHp: p.maxHp, owner: p.playerId,
-    data: {
-      em: Math.round(p.ember), emMax: p.emberMax, st: Math.round(p.stamina), stMax: p.staminaMax,
-      lvl: p.save.level, xp: p.save.xp, xpMax: xpToNext(p.save.level), sh: Math.round(p.shield), mo: p.momentum, dc: p.dashCharges,
-      c1: cd(0), c2: cd(1), c3: cd(2), c4: cd(3), cs: Math.max(0, Math.round((p.cds.get('slash') ?? 0) - w.t)), cq: Math.max(0, Math.round(p.potionReadyAt.q - w.t)), ce: Math.max(0, Math.round(p.potionReadyAt.e - w.t)),
-      cast: p.windup?.label ?? '', tg: p.target ?? '', s: csv(p.statuses.keys()), b: csv(p.buffs.map((b) => b.id)),
-      lk: lookOf(p),
-      down: p.downed ? Math.round(p.downed.until - w.t) : 0, rv: p.downed ? Math.round(p.downed.revive) : 0, stealth: p.stealth,
-    },
+    data: compact({ ...shared, ...seen, ...own }, ['lvl']),
   };
+}
+
+/** Drop '' / 0 / false values (readers default to them); `keep` keys always ride. */
+function compact(d: Record<string, string | number | boolean | undefined>, keep: string[] = []): Record<string, string | number | boolean> {
+  const out: Record<string, string | number | boolean> = {};
+  for (const [k, v] of Object.entries(d)) if (v !== undefined && (keep.includes(k) || (v !== '' && v !== 0 && v !== false))) out[k] = v;
+  return out;
 }
 
 /** The loadout may carry the hero look (client adds it); the key drives re-baking on every client. */
@@ -364,7 +379,7 @@ function enemyState(w: SimWorld, e: EnemyEnt): EntityState {
   return {
     id: e.id, space: e.space, kind: e.kind, def: e.def, x: Math.round(e.x), y: Math.round(e.y), facing: e.escort ? (e.facingView = facing4Sticky(e.face, e.facingView)) : facing4(e.face), anim: e.dead ? 'die' : e.anim,
     hp: Math.max(0, Math.round(e.hp)), maxHp: e.maxHp, owner: e.ownerId?.slice(2),
-    data: { lvl: e.level, tier: e.tier, ph: e.phase + 1, cos: !!e.storyPet, elite: e.elite?.join(',') ?? '', ename: e.elite?.length ? eliteName(e) : '', s: csv(e.statuses.keys()), cast: e.windup?.label ?? '', sh: Math.round(e.shield), team: e.team,
-      ...(e.escort ? { esc: 1, npc: e.escort.npc ?? '', name: e.cdef.name, down: e.escort.down ? Math.max(0, Math.round(e.escort.down.until - w.t)) : 0, rv: Math.round(e.escort.down?.revive ?? 0) } : {}) },
+    data: compact({ lvl: e.level, tier: e.tier, ph: e.phase + 1, cos: !!e.storyPet, elite: e.elite?.join(',') ?? '', ename: e.elite?.length ? eliteName(e) : '', s: csv(e.statuses.keys()), cast: e.windup?.label ?? '', sh: Math.round(e.shield), team: e.team,
+      ...(e.escort ? { esc: 1, npc: e.escort.npc ?? '', name: e.cdef.name, down: e.escort.down ? Math.max(0, Math.round(e.escort.down.until - w.t)) : 0, rv: Math.round(e.escort.down?.revive ?? 0) } : {}) }, ['lvl', 'tier', 'ph', 'team', 'esc']),
   };
 }
